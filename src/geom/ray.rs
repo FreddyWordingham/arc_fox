@@ -1,0 +1,29 @@
+//! Geometric ray structure.
+
+use nalgebra::{Point3, Unit, Vector3};
+
+/// A line with an origin point that extends infinitely in one direction.
+/// Commonly used to determine the distance to a geometric shape.
+pub struct Ray {
+    /// Origin of the line.
+    origin: Point3<f64>,
+    /// Direction of the line.
+    direction: Unit<Vector3<f64>>,
+}
+
+impl Ray {
+    /// Construct a new ray.
+    pub fn new(origin: Point3<f64>, direction: Unit<Vector3<f64>>) -> Self {
+        Self { origin, direction }
+    }
+
+    /// Reference the origin.
+    pub fn origin(&self) -> &Point3<f64> {
+        &self.origin
+    }
+
+    /// Reference the direction.
+    pub fn direction(&self) -> &Unit<Vector3<f64>> {
+        &self.direction
+    }
+}
