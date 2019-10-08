@@ -1,4 +1,4 @@
-//! Arc library
+//! Simple compilation test binary.
 
 #![allow(dead_code)]
 #![allow(clippy::all)]
@@ -6,4 +6,7 @@
 #![warn(missing_docs)]
 #![warn(clippy::missing_docs_in_private_items)]
 
-pub mod geom;
+#[test]
+fn test_compile() {
+    println!("Hello world!");
+}

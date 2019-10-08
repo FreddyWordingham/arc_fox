@@ -29,11 +29,12 @@ impl Ray {
 }
 
 /// Unit tests.
+#[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
-    fn test_construction() {
+    fn construction() {
         let ray = Ray::new(
             Point3::new(1.0, -2.0, 3.14159),
             Unit::new_normalize(Vector3::new(1.0, -1.0, 0.0)),
