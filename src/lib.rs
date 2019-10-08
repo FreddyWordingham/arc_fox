@@ -8,7 +8,6 @@
 
 pub mod geom;
 
-/// Simple test module!
 #[cfg(test)]
 mod tests {
     #[test]

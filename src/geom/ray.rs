@@ -27,3 +27,22 @@ impl Ray {
         &self.direction
     }
 }
+
+/// Unit tests.
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_construction() {
+        let ray = Ray::new(
+            Point3::new(1.0, -2.0, 3.14159),
+            Unit::new_normalize(Vector3::new(1.0, -1.0, 0.0)),
+        );
+
+        assert_eq!(ray.origin(), &Point3::new(1.0, -2.0, 3.14159));
+        assert_eq!(
+            ray.direction(),
+            &Unit::new_normalize(Vector3::new(1.0, -1.0, 0.0))
+        );
+    }
+}
