@@ -7,6 +7,7 @@ edition = "2018"
 # documention = "https://freddywordingham.github.io/arc"
 
 [dependencies]
+assert_approx_eq = "1.1.0"
 colog = "0.2.1"
 dbc = "0.3.3"
 log = "0.4.8"
