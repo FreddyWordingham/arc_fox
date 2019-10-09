@@ -1,0 +1,1 @@
+initSidebarItems({"mod":[["geom","Geometry module containing code for modelling shapes and their relative properties in space."]]});
