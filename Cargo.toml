@@ -9,7 +9,7 @@ edition = "2018"
 [dependencies]
 assert_approx_eq = "1.1.0"
 colog = "0.2.1"
-dbc = "0.3.3"
+contracts = "0.3.0"
 log = "0.4.8"
 nalgebra = "0.18.1"
 

@@ -5,6 +5,7 @@
         "binutils",
         "clippy",
         "cmake",
+        "consts",
         "kcov",
         "libcurl",
         "libdw",
