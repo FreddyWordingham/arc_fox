@@ -8,6 +8,10 @@ Work contained here is purely origonal unless otherwise specified in local file 
 
 The arc library forms the backbone of the project and is written purely in Rust: https://www.rust-lang.org/. Python3 is the scripting language of choice when forming plots. Zsh is the shell of choice.
 
+## Status
+[![Build Status](https://travis-ci.com/FreddyWordingham/arc.svg?branch=master)](https://travis-ci.com/FreddyWordingham/arc)
+[![codecov](https://codecov.io/gh/FreddyWordingham/arc/branch/master/graph/badge.svg)](https://codecov.io/gh/FreddyWordingham/arc)
+
 ## Library Modules
 - File operations.
 
