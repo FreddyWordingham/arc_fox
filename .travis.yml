@@ -1,14 +1,37 @@
-os: osx
 language: rust
-rust:
-    - stable
-    - beta
-    - nightly
-matrix:
-    allow_failures:
-        - rust: nightly
-    fast_finish: true
+
+os: osx
+
+sudo: required
+
 cache: cargo
+
+rust:
+  - stable
+  - beta
+  - nightly
+
+matrix:
+  allow_failures:
+    - rust: nightly
+
+# addons:
+#   apt:
+#     packages:
+#       - libcurl4-openssl-dev
+#       - libelf-dev
+#       - libdw-dev
+#       - cmake
+#       - gcc
+#       - binutils-dev
+
 script:
-    - cargo build
-    - cargo test
+  - cargo build
+  - cargo test
+
+env:
+  - CODECOV_TOKEN="ec14ed81-cc04-4934-b90f-445bea073831"
+
+after_success:
+# Refresh documentation
+  - codecov
