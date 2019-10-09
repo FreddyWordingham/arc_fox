@@ -1,0 +1,15 @@
+code --install-extension belfz.search-crates-io
+code --install-extension bungcip.better-toml
+code --install-extension CoenraadS.bracket-pair-colorizer-2
+code --install-extension evgeniypeshkov.syntax-highlighter
+code --install-extension hbenl.vscode-test-explorer
+code --install-extension hdevalke.rust-test-lens
+code --install-extension PKief.material-icon-theme
+code --install-extension rust-lang.rust
+code --install-extension serayuzgur.crates
+code --install-extension seunlanlege.action-buttons
+code --install-extension streetsidesoftware.code-spell-checker
+code --install-extension Swellaby.vscode-rust-test-adapter
+code --install-extension vadimcn.vscode-lldb
+code --install-extension webfreak.debug
+code --install-extension yzhang.markdown-all-in-one
