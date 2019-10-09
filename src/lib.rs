@@ -1,6 +1,5 @@
-//! Arc library
+//! Arc library core.
 
-/// Pinecone.
 #![allow(dead_code)]
 #![allow(clippy::all)]
 #![allow(unknown_lints)]

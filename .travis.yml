@@ -25,12 +25,12 @@ matrix:
 #       - gcc
 #       - binutils-dev
 
+env:
+  - CODECOV_TOKEN="ec14ed81-cc04-4934-b90f-445bea073831"
+
 script:
   - cargo build
   - cargo test
-
-env:
-  - CODECOV_TOKEN="ec14ed81-cc04-4934-b90f-445bea073831"
 
 after_success:
 # Refresh documentation
