@@ -19,7 +19,7 @@ fn multiply_by_add(a: i32, b: i32) -> i32 {
     res
 }
 
-fn multiply_by_mult(a: i32, b: i32) -> i32 {
+fn multiply_by_mul(a: i32, b: i32) -> i32 {
     a * b
 }
 
@@ -34,7 +34,7 @@ mod tests {
     }
 
     #[bench]
-    fn bench_multiply_by_mult(b: &mut Bencher) {
-        b.iter(|| multiply_by_mult(34, 25));
+    fn bench_multiply_by_mul(b: &mut Bencher) {
+        b.iter(|| multiply_by_mul(34, 25));
     }
 }
