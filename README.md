@@ -25,4 +25,4 @@ Key numerical simulation binaries:
 Common plotting scripts:
 - 2D scatter plots.
 - 3D scatter plots.
-- Histogram data
+- Histogram data.
