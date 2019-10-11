@@ -14,7 +14,7 @@ pub struct Ray {
 }
 
 impl Ray {
-    /// Construct a new ray.
+    /// Construct a new instance.
     pub fn new(origin: Point3<f64>, direction: Unit<Vector3<f64>>) -> Self {
         Self { origin, direction }
     }
