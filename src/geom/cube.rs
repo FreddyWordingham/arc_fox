@@ -1,4 +1,4 @@
-//! Geometric cube stucture.
+//! Geometric cube structure.
 
 use contracts::pre;
 use nalgebra::{Point3, Vector3};
@@ -7,7 +7,7 @@ use nalgebra::{Point3, Vector3};
 /// Commonly used to partition the domain.
 #[derive(Debug)]
 pub struct Cube {
-    /// Mininum bound.
+    /// Minimum bound.
     mins: Point3<f64>,
     /// Maximum bound.
     maxs: Point3<f64>,
