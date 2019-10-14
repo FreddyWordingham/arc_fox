@@ -1,5 +1,8 @@
 //! Physical material structure.
 
+use super::kin::Properties as KinProp;
+use super::opt::Properties as OptProp;
+
 /// Physical material.
 /// Contains all component properties.
 #[derive(Debug)]
