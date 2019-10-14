@@ -1,10 +1,13 @@
 //! Optical properties structure.
 
+use crate::file::{as_json, from_json, Loadable, Saveable};
 use contracts::pre;
+use serde::{Deserialize, Serialize};
+use std::path::Path;
 
 /// Optical physical properties.
 /// Contains parameters governing how photons interact within the material.
-#[derive(Debug)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct Properties {
     /// Scattering coefficient [m^-1].
     scat_coeff: f64,
@@ -50,5 +53,17 @@ impl Properties {
     /// Get the asymmetry parameter.
     pub fn asym_param(&self) -> f64 {
         self.asym_param
+    }
+}
+
+impl Saveable for Properties {
+    fn save(&self, path: &Path) {
+        as_json(self, path);
+    }
+}
+
+impl Loadable for Properties {
+    fn load(path: &Path) -> Self {
+        from_json(path)
     }
 }
