@@ -3,10 +3,7 @@
 /// Optical physical properties.
 /// Contains parameters governing how photons interact within the material.
 #[derive(Debug)]
-pub struct Properties<F>
-where
-    F: Fn(f64) -> f64,
-{
+pub struct Properties {
     /// Scattering coefficient [m^-1].
-    scat_coeff: F,
+    scat_coeff: f64,
 }
