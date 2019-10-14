@@ -8,6 +8,7 @@
 #![warn(clippy::missing_docs_in_private_items)]
 
 use arc::{
+    dir::resources,
     file::Saveable,
     phy::{kin::Properties as KinProp, opt::Properties as OptProp, Material},
 };
@@ -16,24 +17,29 @@ use std::{collections::HashMap, path::Path};
 fn main() {
     println!("Hello world!");
 
-    let materials = load_materials(vec![
-        "stratum_corneum",
-        "living_epidermis",
-        "papillary_dermis",
-        "upper_blood_net_dermis",
-        "reticular_dermis",
-        "deep_blood_net_dermis",
-        "subcutaneous_fat",
-    ]);
+    let res_dir = resources();
+
+    let materials = load_materials(
+        &res_dir.join("mats/"),
+        vec![
+            "stratum_corneum",
+            "living_epidermis",
+            "papillary_dermis",
+            "upper_blood_net_dermis",
+            "reticular_dermis",
+            "deep_blood_net_dermis",
+            "subcutaneous_fat",
+        ],
+    );
 
     for (name, mat) in materials {
         println!("Saving material: {}", name);
-        mat.save(Path::new(&format!("{}.json", name)));
+        mat.save(&res_dir.join("mats/").join(format!("{}.json", name)));
     }
 }
 
-fn load_materials(_mat_list: Vec<&str>) -> HashMap<String, Material> {
-    println!("Loading materials...");
+fn load_materials(mat_dir: &Path, _mat_list: Vec<&str>) -> HashMap<String, Material> {
+    println!("Loading materials from: {}", mat_dir.display());
 
     let mut materials = HashMap::new();
 
