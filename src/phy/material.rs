@@ -1,12 +1,14 @@
 //! Physical material structure.
 
-use super::kin::Properties as KinProp;
-use super::opt::Properties as OptProp;
+use super::{kin::Properties as KinProp, opt::Properties as OptProp};
+use crate::file::{as_json, from_json, Loadable, Saveable};
 use contracts::pre;
+use serde::{Deserialize, Serialize};
+use std::path::Path;
 
 /// Physical material.
 /// Contains all component properties.
-#[derive(Debug)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct Material {
     /// Optical properties.
     optical: Option<OptProp>,
@@ -40,5 +42,17 @@ impl Material {
                 unreachable!("Attempting to access kinetics of a material that doesn't diffuse.")
             }
         }
+    }
+}
+
+impl Saveable for Material {
+    fn save(&self, path: &Path) {
+        as_json(self, path);
+    }
+}
+
+impl Loadable for Material {
+    fn load(path: &Path) -> Self {
+        from_json(path)
     }
 }
