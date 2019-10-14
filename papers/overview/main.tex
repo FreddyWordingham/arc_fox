@@ -1,12 +1,79 @@
 % !TeX root = ./main.tex
 
 \documentclass{article}
+
+\usepackage[colorlinks]{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan,
+}
+\usepackage[english]{babel}
+\usepackage[symbols,nogroupskip,sort=none]{glossaries-extra}
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
+\usepackage{multicol}
 \usepackage{siunitx}
 
+\glsxtrnewsymbol[description={Number density}]{n}{\ensuremath{n}}
+\glsxtrnewsymbol[description={Time}]{t}{\ensuremath{t}}
+\glsxtrnewsymbol[description={Position}]{r}{\ensuremath{\vec{r}}}
+\glsxtrnewsymbol[description={ith Length Dimension ($d_0 = x$)}]{di}{\ensuremath{d_i}}
+\glsxtrnewsymbol[description={Diffusion coefficent}]{D}{\ensuremath{D}}
+\glsxtrnewsymbol[description={Partial derivative}]{partial}{\ensuremath{\partial}}
+\glsxtrnewsymbol[description={Vector differential operator del}]{del}{\ensuremath{\nabla}}
 
 \begin{document}
-Arc::Torus code paper and first demonstration.
 
+\begin{center}
+    \Large
+    \textbf{Arc::Torus Code Paper and Demonstration}
+
+    \vspace{0.4cm}
+    \large
+    Arc::Torus used to simulate the PDT process and predict treatment efficacy.
+
+    \vspace{0.4cm}
+    \textbf{Freddy Wordingham}
+
+    \vspace{0.9cm}
+    \textbf{Abstract}
+\end{center}
+
+This is the abstract text.
+
+\newpage
+\tableofcontents
+
+\newpage
+\printunsrtglossary[type=symbols,style=long]
+
+\newpage
+\begin{multicols}{2}
+
+    \section{Domain}
+    \subsection{Input}
+    A single input manifest specifying the geometry of the surfaces and their respective materials.
+
+    \section{Monte Carlo Radiative Transfer}
+
+    \section{Diffusion}
+    The diffusion equation is a partial differential equation used to describe the behaviour of a collection of a statistically large number of species whose collective motion of the species results from the random movement of each particle arising from brownian motion.
+
+    The standard form of the diffusion equation is written as:
+
+    \begin{equation} \label{eq:diff_eq}
+        \frac{\partial n(\vec{r}, t)}{\partial t} = \nabla \cdot ( D(n, \vec{r}) \nabla n(\vec{r}, t))
+    \end{equation}
+
+    When the diffusion coefficient is anisotropic, the diffusion coefficient is represented as a symmetric positive definite matrix, and the diffusion rate at a given position in time is written as:
+
+    \begin{equation} \label{eq:diff_eq}
+        \frac{\partial n(\vec{r}, t)}{\partial t} = \sum_{i=0}^{2} \sum_{j=0}^{2} \sum_{k=0}^{2} \frac{\partial}{\partial x_i d_i} ( D_{i,j,k}(n, \vec{r}) )
+    \end{equation}
+
+    \section{Chemical Reactions}
+
+\end{multicols}
 \end{document}
