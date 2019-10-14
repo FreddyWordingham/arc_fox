@@ -1,7 +1,13 @@
 //! Geometric triangle structure with interpolated phong normals.
 
 use super::{Ray, Surface};
+use crate::file::Loadable;
 use nalgebra::{Point3, Unit, Vector3};
+use std::{
+    fs::File,
+    io::{BufRead, BufReader},
+    path::Path,
+};
 
 /// Parallel ray catch value.
 const EPSILON: f64 = 1.0e-6;
@@ -162,5 +168,74 @@ impl Surface for Triangle {
                     + (self.norms[0].into_inner() * w),
             ),
         ))
+    }
+}
+
+impl Loadable for Vec<Triangle> {
+    fn load(path: &Path) -> Self {
+        let vertex_lines = BufReader::new(File::open(path).expect("Unable to open file!"))
+            .lines()
+            .map(|line| line.unwrap())
+            .filter(|line| line.starts_with("v "));
+
+        let mut verts = Vec::new(); // TODO Initialise to capacity.
+        for line in vertex_lines {
+            let mut words = line.split_whitespace();
+            words.next();
+
+            let px = words.next().unwrap().parse::<f64>().unwrap();
+            let py = words.next().unwrap().parse::<f64>().unwrap();
+            let pz = words.next().unwrap().parse::<f64>().unwrap();
+
+            verts.push(Point3::new(px, py, pz));
+        }
+
+        let normal_lines = BufReader::new(File::open(path).expect("Unable to open file!"))
+            .lines()
+            .map(|line| line.unwrap())
+            .filter(|line| line.starts_with("vn "));
+
+        let mut norms = Vec::new(); // TODO Initialise to capacity.
+        for line in normal_lines {
+            let mut words = line.split_whitespace();
+            words.next();
+
+            let nx = words.next().unwrap().parse::<f64>().unwrap();
+            let ny = words.next().unwrap().parse::<f64>().unwrap();
+            let nz = words.next().unwrap().parse::<f64>().unwrap();
+
+            norms.push(Unit::new_normalize(Vector3::new(nx, ny, nz)));
+        }
+
+        let face_lines = BufReader::new(File::open(path).expect("Unable to open file!"))
+            .lines()
+            .map(|line| line.unwrap())
+            .filter(|line| line.starts_with("f "));
+
+        let mut faces = Vec::new(); // TODO Initialise to capacity.
+        for line in face_lines {
+            let line = line.replace("//", " ");
+            let mut words = line.split_whitespace();
+            words.next();
+
+            let fx = words.next().unwrap().parse::<usize>().unwrap() - 1;
+            let fnx = words.next().unwrap().parse::<usize>().unwrap() - 1;
+            let fy = words.next().unwrap().parse::<usize>().unwrap() - 1;
+            let fny = words.next().unwrap().parse::<usize>().unwrap() - 1;
+            let fz = words.next().unwrap().parse::<usize>().unwrap() - 1;
+            let fnz = words.next().unwrap().parse::<usize>().unwrap() - 1;
+
+            faces.push(((fx, fy, fz), (fnx, fny, fnz)));
+        }
+
+        let mut tris = Vec::with_capacity(faces.len());
+        for face in faces {
+            tris.push(Triangle::new(
+                [verts[(face.0).0], verts[(face.0).1], verts[(face.0).2]],
+                [norms[(face.1).0], norms[(face.1).1], norms[(face.1).2]],
+            ));
+        }
+
+        tris
     }
 }
