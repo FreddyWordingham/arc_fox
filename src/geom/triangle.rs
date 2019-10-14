@@ -10,6 +10,8 @@ const EPSILON: f64 = 1.0e-6;
 /// Commonly used to compose surfaces.
 #[derive(Debug)]
 pub struct Triangle {
+    /// Normal vertex.
+    normal: Unit<Vector3<f64>>,
     /// Vertex positions.
     verts: [Point3<f64>; 3],
     /// Vertex normal vectors.
@@ -19,7 +21,16 @@ pub struct Triangle {
 impl Triangle {
     /// Construct a new instance.
     pub fn new(verts: [Point3<f64>; 3], norms: [Unit<Vector3<f64>>; 3]) -> Self {
-        Self { verts, norms }
+        Self {
+            normal: Unit::new_normalize((verts[1] - verts[0]).cross(&(verts[2] - verts[0]))),
+            verts,
+            norms,
+        }
+    }
+
+    /// Reference the normal vector.
+    pub fn normal(&self) -> &Unit<Vector3<f64>> {
+        &self.normal
     }
 
     /// Reference the vertex positions.
