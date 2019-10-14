@@ -27,4 +27,9 @@ impl Triangle {
     pub fn norms(&self) -> &[Unit<Vector3<f64>>; 3] {
         &self.norms
     }
+
+    /// Calculate the area of the triangle.
+    pub fn area(&self) -> f64 {
+        ((self.verts[1] - self.verts[0]).cross(&(self.verts[2] - self.verts[0]))).magnitude() / 2.0
+    }
 }
