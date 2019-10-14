@@ -2,8 +2,10 @@
 
 pub mod cube;
 pub mod ray;
+pub mod surface;
 pub mod triangle;
 
 pub use self::cube::*;
 pub use self::ray::*;
+pub use self::surface::*;
 pub use self::triangle::*;

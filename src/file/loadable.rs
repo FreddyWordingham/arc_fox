@@ -1,4 +1,4 @@
-//! Loadable from file trait and implementations.
+//! Loadable from file trait.
 
 use serde::Deserialize;
 use serde_json::from_reader;

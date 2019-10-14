@@ -1,4 +1,4 @@
-//! Saveable to file trait and implementations.
+//! Saveable to file trait.
 
 use serde::Serialize;
 use serde_json::to_string;
