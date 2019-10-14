@@ -12,3 +12,14 @@ pub struct Entity<'a> {
     /// Inside material.
     in_mat: &'a Material,
 }
+
+impl<'a> Entity<'a> {
+    /// Construct a new instance.
+    pub fn new(tris: Vec<Triangle>, out_mat: &'a Material, in_mat: &'a Material) -> Self {
+        Self {
+            tris,
+            out_mat,
+            in_mat,
+        }
+    }
+}
