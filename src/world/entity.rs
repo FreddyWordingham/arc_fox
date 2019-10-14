@@ -22,4 +22,19 @@ impl<'a> Entity<'a> {
             in_mat,
         }
     }
+
+    /// Reference the bounding triangles.
+    pub fn tris(&self) -> &Vec<Triangle> {
+        &self.tris
+    }
+
+    /// Reference the outside material.
+    pub fn out_mat(&self) -> &Material {
+        &self.out_mat
+    }
+
+    /// Reference the inside material.
+    pub fn in_mat(&self) -> &Material {
+        &self.in_mat
+    }
 }
