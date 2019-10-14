@@ -3,7 +3,7 @@
 use contracts::pre;
 use nalgebra::{Point3, Rotation3, Unit, Vector3};
 
-/// A line with an origin point that extends infinitely in one direction.
+/// Line with an origin point that extends infinitely in one direction.
 /// Commonly used to determine the distance to a geometric shape.
 #[derive(Debug)]
 pub struct Ray {

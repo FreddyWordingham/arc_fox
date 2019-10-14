@@ -3,7 +3,7 @@
 use contracts::pre;
 use nalgebra::{Point3, Vector3};
 
-/// An axis-aligned box.
+/// Axis-aligned box.
 /// Commonly used to partition the domain.
 #[derive(Debug)]
 pub struct Cube {
