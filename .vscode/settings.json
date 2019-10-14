@@ -17,6 +17,7 @@
         "mins",
         "mkdir",
         "nalgebra",
-        "openssl"
+        "openssl",
+        "verts"
     ]
 }
