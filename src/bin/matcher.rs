@@ -7,13 +7,16 @@
 #![warn(missing_docs)]
 #![warn(clippy::missing_docs_in_private_items)]
 
-use arc::phy::{kin::Properties as KinProp, opt::Properties as OptProp, Material};
-use std::collections::HashMap;
+use arc::{
+    file::Saveable,
+    phy::{kin::Properties as KinProp, opt::Properties as OptProp, Material},
+};
+use std::{collections::HashMap, path::Path};
 
 fn main() {
     println!("Hello world!");
 
-    let mut _materials = load_materials(vec![
+    let materials = load_materials(vec![
         "stratum_corneum",
         "living_epidermis",
         "papillary_dermis",
@@ -22,9 +25,16 @@ fn main() {
         "deep_blood_net_dermis",
         "subcutaneous_fat",
     ]);
+
+    for (name, mat) in materials {
+        println!("Saving material: {}", name);
+        mat.save(Path::new(&format!("{}.json", name)));
+    }
 }
 
 fn load_materials(_mat_list: Vec<&str>) -> HashMap<String, Material> {
+    println!("Loading materials...");
+
     let mut materials = HashMap::new();
 
     materials.insert(
@@ -58,6 +68,8 @@ fn load_materials(_mat_list: Vec<&str>) -> HashMap<String, Material> {
         "subcutaneous_fat".to_string(),
         Material::new(Some(OptProp::new(1.44, 5.0 * 1e3, 0.104 * 1e3, 0.8)), None),
     );
+
+    println!("Materials loaded!");
 
     materials
 }
