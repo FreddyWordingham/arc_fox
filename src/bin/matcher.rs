@@ -8,13 +8,14 @@
 #![warn(clippy::missing_docs_in_private_items)]
 
 use arc::{
+    dir::materials,
     file::Loadable,
     form::{load, manifest::Matcher},
     phy::Material,
     util::start_up,
 };
-use log::error;
-use std::{collections::HashMap, env::args, path::Path};
+use log::{error, info};
+use std::{env::args, path::Path};
 
 fn main() {
     // Start up.
@@ -29,46 +30,17 @@ fn main() {
     let input_file_path = Path::new(&args[1]);
 
     // Manifest file.
-    let _man = load::<Matcher>(input_file_path);
-
-    // let mesh_dir = meshes();
-    // let mat_dir = materials();
-
-    // // Materials.
-    // let _materials = load_materials(
-    //     &mesh_dir,
-    //     &mat_dir,
-    //     vec![
-    //         "stratum_corneum",
-    //         "living_epidermis",
-    //         "papillary_dermis",
-    //         "upper_blood_net_dermis",
-    //         "reticular_dermis",
-    //         "deep_blood_net_dermis",
-    //         "subcutaneous_fat",
-    //     ],
-    // );
+    let man = load::<Matcher>(input_file_path);
+    let _mats = load_mats(man.mat_list());
 }
 
 /// Load the given list of materials.
-fn load_materials(
-    mesh_dir: &Path,
-    mat_dir: &Path,
-    mat_list: Vec<&str>,
-) -> HashMap<String, Material> {
-    println!("Loading materials from: {}", mat_dir.display());
+fn load_mats(mat_list: &Vec<String>) {
+    let mat_dir = materials();
 
-    let mut materials = HashMap::new();
     for name in mat_list {
-        let mesh_path = mesh_dir.join(format!("{}.obj", name));
-        println!("Loading {}", mesh_path.display());
-
+        info!("Loading {} material...", name);
         let path = mat_dir.join(format!("{}.json", name));
-        println!("Loading {}", path.display());
-
-        materials.insert(name.to_string(), Material::load(&path));
+        let _mat = Material::load(&path);
     }
-    println!("Materials loaded!");
-
-    materials
 }
