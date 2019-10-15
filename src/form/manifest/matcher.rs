@@ -1,32 +1,11 @@
 //! Matcher model input
 
+use super::super::Surface;
 use crate::file::{as_json, from_json, Loadable, Saveable};
 use contracts::pre;
 use log::warn;
 use serde::{Deserialize, Serialize};
 use std::path::Path;
-
-/// Surface setup information.
-#[derive(Debug, Deserialize, Serialize)]
-pub struct Surface {
-    /// Mesh surface.
-    mesh: String,
-    /// Inside material.
-    inside: String,
-    /// Outside material.
-    outside: String,
-}
-
-impl Surface {
-    /// Construct a new instance.
-    pub fn new(mesh: String, inside: String, outside: String) -> Self {
-        Self {
-            mesh,
-            inside,
-            outside,
-        }
-    }
-}
 
 /// Matcher manifest input form.
 #[derive(Debug, Deserialize, Serialize)]
