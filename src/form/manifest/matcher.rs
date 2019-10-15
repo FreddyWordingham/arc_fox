@@ -2,6 +2,7 @@
 
 use crate::file::{as_json, from_json, Loadable, Saveable};
 use contracts::pre;
+use log::warn;
 use serde::{Deserialize, Serialize};
 use std::path::Path;
 
@@ -24,8 +25,17 @@ impl Matcher {
 
     /// Cleanse itself before use.
     fn cleanse(&mut self) {
+        let pre_len = self.mat_list.len();
+
         self.mat_list.sort();
         self.mat_list.dedup();
+
+        if self.mat_list.len() != pre_len {
+            warn!(
+                "{} materials were removed during manifest cleansing.",
+                pre_len - self.mat_list.len()
+            );
+        }
     }
 
     /// Reference the material list.
