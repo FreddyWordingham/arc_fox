@@ -29,6 +29,66 @@ impl Matcher {
         man
     }
 
+    /// Matcher model example.
+    pub fn example() -> Self {
+        let mat_list = vec![
+            "air".to_string(),
+            "stratumcorneum".to_string(),
+            "livingepidermis".to_string(),
+            "papillarydermis".to_string(),
+            "upperbloodnetdermis".to_string(),
+            "dermis".to_string(),
+            "deepbloodnetdermis".to_string(),
+            "subcutaneousfat".to_string(),
+            "othertissues".to_string(),
+        ];
+
+        let surf_list = vec![
+            Surface::new(
+                "air_stratumcorneum".to_string(),
+                "air".to_string(),
+                "stratumcorneum".to_string(),
+            ),
+            Surface::new(
+                "stratumcorneum_livingepidermis".to_string(),
+                "stratumcorneum".to_string(),
+                "livingepidermis".to_string(),
+            ),
+            Surface::new(
+                "livingepidermis_papillarydermis".to_string(),
+                "livingepidermis".to_string(),
+                "papillarydermis".to_string(),
+            ),
+            Surface::new(
+                "papillarydermis_upperbloodnetdermis".to_string(),
+                "papillarydermis".to_string(),
+                "upperbloodnetdermis".to_string(),
+            ),
+            Surface::new(
+                "upperbloodnetdermis_dermis".to_string(),
+                "upperbloodnetdermis".to_string(),
+                "dermis".to_string(),
+            ),
+            Surface::new(
+                "dermis_deepbloodnetdermis".to_string(),
+                "dermis".to_string(),
+                "deepbloodnetdermis".to_string(),
+            ),
+            Surface::new(
+                "deepbloodnetdermis_subcutaneousfat".to_string(),
+                "deepbloodnetdermis".to_string(),
+                "subcutaneousfat".to_string(),
+            ),
+            Surface::new(
+                "subcutaneousfat_othertissues".to_string(),
+                "subcutaneousfat".to_string(),
+                "othertissues".to_string(),
+            ),
+        ];
+
+        Self::new(mat_list, surf_list)
+    }
+
     /// Cleanse itself before use.
     fn cleanse(&mut self) {
         let pre_len = self.mat_list.len();

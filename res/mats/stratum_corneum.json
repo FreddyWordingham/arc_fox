@@ -1,1 +1,11 @@
-{"optical":{"scat_coeff":100000.0,"abs_coeff":630.0,"asym_param":0.86,"ref_index":1.5},"kinetic":{"diff_coeff":1.0}}
+{
+    "optical": {
+        "scat_coeff": 100000.0,
+        "abs_coeff": 630.0,
+        "asym_param": 0.86,
+        "ref_index": 1.5
+    },
+    "kinetic": {
+        "diff_coeff": 1.0
+    }
+}
