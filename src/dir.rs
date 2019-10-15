@@ -8,3 +8,8 @@ pub fn resources() -> PathBuf {
 
     PathBuf::from(arc_dir).join("res/")
 }
+
+/// Create a path to the arc materials directory.
+pub fn materials() -> PathBuf {
+    resources().join("mats/")
+}
