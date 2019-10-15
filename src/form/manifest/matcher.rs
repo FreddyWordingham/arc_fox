@@ -11,6 +11,14 @@ pub struct Matcher {
     current_working_dir: PathBuf,
 }
 
+impl Matcher {
+    pub fn new(current_working_dir: PathBuf) -> Self {
+        Self {
+            current_working_dir,
+        }
+    }
+}
+
 impl Saveable for Matcher {
     fn save(&self, path: &Path) {
         as_json(self, path);
