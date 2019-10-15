@@ -8,31 +8,46 @@
 #![warn(clippy::missing_docs_in_private_items)]
 
 use arc::{
-    dir::{materials, meshes},
     file::Loadable,
+    form::{load, manifest::Matcher},
     phy::Material,
+    util::start_up,
 };
-use std::{collections::HashMap, path::Path};
+use log::error;
+use std::{collections::HashMap, env::args, path::Path};
 
 fn main() {
-    println!("Hello world!");
+    // Start up.
+    let (_cwd, _out_dir) = start_up(&Path::new("cwd"), &Path::new("out"));
 
-    let mesh_dir = meshes();
-    let mat_dir = materials();
+    // Command line arguments.
+    let args: Vec<String> = args().collect();
+    if args.len() != 2 {
+        error!("Required call:\n{} <path/to/manifest.json>", &args[0]);
+        return;
+    }
+    let input_file_path = Path::new(&args[1]);
 
-    let _materials = load_materials(
-        &mesh_dir,
-        &mat_dir,
-        vec![
-            "stratum_corneum",
-            "living_epidermis",
-            "papillary_dermis",
-            "upper_blood_net_dermis",
-            "reticular_dermis",
-            "deep_blood_net_dermis",
-            "subcutaneous_fat",
-        ],
-    );
+    // Manifest file.
+    let _man = load::<Matcher>(input_file_path);
+
+    // let mesh_dir = meshes();
+    // let mat_dir = materials();
+
+    // // Materials.
+    // let _materials = load_materials(
+    //     &mesh_dir,
+    //     &mat_dir,
+    //     vec![
+    //         "stratum_corneum",
+    //         "living_epidermis",
+    //         "papillary_dermis",
+    //         "upper_blood_net_dermis",
+    //         "reticular_dermis",
+    //         "deep_blood_net_dermis",
+    //         "subcutaneous_fat",
+    //     ],
+    // );
 }
 
 /// Load the given list of materials.

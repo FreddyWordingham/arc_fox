@@ -9,6 +9,7 @@
         "cmake",
         "coeff",
         "collidable",
+        "colog",
         "consts",
         "kcov",
         "libcurl",

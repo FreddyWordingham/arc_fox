@@ -2,20 +2,19 @@
 
 use crate::file::{as_json, from_json, Loadable, Saveable};
 use serde::{Deserialize, Serialize};
-use std::path::{Path, PathBuf};
+use std::path::Path;
 
 /// Matcher manifest input form.
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Matcher {
-    /// Current working directory.
-    current_working_dir: PathBuf,
+    /// Number of threads.
+    num_threads: usize,
 }
 
 impl Matcher {
-    pub fn new(current_working_dir: PathBuf) -> Self {
-        Self {
-            current_working_dir,
-        }
+    /// Construct a new instance.
+    pub fn new(num_threads: usize) -> Self {
+        Self { num_threads }
     }
 }
 
