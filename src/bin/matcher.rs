@@ -7,16 +7,16 @@
 #![warn(missing_docs)]
 #![warn(clippy::missing_docs_in_private_items)]
 
-use arc::{dir::resources, file::Loadable, phy::Material};
+use arc::{dir::materials, file::Loadable, phy::Material};
 use std::{collections::HashMap, path::Path};
 
 fn main() {
     println!("Hello world!");
 
-    let res_dir = resources();
+    let mat_dir = materials();
 
     let _materials = load_materials(
-        &res_dir.join("mats/"),
+        &mat_dir,
         vec![
             "stratum_corneum",
             "living_epidermis",
