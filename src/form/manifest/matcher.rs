@@ -1,6 +1,6 @@
 //! Matcher model input
 
-use super::super::Surface;
+use super::super::Boundary;
 use crate::file::{as_json, from_json, Loadable, Saveable};
 use contracts::pre;
 use log::warn;
@@ -12,17 +12,17 @@ use std::path::Path;
 pub struct Matcher {
     /// List of all used materials.
     mat_list: Vec<String>,
-    /// List of surfaces.
-    surf_list: Vec<Surface>,
+    /// List of boundaries.
+    bound_list: Vec<Boundary>,
 }
 
 impl Matcher {
     /// Construct a new instance.
     #[pre(!mat_list.is_empty())]
-    pub fn new(mat_list: Vec<String>, surf_list: Vec<Surface>) -> Self {
+    pub fn new(mat_list: Vec<String>, bound_list: Vec<Boundary>) -> Self {
         let mut man = Self {
             mat_list,
-            surf_list,
+            bound_list,
         };
         man.cleanse();
 
@@ -43,50 +43,50 @@ impl Matcher {
             "othertissues".to_string(),
         ];
 
-        let surf_list = vec![
-            Surface::new(
+        let bound_list = vec![
+            Boundary::new(
                 "air_stratumcorneum".to_string(),
                 "air".to_string(),
                 "stratumcorneum".to_string(),
             ),
-            Surface::new(
+            Boundary::new(
                 "stratumcorneum_livingepidermis".to_string(),
                 "stratumcorneum".to_string(),
                 "livingepidermis".to_string(),
             ),
-            Surface::new(
+            Boundary::new(
                 "livingepidermis_papillarydermis".to_string(),
                 "livingepidermis".to_string(),
                 "papillarydermis".to_string(),
             ),
-            Surface::new(
+            Boundary::new(
                 "papillarydermis_upperbloodnetdermis".to_string(),
                 "papillarydermis".to_string(),
                 "upperbloodnetdermis".to_string(),
             ),
-            Surface::new(
+            Boundary::new(
                 "upperbloodnetdermis_dermis".to_string(),
                 "upperbloodnetdermis".to_string(),
                 "dermis".to_string(),
             ),
-            Surface::new(
+            Boundary::new(
                 "dermis_deepbloodnetdermis".to_string(),
                 "dermis".to_string(),
                 "deepbloodnetdermis".to_string(),
             ),
-            Surface::new(
+            Boundary::new(
                 "deepbloodnetdermis_subcutaneousfat".to_string(),
                 "deepbloodnetdermis".to_string(),
                 "subcutaneousfat".to_string(),
             ),
-            Surface::new(
+            Boundary::new(
                 "subcutaneousfat_othertissues".to_string(),
                 "subcutaneousfat".to_string(),
                 "othertissues".to_string(),
             ),
         ];
 
-        Self::new(mat_list, surf_list)
+        Self::new(mat_list, bound_list)
     }
 
     /// Cleanse itself before use.
@@ -109,9 +109,9 @@ impl Matcher {
         &self.mat_list
     }
 
-    /// Reference the surfacce list.
-    pub fn surf_list(&self) -> &Vec<Surface> {
-        &self.surf_list
+    /// Reference the boundary list.
+    pub fn bound_list(&self) -> &Vec<Boundary> {
+        &self.bound_list
     }
 }
 

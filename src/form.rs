@@ -1,10 +1,10 @@
 //! Input form structures.
 
+pub mod boundary;
 pub mod manifest;
-pub mod surface;
 
+pub use self::boundary::*;
 pub use self::manifest::*;
-pub use self::surface::*;
 
 use crate::file::Loadable;
 use log::info;

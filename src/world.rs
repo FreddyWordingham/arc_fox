@@ -1,5 +1,5 @@
 //! World building structures.
 
-pub mod entity;
+pub mod boundary;
 
-pub use self::entity::*;
+pub use self::boundary::*;
