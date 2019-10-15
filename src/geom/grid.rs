@@ -32,4 +32,16 @@ impl Grid {
             cell_size,
         }
     }
+
+    #[pre(index[0] < self.num_cells[0])]
+    #[pre(index[1] < self.num_cells[1])]
+    #[pre(index[2] < self.num_cells[2])]
+    pub fn cell_surface(&self, index: [usize; 3]) -> Cube {
+        let mut min = self.surface.mins().clone();
+        min.x += self.cell_size.x * index[0] as f64;
+        min.y += self.cell_size.y * index[1] as f64;
+        min.z += self.cell_size.z * index[2] as f64;
+
+        Cube::new(min, min + self.cell_size)
+    }
 }
