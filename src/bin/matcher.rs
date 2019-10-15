@@ -31,7 +31,7 @@ fn main() {
 
     // Manifest file.
     let man = load::<Matcher>(input_file_path);
-    let mat_map = load_mat_map(man.mat_list());
+    let _mat_map = load_mat_map(man.mat_list());
 }
 
 /// Load the given list of materials to the hashmap.
