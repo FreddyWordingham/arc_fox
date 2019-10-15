@@ -7,15 +7,21 @@
 #![warn(missing_docs)]
 #![warn(clippy::missing_docs_in_private_items)]
 
-use arc::{dir::materials, file::Loadable, phy::Material};
+use arc::{
+    dir::{materials, meshes},
+    file::Loadable,
+    phy::Material,
+};
 use std::{collections::HashMap, path::Path};
 
 fn main() {
     println!("Hello world!");
 
+    let mesh_dir = meshes();
     let mat_dir = materials();
 
     let _materials = load_materials(
+        &mesh_dir,
         &mat_dir,
         vec![
             "stratum_corneum",
@@ -29,11 +35,19 @@ fn main() {
     );
 }
 
-fn load_materials(mat_dir: &Path, mat_list: Vec<&str>) -> HashMap<String, Material> {
+/// Load the given list of materials.
+fn load_materials(
+    mesh_dir: &Path,
+    mat_dir: &Path,
+    mat_list: Vec<&str>,
+) -> HashMap<String, Material> {
     println!("Loading materials from: {}", mat_dir.display());
 
     let mut materials = HashMap::new();
     for name in mat_list {
+        let mesh_path = mesh_dir.join(format!("{}.obj", name));
+        println!("Loading {}", mesh_path.display());
+
         let path = mat_dir.join(format!("{}.json", name));
         println!("Loading {}", path.display());
 
