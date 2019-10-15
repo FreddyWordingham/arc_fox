@@ -13,3 +13,8 @@ pub fn resources() -> PathBuf {
 pub fn materials() -> PathBuf {
     resources().join("mats/")
 }
+
+/// Create a path to the arc meshes directory.
+pub fn meshes() -> PathBuf {
+    resources().join("meshes/")
+}
