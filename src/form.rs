@@ -1,5 +1,5 @@
 //! Input form structures.
 
-// pub mod saveable;
+pub mod manifest;
 
-// pub use self::saveable::*;
+pub use self::manifest::*;
