@@ -45,7 +45,7 @@ fn main() {
     let num_cells = grid.num_cells().clone();
     let total_cells = num_cells[0] * num_cells[1] * num_cells[2];
 
-    let mut tri_map = Array3::from_elem(num_cells, 0.0);
+    let mut tri_map = Array3::from_elem(num_cells, Vec::new());
     let bar = arc::util::progress::bar(total_cells as u64);
     for xi in 0..num_cells[0] {
         for yi in 0..num_cells[1] {
@@ -56,17 +56,21 @@ fn main() {
                 let cell_surf = grid.cell_surface(index);
 
                 for boundary in bound_map.iter() {
+                    let mut tri_list = Vec::new();
                     for tri in boundary.tris() {
                         if cell_surf.collides(tri) {
-                            tri_map[index] += 1.0;
+                            tri_list.push(tri);
                         }
                     }
+
+                    tri_map[index].push((boundary.in_mat(), boundary.out_mat(), tri_list));
                 }
             }
         }
     }
 
-    tri_map.save(&out_dir.join("tri_map.nc"));
+    let tri_num_map: Array3<f64> = tri_map.map(|tris| tris.len() as f64);
+    tri_num_map.save(&out_dir.join("tri_num_map.nc"));
 }
 
 /// Load the given list of materials to the hashmap.
