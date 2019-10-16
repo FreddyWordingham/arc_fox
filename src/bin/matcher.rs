@@ -63,7 +63,9 @@ fn main() {
                         }
                     }
 
-                    tri_map[index].push((boundary.in_mat(), boundary.out_mat(), tri_list));
+                    if !tri_list.is_empty() {
+                        tri_map[index].push((boundary.in_mat(), boundary.out_mat(), tri_list));
+                    }
                 }
             }
         }
