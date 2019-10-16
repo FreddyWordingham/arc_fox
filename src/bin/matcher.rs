@@ -37,6 +37,7 @@ fn main() {
     // man.save(Path::new("new.json"));
     let mat_map = load_mat_map(man.mat_list());
     let _bound_map = load_bound_map(man.bound_list(), &mat_map);
+    let _grid = man.grid().manifest();
 
     let _air_map = Array3::from_elem((100, 100, 100), 0.0);
     // air_map.save(out_dir.join("air_map.h5"));

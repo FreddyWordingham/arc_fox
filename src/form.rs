@@ -1,9 +1,11 @@
 //! Input form structures.
 
 pub mod boundary;
+pub mod grid;
 pub mod manifest;
 
 pub use self::boundary::*;
+pub use self::grid::*;
 pub use self::manifest::*;
 
 use crate::file::Loadable;

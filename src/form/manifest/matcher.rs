@@ -1,6 +1,6 @@
 //! Matcher model input
 
-use super::super::Boundary;
+use super::super::{Boundary, Grid};
 use crate::file::{as_json, from_json, Loadable, Saveable};
 use contracts::pre;
 use log::warn;
@@ -14,15 +14,18 @@ pub struct Matcher {
     mat_list: Vec<String>,
     /// List of boundaries.
     bound_list: Vec<Boundary>,
+    /// Domain grid.
+    grid: Grid,
 }
 
 impl Matcher {
     /// Construct a new instance.
     #[pre(!mat_list.is_empty())]
-    pub fn new(mat_list: Vec<String>, bound_list: Vec<Boundary>) -> Self {
+    pub fn new(mat_list: Vec<String>, bound_list: Vec<Boundary>, grid: Grid) -> Self {
         let mut man = Self {
             mat_list,
             bound_list,
+            grid,
         };
         man.cleanse();
 
@@ -86,7 +89,9 @@ impl Matcher {
             ),
         ];
 
-        Self::new(mat_list, bound_list)
+        let grid = Grid::new([-1.0, -1.0, -1.0], [1.0, 1.0, 1.0], [16, 16, 16]);
+
+        Self::new(mat_list, bound_list, grid)
     }
 
     /// Cleanse itself before use.
@@ -112,6 +117,11 @@ impl Matcher {
     /// Reference the boundary list.
     pub fn bound_list(&self) -> &Vec<Boundary> {
         &self.bound_list
+    }
+
+    /// Reference the grid information.
+    pub fn grid(&self) -> &Grid {
+        &self.grid
     }
 }
 
