@@ -29,7 +29,7 @@ impl Boundary {
 
     /// Manifest into a completed structure.
     pub fn manifest<'a>(&self, mat_map: &'a HashMap<String, Material>) -> wBoundary<'a> {
-        let tris = Vec::<Triangle>::load(&meshes().join(format!("{}.json", self.mesh)));
+        let tris = Vec::<Triangle>::load(&meshes().join(format!("{}.obj", self.mesh)));
         let inside = &mat_map[&self.inside];
         let outside = &mat_map[&self.outside];
 

@@ -2,10 +2,10 @@
     "mat_list": [
         "air",
         "deepbloodnetdermis",
-        "dermis",
         "livingepidermis",
         "othertissues",
         "papillarydermis",
+        "reticulardermis",
         "stratumcorneum",
         "subcutaneousfat",
         "upperbloodnetdermis"
@@ -32,13 +32,13 @@
             "outside": "upperbloodnetdermis"
         },
         {
-            "mesh": "upperbloodnetdermis_dermis",
+            "mesh": "upperbloodnetdermis_reticulardermis",
             "inside": "upperbloodnetdermis",
-            "outside": "dermis"
+            "outside": "reticulardermis"
         },
         {
-            "mesh": "dermis_deepbloodnetdermis",
-            "inside": "dermis",
+            "mesh": "reticulardermis_deepbloodnetdermis",
+            "inside": "reticulardermis",
             "outside": "deepbloodnetdermis"
         },
         {
