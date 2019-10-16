@@ -10,7 +10,7 @@
         "subcutaneousfat",
         "upperbloodnetdermis"
     ],
-    "surf_list": [
+    "bound_list": [
         {
             "mesh": "air_stratumcorneum",
             "inside": "air",
@@ -51,5 +51,22 @@
             "inside": "subcutaneousfat",
             "outside": "othertissues"
         }
-    ]
+    ],
+    "grid": {
+        "mins": [
+            -1.0,
+            -1.0,
+            -1.0
+        ],
+        "maxs": [
+            1.0,
+            1.0,
+            1.0
+        ],
+        "num_cells": [
+            16,
+            16,
+            16
+        ]
+    }
 }

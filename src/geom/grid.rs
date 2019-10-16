@@ -33,6 +33,21 @@ impl Grid {
         }
     }
 
+    /// Reference the grid surface geometry.
+    pub fn surface(&self) -> &Cube {
+        &self.surface
+    }
+
+    /// Reference the number of cells.
+    pub fn num_cells(&self) -> &[usize; 3] {
+        &self.num_cells
+    }
+
+    /// Reference the cell size.
+    pub fn cell_size(&self) -> &Vector3<f64> {
+        &self.cell_size
+    }
+
     #[pre(index[0] < self.num_cells[0])]
     #[pre(index[1] < self.num_cells[1])]
     #[pre(index[2] < self.num_cells[2])]

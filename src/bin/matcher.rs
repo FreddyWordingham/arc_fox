@@ -9,7 +9,7 @@
 
 use arc::{
     dir::materials,
-    file::Loadable,
+    file::{Loadable, Saveable},
     form::{load, manifest::Matcher, Boundary},
     phy::Material,
     util::start_up,
@@ -21,7 +21,7 @@ use std::{collections::HashMap, env::args, path::Path};
 
 fn main() {
     // Start up.
-    let (_cwd, _out_dir) = start_up(&Path::new("cwd"), &Path::new("out"));
+    let (_cwd, out_dir) = start_up(&Path::new("cwd"), &Path::new("out"));
 
     // Command line arguments.
     let args: Vec<String> = args().collect();
@@ -35,12 +35,38 @@ fn main() {
     let man = load::<Matcher>(input_file_path);
     // let man = Matcher::example();
     // man.save(Path::new("new.json"));
-    let mat_map = load_mat_map(man.mat_list());
-    let _bound_map = load_bound_map(man.bound_list(), &mat_map);
-    let _grid = man.grid().manifest();
 
-    let _air_map = Array3::from_elem((100, 100, 100), 0.0);
-    // air_map.save(out_dir.join("air_map.h5"));
+    let mat_map = load_mat_map(man.mat_list());
+
+    let bound_map = load_bound_map(man.bound_list(), &mat_map);
+
+    let grid = man.grid().manifest();
+
+    let num_cells = grid.num_cells().clone();
+    let total_cells = num_cells[0] * num_cells[1] * num_cells[2];
+
+    let mut tri_map = Array3::from_elem(num_cells, 0.0);
+    let bar = arc::util::progress::bar(total_cells as u64);
+    for xi in 0..num_cells[0] {
+        for yi in 0..num_cells[1] {
+            for zi in 0..num_cells[2] {
+                bar.inc(1);
+
+                let index = [xi, yi, zi];
+                let cell_surf = grid.cell_surface(index);
+
+                for boundary in bound_map.iter() {
+                    for tri in boundary.tris() {
+                        if cell_surf.collides(tri) {
+                            tri_map[index] += 1.0;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    tri_map.save(&out_dir.join("tri_map.nc"));
 }
 
 /// Load the given list of materials to the hashmap.
