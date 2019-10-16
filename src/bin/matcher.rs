@@ -32,9 +32,9 @@ fn main() {
     let input_file_path = Path::new(&args[1]);
 
     // Manifest file.
-    let man = load::<Matcher>(input_file_path);
-    // let man = Matcher::example();
-    // man.save(Path::new("new.json"));
+    // let man = load::<Matcher>(input_file_path);
+    let man = Matcher::example();
+    man.save(Path::new("new.json"));
 
     let mat_map = load_mat_map(man.mat_list());
 

@@ -40,7 +40,7 @@ impl Matcher {
             "livingepidermis".to_string(),
             "papillarydermis".to_string(),
             "upperbloodnetdermis".to_string(),
-            "dermis".to_string(),
+            "reticulardermis".to_string(),
             "deepbloodnetdermis".to_string(),
             "subcutaneousfat".to_string(),
             "othertissues".to_string(),
@@ -68,13 +68,13 @@ impl Matcher {
                 "upperbloodnetdermis".to_string(),
             ),
             Boundary::new(
-                "upperbloodnetdermis_dermis".to_string(),
+                "upperbloodnetdermis_reticulardermis".to_string(),
                 "upperbloodnetdermis".to_string(),
-                "dermis".to_string(),
+                "reticulardermis".to_string(),
             ),
             Boundary::new(
-                "dermis_deepbloodnetdermis".to_string(),
-                "dermis".to_string(),
+                "reticulardermis_deepbloodnetdermis".to_string(),
+                "reticulardermis".to_string(),
                 "deepbloodnetdermis".to_string(),
             ),
             Boundary::new(

@@ -1,0 +1,9 @@
+{
+    "optical": {
+        "scat_coeff": 5000.0,
+        "abs_coeff": 104.0,
+        "asym_param": 0.8,
+        "ref_index": 1.44
+    },
+    "kinetic": null
+}
