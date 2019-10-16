@@ -16,6 +16,7 @@ use arc::{
     world::Boundary as wBoundary,
 };
 use log::{error, info};
+use ndarray::Array3;
 use std::{collections::HashMap, env::args, path::Path};
 
 fn main() {
@@ -36,6 +37,9 @@ fn main() {
     // man.save(Path::new("new.json"));
     let mat_map = load_mat_map(man.mat_list());
     let _bound_map = load_bound_map(man.bound_list(), &mat_map);
+
+    let _air_map = Array3::from_elem((100, 100, 100), 0.0);
+    // air_map.save(out_dir.join("air_map.h5"));
 }
 
 /// Load the given list of materials to the hashmap.
