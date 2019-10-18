@@ -1,6 +1,9 @@
 //! Material boundary structure.
 
-use crate::{geom::{Triangle, Cube}, phy::Material};
+use crate::{
+    geom::{Cube, Triangle},
+    phy::Material,
+};
 use contracts::pre;
 
 /// Material boundary structure forming the boundary between two materials.

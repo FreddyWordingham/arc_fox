@@ -14,6 +14,7 @@ use arc::{
     phy::Material,
     util::start_up,
     world::Boundary as wBoundary,
+    geom::Collidable
 };
 use log::{error, info};
 use ndarray::Array3;
@@ -48,7 +49,6 @@ fn main() {
     let mut tri_map = Array3::from_elem(num_cells, Vec::new());
     let bar = arc::util::progress::bar(total_cells as u64);
 
-
     for xi in 0..num_cells[0] {
         for yi in 0..num_cells[1] {
             for zi in 0..num_cells[2] {
@@ -58,15 +58,17 @@ fn main() {
                 let cell_surf = grid.cell_surface(index);
 
                 for boundary in bound_map.iter() {
-                    let mut tri_list = Vec::new();
-                    for tri in boundary.tris() {
-                        if cell_surf.collides(tri) {
-                            tri_list.push(tri);
+                    if boundary.bbox().collides(&cell_surf) {
+                        let mut tri_list = Vec::new();
+                        for tri in boundary.tris() {
+                            if tri.collides(&cell_surf) {
+                                tri_list.push(tri);
+                            }
                         }
-                    }
 
-                    if !tri_list.is_empty() {
-                        tri_map[index].push((boundary.in_mat(), boundary.out_mat(), tri_list));
+                        if !tri_list.is_empty() {
+                            tri_map[index].push((boundary.in_mat(), boundary.out_mat(), tri_list));
+                        }
                     }
                 }
             }

@@ -1,9 +1,9 @@
 //! Boundary model input.
 
+use super::Transformation;
 use crate::{
     dir::meshes, file::Loadable, geom::Triangle, phy::Material, world::Boundary as wBoundary,
 };
-use super::Transformation;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
@@ -22,12 +22,17 @@ pub struct Boundary {
 
 impl Boundary {
     /// Construct a new instance.
-    pub fn new(mesh: String, inside: String, outside: String, transform: Option<Transformation>) -> Self {
+    pub fn new(
+        mesh: String,
+        inside: String,
+        outside: String,
+        transform: Option<Transformation>,
+    ) -> Self {
         Self {
             mesh,
             inside,
             outside,
-            transform
+            transform,
         }
     }
 

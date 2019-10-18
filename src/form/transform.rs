@@ -1,7 +1,7 @@
 //! Geometry transformation input.
 
+use nalgebra::{Isometry3, Translation3, Unit};
 use serde::{Deserialize, Serialize};
-use nalgebra::{Isometry3, Unit, Translation3};
 
 /// Isometry transformation setup information.
 #[derive(Debug, Deserialize, Serialize)]
@@ -14,14 +14,8 @@ pub struct Transformation {
 
 impl Transformation {
     /// Construct a new instance.
-    pub fn new(
-    trans: [f64; 3],
-    rots: [f64; 3],
-    ) -> Self {
-        Self {
-            trans,
-            rots
-        }
+    pub fn new(trans: [f64; 3], rots: [f64; 3]) -> Self {
+        Self { trans, rots }
     }
 
     /// Manifest into a completed structure.
