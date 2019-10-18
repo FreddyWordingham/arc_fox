@@ -8,8 +8,8 @@ use contracts::pre;
 pub struct Boundary<'a> {
     /// Bounding triangles.
     tris: Vec<Triangle>,
-    /// Bounding box.
-    box: Cube,
+    /// Bounding-box.
+    bbox: Cube,
     /// Inside material.
     in_mat: &'a Material,
     /// Outside material.
@@ -39,7 +39,7 @@ impl<'a> Boundary<'a> {
 
         Self {
             tris,
-            box: Cube::new(mins, maxs),
+            bbox: Cube::new(mins, maxs),
             in_mat,
             out_mat,
         }
@@ -50,9 +50,9 @@ impl<'a> Boundary<'a> {
         &self.tris
     }
 
-    /// Reference the box boundary.
-    pub fn box(&self) -> &Cube {
-        &self.box
+    /// Reference the bounding-box boundary.
+    pub fn bbox(&self) -> &Cube {
+        &self.bbox
     }
 
     /// Reference the inside material.

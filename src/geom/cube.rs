@@ -1,6 +1,6 @@
 //! Geometric cube structure.
 
-use super::{Ray, Surface, Triangle};
+use super::{Ray, Surface, Collidable, Triangle};
 use crate::util::Container;
 use contracts::pre;
 use nalgebra::{Point3, Unit, Vector3};
@@ -244,6 +244,14 @@ impl Surface for Cube {
         }
 
         Some(t_max.separate())
+    }
+}
+
+impl Collidable for Cube {
+    fn collides(&self, cube: &Cube) -> bool {
+        (self.mins.x <= cube.maxs.x) && (self.maxs.x >= cube.mins.x) &&
+        (self.mins.y <= cube.maxs.y) && (self.maxs.y >= cube.mins.y) &&
+        (self.mins.z <= cube.maxs.z) && (self.maxs.z >= cube.mins.z)
     }
 }
 
