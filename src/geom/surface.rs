@@ -5,7 +5,7 @@ use nalgebra::{Unit, Vector3};
 
 /// Types implementing this trait can be observed using a ray.
 pub trait Surface {
-    /// Determine if an interaction occures at all.
+    /// Determine if an interaction occurs at all.
     fn intersect(&self, ray: &Ray) -> bool;
 
     /// Distance to the surface along the ray's line of travel.
