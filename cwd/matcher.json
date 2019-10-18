@@ -14,7 +14,19 @@
         {
             "mesh": "air_stratumcorneum",
             "inside": "air",
-            "outside": "stratumcorneum"
+            "outside": "stratumcorneum",
+            "transform": {
+                "trans": [
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "rots": [
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            }
         },
         {
             "mesh": "stratumcorneum_livingepidermis",
@@ -49,19 +61,7 @@
         {
             "mesh": "subcutaneousfat_othertissues",
             "inside": "subcutaneousfat",
-            "outside": "othertissues",
-            "transform": {
-                "trans": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "rots": [
-                    0.0,
-                    0.0,
-                    0.0
-                ]
-            }
+            "outside": "othertissues"
         }
     ],
     "grid": {
