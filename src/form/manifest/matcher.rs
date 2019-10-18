@@ -51,41 +51,49 @@ impl Matcher {
                 "air_stratumcorneum".to_string(),
                 "air".to_string(),
                 "stratumcorneum".to_string(),
+                None,
             ),
             Boundary::new(
                 "stratumcorneum_livingepidermis".to_string(),
                 "stratumcorneum".to_string(),
                 "livingepidermis".to_string(),
+                None,
             ),
             Boundary::new(
                 "livingepidermis_papillarydermis".to_string(),
                 "livingepidermis".to_string(),
                 "papillarydermis".to_string(),
+                None,
             ),
             Boundary::new(
                 "papillarydermis_upperbloodnetdermis".to_string(),
                 "papillarydermis".to_string(),
                 "upperbloodnetdermis".to_string(),
+                None,
             ),
             Boundary::new(
                 "upperbloodnetdermis_reticulardermis".to_string(),
                 "upperbloodnetdermis".to_string(),
                 "reticulardermis".to_string(),
+                None,
             ),
             Boundary::new(
                 "reticulardermis_deepbloodnetdermis".to_string(),
                 "reticulardermis".to_string(),
                 "deepbloodnetdermis".to_string(),
+                None,
             ),
             Boundary::new(
                 "deepbloodnetdermis_subcutaneousfat".to_string(),
                 "deepbloodnetdermis".to_string(),
                 "subcutaneousfat".to_string(),
+                None,
             ),
             Boundary::new(
                 "subcutaneousfat_othertissues".to_string(),
                 "subcutaneousfat".to_string(),
                 "othertissues".to_string(),
+                None,
             ),
         ];
 

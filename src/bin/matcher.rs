@@ -47,6 +47,8 @@ fn main() {
 
     let mut tri_map = Array3::from_elem(num_cells, Vec::new());
     let bar = arc::util::progress::bar(total_cells as u64);
+
+
     for xi in 0..num_cells[0] {
         for yi in 0..num_cells[1] {
             for zi in 0..num_cells[2] {

@@ -49,7 +49,19 @@
         {
             "mesh": "subcutaneousfat_othertissues",
             "inside": "subcutaneousfat",
-            "outside": "othertissues"
+            "outside": "othertissues",
+            "transform": {
+                "trans": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rots": [
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            }
         }
     ],
     "grid": {

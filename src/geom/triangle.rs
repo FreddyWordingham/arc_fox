@@ -2,7 +2,7 @@
 
 use super::{Ray, Surface};
 use crate::file::Loadable;
-use nalgebra::{Point3, Unit, Vector3};
+use nalgebra::{Point3, Isometry3, Unit, Vector3};
 use std::{
     fs::File,
     io::{BufRead, BufReader},
@@ -52,6 +52,19 @@ impl Triangle {
     /// Calculate the area of the triangle.
     pub fn area(&self) -> f64 {
         ((self.verts[1] - self.verts[0]).cross(&(self.verts[2] - self.verts[0]))).magnitude() / 2.0
+    }
+
+    /// Apply a transformation to the triangle.
+    pub fn transform(&mut self, trans: &Isometry3<f64>) {
+        self.normal = trans * self.normal;
+
+        for vert in self.verts.iter_mut() {
+            *vert = trans * *vert;
+        }
+
+        for norm in self.norms.iter_mut() {
+            *norm = trans * *norm;
+        }
     }
 }
 
