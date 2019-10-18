@@ -9,7 +9,7 @@ pub struct Boundary<'a> {
     /// Bounding triangles.
     tris: Vec<Triangle>,
     /// Bounding box.
-    boundary: Cube,
+    box: Cube,
     /// Inside material.
     in_mat: &'a Material,
     /// Outside material.
@@ -39,7 +39,7 @@ impl<'a> Boundary<'a> {
 
         Self {
             tris,
-            boundary: Cube::new(mins, maxs),
+            box: Cube::new(mins, maxs),
             in_mat,
             out_mat,
         }
@@ -48,6 +48,11 @@ impl<'a> Boundary<'a> {
     /// Reference the bounding triangles.
     pub fn tris(&self) -> &Vec<Triangle> {
         &self.tris
+    }
+
+    /// Reference the box boundary.
+    pub fn box(&self) -> &Cube {
+        &self.box
     }
 
     /// Reference the inside material.
