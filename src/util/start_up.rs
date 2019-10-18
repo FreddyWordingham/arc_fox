@@ -1,7 +1,7 @@
 //! Common start-up operations.
 
-use log::info;
-use std::env::{current_dir, set_current_dir};
+use log::{info, error};
+use std::env::{current_dir, set_current_dir, args};
 use std::fs::create_dir_all;
 use std::path::{Path, PathBuf};
 
@@ -17,4 +17,16 @@ pub fn start_up(cwd: &Path, out: &Path) -> (PathBuf, PathBuf) {
     info!("Output directory: {}", out.display());
 
     (cwd, out.to_path_buf())
+}
+
+/// Get the command line arguments.
+pub fn get_args(hints: Vec<String>) -> Vec<String> {
+    let args: Vec<String> = args().collect();
+
+    if args.len() != (hints.len() + 1) {
+        error!("Required call:\n{} {}", args[0], hints.join(" "));
+        panic!("Invalid command line arguments!");
+    }
+
+    args
 }

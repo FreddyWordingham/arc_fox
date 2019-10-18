@@ -1,6 +1,7 @@
 {
     "cSpell.words": [
         "CODECOV",
+        "Colorize",
         "DESTDIR",
         "Deserialise",
         "Saveable",
@@ -10,6 +11,7 @@
         "coeff",
         "collidable",
         "colog",
+        "colored",
         "consts",
         "kcov",
         "libcurl",
