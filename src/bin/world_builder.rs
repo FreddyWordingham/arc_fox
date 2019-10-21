@@ -22,8 +22,12 @@ fn main() {
     info!("Loading input form: {}", input_file_path.display());
     let form = WorldBuilderForm::load(input_file_path);
     // let form = WorldBuilderForm::example();
+
     let dir = form.dir().manifest();
     info!("Directory setup:\n{}", dir);
+
+    let dom = form.dom().manifest();
+    info!("Domain setup:\n{}", dom);
 
     // Output.
     form.save(&dir.out().join("example.json"));

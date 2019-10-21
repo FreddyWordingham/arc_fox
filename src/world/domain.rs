@@ -3,6 +3,7 @@
 use crate::geom::Cube;
 use contracts::pre;
 use nalgebra::Vector3;
+use std::fmt::{Display, Formatter, Result};
 
 /// Domain with regular split grid partitioning.
 #[derive(Debug)]
@@ -59,5 +60,17 @@ impl Domain {
         min.z += self.cell_size.z * index[2] as f64;
 
         Cube::new(min, min + self.cell_size)
+    }
+}
+
+impl Display for Domain {
+    fn fmt(&self, f: &mut Formatter) -> Result {
+        let mins = self.surface.mins();
+        let maxs = self.surface.maxs();
+
+        writeln!(f, "Mins     : {},\t{},\t{}", mins.x, mins.y, mins.z)?;
+        writeln!(f, "Maxs     : {},\t{},\t{}", maxs.x, maxs.y, maxs.z)?;
+        writeln!(f, "Cells    : {} - {} - {}", self.num_cells[0], self.num_cells[1], self.num_cells[2])?;
+        write!(f,   "Num cells: {}", self.num_cells[0] * self.num_cells[1] * self.num_cells[2])
     }
 }
