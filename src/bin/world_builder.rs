@@ -1,6 +1,6 @@
 //! World building example.
 
-use arc::{util::{start_up, get_args, title}};
+use arc::util::{get_args, start_up, title};
 use std::path::Path;
 
 fn main() {

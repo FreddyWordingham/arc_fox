@@ -17,6 +17,7 @@
         "libcurl",
         "libdw",
         "libelf",
+        "manifestable",
         "maxs",
         "mins",
         "mkdir",

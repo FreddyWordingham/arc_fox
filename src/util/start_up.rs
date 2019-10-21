@@ -1,7 +1,7 @@
 //! Common start-up operations.
 
-use log::{info, error};
-use std::env::{current_dir, set_current_dir, args};
+use log::{error, info};
+use std::env::{args, current_dir, set_current_dir};
 use std::fs::create_dir_all;
 use std::path::{Path, PathBuf};
 
