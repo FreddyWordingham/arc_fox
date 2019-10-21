@@ -3,9 +3,9 @@
 use contracts::pre;
 use std::{
     env::set_current_dir,
+    fmt::{Display, Formatter, Result},
     fs::create_dir_all,
     path::{Path, PathBuf},
-    fmt::{Display, Result, Formatter}
 };
 
 /// Directory information storage.
