@@ -1,4 +1,4 @@
-//! Material boundary structure.
+//! Material surface structure.
 
 use crate::{
     geom::{Cube, Triangle},
@@ -6,9 +6,9 @@ use crate::{
 };
 use contracts::pre;
 
-/// Material boundary structure forming the boundary between two materials.
+/// Material surface structure forming the boundary between two materials.
 #[derive(Debug)]
-pub struct Boundary<'a> {
+pub struct Surface<'a> {
     /// Bounding triangles.
     tris: Vec<Triangle>,
     /// Bounding-box.
@@ -19,7 +19,7 @@ pub struct Boundary<'a> {
     out_mat: &'a Material,
 }
 
-impl<'a> Boundary<'a> {
+impl<'a> Surface<'a> {
     /// Construct a new instance.
     #[pre(!tris.is_empty())]
     pub fn new(tris: Vec<Triangle>, in_mat: &'a Material, out_mat: &'a Material) -> Self {

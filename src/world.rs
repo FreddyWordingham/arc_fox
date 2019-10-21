@@ -1,7 +1,7 @@
 //! World building structures.
 
-pub mod boundary;
+pub mod surface;
 pub mod domain;
 
-pub use self::boundary::*;
+pub use self::surface::*;
 pub use self::domain::*;
