@@ -26,12 +26,16 @@ impl WorldBuilder {
                     var("ARC_DIR").expect("Environment variable ARC_DIR is not set!")
                 )),
                 "out".to_string(),
-                "res".to_string(),
+                "../res".to_string(),
                 "mats".to_string(),
                 "meshes".to_string(),
             ),
             dom: proto::Domain::new([-1.0, -1.0, -1.0], [1.0, 1.0, 1.0], [8, 8, 8]),
-            surfs: vec![]
+            surfs: vec![proto::Surface::new(
+                "prism".to_string(),
+                "crown_glass".to_string(),
+                "air".to_string(),
+            )],
         }
     }
 

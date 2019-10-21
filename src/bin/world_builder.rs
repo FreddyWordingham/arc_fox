@@ -3,7 +3,7 @@
 use arc::{
     file::Loadable,
     file::Saveable,
-    form::{input::WorldBuilder as WorldBuilderForm},
+    form::input::WorldBuilder as WorldBuilderForm,
     util::{get_args, title},
 };
 use log::info;
@@ -20,8 +20,8 @@ fn main() {
 
     // Load manifest.
     info!("Loading input form: {}", input_file_path.display());
-    let form = WorldBuilderForm::load(input_file_path);
     // let form = WorldBuilderForm::example();
+    let form = WorldBuilderForm::load(input_file_path);
 
     let dir = form.dir().manifest();
     info!("Directory setup:\n{}", dir);

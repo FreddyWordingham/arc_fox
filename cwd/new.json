@@ -22,5 +22,12 @@
             8,
             8
         ]
-    }
+    },
+    "surfs": [
+        {
+            "mesh": "prism",
+            "inside": "crown_glass",
+            "outside": "air"
+        }
+    ]
 }
