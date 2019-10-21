@@ -1,6 +1,6 @@
 //! Geometric cube structure.
 
-use super::{Collidable, Ray, Surface};
+use super::{Collidable, Ray, Traceable};
 use crate::util::Container;
 use contracts::pre;
 use nalgebra::{Point3, Unit, Vector3};
@@ -59,7 +59,7 @@ impl Cube {
     }
 }
 
-impl Surface for Cube {
+impl Traceable for Cube {
     fn intersect(&self, ray: &Ray) -> bool {
         let dir_frac = Vector3::new(
             1.0 / ray.direction().x,

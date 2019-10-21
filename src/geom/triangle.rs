@@ -1,6 +1,6 @@
 //! Geometric triangle structure with interpolated Phong normals.
 
-use super::{Collidable, Cube, Ray, Surface};
+use super::{Collidable, Cube, Ray, Traceable};
 use crate::file::Loadable;
 use nalgebra::{Isometry3, Point3, Unit, Vector3};
 use std::{
@@ -68,7 +68,7 @@ impl Triangle {
     }
 }
 
-impl Surface for Triangle {
+impl Traceable for Triangle {
     fn intersect(&self, ray: &Ray) -> bool {
         let e01 = self.verts[1] - self.verts[0];
         let e02 = self.verts[2] - self.verts[0];

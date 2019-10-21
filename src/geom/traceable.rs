@@ -3,8 +3,8 @@
 use super::Ray;
 use nalgebra::{Unit, Vector3};
 
-/// Types implementing this trait can be observed using a ray.
-pub trait Surface {
+/// Types implementing this trait can be traced using a ray.
+pub trait Traceable {
     /// Determine if an interaction occurs at all.
     fn intersect(&self, ray: &Ray) -> bool;
 
