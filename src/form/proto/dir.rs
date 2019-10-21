@@ -1,11 +1,8 @@
 //! Directory proto-structure.
 
-// use crate::file::{as_json, from_json, Loadable, Saveable};
-use crate::{form::Manifestable, util::Dir};
+use crate::{form::Manifestable, util::Dir as NeoDir};
 use serde::{Deserialize, Serialize};
-use std::{
-    env::{create_dir_all},
-};
+use std::{env::current_dir, path::PathBuf};
 
 /// Proto-dir structure used to manifest dir structures.
 #[derive(Debug, Deserialize, Serialize)]
@@ -22,15 +19,23 @@ pub struct Dir {
     meshes: String,
 }
 
-impl Manifestable<Dir> for Dir {
-    fn manifest(self) -> Dir {
-        let cwd =
-        if self.cwd.is_none() {
-              current_dir().unwrap()
+impl Manifestable<NeoDir> for Dir {
+    fn manifest(self) -> NeoDir {
+        let cwd = if self.cwd.is_none() {
+            current_dir().unwrap()
         } else {
-            cwd.self
-        }
+            PathBuf::from(self.cwd.unwrap())
+        };
 
-        Dir::new(cwd, out, self.res.join(self.mats), self.res.join(meshes))
+        let out = cwd.join(self.out);
+
+        let res_path = PathBuf::from(self.res);
+
+        NeoDir::new(
+            cwd,
+            out,
+            res_path.join(self.mats),
+            res_path.join(self.meshes),
+        )
     }
 }
