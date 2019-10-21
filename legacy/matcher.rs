@@ -79,20 +79,20 @@
 //     tri_num_map.save(&out_dir.join("tri_num_map.nc"));
 // }
 
-// /// Load the given list of materials to the hashmap.
-// fn load_mat_map(mat_list: &Vec<String>) -> HashMap<String, Material> {
-//     let mat_dir = materials();
-//     let mut mat_map = HashMap::with_capacity(mat_list.len());
+/// Load the given list of materials to the hashmap.
+fn load_mat_map(mat_list: &Vec<String>) -> HashMap<String, Material> {
+    let mat_dir = materials();
+    let mut mat_map = HashMap::with_capacity(mat_list.len());
 
-//     for name in mat_list {
-//         info!("Loading {} material...", name);
-//         let path = mat_dir.join(format!("{}.json", name));
+    for name in mat_list {
+        info!("Loading {} material...", name);
+        let path = mat_dir.join(format!("{}.json", name));
 
-//         mat_map.insert(name.clone(), Material::load(&path));
-//     }
+        mat_map.insert(name.clone(), Material::load(&path));
+    }
 
-//     mat_map
-// }
+    mat_map
+}
 
 // /// Load the given list of boundaries into the hashmap.
 // fn load_bound_map<'a>(

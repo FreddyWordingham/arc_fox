@@ -29,6 +29,9 @@ fn main() {
     let dom = form.dom().manifest();
     info!("Domain setup:\n{}", dom);
 
+    let mats = form.mats().manifest();
+    info!("Material list:\n{}", "TODO!");
+
     // Output.
     form.save(&dir.out().join("example.json"));
 }
