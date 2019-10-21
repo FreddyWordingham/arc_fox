@@ -20,22 +20,22 @@ pub struct Dir {
 }
 
 impl Manifestable<NeoDir> for Dir {
-    fn manifest(self) -> NeoDir {
+    fn manifest(&self) -> NeoDir {
         let cwd = if self.cwd.is_none() {
             current_dir().unwrap()
         } else {
-            PathBuf::from(self.cwd.unwrap())
+            PathBuf::from(self.cwd.as_ref().unwrap())
         };
 
-        let out = cwd.join(self.out);
+        let out = cwd.join(&self.out);
 
-        let res_path = PathBuf::from(self.res);
+        let res_path = PathBuf::from(&self.res);
 
         NeoDir::new(
             cwd,
             out,
-            res_path.join(self.mats),
-            res_path.join(self.meshes),
+            res_path.join(&self.mats),
+            res_path.join(&self.meshes),
         )
     }
 }
