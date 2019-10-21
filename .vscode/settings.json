@@ -23,6 +23,7 @@
         "mkdir",
         "nalgebra",
         "openssl",
+        "proto",
         "tris",
         "verts"
     ]

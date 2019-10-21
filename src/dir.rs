@@ -1,24 +1,56 @@
 //! Directory path constants.
 
-use std::{env::var, path::PathBuf};
-use log::error;
+use contracts::pre;
+use std::{
+    env::current_dir,
+    path::{Path, PathBuf},
+};
 
 /// Directory information storage.
 pub struct Dir {
-    /// Arc project root directory.
-    arc: PathBuf,
+    /// Current working directory.
+    cwd: PathBuf,
+    /// Output directory.
+    out: PathBuf,
+    /// Materials resources directory.
+    mats: PathBuf,
+    /// Mesh resources directory.
+    meshes: PathBuf,
 }
 
 impl Dir {
     /// Construct a new instance.
-    pub fn new() -> Self {
-        let arc = PathBuf::from(&var("ARC_DIR").unwrap());
-        if !arc.is_dir() {
-            error!("Unable to determine the arc directory!\nEnsure the environment variable ARC_DIR is correctly set.");
-        }
-
+    #[pre(cwd.is_dir())]
+    #[pre(cwd == current_dir().unwrap())]
+    #[pre(out.is_dir())]
+    #[pre(mats.is_dir())]
+    #[pre(meshes.is_dir())]
+    pub fn new(cwd: PathBuf, out: PathBuf, mats: PathBuf, meshes: PathBuf) -> Self {
         Self {
-            arc,
+            cwd,
+            out,
+            mats,
+            meshes,
         }
+    }
+
+    /// Reference the current working directory.
+    pub fn cwd(&self) -> &Path {
+        &self.cwd
+    }
+
+    /// Reference the target output directory.
+    pub fn out(&self) -> &Path {
+        &self.out
+    }
+
+    /// Reference the material resources directory.
+    pub fn mats(&self) -> &Path {
+        &self.mats
+    }
+
+    /// Reference the meshes resources directory.
+    pub fn meshes(&self) -> &Path {
+        &self.meshes
     }
 }
