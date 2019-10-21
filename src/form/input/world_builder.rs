@@ -12,6 +12,8 @@ pub struct WorldBuilder {
     dir: proto::Dir,
     /// Domain information.
     dom: proto::Domain,
+    /// Surface list.
+    surfs: Vec<proto::Surface>,
 }
 
 impl WorldBuilder {
@@ -29,6 +31,7 @@ impl WorldBuilder {
                 "meshes".to_string(),
             ),
             dom: proto::Domain::new([-1.0, -1.0, -1.0], [1.0, 1.0, 1.0], [8, 8, 8]),
+            surfs: vec![]
         }
     }
 
@@ -40,6 +43,11 @@ impl WorldBuilder {
     /// Reference the domain proto-structure.
     pub fn dom(&self) -> &proto::Domain {
         &self.dom
+    }
+
+    /// Reference the proto-surface list.
+    pub fn surfs(&self) -> &Vec<proto::Surface> {
+        &self.surfs
     }
 }
 
