@@ -3,7 +3,7 @@
 use super::super::proto;
 use crate::file::{as_json, from_json, Loadable, Saveable};
 use serde::{Deserialize, Serialize};
-use std::path::Path;
+use std::{path::Path, env::var};
 
 /// Input form structure containing all information required to run the world_builder binary.
 #[derive(Debug, Deserialize, Serialize)]
@@ -14,8 +14,18 @@ pub struct WorldBuilder {
 
 impl WorldBuilder {
     /// Create an example world.
-    pub fn example(dir: proto::Dir) -> Self {
-        Self { dir }
+    pub fn example() -> Self {
+        Self {
+            dir: proto::Dir::new(
+                Some(
+                    format!("{}/cwd", var("ARC_DIR").expect("Environment variable ARC_DIR is not set!"))
+                ),
+                "out".to_string(),
+                "res".to_string(),
+                "mats".to_string(),
+                "meshes".to_string(),
+            ),
+        }
     }
 
     /// Reference the directory proto-structure.

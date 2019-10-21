@@ -1,17 +1,1 @@
-{
-    "mins": [
-        -1.0,
-        -1.0,
-        -1.0
-    ],
-    "maxs": [
-        1.0,
-        1.0,
-        1.0
-    ],
-    "num_cells": [
-        8,
-        8,
-        8
-    ]
-}
+{"dir":{"cwd":"/Users/freddywordingham/Projects/arc/cwd","out":"out","res":"res","mats":"mats","meshes":"meshes"}}

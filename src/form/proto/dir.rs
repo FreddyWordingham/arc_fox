@@ -19,6 +19,25 @@ pub struct Dir {
     meshes: String,
 }
 
+impl Dir {
+    /// Construct a new instance.
+    pub fn new(
+        cwd: Option<String>,
+        out: String,
+        res: String,
+        mats: String,
+        meshes: String,
+    ) -> Self {
+        Self {
+            cwd,
+            out,
+            res,
+            mats,
+            meshes,
+        }
+    }
+}
+
 impl Manifestable<NeoDir> for Dir {
     fn manifest(&self) -> NeoDir {
         let cwd = if self.cwd.is_none() {
