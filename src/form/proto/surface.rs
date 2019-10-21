@@ -25,6 +25,16 @@ impl Surface {
         }
     }
 
+    /// Reference the inside string.
+    pub fn inside(&self) -> &String {
+        &self.inside
+    }
+
+    /// Reference the outside string.
+    pub fn outside(&self) -> &String {
+        &self.outside
+    }
+
     /// Manifest the proto-surface into a full surface structure.
     pub fn manifest<'a>(
         &self,

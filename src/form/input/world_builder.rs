@@ -53,6 +53,21 @@ impl WorldBuilder {
     pub fn surfs(&self) -> &Vec<proto::Surface> {
         &self.surfs
     }
+
+    /// Generate the material list.
+    pub fn mats(&self) -> proto::Materials {
+        let mut mat_list = Vec::with_capacity(self.surfs.len() * 2);
+
+        for surf in self.surfs.iter() {
+            mat_list.push(surf.inside().clone());
+            mat_list.push(surf.outside().clone());
+        }
+
+        mat_list.sort();
+        mat_list.dedup();
+
+        proto::Materials::new(mat_list)
+    }
 }
 
 impl Saveable for WorldBuilder {
