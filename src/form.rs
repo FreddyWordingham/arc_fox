@@ -1,5 +1,5 @@
-//! Input form structures.
+//! Input form structures and traits.
 
-use crate::file::Loadable;
-use log::info;
-use std::{fmt::Debug, path::Path};
+pub mod manifestable;
+
+pub use self::manifestable::*;
