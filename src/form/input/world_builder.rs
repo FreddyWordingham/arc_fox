@@ -10,6 +10,8 @@ use std::{env::var, path::Path};
 pub struct WorldBuilder {
     /// Directory information.
     dir: proto::Dir,
+    /// Domain information.
+    dom: proto::Domain,
 }
 
 impl WorldBuilder {
@@ -26,12 +28,18 @@ impl WorldBuilder {
                 "mats".to_string(),
                 "meshes".to_string(),
             ),
+            dom: proto::Domain::new([-1.0, -1.0, -1.0], [1.0, 1.0, 1.0], [8, 8, 8]),
         }
     }
 
     /// Reference the directory proto-structure.
     pub fn dir(&self) -> &proto::Dir {
         &self.dir
+    }
+
+    /// Reference the domain proto-structure.
+    pub fn dom(&self) -> &proto::Domain {
+        &self.dom
     }
 }
 
