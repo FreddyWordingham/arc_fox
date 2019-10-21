@@ -5,6 +5,7 @@ use std::{
     env::set_current_dir,
     fs::create_dir_all,
     path::{Path, PathBuf},
+    fmt::{Display, Result, Formatter}
 };
 
 /// Directory information storage.
@@ -54,5 +55,14 @@ impl Dir {
     /// Reference the meshes resources directory.
     pub fn meshes(&self) -> &Path {
         &self.meshes
+    }
+}
+
+impl Display for Dir {
+    fn fmt(&self, f: &mut Formatter) -> Result {
+        writeln!(f, "Cwd      : {}", self.cwd.display())?;
+        writeln!(f, "Output   : {}", self.out.display())?;
+        writeln!(f, "Materials: {}", self.mats.display())?;
+        write!(f, "Meshes   : {}", self.meshes.display())
     }
 }

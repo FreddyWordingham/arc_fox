@@ -48,7 +48,7 @@ impl Manifestable<NeoDir> for Dir {
 
         let out = cwd.join(&self.out);
 
-        let res_path = PathBuf::from(&self.res);
+        let res_path = cwd.join(&self.res);
 
         NeoDir::new(
             cwd,
