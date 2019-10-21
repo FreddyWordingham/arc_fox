@@ -2,8 +2,8 @@
 
 pub mod input;
 pub mod manifestable;
-pub mod proto_dir;
+pub mod dir;
 
 pub use self::input::*;
 pub use self::manifestable::*;
-pub use self::proto_dir::*;
+pub use self::dir::*;

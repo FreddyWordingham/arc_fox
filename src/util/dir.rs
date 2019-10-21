@@ -2,7 +2,7 @@
 
 use contracts::pre;
 use std::{
-    env::current_dir,
+    env::{create_dir_all},
     path::{Path, PathBuf},
 };
 
@@ -21,11 +21,12 @@ pub struct Dir {
 impl Dir {
     /// Construct a new instance.
     #[pre(cwd.is_dir())]
-    #[pre(cwd == current_dir().unwrap())]
-    #[pre(out.is_dir())]
     #[pre(mats.is_dir())]
     #[pre(meshes.is_dir())]
     pub fn new(cwd: PathBuf, out: PathBuf, mats: PathBuf, meshes: PathBuf) -> Self {
+        set_current_dir(cwd).expect("Unable to set the current working directory!");
+        create_dir_all(out).unwrap();
+
         Self {
             cwd,
             out,
