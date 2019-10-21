@@ -1,6 +1,8 @@
 //! World builder input form.
 
+use crate::file::{as_json, from_json, Loadable, Saveable};
 use serde::{Deserialize, Serialize};
+use std::path::Path;
 
 /// Input form structure containing all information required to run the world_builder binary.
 #[derive(Debug, Deserialize, Serialize)]
@@ -14,12 +16,24 @@ pub struct WorldBuilder {
 }
 
 impl WorldBuilder {
-    /// Construct a new instance.
-    pub fn new(mins: [f64; 3], maxs: [f64; 3], num_cells: [usize; 3]) -> Self {
+    /// Create an example world.
+    pub fn example() -> Self {
         Self {
-            mins,
-            maxs,
-            num_cells,
+            mins: [-1.0, -1.0, -1.0],
+            maxs: [1.0, 1.0, 1.0],
+            num_cells: [8, 8, 8],
         }
+    }
+}
+
+impl Saveable for WorldBuilder {
+    fn save(&self, path: &Path) {
+        as_json(self, path);
+    }
+}
+
+impl Loadable for WorldBuilder {
+    fn load(path: &Path) -> Self {
+        from_json(path)
     }
 }

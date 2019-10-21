@@ -1,6 +1,12 @@
 //! World building example.
 
-use arc::util::{get_args, start_up, title};
+use arc::{
+    file::Loadable,
+    // file::Saveable,
+    form::input::WorldBuilder as WorldBuilderForm,
+    util::{get_args, start_up, title},
+};
+use log::info;
 use std::path::Path;
 
 fn main() {
@@ -10,9 +16,12 @@ fn main() {
     // Start up.
     let (_cwd, _out_dir) = start_up(&Path::new("cwd"), &Path::new("out"));
     let args = get_args(vec!["<manifest.json>".to_string()]);
-    let _input_file_path = &args[1];
+    let input_file_path = Path::new(&args[1]);
 
     // Load manifest.
-    // let man: Matcher = load(Path::new(input_file_path));
-    // println!("Manifest:\n{:#?}", man);
+    info!("Loading input form: {}", input_file_path.display());
+    let form = WorldBuilderForm::load(input_file_path);
+    // let form = WorldBuilderForm::example();
+    // form.save(&out_dir.join("example.json"));
+    println!("Input form:\n{:?}", form);
 }
