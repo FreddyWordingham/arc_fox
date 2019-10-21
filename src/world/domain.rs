@@ -70,7 +70,15 @@ impl Display for Domain {
 
         writeln!(f, "Mins     : {},\t{},\t{}", mins.x, mins.y, mins.z)?;
         writeln!(f, "Maxs     : {},\t{},\t{}", maxs.x, maxs.y, maxs.z)?;
-        writeln!(f, "Cells    : {} - {} - {}", self.num_cells[0], self.num_cells[1], self.num_cells[2])?;
-        write!(f,   "Num cells: {}", self.num_cells[0] * self.num_cells[1] * self.num_cells[2])
+        writeln!(
+            f,
+            "Cells    : {} - {} - {}",
+            self.num_cells[0], self.num_cells[1], self.num_cells[2]
+        )?;
+        write!(
+            f,
+            "Num cells: {}",
+            self.num_cells[0] * self.num_cells[1] * self.num_cells[2]
+        )
     }
 }

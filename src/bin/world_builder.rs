@@ -3,7 +3,7 @@
 use arc::{
     file::Loadable,
     file::Saveable,
-    form::{input::WorldBuilder as WorldBuilderForm, Manifestable},
+    form::{input::WorldBuilder as WorldBuilderForm},
     util::{get_args, title},
 };
 use log::info;

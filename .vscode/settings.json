@@ -5,6 +5,7 @@
         "DESTDIR",
         "Deserialise",
         "Saveable",
+        "bbox",
         "binutils",
         "clippy",
         "cmake",

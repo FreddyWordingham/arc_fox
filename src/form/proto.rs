@@ -2,6 +2,8 @@
 
 pub mod dir;
 pub mod domain;
+pub mod surface;
 
 pub use self::dir::*;
 pub use self::domain::*;
+pub use self::surface::*;

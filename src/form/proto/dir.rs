@@ -1,6 +1,6 @@
 //! Directory proto-structure.
 
-use crate::{form::Manifestable, util::Dir as NeoDir};
+use crate::util::Dir as NeoDir;
 use serde::{Deserialize, Serialize};
 use std::{env::current_dir, path::PathBuf};
 
@@ -36,10 +36,9 @@ impl Dir {
             meshes,
         }
     }
-}
 
-impl Manifestable<NeoDir> for Dir {
-    fn manifest(&self) -> NeoDir {
+    /// Manifest the proto-dir into a full dir structure.
+    pub fn manifest(&self) -> NeoDir {
         let cwd = if self.cwd.is_none() {
             current_dir().unwrap()
         } else {

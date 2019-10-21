@@ -1,6 +1,6 @@
 //! Domain proto-structure.
 
-use crate::{form::Manifestable, geom::Cube, world::Domain as NeoDomain};
+use crate::{geom::Cube, world::Domain as NeoDomain};
 use contracts::pre;
 use nalgebra::Point3;
 use serde::{Deserialize, Serialize};
@@ -29,10 +29,9 @@ impl Domain {
             num_cells,
         }
     }
-}
 
-impl Manifestable<NeoDomain> for Domain {
-    fn manifest(&self) -> NeoDomain {
+    /// Manifest the proto-domain into a full domain structure.
+    pub fn manifest(&self) -> NeoDomain {
         NeoDomain::new(
             Cube::new(
                 Point3::from_slice(&self.mins),
