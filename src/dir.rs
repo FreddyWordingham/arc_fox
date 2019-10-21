@@ -1,20 +1,24 @@
 //! Directory path constants.
 
 use std::{env::var, path::PathBuf};
+use log::error;
 
-/// Create a path to the arc resources directory.
-pub fn resources() -> PathBuf {
-    let arc_dir = var("ARC_DIR").unwrap();
-
-    PathBuf::from(arc_dir).join("res/")
+/// Directory information storage.
+pub struct Dir {
+    /// Arc project root directory.
+    arc: PathBuf,
 }
 
-/// Create a path to the arc materials directory.
-pub fn materials() -> PathBuf {
-    resources().join("mats/")
-}
+impl Dir {
+    /// Construct a new instance.
+    pub fn new() -> Self {
+        let arc = PathBuf::from(&var("ARC_DIR").unwrap());
+        if !arc.is_dir() {
+            error!("Unable to determine the arc directory!\nEnsure the environment variable ARC_DIR is correctly set.");
+        }
 
-/// Create a path to the arc meshes directory.
-pub fn meshes() -> PathBuf {
-    resources().join("meshes/")
+        Self {
+            arc,
+        }
+    }
 }
