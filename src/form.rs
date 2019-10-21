@@ -1,15 +1,5 @@
 //! Input form structures.
 
-pub mod boundary;
-pub mod grid;
-pub mod manifest;
-pub mod transform;
-
-pub use self::boundary::*;
-pub use self::grid::*;
-pub use self::manifest::*;
-pub use self::transform::*;
-
 use crate::file::Loadable;
 use log::info;
 use std::{fmt::Debug, path::Path};
