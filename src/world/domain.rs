@@ -1,12 +1,12 @@
-//! Geometric gridding structure.
+//! World domain partitioning structure.
 
-use super::Cube;
+use crate::geom::Cube;
 use contracts::pre;
 use nalgebra::Vector3;
 
-/// Axis-aligned regular split grid partitioning.
+/// Domain with regular split grid partitioning.
 #[derive(Debug)]
-pub struct Grid {
+pub struct Domain {
     /// Surface.
     surface: Cube,
     /// Number of cells in each axis.
@@ -15,7 +15,7 @@ pub struct Grid {
     cell_size: Vector3<f64>,
 }
 
-impl Grid {
+impl Domain {
     /// Construct a new instance.
     #[pre(num_cells[0] > 0)]
     #[pre(num_cells[1] > 0)]
@@ -33,7 +33,7 @@ impl Grid {
         }
     }
 
-    /// Reference the grid surface geometry.
+    /// Reference the surface geometry.
     pub fn surface(&self) -> &Cube {
         &self.surface
     }
@@ -48,6 +48,7 @@ impl Grid {
         &self.cell_size
     }
 
+    /// Construct the surface of a cell at a given index.
     #[pre(index[0] < self.num_cells[0])]
     #[pre(index[1] < self.num_cells[1])]
     #[pre(index[2] < self.num_cells[2])]
