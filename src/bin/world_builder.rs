@@ -37,7 +37,8 @@ fn main() {
     info!("Surface map:\n{}", surf_map);
 
     // Setup.
-    let boundaries = Array3::from_elem(dom.shape(), 0);
+    let shape = dom.shape();
+    let boundaries = Array3::from_elem(shape, 0);
 
     // Output.
     // form.save(&dir.out().join("example.json"));
