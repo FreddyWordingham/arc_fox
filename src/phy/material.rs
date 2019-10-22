@@ -11,21 +11,21 @@ use std::path::Path;
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Material {
     /// Optical properties.
-    optical: Option<OptProp>,
+    opt: Option<OptProp>,
     /// Kinetic properties.
-    kinetic: Option<KinProp>,
+    kin: Option<KinProp>,
 }
 
 impl Material {
     /// Construct a new instance.
-    pub fn new(optical: Option<OptProp>, kinetic: Option<KinProp>) -> Self {
-        Self { optical, kinetic }
+    pub fn new(opt: Option<OptProp>, kin: Option<KinProp>) -> Self {
+        Self { opt, kin }
     }
 
     /// Reference the optical properties.
-    #[pre(self.optical.is_some())]
-    pub fn optical(&self) -> &OptProp {
-        match self.optical {
+    #[pre(self.opt.is_some())]
+    pub fn opt(&self) -> &OptProp {
+        match self.opt {
             Some(ref o) => o,
             None => unreachable!(
                 "Attempting to access optics of a material that doesn't interact with photons."
@@ -34,9 +34,9 @@ impl Material {
     }
 
     /// Reference the kinetic properties.
-    #[pre(self.kinetic.is_some())]
-    pub fn kinetic(&self) -> &KinProp {
-        match self.kinetic {
+    #[pre(self.kin.is_some())]
+    pub fn kin(&self) -> &KinProp {
+        match self.kin {
             Some(ref k) => k,
             None => {
                 unreachable!("Attempting to access kinetics of a material that doesn't diffuse.")

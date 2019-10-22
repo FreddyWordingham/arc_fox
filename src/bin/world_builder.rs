@@ -31,6 +31,7 @@ fn main() {
 
     let mat_map = form.mat_map().manifest(dir.mats());
     info!("Material map:\n{}", mat_map);
+    println!("Ref index: {}", mat_map["crown_glass"].opt().ref_index());
 
     // let _surfs = form.surfs().manifest();
     for surf in form.surfs().iter() {

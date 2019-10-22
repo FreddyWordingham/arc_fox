@@ -5,6 +5,7 @@ use contracts::pre;
 use std::{
     collections::HashMap,
     fmt::{Display, Formatter, Result},
+    ops::Index
 };
 
 /// Structure storing all materials.
@@ -34,5 +35,13 @@ impl Display for MatMap {
         }
 
         unreachable!();
+    }
+}
+
+impl Index<&str> for MatMap {
+    type Output = Material;
+
+    fn index(&self, key: &str) -> &Self::Output {
+        &self.mats[key]
     }
 }
