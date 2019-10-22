@@ -1,8 +1,8 @@
-//! Material mapping structure.
+//! Material-mapping structure.
 
-use std::collections::HashMap;
 use crate::phy::Material;
 use contracts::pre;
+use std::collections::HashMap;
 
 /// Structure storing all materials.
 #[derive(Debug)]
@@ -15,8 +15,6 @@ impl MatMap {
     /// Construct a new instance.
     #[pre(!mats.is_empty())]
     pub fn new(mats: HashMap<String, Material>) -> Self {
-        Self {
-            mats
-        }
+        Self { mats }
     }
 }

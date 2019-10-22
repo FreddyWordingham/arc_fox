@@ -1,6 +1,6 @@
 //! Domain proto-structure.
 
-use crate::{phy::Material, file::Loadable};
+use crate::{file::Loadable, phy::Material};
 use log::info;
 use serde::{Deserialize, Serialize};
 use std::{collections::HashMap, path::Path};
@@ -24,7 +24,10 @@ impl Materials {
 
         for name in self.names.iter() {
             info!("Loading {} material...", name);
-            mat_map.insert(name.clone(), Material::load(&mat_dir.join(format!("{}.json", name))));
+            mat_map.insert(
+                name.clone(),
+                Material::load(&mat_dir.join(format!("{}.json", name))),
+            );
         }
 
         mat_map
