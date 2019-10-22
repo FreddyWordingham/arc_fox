@@ -25,6 +25,11 @@ impl Surface {
         }
     }
 
+    /// Reference the mesh file string.
+    pub fn mesh(&self) -> &String {
+        &self.mesh
+    }
+
     /// Reference the inside string.
     pub fn inside(&self) -> &String {
         &self.inside
