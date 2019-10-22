@@ -38,7 +38,8 @@ fn main() {
 
     // Setup.
     let layout = dom.layout();
-    // let boundaries = Array3::from_elem(layout, 0);
+    let mut boundaries = Array3::from_elem(layout.as_array(), 0);
+    let bar = arc::util::progress::bar(total_cells as u64);
 
     // Output.
     // form.save(&dir.out().join("example.json"));

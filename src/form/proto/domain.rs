@@ -33,7 +33,7 @@ impl Domain {
                 Point3::from_slice(&self.mins),
                 Point3::from_slice(&self.maxs),
             ),
-            Layout3::from_slice(&self.layout),
+            Layout3::from_array(self.layout),
         )
     }
 }
