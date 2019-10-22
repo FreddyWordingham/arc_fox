@@ -7,6 +7,7 @@ use arc::{
     util::{get_args, title},
 };
 use log::info;
+use ndarray::Array3;
 use std::path::Path;
 
 fn main() {
@@ -35,6 +36,10 @@ fn main() {
     let surf_map = form.surf_map().manifest(dir.meshes(), &mat_map);
     info!("Surface map:\n{}", surf_map);
 
+    // Setup.
+    let boundaries = Array3::from_elem(dom.shape(), 0);
+
     // Output.
-    form.save(&dir.out().join("example.json"));
+    // form.save(&dir.out().join("example.json"));
+    boundaries.save(&dir.out().join("boundaries.nc"));
 }

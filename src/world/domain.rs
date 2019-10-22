@@ -44,6 +44,11 @@ impl Domain {
         &self.num_cells
     }
 
+    /// Create a shape tuple of the domain.
+    pub fn shape(&self) -> (usize, usize, usize) {
+        (self.num_cells[0], self.num_cells[1], self.num_cells[2])
+    }
+
     /// Reference the cell size.
     pub fn cell_size(&self) -> &Vector3<f64> {
         &self.cell_size

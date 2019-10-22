@@ -23,10 +23,12 @@
         "mins",
         "mkdir",
         "nalgebra",
+        "ndarray",
         "openssl",
         "peekable",
         "proto",
         "tris",
+        "tuple",
         "verts"
     ]
 }
