@@ -32,7 +32,8 @@ fn main() {
     let mat_map = form.mat_map().manifest(dir.mats());
     info!("Material map:\n{}", mat_map);
 
-    let _surf_map = form.surf_map().manifest(dir.meshes(), &mat_map);
+    let surf_map = form.surf_map().manifest(dir.meshes(), &mat_map);
+    info!("Surface map:\n{}", surf_map);
 
     // Output.
     form.save(&dir.out().join("example.json"));
