@@ -3,8 +3,8 @@
         "cwd": "/Users/freddywordingham/Projects/arc/cwd",
         "out": "out",
         "res": "../res",
-        "mats": "mats",
-        "meshes": "meshes"
+        "mats": "mats/basic",
+        "meshes": "meshes/basic"
     },
     "dom": {
         "mins": [

@@ -27,8 +27,8 @@ impl WorldBuilder {
                 )),
                 "out".to_string(),
                 "../res".to_string(),
-                "mats".to_string(),
-                "meshes".to_string(),
+                "mats/basic".to_string(),
+                "meshes/basic".to_string(),
             ),
             dom: proto::Domain::new([-1.0, -1.0, -1.0], [1.0, 1.0, 1.0], [8, 8, 8]),
             surfs: vec![proto::Surface::new(
