@@ -54,8 +54,8 @@ impl WorldBuilder {
         &self.surfs
     }
 
-    /// Generate the material list.
-    pub fn mats(&self) -> proto::Materials {
+    /// Generate the proto-material-map.
+    pub fn mat_map(&self) -> proto::MatMap {
         let mut mat_list = Vec::with_capacity(self.surfs.len() * 2);
 
         for surf in self.surfs.iter() {
@@ -66,7 +66,7 @@ impl WorldBuilder {
         mat_list.sort();
         mat_list.dedup();
 
-        proto::Materials::new(mat_list)
+        proto::MatMap::new(mat_list)
     }
 }
 

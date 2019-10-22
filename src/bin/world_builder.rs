@@ -29,7 +29,9 @@ fn main() {
     let dom = form.dom().manifest();
     info!("Domain setup:\n{}", dom);
 
-    let _mats = form.mats().manifest(dir.mats());
+    let mat_map = form.mat_map().manifest(dir.mats());
+    info!("Material map:\n{}", mat_map);
+
     // let _surfs = form.surfs().manifest();
     for surf in form.surfs().iter() {
         println!("Surface mesh: {}", surf.mesh());
