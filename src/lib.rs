@@ -10,6 +10,7 @@
 pub mod file;
 pub mod form;
 pub mod geom;
+pub mod index;
 pub mod phy;
 pub mod util;
 pub mod world;
