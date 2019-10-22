@@ -23,11 +23,13 @@
             8
         ]
     },
-    "surfs": [
-        {
-            "mesh": "prism",
-            "inside": "crown_glass",
-            "outside": "air"
-        }
-    ]
+    "surf_map": {
+        "surfs": [
+            {
+                "mesh": "prism",
+                "inside": "crown_glass",
+                "outside": "air"
+            }
+        ]
+    }
 }

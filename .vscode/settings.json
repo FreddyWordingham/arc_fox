@@ -24,6 +24,7 @@
         "mkdir",
         "nalgebra",
         "openssl",
+        "peekable",
         "proto",
         "tris",
         "verts"

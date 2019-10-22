@@ -12,8 +12,8 @@ pub struct WorldBuilder {
     dir: proto::Dir,
     /// Domain information.
     dom: proto::Domain,
-    /// Surface list.
-    surfs: Vec<proto::Surface>,
+    /// Surface information.
+    surf_map: proto::SurfMap,
 }
 
 impl WorldBuilder {
@@ -31,11 +31,11 @@ impl WorldBuilder {
                 "meshes/basic".to_string(),
             ),
             dom: proto::Domain::new([-1.0, -1.0, -1.0], [1.0, 1.0, 1.0], [8, 8, 8]),
-            surfs: vec![proto::Surface::new(
+            surf_map: proto::SurfMap::new(vec![proto::Surface::new(
                 "prism".to_string(),
                 "crown_glass".to_string(),
                 "air".to_string(),
-            )],
+            )]),
         }
     }
 
@@ -49,16 +49,16 @@ impl WorldBuilder {
         &self.dom
     }
 
-    /// Reference the proto-surface list.
-    pub fn surfs(&self) -> &Vec<proto::Surface> {
-        &self.surfs
+    /// Reference the proto-surface-map.
+    pub fn surf_map(&self) -> &proto::SurfMap {
+        &self.surf_map
     }
 
     /// Generate the proto-material-map.
     pub fn mat_map(&self) -> proto::MatMap {
-        let mut mat_list = Vec::with_capacity(self.surfs.len() * 2);
+        let mut mat_list = Vec::with_capacity(self.surf_map.surfs().len() * 2);
 
-        for surf in self.surfs.iter() {
+        for surf in self.surf_map.surfs().iter() {
             mat_list.push(surf.inside().clone());
             mat_list.push(surf.outside().clone());
         }

@@ -1,1 +1,1 @@
-{"dir":{"cwd":"/Users/freddywordingham/Projects/arc/cwd","out":"out","res":"../res","mats":"mats/basic","meshes":"meshes/basic"},"dom":{"mins":[-1.0,-1.0,-1.0],"maxs":[1.0,1.0,1.0],"num_cells":[8,8,8]},"surfs":[{"mesh":"prism","inside":"crown_glass","outside":"air"}]}
+{"dir":{"cwd":"/Users/freddywordingham/Projects/arc/cwd","out":"out","res":"../res","mats":"mats/basic","meshes":"meshes/basic"},"dom":{"mins":[-1.0,-1.0,-1.0],"maxs":[1.0,1.0,1.0],"num_cells":[8,8,8]},"surf_map":{"surfs":[{"mesh":"prism","inside":"crown_glass","outside":"air"}]}}
