@@ -5,7 +5,7 @@ use contracts::pre;
 use std::{
     collections::HashMap,
     fmt::{Display, Formatter, Result},
-    ops::Index
+    ops::Index,
 };
 
 /// Structure storing all materials.
