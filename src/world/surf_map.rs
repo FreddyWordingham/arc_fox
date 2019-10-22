@@ -10,20 +10,20 @@ use std::{
 
 /// Structure storing all surfaces.
 #[derive(Debug)]
-pub struct SurfMap {
+pub struct SurfMap<'a> {
     /// Surface hashmap.
-    surfs: HashMap<String, Surface>,
+    surfs: HashMap<String, Surface<'a>>,
 }
 
-impl SurfMap {
+impl<'a> SurfMap<'a> {
     /// Construct a new instance.
     #[pre(!surfs.is_empty())]
-    pub fn new(surfs: HashMap<String, Surface>) -> Self {
+    pub fn new(surfs: HashMap<String, Surface<'a>>) -> Self {
         Self { surfs }
     }
 }
 
-impl Display for SurfMap {
+impl<'a> Display for SurfMap<'a> {
     fn fmt(&self, f: &mut Formatter) -> Result {
         let mut iter = self.surfs.iter().peekable();
         while let Some((key, _mat)) = iter.next() {
@@ -38,8 +38,8 @@ impl Display for SurfMap {
     }
 }
 
-impl Index<&str> for SurfMap {
-    type Output = Surface;
+impl<'a> Index<&str> for SurfMap<'a> {
+    type Output = Surface<'a>;
 
     fn index(&self, key: &str) -> &Self::Output {
         &self.surfs[key]

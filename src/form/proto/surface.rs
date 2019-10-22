@@ -1,6 +1,6 @@
 //! Surface proto-structure.
 
-use crate::{file::Loadable, geom::Triangle, phy::Material, world::Surface as NeoSurface};
+use crate::{file::Loadable, geom::Triangle, phy::Material, phy::Surface as NeoSurface};
 use serde::{Deserialize, Serialize};
 use std::{collections::HashMap, path::Path};
 
