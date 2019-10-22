@@ -1,6 +1,6 @@
 //! World domain partitioning structure.
 
-use crate::geom::Cube;
+use crate::{geom::Cube, index::Layout3, phy::ThreeDimensional};
 use contracts::pre;
 use nalgebra::Vector3;
 use std::fmt::{Display, Formatter, Result};
@@ -11,25 +11,25 @@ pub struct Domain {
     /// Boundary.
     boundary: Cube,
     /// Number of cells in each axis.
-    num_cells: [usize; 3],
+    layout: Layout3,
     /// Cell size.
     cell_size: Vector3<f64>,
 }
 
 impl Domain {
     /// Construct a new instance.
-    #[pre(num_cells[0] > 0)]
-    #[pre(num_cells[1] > 0)]
-    #[pre(num_cells[2] > 0)]
-    pub fn new(boundary: Cube, num_cells: [usize; 3]) -> Self {
+    #[pre(layout.x() > 0)]
+    #[pre(layout.y() > 0)]
+    #[pre(layout.z() > 0)]
+    pub fn new(boundary: Cube, layout: Layout3) -> Self {
         let mut cell_size = boundary.widths();
-        cell_size.x /= num_cells[0] as f64;
-        cell_size.y /= num_cells[1] as f64;
-        cell_size.z /= num_cells[2] as f64;
+        cell_size.x /= layout.x() as f64;
+        cell_size.y /= layout.y() as f64;
+        cell_size.z /= layout.z() as f64;
 
         Self {
             boundary,
-            num_cells,
+            layout,
             cell_size,
         }
     }
@@ -39,14 +39,9 @@ impl Domain {
         &self.boundary
     }
 
-    /// Reference the number of cells.
-    pub fn num_cells(&self) -> &[usize; 3] {
-        &self.num_cells
-    }
-
-    /// Create a shape tuple of the domain.
-    pub fn shape(&self) -> (usize, usize, usize) {
-        (self.num_cells[0], self.num_cells[1], self.num_cells[2])
+    /// Reference the layout.
+    pub fn layout(&self) -> &Layout3 {
+        &self.layout
     }
 
     /// Reference the cell size.
@@ -55,9 +50,9 @@ impl Domain {
     }
 
     /// Construct the boundary of a cell at a given index.
-    #[pre(index[0] < self.num_cells[0])]
-    #[pre(index[1] < self.num_cells[1])]
-    #[pre(index[2] < self.num_cells[2])]
+    #[pre(index[0] < self.layout.x())]
+    #[pre(index[1] < self.layout.y())]
+    #[pre(index[2] < self.layout.z())]
     pub fn cell_boundary(&self, index: [usize; 3]) -> Cube {
         let mut min = self.boundary.mins().clone();
         min.x += self.cell_size.x * index[0] as f64;
@@ -78,12 +73,14 @@ impl Display for Domain {
         writeln!(
             f,
             "Cells    : {} - {} - {}",
-            self.num_cells[0], self.num_cells[1], self.num_cells[2]
+            self.layout.x(),
+            self.layout.y(),
+            self.layout.z()
         )?;
         write!(
             f,
             "Num cells: {}",
-            self.num_cells[0] * self.num_cells[1] * self.num_cells[2]
+            self.layout.x() * self.layout.y() * self.layout.z()
         )
     }
 }

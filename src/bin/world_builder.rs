@@ -37,10 +37,10 @@ fn main() {
     info!("Surface map:\n{}", surf_map);
 
     // Setup.
-    let shape = dom.shape();
-    let boundaries = Array3::from_elem(shape, 0);
+    let layout = dom.layout();
+    // let boundaries = Array3::from_elem(layout, 0);
 
     // Output.
     // form.save(&dir.out().join("example.json"));
-    boundaries.save(&dir.out().join("boundaries.nc"));
+    // boundaries.save(&dir.out().join("boundaries.nc"));
 }
