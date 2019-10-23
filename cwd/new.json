@@ -3,32 +3,37 @@
         "cwd": "/Users/freddywordingham/Projects/arc/cwd",
         "out": "out",
         "res": "../res",
-        "mats": "mats/basic",
-        "meshes": "meshes/basic"
+        "mats": "mats/nano",
+        "meshes": "meshes/nano"
     },
     "dom": {
         "mins": [
-            -1.0,
-            -1.0,
-            -1.0
+            -1.0e3,
+            -1.0e3,
+            -1.0e3
         ],
         "maxs": [
-            1.0,
-            1.0,
-            1.0
+            1.0e3,
+            1.0e3,
+            1.0e3
         ],
         "layout": [
-            8,
-            8,
-            8
+            128,
+            128,
+            128
         ]
     },
     "surf_map": {
         "surfs": [
             {
-                "mesh": "prism",
-                "inside": "crown_glass",
-                "outside": "air"
+                "mesh": "flesh_tumour",
+                "inside": "tumour",
+                "outside": "flesh"
+            },
+            {
+                "mesh": "tumour_gnr",
+                "inside": "gnr",
+                "outside": "tumour"
             }
         ]
     }
