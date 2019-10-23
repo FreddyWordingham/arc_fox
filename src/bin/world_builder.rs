@@ -1,10 +1,10 @@
 //! World building example.
 
 use arc::{
-    phy::ThreeDimensional,
     file::Loadable,
     // file::Saveable,
     form::input::WorldBuilder as WorldBuilderForm,
+    phy::ThreeDimensional,
     util::{get_args, title},
 };
 use log::info;
@@ -49,7 +49,6 @@ fn main() {
                 report!();
                 // report!(index);
                 bar.inc(1);
-
             }
         }
     }

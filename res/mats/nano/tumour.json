@@ -5,5 +5,7 @@
         "asym_param": 0.8,
         "ref_index": 1.44
     },
-    "kin": null
+    "kin": {
+        "diff_coeff": 1.0
+    }
 }
