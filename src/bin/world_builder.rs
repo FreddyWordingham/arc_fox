@@ -62,7 +62,7 @@ fn main() {
 #[macro_export]
 macro_rules! report {
     () => {
-        std::thread::sleep_ms(1000);
+        std::thread::sleep(std::time::Duration::from_millis(1000));
     };
     ($expression: expr) => {
         info!("{: <31}: {: <31}", stringify!($expression), $expression);
