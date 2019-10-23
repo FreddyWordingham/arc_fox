@@ -7,7 +7,7 @@ use contracts::pre;
 #[derive(Debug)]
 pub struct Layout3 {
     /// Number of indices along each axis.
-    ni: [usize; 3]
+    ni: [usize; 3],
 }
 
 impl Layout3 {
@@ -24,9 +24,7 @@ impl Layout3 {
     #[pre(arr[1] > 0)]
     #[pre(arr[2] > 0)]
     pub fn from_array(arr: [usize; 3]) -> Self {
-        Self {
-            ni: arr
-        }
+        Self { ni: arr }
     }
 
     /// Create an index array.

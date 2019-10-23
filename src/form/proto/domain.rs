@@ -1,6 +1,6 @@
 //! Domain proto-structure.
 
-use crate::{geom::Cube, world::Domain as NeoDomain, index::Layout3};
+use crate::{geom::Cube, index::Layout3, world::Domain as NeoDomain};
 use contracts::pre;
 use nalgebra::Point3;
 use serde::{Deserialize, Serialize};

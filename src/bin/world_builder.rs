@@ -1,8 +1,9 @@
 //! World building example.
 
 use arc::{
+    phy::ThreeDimensional,
     file::Loadable,
-    file::Saveable,
+    // file::Saveable,
     form::input::WorldBuilder as WorldBuilderForm,
     util::{get_args, title},
 };
@@ -38,8 +39,19 @@ fn main() {
 
     // Setup.
     let layout = dom.layout();
-    let mut boundaries = Array3::from_elem(layout.as_array(), 0);
-    let bar = arc::util::progress::bar(total_cells as u64);
+    let _boundaries = Array3::from_elem(layout.as_array(), 0);
+    let bar = arc::util::progress::bar(layout.total() as u64);
+
+    for xi in 0..layout.x() {
+        for yi in 0..layout.x() {
+            for zi in 0..layout.x() {
+                let _index = [xi, yi, zi];
+
+                bar.inc(1);
+                std::thread::sleep_ms(1000);
+            }
+        }
+    }
 
     // Output.
     // form.save(&dir.out().join("example.json"));
