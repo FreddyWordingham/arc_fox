@@ -46,9 +46,10 @@ fn main() {
         for yi in 0..layout.x() {
             for zi in 0..layout.x() {
                 let _index = [xi, yi, zi];
-
+                report!();
+                // report!(index);
                 bar.inc(1);
-                std::thread::sleep_ms(1000);
+
             }
         }
     }
@@ -56,4 +57,17 @@ fn main() {
     // Output.
     // form.save(&dir.out().join("example.json"));
     // boundaries.save(&dir.out().join("boundaries.nc"));
+}
+
+#[macro_export]
+macro_rules! report {
+    () => {
+        std::thread::sleep_ms(1000);
+    };
+    ($expression: expr) => {
+        info!("{: <31}: {: <31}", stringify!($expression), $expression);
+    };
+    ($expression: expr, $string: tt) => {
+        info!("{: <31}: {: <31}", $string, $expression);
+    };
 }
