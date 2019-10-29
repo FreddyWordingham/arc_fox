@@ -17,7 +17,7 @@ pub struct WorldBuilder {
 }
 
 impl WorldBuilder {
-    /// Create an example world.
+    /// Create an example world builder form.
     pub fn example() -> Self {
         Self {
             dir: proto::Dir::new(
