@@ -76,7 +76,7 @@ impl Traceable for Aabb {
         !((t_max < 0.0) || (t_min > t_max))
     }
 
-    fn distance(&self, ray: &Ray) -> Option<f64> {
+    fn dist(&self, ray: &Ray) -> Option<f64> {
         let dir_frac = Vector3::new(1.0 / ray.dir.x, 1.0 / ray.dir.y, 1.0 / ray.dir.z);
 
         let t1 = (self.mins.x - ray.pos.x) * dir_frac.x;
@@ -100,7 +100,7 @@ impl Traceable for Aabb {
         Some(t_max)
     }
 
-    fn distance_normal(&self, ray: &Ray) -> Option<(f64, Unit<Vector3<f64>>)> {
+    fn dist_norm(&self, ray: &Ray) -> Option<(f64, Unit<Vector3<f64>>)> {
         let dir_frac = Vector3::new(1.0 / ray.dir.x, 1.0 / ray.dir.y, 1.0 / ray.dir.z);
 
         let t1 = SortLabel::new((self.mins.x - ray.pos.x) * dir_frac.x, -Vector3::x_axis());
