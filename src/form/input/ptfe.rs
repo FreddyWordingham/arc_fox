@@ -9,6 +9,8 @@ use std::env::var;
 pub struct Ptfe {
     /// Directory information.
     dir: proto::Dir,
+    /// Domain information.
+    dom: proto::Domain,
 }
 
 impl Ptfe {
@@ -25,11 +27,17 @@ impl Ptfe {
                 "mats/basic".to_string(),
                 "meshes/basic".to_string(),
             ),
+            dom: proto::Domain::new([-1.0, -1.0, -1.0], [1.0, 1.0, 1.0], [1, 1, 1]),
         }
     }
 
     /// Reference the directory proto-structure.
     pub fn dir(&self) -> &proto::Dir {
         &self.dir
+    }
+
+    /// Reference the domain proto-structure.
+    pub fn dom(&self) -> &proto::Domain {
+        &self.dom
     }
 }

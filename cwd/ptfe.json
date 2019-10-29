@@ -1,0 +1,26 @@
+{
+    "dir": {
+        "cwd": "/Users/freddywordingham/Projects/arc/cwd",
+        "out": "out",
+        "res": "../res",
+        "mats": "mats/nano",
+        "meshes": "meshes/nano"
+    },
+    "dom": {
+        "mins": [
+            -1.0e3,
+            -1.0e3,
+            -1.0e3
+        ],
+        "maxs": [
+            1.0e3,
+            1.0e3,
+            1.0e3
+        ],
+        "layout": [
+            128,
+            128,
+            128
+        ]
+    },
+}
