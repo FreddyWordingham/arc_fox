@@ -7,6 +7,8 @@ edition = "2018"
 # documention = "https://freddywordingham.github.io/arc"
 
 [dependencies]
+contracts = "0.3.0"
+nalgebra = "0.19.0"
 
 # Development profile: "cargo build".
 [profile.dev]
