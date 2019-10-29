@@ -29,7 +29,7 @@ impl Photon {
     }
 
     /// Move along the direction the given distance.
-    #[pre(dist > 0.0)]
+    #[pre(0.0 < dist)]
     pub fn travel(&mut self, dist: f64) {
         self.ray.travel(dist);
     }

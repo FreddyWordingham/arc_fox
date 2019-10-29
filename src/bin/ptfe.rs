@@ -132,7 +132,7 @@ fn simulate(
 
         while dom.contained(phot.ray().origin()) {
             let domain_dist = dom.distance(phot.ray()).unwrap();
-            let scat_dist = -rng.gen::<f64>() / inter_coef;
+            let scat_dist = -rng.gen::<f64>().ln() / inter_coef;
             let block_dist = block.distance(phot.ray());
 
             if block_dist.is_some() {
