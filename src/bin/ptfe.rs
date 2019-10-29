@@ -26,6 +26,11 @@ fn main() {
     let dir = form.dir().manifest();
     info!("Directory setup:\n{}", dir);
 
+    let dom = form.dom().manifest();
+    info!("Domain setup:\n{}", dom);
+
+    // Simulation.
+
     // Output.
     form.save(&dir.out().join("last_run.json"));
 }

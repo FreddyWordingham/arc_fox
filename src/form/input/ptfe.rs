@@ -2,6 +2,7 @@
 
 use super::super::proto;
 use crate::file::{as_json, from_json, Loadable, Saveable};
+use nalgebra::{Point3, Unit, Vector3};
 use serde::{Deserialize, Serialize};
 use std::{env::var, path::Path};
 
@@ -12,6 +13,12 @@ pub struct Ptfe {
     dir: proto::Dir,
     /// Domain information.
     dom: proto::Domain,
+    /// Number of samples.
+    num_phot: usize,
+    /// Laser emission position.
+    emission_pos: [f64; 3],
+    /// Laser emission direction.
+    emission_dir: [f64; 3],
 }
 
 impl Ptfe {
@@ -29,6 +36,9 @@ impl Ptfe {
                 "meshes/basic".to_string(),
             ),
             dom: proto::Domain::new([-1.0, -1.0, -1.0], [1.0, 1.0, 1.0], [1, 1, 1]),
+            emission_pos: [-1.0, 0.0, 0.0],
+            emission_dir: [1.0, 0.0, 0.0],
+            num_phot: 1_000_000,
         }
     }
 
@@ -40,6 +50,29 @@ impl Ptfe {
     /// Reference the domain proto-structure.
     pub fn dom(&self) -> &proto::Domain {
         &self.dom
+    }
+
+    /// Get the number of photons.
+    pub fn num_phot(&self) -> usize {
+        self.num_phot
+    }
+
+    /// Get the laser emission position.
+    pub fn emission_pos(&self) -> Point3<f64> {
+        Point3::new(
+            self.emission_pos[0],
+            self.emission_pos[1],
+            self.emission_pos[2],
+        )
+    }
+
+    /// Get the laser emission direction.
+    pub fn emission_dir(&self) -> Unit<Vector3<f64>> {
+        Unit::new_normalize(Vector3::new(
+            self.emission_dir[0],
+            self.emission_dir[1],
+            self.emission_dir[2],
+        ))
     }
 }
 
