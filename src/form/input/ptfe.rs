@@ -14,7 +14,7 @@ pub struct Ptfe {
     /// Domain information.
     dom: proto::Domain,
     /// Number of samples.
-    num_phot: usize,
+    num_phot: u64,
     /// Laser emission position.
     emission_wavelength: f64,
     /// Laser emission position.
@@ -74,7 +74,7 @@ impl Ptfe {
     }
 
     /// Get the number of photons.
-    pub fn num_phot(&self) -> usize {
+    pub fn num_phot(&self) -> u64 {
         self.num_phot
     }
 
