@@ -49,7 +49,7 @@ impl Cube {
 
     /// Determine if the point is contained.
     /// Points lying exactly at the surface are considered contained.
-    pub fn contained(&self, point: Point3<f64>) -> bool {
+    pub fn contained(&self, point: &Point3<f64>) -> bool {
         (self.mins.x <= point.x)
             && (point.x <= self.maxs.x)
             && (self.mins.y <= point.y)

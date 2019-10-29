@@ -15,6 +15,8 @@ pub struct Ptfe {
     dom: proto::Domain,
     /// Number of samples.
     num_phot: usize,
+    /// Laser emission wavelength.
+    emission_wavelength: f64,
     /// Laser emission position.
     emission_pos: [f64; 3],
     /// Laser emission direction.
@@ -36,6 +38,7 @@ impl Ptfe {
                 "meshes/basic".to_string(),
             ),
             dom: proto::Domain::new([-1.0, -1.0, -1.0], [1.0, 1.0, 1.0], [1, 1, 1]),
+            emission_wavelength: 830e-9,
             emission_pos: [-1.0, 0.0, 0.0],
             emission_dir: [1.0, 0.0, 0.0],
             num_phot: 1_000_000,
@@ -55,6 +58,11 @@ impl Ptfe {
     /// Get the number of photons.
     pub fn num_phot(&self) -> usize {
         self.num_phot
+    }
+
+    /// Get the laser emission wavelength.
+    pub fn emission_wavelength(&self) -> f64 {
+        self.emission_wavelength
     }
 
     /// Get the laser emission position.

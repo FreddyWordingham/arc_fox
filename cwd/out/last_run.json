@@ -1,1 +1,1 @@
-{"dir":{"cwd":"/Users/freddywordingham/Projects/arc/cwd","out":"out","res":"../res","mats":"mats/basic","meshes":"meshes/basic"},"dom":{"mins":[-1.0,-1.0,-1.0],"maxs":[1.0,1.0,1.0],"layout":[1,1,1]}}
+{"dir":{"cwd":"/Users/freddywordingham/Projects/arc/cwd","out":"out","res":"../res","mats":"mats/basic","meshes":"meshes/basic"},"dom":{"mins":[-1.0,-1.0,-1.0],"maxs":[1.0,1.0,1.0],"layout":[1,1,1]},"num_phot":1000000,"emission_pos":[-1.0,0.0,0.0],"emission_dir":[1.0,0.0,0.0]}
