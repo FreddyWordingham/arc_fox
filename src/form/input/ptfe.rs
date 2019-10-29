@@ -54,7 +54,7 @@ impl Ptfe {
                 "meshes/basic".to_string(),
             ),
             dom: proto::Domain::new([-1.0, -1.0, -1.0], [1.0, 1.0, 1.0], [1, 1, 1]),
-            num_phot: 1_000_000,
+            num_phot: 1_000,
             emission_wavelength: 830e-9,
             emission_pos: [-1.0, 0.0, 0.0],
             emission_dir: [1.0, 0.0, 0.0],
