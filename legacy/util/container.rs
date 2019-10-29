@@ -5,7 +5,7 @@ use std::cmp::{Ordering, PartialEq, PartialOrd};
 /// Container struct used to organise values by a separate label.
 #[derive(Clone, Copy)]
 pub struct Container<T, S> {
-    /// Sorting label.
+    /// Sorting utllabel.
     label: T,
     /// Stored value.
     value: S,
