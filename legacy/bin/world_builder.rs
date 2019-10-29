@@ -50,6 +50,7 @@ fn main() {
             }
         }
     }
+    bar.finish();
 
     // Output.
     // form.save(&dir.out().join("example.json"));
