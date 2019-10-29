@@ -27,4 +27,15 @@ impl Photon {
     pub fn wavelength(&self) -> f64 {
         self.wavelength
     }
+
+    /// Move along the direction the given distance.
+    #[pre(dist > 0.0)]
+    pub fn travel(&mut self, dist: f64) {
+        self.ray.travel(dist);
+    }
+
+    /// Pitch towards the z-axis and then roll around previous direction.
+    pub fn rotate(&mut self, pitch: f64, roll: f64) {
+        self.ray.rotate(pitch, roll)
+    }
 }
