@@ -8,4 +8,4 @@
 #![warn(clippy::missing_docs_in_private_items)]
 
 pub mod geom;
-pub mod utl;
+pub mod util;

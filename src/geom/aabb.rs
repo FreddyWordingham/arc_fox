@@ -1,6 +1,7 @@
 //! Geometric cuboid structure.
 
 use super::{Ray, Traceable};
+use crate::util::SortLabel;
 use contracts::pre;
 use nalgebra::{Point3, Unit, Vector3};
 
@@ -117,9 +118,9 @@ impl Traceable for Aabb {
         }
 
         if t_min > 0.0 {
-            return Some(t_min.separate());
+            return Some(t_min.components());
         }
 
-        Some(t_max.separate())
+        Some(t_max.components())
     }
 }
