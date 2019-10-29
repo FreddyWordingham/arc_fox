@@ -2,7 +2,7 @@
 
 use arc::{
     file::Loadable,
-    // file::Saveable,
+    file::Saveable,
     form::input::Ptfe as PtfeForm,
     util::{get_args, title},
 };
@@ -24,4 +24,7 @@ fn main() {
 
     let dir = form.dir().manifest();
     info!("Directory setup:\n{}", dir);
+
+    // Output.
+    form.save(&dir.out().join("last_run.json"));
 }

@@ -1,8 +1,9 @@
 //! PTFE input form.
 
 use super::super::proto;
+use crate::file::{as_json, from_json, Loadable, Saveable};
 use serde::{Deserialize, Serialize};
-use std::env::var;
+use std::{env::var, path::Path};
 
 /// Input form structure containing all information required to run the ptfe binary.
 #[derive(Debug, Deserialize, Serialize)]
@@ -39,5 +40,17 @@ impl Ptfe {
     /// Reference the domain proto-structure.
     pub fn dom(&self) -> &proto::Domain {
         &self.dom
+    }
+}
+
+impl Saveable for Ptfe {
+    fn save(&self, path: &Path) {
+        as_json(self, path);
+    }
+}
+
+impl Loadable for Ptfe {
+    fn load(path: &Path) -> Self {
+        from_json(path)
     }
 }
