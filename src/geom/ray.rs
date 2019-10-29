@@ -38,7 +38,7 @@ impl Ray {
     /// Pitch towards the z-axis and then roll around previous direction.
     #[pre(self.direction.z != 1.0)]
     pub fn rotate(&mut self, pitch: f64, roll: f64) {
-        let pitch_axis = Unit::new_unchecked(self.direction.cross(&Vector3::z_axis()));
+        let pitch_axis = Unit::new_normalize(self.direction.cross(&Vector3::z_axis()));
         let pitch_rot = Rotation3::from_axis_angle(&pitch_axis, pitch);
 
         let roll_rot = Rotation3::from_axis_angle(&self.direction, roll);

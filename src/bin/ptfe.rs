@@ -118,7 +118,7 @@ fn simulate(
     let mut total_raman = 0;
 
     let bar = arc::util::progress::bar(num_phot as u64);
-    for _ in 0..num_phot {
+    for p in 0..num_phot {
         bar.inc(1);
 
         let mut phot = Photon::new(Ray::new(emission_pos, emission_dir), emission_wavelength);
