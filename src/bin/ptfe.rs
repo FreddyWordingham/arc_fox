@@ -50,18 +50,20 @@ fn main() {
 
     let intra_inter_coeff = form.intralipid_interaction_coeff();
     let intra_albedo = form.intralipid_albedo();
+    let intra_raman_prob = form.intralipid_ramanisation_prob();
     let intra_asym = form.intralipid_asym();
     info!(
-        "Intralipid:\nInteraction coeff : {}\nAlbedo:           : {}\nAsymmetry         : {}",
-        intra_inter_coeff, intra_albedo, intra_asym
+        "Intralipid:\nInteraction coeff : {}\nAlbedo:           : {}\nRaman chance:     : {}\nAsymmetry         : {}",
+        intra_inter_coeff, intra_albedo, intra_raman_prob, intra_asym
     );
 
     let ptfe_inter_coeff = form.ptfe_interaction_coeff();
     let ptfe_albedo = form.ptfe_albedo();
+    let ptfe_raman_prob = form.ptfe_ramanisation_prob();
     let ptfe_asym = form.ptfe_asym();
     info!(
-        "PTFE:\nInteraction coeff : {}\nAlbedo:           : {}\nAsymmetry         : {}",
-        ptfe_inter_coeff, ptfe_albedo, ptfe_asym
+        "PTFE:\nInteraction coeff : {}\nAlbedo:           : {}\nRaman chance:     : {}\nAsymmetry         : {}",
+        ptfe_inter_coeff, ptfe_albedo, ptfe_raman_prob, ptfe_asym
     );
 
     let block = Cube::new(Point3::new(-0.1, -0.1, -0.1), Point3::new(0.1, 0.1, 0.1));
@@ -76,9 +78,11 @@ fn main() {
         emission_wavelength,
         intra_inter_coeff,
         intra_albedo,
+        intra_raman_prob,
         intra_asym,
         ptfe_inter_coeff,
         ptfe_albedo,
+        ptfe_raman_prob,
         ptfe_asym,
         dom.boundary(),
         &block,
@@ -101,14 +105,18 @@ fn simulate(
     emission_wavelength: f64,
     intra_inter_coeff: f64,
     intra_albedo: f64,
+    intra_raman_prob: f64,
     intra_asym: f64,
     ptfe_inter_coeff: f64,
     ptfe_albedo: f64,
+    ptfe_raman_prob: f64,
     ptfe_asym: f64,
     dom: &Cube,
     block: &Cube,
     mut rng: &mut ThreadRng,
 ) {
+    let mut total_raman = 0;
+
     let bar = arc::util::progress::bar(num_phot as u64);
     for _ in 0..num_phot {
         bar.inc(1);
@@ -117,8 +125,10 @@ fn simulate(
 
         let mut inter_coef = intra_inter_coeff;
         let mut _albedo = intra_albedo;
+        let mut raman_prob = intra_raman_prob;
         let mut asym = intra_asym;
         let mut inside_ptfe = false;
+        let mut ramanised = false;
 
         while dom.contained(phot.ray().origin()) {
             let domain_dist = dom.distance(phot.ray()).unwrap();
@@ -136,10 +146,12 @@ fn simulate(
                     if inside_ptfe {
                         inter_coef = ptfe_inter_coeff;
                         _albedo = ptfe_albedo;
+                        raman_prob = ptfe_raman_prob;
                         asym = ptfe_asym;
                     } else {
                         inter_coef = intra_inter_coeff;
                         _albedo = intra_albedo;
+                        raman_prob = intra_raman_prob;
                         asym = intra_asym;
                     }
                 } else if domain_dist < scat_dist {
@@ -151,6 +163,12 @@ fn simulate(
                         henyey_greenstein(&mut rng, asym),
                         rng.gen_range(0.0, 2.0 * PI),
                     );
+
+                    if !ramanised {
+                        if rng.gen::<f64>() <= raman_prob {
+                            ramanised = true;
+                        }
+                    }
                 }
             } else {
                 if domain_dist < scat_dist {
@@ -162,8 +180,20 @@ fn simulate(
                         henyey_greenstein(&mut rng, asym),
                         rng.gen_range(0.0, 2.0 * PI),
                     );
+
+                    if !ramanised {
+                        if rng.gen::<f64>() <= raman_prob {
+                            ramanised = true;
+                        }
+                    }
                 }
+            }
+
+            if ramanised {
+                total_raman += 1;
             }
         }
     }
+
+    info!("Total raman photons: {}", total_raman);
 }

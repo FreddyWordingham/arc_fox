@@ -25,12 +25,16 @@ pub struct Ptfe {
     intralipid_scat_coeff: f64,
     /// Intralipid absorption coefficient.
     intralipid_abs_coeff: f64,
+    /// Intralipid ramanisation coefficient.
+    intralipid_raman_coeff: f64,
     /// Intralipid asymmetry parameter.
     intralipid_asym: f64,
     /// Ptfe scattering coefficient.
     ptfe_scat_coeff: f64,
     /// Ptfe absorption coefficient.
     ptfe_abs_coeff: f64,
+    /// Ptfe ramanisation coefficient.
+    ptfe_raman_coeff: f64,
     /// Ptfe asymmetry parameter.
     ptfe_asym: f64,
 }
@@ -56,9 +60,11 @@ impl Ptfe {
             emission_dir: [1.0, 0.0, 0.0],
             intralipid_scat_coeff: 10.0,
             intralipid_abs_coeff: 0.01,
+            intralipid_raman_coeff: 0.0,
             intralipid_asym: 0.1,
             ptfe_scat_coeff: 10.0,
             ptfe_abs_coeff: 0.01,
+            ptfe_raman_coeff: 1.0,
             ptfe_asym: 0.8,
         }
     }
@@ -103,12 +109,12 @@ impl Ptfe {
 
     /// Get the intralipid interaction coefficient.
     pub fn intralipid_interaction_coeff(&self) -> f64 {
-        self.intralipid_scat_coeff + self.intralipid_abs_coeff
+        self.intralipid_scat_coeff + self.intralipid_abs_coeff + self.intralipid_raman_coeff
     }
 
     /// Get the ptfe interaction coefficient.
     pub fn ptfe_interaction_coeff(&self) -> f64 {
-        self.ptfe_scat_coeff + self.ptfe_abs_coeff
+        self.ptfe_scat_coeff + self.ptfe_abs_coeff + self.ptfe_raman_coeff
     }
 
     /// Get the intralipid single scattering albedo.
@@ -119,6 +125,16 @@ impl Ptfe {
     /// Get the ptfe single scattering albedo.
     pub fn ptfe_albedo(&self) -> f64 {
         self.ptfe_abs_coeff / self.ptfe_interaction_coeff()
+    }
+
+    /// Get the intralipid single scattering ramanisation probability.
+    pub fn intralipid_ramanisation_prob(&self) -> f64 {
+        self.intralipid_raman_coeff / self.intralipid_interaction_coeff()
+    }
+
+    /// Get the ptfe single scattering ramanisation probability.
+    pub fn ptfe_ramanisation_prob(&self) -> f64 {
+        self.ptfe_raman_coeff / self.ptfe_interaction_coeff()
     }
 
     /// Get the intralipid asymmetry parameter.
