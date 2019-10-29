@@ -15,12 +15,24 @@ pub struct Ptfe {
     dom: proto::Domain,
     /// Number of samples.
     num_phot: usize,
-    /// Laser emission wavelength.
+    /// Laser emission position.
     emission_wavelength: f64,
     /// Laser emission position.
     emission_pos: [f64; 3],
     /// Laser emission direction.
     emission_dir: [f64; 3],
+    /// Intralipid scattering coefficient.
+    intralipid_scat_coeff: f64,
+    /// Intralipid absorption coefficient.
+    intralipid_abs_coeff: f64,
+    /// Intralipid asymmetry parameter.
+    intralipid_asym: f64,
+    /// Ptfe scattering coefficient.
+    ptfe_scat_coeff: f64,
+    /// Ptfe absorption coefficient.
+    ptfe_abs_coeff: f64,
+    /// Ptfe asymmetry parameter.
+    ptfe_asym: f64,
 }
 
 impl Ptfe {
@@ -38,10 +50,16 @@ impl Ptfe {
                 "meshes/basic".to_string(),
             ),
             dom: proto::Domain::new([-1.0, -1.0, -1.0], [1.0, 1.0, 1.0], [1, 1, 1]),
+            num_phot: 1_000_000,
             emission_wavelength: 830e-9,
             emission_pos: [-1.0, 0.0, 0.0],
             emission_dir: [1.0, 0.0, 0.0],
-            num_phot: 1_000_000,
+            intralipid_scat_coeff: 10.0,
+            intralipid_abs_coeff: 0.01,
+            intralipid_asym: 0.1,
+            ptfe_scat_coeff: 10.0,
+            ptfe_abs_coeff: 0.01,
+            ptfe_asym: 0.8,
         }
     }
 
@@ -81,6 +99,36 @@ impl Ptfe {
             self.emission_dir[1],
             self.emission_dir[2],
         ))
+    }
+
+    /// Get the intralipid interaction coefficient.
+    pub fn intralipid_interaction_coeff(&self) -> f64 {
+        self.intralipid_scat_coeff + self.intralipid_abs_coeff
+    }
+
+    /// Get the ptfe interaction coefficient.
+    pub fn ptfe_interaction_coeff(&self) -> f64 {
+        self.ptfe_scat_coeff + self.ptfe_abs_coeff
+    }
+
+    /// Get the intralipid single scattering albedo.
+    pub fn intralipid_albedo(&self) -> f64 {
+        self.intralipid_abs_coeff / self.intralipid_interaction_coeff()
+    }
+
+    /// Get the ptfe single scattering albedo.
+    pub fn ptfe_albedo(&self) -> f64 {
+        self.ptfe_abs_coeff / self.ptfe_interaction_coeff()
+    }
+
+    /// Get the intralipid asymmetry parameter.
+    pub fn intralipid_asym(&self) -> f64 {
+        self.intralipid_asym
+    }
+
+    /// Get the ptfe asymmetry parameter.
+    pub fn ptfe_asym(&self) -> f64 {
+        self.ptfe_asym
     }
 }
 
