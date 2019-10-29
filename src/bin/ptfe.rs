@@ -193,6 +193,7 @@ fn simulate(
             }
         }
     }
+    bar.finish();
 
     info!("Total raman photons: {}", total_raman);
 }
