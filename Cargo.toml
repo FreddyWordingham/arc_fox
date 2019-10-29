@@ -7,19 +7,6 @@ edition = "2018"
 # documention = "https://freddywordingham.github.io/arc"
 
 [dependencies]
-assert_approx_eq = "1.1.0"
-colog = "0.2.1"
-colored = "1.8.0"
-contracts = "0.3.0"
-indicatif = "0.12.0"
-log = "0.4.8"
-nalgebra = "0.18.1"
-ndarray = "0.13.0"
-netcdf = "0.3.0"
-rand = "0.7.2"
-serde = { version = "1.0.101", features = ["derive"] }
-serde_json = "1.0.41"
-terminal_size = "0.1.8"
 
 # Development profile: "cargo build".
 [profile.dev]
