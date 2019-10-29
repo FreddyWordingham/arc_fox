@@ -11,7 +11,7 @@ const EPSILON: f64 = 1.0e-6;
 pub struct Plane {
     /// Position on the plane.
     pos: Point3<f64>,
-    /// Normal of the plane.
+    /// Normal.
     norm: Unit<Vector3<f64>>,
 }
 
