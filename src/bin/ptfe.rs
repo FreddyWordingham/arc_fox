@@ -24,8 +24,8 @@ fn main() {
 
     // Load manifest.
     info!("Loading input form: {}", input_file_path.display());
-    let form = PtfeForm::example();
-    // let form = PtfeForm::load(input_file_path);
+    // let form = PtfeForm::example();
+    let form = PtfeForm::load(input_file_path);
 
     let dir = form.dir().manifest();
     info!("Directory setup:\n{}", dir);

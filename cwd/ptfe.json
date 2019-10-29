@@ -24,6 +24,7 @@
         ]
     },
     "num_phot": 1000000,
+    "emission_wavelength": 8.3e-7,
     "emission_pos": [
         -1.0,
         0.0,
@@ -33,5 +34,11 @@
         1.0,
         0.0,
         0.0
-    ]
+    ],
+    "intralipid_scat_coeff": 10.0,
+    "intralipid_abs_coeff": 0.01,
+    "intralipid_asym": 0.1,
+    "ptfe_scat_coeff": 10.0,
+    "ptfe_abs_coeff": 0.01,
+    "ptfe_asym": 0.8
 }
