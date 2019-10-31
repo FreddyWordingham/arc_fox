@@ -2,29 +2,36 @@
 
 use arc::{
     dir::init,
-    file::{Loadable, Saveable},
-    math::Formula,
+    file::Loadable,
+    geom::Shape,
     phys::Material,
     report,
-    util::{print, start_up::get_args, Range},
+    util::{print, start_up::get_args},
+    world::Entity,
 };
+use contracts::pre;
 use log::info;
+use nalgebra::Point3;
 use std::{collections::HashMap, path::PathBuf};
 
 fn main() {
     title();
     let (_args, _cwd, _out) = start_up();
-    let () = init();
 
-    let mat = Material::new(
-        Range::positive(),
-        Formula::Const(1.0),
-        Formula::Const(10.0),
-        Formula::Const(0.1),
-        Formula::Const(0.0),
-        Formula::Const(0.01),
+    print::section("Initialising");
+    let mat_map = load_mat_map(vec!["intralipid", "ptfe"]);
+    let _ent_map = load_ent_map(
+        vec![(
+            "vial",
+            vec![Box::new(arc::geom::Aabb::new(
+                Point3::new(-0.1, -0.1, -0.1),
+                Point3::new(0.1, 0.1, 0.1),
+            ))],
+            "ptfe",
+            "intralipid",
+        )],
+        &mat_map,
     );
-    mat.save(&arc::dir::res::mats().join("test.json"));
 }
 
 fn title() {
@@ -50,19 +57,41 @@ fn start_up() -> (Vec<String>, PathBuf, PathBuf) {
     (args, cwd, out)
 }
 
-fn init() {
-    print::section("Initialising");
-
+#[pre(!mats.is_empty())]
+fn load_mat_map(mats: Vec<&'static str>) -> HashMap<&'static str, Material> {
     let mat_dir = arc::dir::res::mats();
-
-    let mats = vec!["intralipid", "ptfe"];
 
     let mut mat_map = HashMap::new();
     for name in mats {
-        report!("Loading material: {}", name);
+        info!("Loading mat: {}", name);
         mat_map.insert(
             name,
             Material::load(&mat_dir.join(format!("{}.json", name))),
         );
     }
+
+    mat_map
+}
+
+#[pre(!ents.is_empty())]
+fn load_ent_map<'a>(
+    ents: Vec<(
+        &'static str,
+        Vec<Box<dyn Shape>>,
+        &'static str,
+        &'static str,
+    )>,
+    mat_map: &'a HashMap<&'static str, Material>,
+) -> HashMap<&'static str, Entity<'a>> {
+    let mut ent_map = HashMap::new();
+    for (name, surfs, in_mat, out_mat) in ents {
+        info!("Loading ent: {}", name);
+
+        ent_map.insert(
+            name,
+            Entity::new(surfs, &mat_map[in_mat], &mat_map[out_mat]),
+        );
+    }
+
+    ent_map
 }

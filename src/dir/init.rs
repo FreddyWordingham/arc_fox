@@ -11,7 +11,6 @@ use std::{
 /// Sets the current working directory to the arc internal working folder.
 pub fn cwd(sub_dir: &str) -> PathBuf {
     let cwd = arc().join("cwd").join(sub_dir);
-    println!("Cwd: {}", cwd.display());
 
     set_current_dir(cwd).expect("Unable to set the current working directory!");
 

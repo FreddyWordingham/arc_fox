@@ -16,10 +16,10 @@ pub fn mats() -> PathBuf {
     root().join("mats")
 }
 
-/// Get the mesh resources sub-directory path.
+/// Get the shapes resources sub-directory path.
 #[post(ret.is_dir())]
-pub fn meshes() -> PathBuf {
-    root().join("meshes")
+pub fn shapes() -> PathBuf {
+    root().join("shapes")
 }
 
 /// Get the species resources sub-directory path.
