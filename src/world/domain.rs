@@ -47,4 +47,19 @@ impl Domain {
             cells: Array3::from_shape_vec(num_cells, cells).unwrap(),
         }
     }
+
+    /// Reference the number of cells.
+    pub fn num_cells(&self) -> &[usize; 3] {
+        &self.num_cells
+    }
+
+    /// Reference the boundary.
+    pub fn boundary(&self) -> &Aabb {
+        &self.boundary
+    }
+
+    /// Reference the array of cells.
+    pub fn cells(&self) -> &Array3<Cell> {
+        &self.cells
+    }
 }
