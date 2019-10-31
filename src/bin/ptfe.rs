@@ -40,11 +40,11 @@ fn main() {
     );
 
     print::section("Simulation");
-    let intersections = Vec::with_capacity(dom.total_cells());
+    let mut intersections = Vec::with_capacity(dom.total_cells());
     for cell in dom.cells() {
         intersections.push(cell.ents().len());
     }
-    let _intersections = Array3::from_shape_vec(intersections, dom.shape());
+    let _intersections = Array3::from_shape_vec(*dom.shape(), intersections);
 
     print::section("Output");
 }
