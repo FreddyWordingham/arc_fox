@@ -2,14 +2,14 @@
 
 use super::{EntMap, Entity};
 use crate::geom::{Aabb, Collidable, Shape};
-use log::warn;
+use contracts::pre;
 
 /// Domain cell structure.
 /// Contains local spatial information.
 pub struct Cell<'a> {
     /// Boundary.
     boundary: Aabb,
-    /// Entity shapes.
+    /// Intersecting entity shapes.
     ents: Option<Vec<(&'a Entity<'a>, Vec<&'a Box<dyn Shape>>)>>,
 }
 
@@ -39,6 +39,12 @@ impl<'a> Cell<'a> {
         };
 
         Self { boundary, ents }
+    }
+
+    /// Reference the intersecting entity shapes.
+    #[pre(self.ents.is_some())]
+    pub fn ents(&self) -> &Vec<(&'a Entity<'a>, Vec<&'a Box<dyn Shape>>)> {
+        self.ents.as_ref().unwrap()
     }
 
     /// Determine if the cell contains intersecting entity surfaces.

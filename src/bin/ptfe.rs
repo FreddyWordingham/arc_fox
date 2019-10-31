@@ -12,6 +12,7 @@ use arc::{
 use contracts::pre;
 use log::info;
 use nalgebra::Point3;
+use ndarray::Array3;
 use std::{collections::HashMap, path::PathBuf};
 
 fn main() {
@@ -32,11 +33,20 @@ fn main() {
         )],
         &mat_map,
     );
-    let _dom = Domain::new(
+    let dom = Domain::new(
         [16, 16, 16],
         Aabb::new(Point3::new(-1.0, -1.0, -1.0), Point3::new(1.0, 1.0, 1.0)),
         &ent_map,
     );
+
+    print::section("Simulation");
+    let intersections = Vec::with_capacity(dom.total_cells());
+    for cell in dom.cells() {
+        intersections.push(cell.ents().len());
+    }
+    let _intersections = Array3::from_shape_vec(intersections, dom.shape());
+
+    print::section("Output");
 }
 
 fn title() {

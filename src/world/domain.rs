@@ -60,6 +60,11 @@ impl<'a> Domain<'a> {
         &self.num_cells
     }
 
+    /// Calculate the total number of cells.
+    pub fn total_cells(&self) -> usize {
+        self.num_cells[0] * self.num_cells[1] * self.num_cells[2]
+    }
+
     /// Reference the boundary.
     pub fn boundary(&self) -> &Aabb {
         &self.boundary
