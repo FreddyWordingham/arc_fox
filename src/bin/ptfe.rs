@@ -14,7 +14,7 @@ use std::path::PathBuf;
 
 fn main() {
     title();
-    let (_args, cwd, _out) = start_up();
+    let (_args, _cwd, _out) = start_up();
     let () = init();
 
     let mat = Material::new(
