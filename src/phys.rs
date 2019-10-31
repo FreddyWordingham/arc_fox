@@ -1,5 +1,5 @@
 //! Physical properties.
 
-// pub mod material;
+pub mod material;
 
-// pub use self::material::*;
+pub use self::material::*;
