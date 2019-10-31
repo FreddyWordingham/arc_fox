@@ -71,6 +71,21 @@ impl Aabb {
             && (self.mins.z <= point.z)
             && (point.z <= self.maxs.z)
     }
+
+    /// Determine the closest contained point to a given point.
+    pub fn closest_point(&self, p: &Point3<f64>) -> Point3<f64> {
+        let mut q = Point3::origin();
+
+        for i in 0..3 {
+            if p[i] < self.mins[i] {
+                q[i] = self.mins[i];
+            } else if p[i] > self.maxs[i] {
+                q[i] = self.maxs[i];
+            }
+        }
+
+        q
+    }
 }
 
 impl Traceable for Aabb {

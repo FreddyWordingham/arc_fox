@@ -2,7 +2,7 @@
 
 use super::{Aabb, Collidable, Ray, Traceable};
 use contracts::pre;
-use nalgebra::{Isometry3, Point3, Unit, Vector3};
+use nalgebra::{Point3, Unit, Vector3};
 use std::f64::consts::PI;
 
 /// Geometry describing a sphere.
@@ -108,5 +108,14 @@ impl Traceable for Sphere {
         }
 
         None
+    }
+}
+
+impl Collidable for Sphere {
+    fn collides(&self, aabb: &Aabb) -> bool {
+        let p = aabb.closest_point(&self.centre);
+        let d = nalgebra::distance(&p, &self.centre);
+
+        d <= self.rad
     }
 }
