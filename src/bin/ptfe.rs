@@ -2,7 +2,8 @@
 
 use arc::{
     dir::init,
-    file::{Loadable, Saveable},
+    // file::Loadable,
+    file::Saveable,
     math::Formula,
     phys::Material,
     report,
@@ -16,13 +17,14 @@ fn main() {
     let (_args, cwd, _out) = start_up();
     let () = init();
 
-    let mat = Material::new(Formula::Const(3.14159));
-    mat.save(&cwd.join("test.json"));
-
-    report!(arc::dir::res::root().display());
-    report!(arc::dir::res::meshes().display());
-    report!(arc::dir::res::mats().display());
-    report!(arc::dir::res::species().display());
+    let mat = Material::new(
+        Formula::Const(1.0),
+        Formula::Const(10.0),
+        Formula::Const(0.1),
+        Formula::Const(0.0),
+        Formula::Const(0.01),
+    );
+    mat.save(&arc::dir::res::mats().join("test.json"));
 }
 
 fn title() {
