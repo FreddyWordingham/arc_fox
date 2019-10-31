@@ -16,8 +16,6 @@ pub struct Cell<'a> {
 impl<'a> Cell<'a> {
     /// Construct a new instance.
     pub fn new(boundary: Aabb, ent_map: &'a EntMap<'a>) -> Self {
-        warn!("Ents could be culled here.");
-
         let mut ents_list = Vec::new();
         for (_name, ent) in ent_map.iter() {
             if boundary.collides(ent.boundary()) {
