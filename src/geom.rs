@@ -2,6 +2,7 @@
 
 pub mod aabb;
 pub mod circle;
+pub mod collidable;
 pub mod plane;
 pub mod ray;
 pub mod traceable;

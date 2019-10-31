@@ -1,6 +1,6 @@
 //! Geometric cuboid structure.
 
-use super::{Ray, Traceable};
+use super::{Collidable, Ray, Traceable};
 use crate::util::SortLabel;
 use contracts::pre;
 use nalgebra::{Point3, Unit, Vector3};
@@ -122,5 +122,16 @@ impl Traceable for Aabb {
         }
 
         Some(t_max.components())
+    }
+}
+
+impl Collidable for Aabb {
+    fn collides(&self, aabb: &Aabb) -> bool {
+        (self.mins.x <= aabb.maxs.x)
+            && (self.maxs.x >= aabb.mins.x)
+            && (self.mins.y <= aabb.maxs.y)
+            && (self.maxs.y >= aabb.mins.y)
+            && (self.mins.z <= aabb.maxs.z)
+            && (self.maxs.z >= aabb.mins.z)
     }
 }
