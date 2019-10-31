@@ -1,6 +1,6 @@
 //! World domain structure.
 
-use super::{Cell, Entity, Record};
+use super::{Cell, EntMap, Record};
 use crate::{geom::Aabb, util::progress::bar};
 use nalgebra::Point3;
 use ndarray::Array3;
@@ -20,7 +20,7 @@ pub struct Domain<'a> {
 
 impl<'a> Domain<'a> {
     /// Construct a new instance.
-    pub fn new(num_cells: [usize; 3], boundary: Aabb, ents: &'a Vec<Entity<'a>>) -> Self {
+    pub fn new(num_cells: [usize; 3], boundary: Aabb, ent_map: &'a EntMap<'a>) -> Self {
         let total_cells = num_cells[0] * num_cells[1] * num_cells[2];
         let mut cells = Vec::with_capacity(total_cells);
 
@@ -41,7 +41,7 @@ impl<'a> Domain<'a> {
                     let min = Point3::new(min_x, min_y, min_z);
                     let max = min + cell_size;
 
-                    cells.push(Cell::new(Aabb::new(min, max), ents));
+                    cells.push(Cell::new(Aabb::new(min, max), ent_map));
                 }
             }
         }

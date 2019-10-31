@@ -7,7 +7,7 @@ use arc::{
     phys::Material,
     report,
     util::{print, start_up::get_args},
-    world::{Domain, Entity},
+    world::{Domain, EntMap, Entity, MatMap},
 };
 use contracts::pre;
 use log::info;
@@ -35,7 +35,7 @@ fn main() {
     let _dom = Domain::new(
         [16, 16, 16],
         Aabb::new(Point3::new(-1.0, -1.0, -1.0), Point3::new(1.0, 1.0, 1.0)),
-        ent_map,
+        &ent_map,
     );
 }
 
@@ -63,7 +63,7 @@ fn start_up() -> (Vec<String>, PathBuf, PathBuf) {
 }
 
 #[pre(!mats.is_empty())]
-fn load_mat_map(mats: Vec<&'static str>) -> HashMap<&'static str, Material> {
+fn load_mat_map(mats: Vec<&'static str>) -> MatMap {
     let mat_dir = arc::dir::res::mats();
 
     let mut mat_map = HashMap::new();
@@ -86,8 +86,8 @@ fn load_ent_map<'a>(
         &'static str,
         &'static str,
     )>,
-    mat_map: &'a HashMap<&'static str, Material>,
-) -> HashMap<&'static str, Entity<'a>> {
+    mat_map: &'a MatMap<'a>,
+) -> EntMap<'a> {
     let mut ent_map = HashMap::new();
     for (name, surfs, in_mat, out_mat) in ents {
         info!("Loading ent: {}", name);

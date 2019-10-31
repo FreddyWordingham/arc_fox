@@ -1,6 +1,6 @@
 //! Domain cell structure.
 
-use super::Entity;
+use super::{EntMap, Entity};
 use crate::geom::{Aabb, Collidable, Shape};
 use log::warn;
 
@@ -10,16 +10,16 @@ pub struct Cell<'a> {
     /// Boundary.
     boundary: Aabb,
     /// Entity shapes.
-    ents: Vec<(&'a Entity<'a>, Vec<&'a Box<dyn Shape>>)>,
+    ents: Option<Vec<(&'a Entity<'a>, Vec<&'a Box<dyn Shape>>)>>,
 }
 
 impl<'a> Cell<'a> {
     /// Construct a new instance.
-    pub fn new(boundary: Aabb, ents: &'a Vec<Entity<'a>>) -> Self {
+    pub fn new(boundary: Aabb, ent_map: &'a EntMap<'a>) -> Self {
         warn!("Ents could be culled here.");
 
         let mut ents_list = Vec::new();
-        for ent in ents {
+        for (_name, ent) in ent_map.iter() {
             if boundary.collides(ent.boundary()) {
                 let mut surfs = Vec::new();
                 for surf in ent.surfs() {
@@ -34,9 +34,17 @@ impl<'a> Cell<'a> {
             }
         }
 
-        Self {
-            boundary,
-            ents: ents_list,
-        }
+        let ents = if ents_list.is_empty() {
+            None
+        } else {
+            Some(ents_list)
+        };
+
+        Self { boundary, ents }
+    }
+
+    /// Determine if the cell contains intersecting entity surfaces.
+    pub fn is_empty(&self) -> bool {
+        self.ents.is_none()
     }
 }
