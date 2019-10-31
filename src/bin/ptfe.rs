@@ -42,12 +42,16 @@ fn main() {
     print::section("Simulation");
     let mut intersections = Vec::with_capacity(dom.total_cells());
     for cell in dom.cells() {
-        intersections.push(cell.ents().len());
+        if cell.is_empty() {
+            intersections.push(0);
+        } else {
+            intersections.push(cell.ents().len() as u64);
+        }
     }
     let intersections = Array3::from_shape_vec(*dom.shape(), intersections).unwrap();
 
     print::section("Output");
-    arc::file::saveable::save_as_hdf5(vec![("surfs", &intersections)], &out.join("surfs.h5"));
+    arc::file::saveable::save_as_netcdf(vec![("surfs", &intersections)], &out.join("surfs.h5"));
 }
 
 fn title() {
