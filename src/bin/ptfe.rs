@@ -20,7 +20,7 @@ fn main() {
 
     print::section("Initialising");
     let mat_map = load_mat_map(vec!["intralipid", "ptfe"]);
-    let _ent_map = load_ent_map(
+    let ent_map = load_ent_map(
         vec![(
             "vial",
             vec![Box::new(arc::geom::Aabb::new(
@@ -35,6 +35,7 @@ fn main() {
     let _dom = Domain::new(
         [16, 16, 16],
         Aabb::new(Point3::new(-1.0, -1.0, -1.0), Point3::new(1.0, 1.0, 1.0)),
+        ent_map,
     );
 }
 

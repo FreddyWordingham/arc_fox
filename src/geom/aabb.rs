@@ -8,7 +8,7 @@ use serde::{Deserialize, Serialize};
 
 /// Axis-aligned box.
 /// Commonly used to partition domains.
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Aabb {
     /// Minimum bound.
     mins: Point3<f64>,
@@ -163,6 +163,10 @@ impl Collidable for Aabb {
             && (self.maxs.y >= aabb.mins.y)
             && (self.mins.z <= aabb.maxs.z)
             && (self.maxs.z >= aabb.mins.z)
+    }
+
+    fn boundary(&self) -> Aabb {
+        self.clone()
     }
 }
 

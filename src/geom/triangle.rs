@@ -249,4 +249,21 @@ impl Collidable for Triangle {
 
         true
     }
+
+    fn boundary(&self) -> Aabb {
+        let mut mins = self.verts[0];
+        let mut maxs = mins;
+
+        for v in self.verts.iter().skip(1) {
+            for i in 0..3 {
+                if v[i] < mins[i] {
+                    mins[i] = v[i];
+                } else if v[i] > maxs[i] {
+                    maxs[i] = v[i];
+                }
+            }
+        }
+
+        Aabb::new(mins, maxs)
+    }
 }

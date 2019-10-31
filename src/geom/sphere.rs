@@ -119,4 +119,9 @@ impl Collidable for Sphere {
 
         d <= self.rad
     }
+
+    fn boundary(&self) -> Aabb {
+        let half_width = Vector3::new(self.rad, self.rad, self.rad);
+        Aabb::new(self.centre - half_width, self.centre + half_width)
+    }
 }

@@ -1,27 +1,26 @@
 //! World domain structure.
 
-use super::{Cell, Record};
+use super::{Cell, Entity, Record};
 use crate::{geom::Aabb, util::progress::bar};
 use nalgebra::Point3;
 use ndarray::Array3;
 
 /// World domain structure.
 /// All simulation is contained within the boundary of the domain.
-#[derive(Debug)]
-pub struct Domain {
+pub struct Domain<'a> {
     /// Number of splits along each axis.
     num_cells: [usize; 3],
     /// Boundary.
     boundary: Aabb,
     /// Array of cells.
-    cells: Array3<Cell>,
+    cells: Array3<Cell<'a>>,
     /// Array of records.
     recs: Array3<Record>,
 }
 
-impl Domain {
+impl<'a> Domain<'a> {
     /// Construct a new instance.
-    pub fn new(num_cells: [usize; 3], boundary: Aabb) -> Self {
+    pub fn new(num_cells: [usize; 3], boundary: Aabb, ents: &'a Vec<Entity<'a>>) -> Self {
         let total_cells = num_cells[0] * num_cells[1] * num_cells[2];
         let mut cells = Vec::with_capacity(total_cells);
 
@@ -42,7 +41,7 @@ impl Domain {
                     let min = Point3::new(min_x, min_y, min_z);
                     let max = min + cell_size;
 
-                    cells.push(Cell::new(Aabb::new(min, max)));
+                    cells.push(Cell::new(Aabb::new(min, max), ents));
                 }
             }
         }
@@ -67,7 +66,7 @@ impl Domain {
     }
 
     /// Reference the array of cells.
-    pub fn cells(&self) -> &Array3<Cell> {
+    pub fn cells(&self) -> &Array3<Cell<'a>> {
         &self.cells
     }
 

@@ -117,4 +117,8 @@ impl Collidable for SmoothTriangle {
     fn collides(&self, aabb: &Aabb) -> bool {
         self.tri.collides(aabb)
     }
+
+    fn boundary(&self) -> Aabb {
+        self.tri.boundary()
+    }
 }

@@ -6,4 +6,7 @@ use super::Aabb;
 pub trait Collidable {
     /// Determine if an collision occurs.
     fn collides(&self, cube: &Aabb) -> bool;
+
+    /// Reference a bounding box of the shape.
+    fn boundary(&self) -> Aabb;
 }
