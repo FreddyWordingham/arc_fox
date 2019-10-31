@@ -18,6 +18,11 @@ fn main() {
 
     let mat = Material::new(Formula::Const(3.14159));
     mat.save(&cwd.join("test.json"));
+
+    report!(arc::dir::res::root().display());
+    report!(arc::dir::res::meshes().display());
+    report!(arc::dir::res::mats().display());
+    report!(arc::dir::res::species().display());
 }
 
 fn title() {
