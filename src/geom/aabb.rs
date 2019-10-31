@@ -47,9 +47,23 @@ impl Aabb {
         nalgebra::center(&self.mins, &self.maxs)
     }
 
+    /// Calculate the area.
+    pub fn area(&self) -> f64 {
+        let ws = self.widths();
+
+        2.0 * ((ws.x * ws.y) + (ws.y * ws.z) + (ws.z * ws.x))
+    }
+
+    /// Calculate the volume.
+    pub fn vol(&self) -> f64 {
+        let ws = self.widths();
+
+        ws.x * ws.y * ws.z
+    }
+
     /// Determine if the given point is contained.
     /// Points lying exactly at the surface are considered contained.
-    pub fn contained(&self, point: &Point3<f64>) -> bool {
+    pub fn contains(&self, point: &Point3<f64>) -> bool {
         (self.mins.x <= point.x)
             && (point.x <= self.maxs.x)
             && (self.mins.y <= point.y)

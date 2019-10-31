@@ -3,6 +3,7 @@
 use super::{Ray, Traceable};
 use contracts::pre;
 use nalgebra::{Point3, Unit, Vector3};
+use std::f64::consts::PI;
 
 /// Parallel ray catch value.
 const EPSILON: f64 = 1.0e-6;
@@ -39,6 +40,11 @@ impl Circle {
     /// Get the radius.
     pub fn rad(&self) -> f64 {
         self.rad
+    }
+
+    /// Calculate the area.
+    pub fn area(&self) -> f64 {
+        PI * self.rad.powi(2)
     }
 }
 
