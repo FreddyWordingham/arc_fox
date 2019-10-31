@@ -6,6 +6,7 @@ pub mod collidable;
 pub mod plane;
 pub mod ray;
 pub mod traceable;
+pub mod triangle;
 
 pub use self::aabb::*;
 pub use self::circle::*;
@@ -13,3 +14,4 @@ pub use self::collidable::*;
 pub use self::plane::*;
 pub use self::ray::*;
 pub use self::traceable::*;
+pub use self::triangle::*;
