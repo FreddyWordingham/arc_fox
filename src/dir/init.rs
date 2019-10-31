@@ -1,18 +1,16 @@
 //! Directory initialisation functions.
 
+use super::arc;
 use std::{
-    env::{current_dir, set_current_dir, var},
+    env::{current_dir, set_current_dir},
     fs::create_dir_all,
-    path::{Path, PathBuf},
+    path::PathBuf,
 };
 
 /// Initialise the current working directory.
 /// Sets the current working directory to the arc internal working folder.
 pub fn cwd(sub_dir: &str) -> PathBuf {
-    let arc_env_var = var("ARC_DIR").expect("Environment variable ARC_DIR must be set not set.");
-    let arc_dir = Path::new(&arc_env_var);
-
-    let cwd = arc_dir.join("cwd").join(sub_dir);
+    let cwd = arc().join("cwd").join(sub_dir);
     println!("Cwd: {}", cwd.display());
 
     set_current_dir(cwd).expect("Unable to set the current working directory!");
