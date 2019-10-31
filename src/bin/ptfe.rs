@@ -2,6 +2,9 @@
 
 use arc::{
     dir::init,
+    file::{Loadable, Saveable},
+    math::Formula,
+    phys::Material,
     report,
     util::{print, start_up::get_args},
 };
@@ -10,8 +13,11 @@ use std::path::PathBuf;
 
 fn main() {
     title();
-    let (_args, _cwd, _out) = start_up();
+    let (_args, cwd, _out) = start_up();
     let () = init();
+
+    let mat = Material::new(Formula::Const(3.14159));
+    mat.save(&cwd.join("test.json"));
 }
 
 fn title() {
