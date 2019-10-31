@@ -13,9 +13,7 @@ use std::path::PathBuf;
 fn main() {
     title();
     let (_args, _cwd, _out) = start_up();
-
-    // Initialisation.
-    print::section("Initialising");
+    let () = init();
 }
 
 fn title() {
@@ -39,4 +37,8 @@ fn start_up() -> (Vec<String>, PathBuf, PathBuf) {
     report!(out.display(), "out");
 
     (args, cwd, out)
+}
+
+fn init() {
+    print::section("Initialising");
 }
