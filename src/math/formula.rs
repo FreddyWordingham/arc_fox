@@ -1,7 +1,9 @@
 //! Mathematical formula enumeration.
 
+use serde::{Deserialize, Serialize};
+
 /// Mathematical formulae accepting a single scalar argument.
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub enum Formula {
     /// No-op. = x
     X,
