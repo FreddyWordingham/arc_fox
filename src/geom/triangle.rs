@@ -18,8 +18,11 @@ pub struct Triangle {
 
 impl Triangle {
     /// Construct a new instance.
-    pub fn new(verts: [Point3<f64>; 3], norm: Unit<Vector3<f64>>) -> Self {
-        Self { verts, norm }
+    pub fn new(verts: [Point3<f64>; 3]) -> Self {
+        Self {
+            verts,
+            norm: Unit::new_normalize((verts[1] - verts[0]).cross(&(verts[2] - verts[0]))),
+        }
     }
 
     /// Reference the vertex positions.
