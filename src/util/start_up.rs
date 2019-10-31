@@ -1,7 +1,11 @@
 //! Common start-up operations.
 
 use log::error;
-use std::{env::args, env::set_current_dir, fs::create_dir_all, path::PathBuf};
+use std::{
+    env::{args, current_dir, set_current_dir, var},
+    fs::create_dir_all,
+    path::{Path, PathBuf},
+};
 
 /// Get the command line arguments.
 pub fn get_args(hints: Vec<String>) -> Vec<String> {
@@ -15,13 +19,27 @@ pub fn get_args(hints: Vec<String>) -> Vec<String> {
     args
 }
 
-/// Get the current working directory.
-/// This also sets the current working directory to the arc internal working folder.
-pub fn get_cwd() -> PathBuf {
-    set_current_dir(path).expect("Unable to set the current working directory!");
+/// Initialise the current working directory.
+/// Sets the current working directory to the arc internal working folder.
+pub fn init_cwd(sub_dir: &str) -> PathBuf {
+    let arc_env_var = var("ARC_DIR").expect("Environment variable ARC_DIR must be set not set.");
+    let arc_dir = Path::new(&arc_env_var);
+
+    let cwd = arc_dir.join("cwd").join(sub_dir);
+    println!("Cwd: {}", cwd.display());
+
+    set_current_dir(cwd).expect("Unable to set the current working directory!");
+
+    current_dir().expect("Unable to get the determine the current working directory.")
 }
 
 /// Create an output directory.
-pub fn create_output_dir() -> PathBuf {
-    create_dir_all("./out").unwrap()
+pub fn init_out() -> PathBuf {
+    let out = current_dir()
+        .expect("Unable to get the determine the current working directory.")
+        .join("out");
+
+    create_dir_all(&out).expect("Could not create output directory.");
+
+    out
 }

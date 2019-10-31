@@ -3,35 +3,40 @@
 use arc::{
     report,
     util::{
-        print::{section, title},
-        start_up::{get_args, get_cwd},
+        print,
+        start_up::{get_args, init_cwd, init_out},
     },
 };
 use log::info;
-use std::path::Path;
+use std::path::PathBuf;
 
 fn main() {
     title();
-    let (args, cwd) = start_up();
+    let (_args, _cwd, _out) = start_up();
 
     // Initialisation.
-    section("Initialising");
+    print::section("Initialising");
 }
 
 fn title() {
-    title("PTFE");
+    print::title("PTFE");
+
     colog::init();
 }
 
-fn start_up() -> (Vec<String>, Path) {
-    section("Start Up");
+fn start_up() -> (Vec<String>, PathBuf, PathBuf) {
+    print::section("Start Up");
+
     let args = get_args(vec![]);
     for i in 0..args.len() {
         report!(args[i], (format!("args[{}]", i)));
     }
 
-    let cwd = get_cwd();
-    report!(cwd);
+    let cwd = init_cwd("ptfe");
+    report!(cwd.display(), "cwd");
 
-    (args, cwd)
+    let out = init_out();
+    report!(out.display(), "out");
+
+    (args, cwd, out)
 }
