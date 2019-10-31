@@ -16,4 +16,9 @@ impl Entity {
     pub fn new(surfs: Vec<Box<dyn Shape>>) -> Self {
         Self { surfs }
     }
+
+    /// Access the surface list.
+    pub fn surfs(&self) -> &Vec<Box<dyn Shape>> {
+        &self.surfs
+    }
 }
