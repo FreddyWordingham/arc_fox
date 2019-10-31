@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 use std::ops::AddAssign;
 
 /// Record structure storing cell information.
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Record {
     /// Number of photon emissions.
     num_emissions: f64,

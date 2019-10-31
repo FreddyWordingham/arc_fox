@@ -1,6 +1,6 @@
 //! World domain structure.
 
-use super::Cell;
+use super::{Cell, Record};
 use crate::{geom::Aabb, util::progress::bar};
 use nalgebra::Point3;
 use ndarray::Array3;
@@ -15,6 +15,8 @@ pub struct Domain {
     boundary: Aabb,
     /// Array of cells.
     cells: Array3<Cell>,
+    /// Array of records.
+    recs: Array3<Record>,
 }
 
 impl Domain {
@@ -50,6 +52,7 @@ impl Domain {
             num_cells,
             boundary,
             cells: Array3::from_shape_vec(num_cells, cells).unwrap(),
+            recs: Array3::from_elem(num_cells, Record::new()),
         }
     }
 
@@ -66,5 +69,10 @@ impl Domain {
     /// Reference the array of cells.
     pub fn cells(&self) -> &Array3<Cell> {
         &self.cells
+    }
+
+    /// Reference the array of records.
+    pub fn recs(&self) -> &Array3<Record> {
+        &self.recs
     }
 }
