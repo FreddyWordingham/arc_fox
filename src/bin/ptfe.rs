@@ -2,15 +2,14 @@
 
 use arc::{
     dir::init,
-    // file::Loadable,
-    file::Saveable,
+    file::{Loadable, Saveable},
     math::Formula,
     phys::Material,
     report,
     util::{print, start_up::get_args, Range},
 };
 use log::info;
-use std::path::PathBuf;
+use std::{collections::HashMap, path::PathBuf};
 
 fn main() {
     title();
@@ -53,4 +52,17 @@ fn start_up() -> (Vec<String>, PathBuf, PathBuf) {
 
 fn init() {
     print::section("Initialising");
+
+    let mat_dir = arc::dir::res::mats();
+
+    let mats = vec!["intralipid", "ptfe"];
+
+    let mut mat_map = HashMap::new();
+    for name in mats {
+        report!("Loading material: {}", name);
+        mat_map.insert(
+            name,
+            Material::load(&mat_dir.join(format!("{}.json", name))),
+        );
+    }
 }
