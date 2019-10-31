@@ -1,7 +1,7 @@
 //! Optical properties and laws.
 
-// pub mod photon;
 pub mod environment;
+pub mod photon;
 
-// pub use self::photon::*;
 pub use self::environment::*;
+pub use self::photon::*;
