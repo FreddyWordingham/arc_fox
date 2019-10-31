@@ -10,8 +10,9 @@ pub trait Saveable {
     fn save(&self, path: &Path);
 }
 
-/// Serialise the object in json format if it implements the Serialize trait.
-pub fn as_json<T: Serialize>(obj: &T, path: &Path) {
-    write(path, to_string(obj).expect("Unable to serialise object!"))
-        .expect("Unable to write json file!")
+impl<T: Serialize> Saveable for T {
+    fn save(&self, path: &Path) {
+        write(path, to_string(self).expect("Unable to serialise object!"))
+            .expect("Unable to write json file!")
+    }
 }
