@@ -1,11 +1,9 @@
 //! PTFE investigation.
 
 use arc::{
+    dir::init,
     report,
-    util::{
-        print,
-        start_up::{get_args, init_cwd, init_out},
-    },
+    util::{print, start_up::get_args},
 };
 use log::info;
 use std::path::PathBuf;
@@ -30,10 +28,10 @@ fn start_up() -> (Vec<String>, PathBuf, PathBuf) {
         report!(args[i], (format!("args[{}]", i)));
     }
 
-    let cwd = init_cwd("ptfe");
+    let cwd = init::cwd("ptfe");
     report!(cwd.display(), "cwd");
 
-    let out = init_out();
+    let out = init::output();
     report!(out.display(), "out");
 
     (args, cwd, out)
