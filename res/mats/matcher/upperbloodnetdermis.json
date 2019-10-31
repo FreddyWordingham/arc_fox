@@ -1,9 +1,0 @@
-{
-    "opt": {
-        "scat_coeff": 35000.0,
-        "abs_coeff": 142.0,
-        "asym_param": 0.8,
-        "ref_index": 1.39
-    },
-    "kin": null
-}
