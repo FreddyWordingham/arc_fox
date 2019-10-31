@@ -1,7 +1,7 @@
 //! World domain structure.
 
 use super::Cell;
-use crate::geom::Aabb;
+use crate::{geom::Aabb, util::progress::bar};
 use nalgebra::Point3;
 use ndarray::Array3;
 
@@ -20,18 +20,22 @@ pub struct Domain {
 impl Domain {
     /// Construct a new instance.
     pub fn new(num_cells: [usize; 3], boundary: Aabb) -> Self {
-        let mut cells = Vec::with_capacity(num_cells[0] * num_cells[1] * num_cells[2]);
+        let total_cells = num_cells[0] * num_cells[1] * num_cells[2];
+        let mut cells = Vec::with_capacity(total_cells);
 
         let mut cell_size = boundary.widths();
         for i in 0..3 {
             cell_size[i] /= num_cells[i] as f64;
         }
 
+        let bar = bar("Constructing cells", total_cells as u64);
         for xi in 0..num_cells[0] {
             let min_x = boundary.mins().x + (cell_size.x * xi as f64);
             for yi in 0..num_cells[1] {
                 let min_y = boundary.mins().y + (cell_size.y * yi as f64);
                 for zi in 0..num_cells[2] {
+                    bar.inc(1);
+
                     let min_z = boundary.mins().z + (cell_size.z * zi as f64);
                     let min = Point3::new(min_x, min_y, min_z);
                     let max = min + cell_size;
@@ -40,6 +44,7 @@ impl Domain {
                 }
             }
         }
+        bar.finish_with_message(&format!("{} cells constructed.", total_cells));
 
         Self {
             num_cells,

@@ -3,11 +3,11 @@
 use arc::{
     dir::init,
     file::Loadable,
-    geom::Shape,
+    geom::{Aabb, Shape},
     phys::Material,
     report,
     util::{print, start_up::get_args},
-    world::Entity,
+    world::{Domain, Entity},
 };
 use contracts::pre;
 use log::info;
@@ -31,6 +31,10 @@ fn main() {
             "intralipid",
         )],
         &mat_map,
+    );
+    let _dom = Domain::new(
+        [16, 16, 16],
+        Aabb::new(Point3::new(-1.0, -1.0, -1.0), Point3::new(1.0, 1.0, 1.0)),
     );
 }
 
