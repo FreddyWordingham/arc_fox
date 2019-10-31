@@ -7,7 +7,7 @@ use arc::{
     math::Formula,
     phys::Material,
     report,
-    util::{print, start_up::get_args},
+    util::{print, start_up::get_args, Range},
 };
 use log::info;
 use std::path::PathBuf;
@@ -18,6 +18,7 @@ fn main() {
     let () = init();
 
     let mat = Material::new(
+        Range::positive(),
         Formula::Const(1.0),
         Formula::Const(10.0),
         Formula::Const(0.1),

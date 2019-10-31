@@ -1,1 +1,1 @@
-{"ref_index":{"Const":1.0},"scat_coeff":{"Const":10.0},"abs_coeff":{"Const":0.1},"shift_coeff":{"Const":0.0},"asym":{"Const":0.01}}
+{"range":{"min":2.2250738585072014e-308,"max":null},"ref_index":{"Const":1.0},"scat_coeff":{"Const":10.0},"abs_coeff":{"Const":0.1},"shift_coeff":{"Const":0.0},"asym":{"Const":0.01}}

@@ -2,7 +2,7 @@
 
 use contracts::pre;
 use serde::{Deserialize, Serialize};
-use std::f64::{INFINITY, NEG_INFINITY};
+use std::f64::{INFINITY, MIN_POSITIVE, NEG_INFINITY};
 
 /// One-dimensional inclusive Range.
 #[derive(Debug, Serialize, Deserialize)]
@@ -14,26 +14,43 @@ pub struct Range {
 }
 
 impl Range {
-    /// Construct a new Range.
+    /// Construct a new instance.
     #[pre(min < max)]
     pub fn new(min: f64, max: f64) -> Self {
         Self { min, max }
     }
 
-    /// Construct an infinite Range.
-    pub fn new_infinite() -> Self {
-        Self {
-            min: NEG_INFINITY,
-            max: INFINITY,
-        }
+    /// Construct an infinite range.
+    pub fn infinite() -> Self {
+        Self::new(NEG_INFINITY, INFINITY)
     }
 
-    /// Retrieve the minimum bound of the Range.
+    /// Construct a new positive range.
+    pub fn positive() -> Self {
+        Self::new(MIN_POSITIVE, INFINITY)
+    }
+
+    /// Construct a new non-positive range.
+    pub fn non_positive() -> Self {
+        Self::new(NEG_INFINITY, 0.0)
+    }
+
+    /// Construct a new negative range.
+    pub fn negative() -> Self {
+        Self::new(NEG_INFINITY, -MIN_POSITIVE)
+    }
+
+    /// Construct a new non-negative range.
+    pub fn non_negative() -> Self {
+        Self::new(0.0, INFINITY)
+    }
+
+    /// Get the minimum bound.
     pub fn min(&self) -> f64 {
         self.min
     }
 
-    /// Retrieve the maximum bound of the Range.
+    /// Get the maximum bound.
     pub fn max(&self) -> f64 {
         self.max
     }
@@ -61,7 +78,7 @@ impl Range {
         true
     }
 
-    /// From a range of overlapping values.
+    /// Form a range of overlapping values.
     pub fn overlap(&self, other: &Self) -> Option<Self> {
         if !self.intersect(other) {
             return None;
