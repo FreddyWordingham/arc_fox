@@ -17,7 +17,7 @@ use std::{collections::HashMap, path::PathBuf};
 
 fn main() {
     title();
-    let (_args, _cwd, _out) = start_up();
+    let (_args, _cwd, out) = start_up();
 
     print::section("Initialising");
     let mat_map = load_mat_map(vec!["intralipid", "ptfe"]);
@@ -44,9 +44,10 @@ fn main() {
     for cell in dom.cells() {
         intersections.push(cell.ents().len());
     }
-    let _intersections = Array3::from_shape_vec(*dom.shape(), intersections);
+    let intersections = Array3::from_shape_vec(*dom.shape(), intersections).unwrap();
 
     print::section("Output");
+    arc::file::saveable::save_as_hdf5(vec![("surfs", &intersections)], &out.join("surfs.h5"));
 }
 
 fn title() {
