@@ -2,13 +2,14 @@
 
 use super::{Aabb, Collidable, Ray, Traceable};
 use nalgebra::{Isometry3, Point3, Unit, Vector3};
+use serde::{Deserialize, Serialize};
 
 /// Parallel ray catch value.
 const EPSILON: f64 = 1.0e-6;
 
 /// Geometry describing a triangle in three-dimensional space.
 /// Used to compose surfaces.
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Triangle {
     /// Vertices.
     verts: [Point3<f64>; 3],

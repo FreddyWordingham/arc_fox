@@ -2,12 +2,13 @@
 
 use super::{Ray, Traceable};
 use nalgebra::{Point3, Unit, Vector3};
+use serde::{Deserialize, Serialize};
 
 /// Parallel ray catch value.
 const EPSILON: f64 = 1.0e-6;
 
 /// Infinite plane geometry.
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Plane {
     /// Position on the plane.
     pos: Point3<f64>,

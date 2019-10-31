@@ -1,10 +1,11 @@
 //! Geometric ray structure.
 
 use nalgebra::{Point3, Unit, Vector3};
+use serde::{Deserialize, Serialize};
 
 /// Line with an origin point that extends infinitely in one direction.
 /// Used to determine the distance to a geometric shape.
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Ray {
     /// Origin position.
     pub pos: Point3<f64>,

@@ -3,6 +3,7 @@
 use super::{Ray, Traceable};
 use contracts::pre;
 use nalgebra::{Point3, Unit, Vector3};
+use serde::{Deserialize, Serialize};
 use std::f64::consts::PI;
 
 /// Parallel ray catch value.
@@ -10,7 +11,7 @@ const EPSILON: f64 = 1.0e-6;
 
 /// Geometry describing a radius around a point on a plane.
 /// Use for detector surfaces.
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Circle {
     /// Central position.
     centre: Point3<f64>,

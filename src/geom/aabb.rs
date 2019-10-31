@@ -4,10 +4,11 @@ use super::{Collidable, Ray, Traceable};
 use crate::util::SortLabel;
 use contracts::pre;
 use nalgebra::{Point3, Unit, Vector3};
+use serde::{Deserialize, Serialize};
 
 /// Axis-aligned box.
 /// Commonly used to partition domains.
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Aabb {
     /// Minimum bound.
     mins: Point3<f64>,

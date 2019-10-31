@@ -3,10 +3,11 @@
 use super::{Aabb, Collidable, Ray, Traceable};
 use contracts::pre;
 use nalgebra::{Point3, Unit, Vector3};
+use serde::{Deserialize, Serialize};
 use std::f64::consts::PI;
 
 /// Geometry describing a sphere.
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Sphere {
     /// Central point.
     centre: Point3<f64>,

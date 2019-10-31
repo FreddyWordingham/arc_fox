@@ -2,6 +2,7 @@
 
 use super::{Aabb, Collidable, Ray, Traceable, Triangle};
 use nalgebra::{Isometry3, Point3, Unit, Vector3};
+use serde::{Deserialize, Serialize};
 
 /// Parallel ray catch value.
 const EPSILON: f64 = 1.0e-6;
@@ -9,7 +10,7 @@ const EPSILON: f64 = 1.0e-6;
 /// Geometry describing a triangle in three-dimensional space.
 /// The surface normal at a given point on the surface is interpolated using the Phong method.
 /// Used to compose surfaces.
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct SmoothTriangle {
     /// Flat triangle surface.
     tri: Triangle,
