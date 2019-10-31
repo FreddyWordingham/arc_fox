@@ -8,6 +8,7 @@ pub mod traceable;
 
 pub use self::aabb::*;
 pub use self::circle::*;
+pub use self::collidable::*;
 pub use self::plane::*;
 pub use self::ray::*;
 pub use self::traceable::*;
