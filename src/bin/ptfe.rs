@@ -24,9 +24,9 @@ fn main() {
     let ent_map = load_ent_map(
         vec![(
             "vial",
-            vec![Box::new(arc::geom::Aabb::new(
-                Point3::new(-0.5, -0.5, -0.5),
-                Point3::new(0.5, 0.5, 0.5),
+            vec![Box::new(arc::geom::Sphere::new(
+                Point3::new(0.0, 0.0, 0.0),
+                0.25,
             ))],
             "ptfe",
             "intralipid",

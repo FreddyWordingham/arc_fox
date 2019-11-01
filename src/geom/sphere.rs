@@ -1,6 +1,6 @@
 //! Geometic sphere structure.
 
-use super::{Aabb, Collidable, Ray, Traceable};
+use super::{Aabb, Collidable, Ray, Shape, Traceable};
 use contracts::pre;
 use nalgebra::{Point3, Unit, Vector3};
 use serde::{Deserialize, Serialize};
@@ -125,3 +125,5 @@ impl Collidable for Sphere {
         Aabb::new(self.centre - half_width, self.centre + half_width)
     }
 }
+
+impl Shape for Sphere {}

@@ -75,7 +75,7 @@ impl Aabb {
 
     /// Determine the closest contained point to a given point.
     pub fn closest_point(&self, p: &Point3<f64>) -> Point3<f64> {
-        let mut q = Point3::origin();
+        let mut q = *p;
 
         for i in 0..3 {
             if p[i] < self.mins[i] {
