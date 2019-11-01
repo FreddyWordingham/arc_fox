@@ -34,7 +34,7 @@ fn main() {
         &mat_map,
     );
     let dom = Domain::new(
-        [5, 5, 5],
+        [51, 51, 51],
         Aabb::new(Point3::new(-1.0, -1.0, -1.0), Point3::new(1.0, 1.0, 1.0)),
         &ent_map,
     );
@@ -43,28 +43,15 @@ fn main() {
     let mut intersections = Vec::with_capacity(dom.total_cells());
     for cell in dom.cells() {
         if cell.is_empty() {
-            intersections.push(0);
+            intersections.push(0.0);
         } else {
-            intersections.push(cell.ents().len() as u64);
+            intersections.push(cell.ents().len() as f64);
         }
     }
     let intersections = Array3::from_shape_vec(*dom.shape(), intersections).unwrap();
 
     print::section("Output");
-
-    let shape = dom.shape();
-    for xi in 0..shape[0] {
-        for yi in 0..shape[1] {
-            for zi in 0..shape[2] {
-                print!("{}\t", intersections[(xi, yi, zi)]);
-            }
-            println!("");
-        }
-        println!("");
-    }
-
-    // arc::file::saveable::save_as_netcdf(vec![("surfs", &intersections)], &out.join("surfs.nc"));
-    arc::file::saveable::save_as_netcdf(&intersections, &out.join("surfs.nc"));
+    arc::file::saveable::save_as_netcdf(vec![("surfs", &intersections)], &out.join("surfs.nc"));
 }
 
 fn title() {
