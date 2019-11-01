@@ -20,10 +20,34 @@ impl<T: Serialize> Saveable for T {
 }
 
 /// Save a three-dimensional array as a hdf5 datacube.
-pub fn save_as_netcdf<T: Numeric>(data: Vec<(&'static str, &Array3<T>)>, path: &Path) {
+// pub fn save_as_netcdf<T: Numeric>(data: Vec<(&'static str, &Array3<T>)>, path: &Path) {
+//     let mut file = File::create(&path).expect("Unable to create netcdf file!");
+
+//     let shape = data[0].1.shape();
+
+//     let dim1_name = "x";
+//     let dim2_name = "y";
+//     let dim3_name = "z";
+//     file.root_mut().add_dimension(dim1_name, shape[0]).unwrap();
+//     file.root_mut().add_dimension(dim2_name, shape[1]).unwrap();
+//     file.root_mut().add_dimension(dim3_name, shape[2]).unwrap();
+
+//     for (name, d) in data {
+//         if d.shape() != shape {
+//             panic!("Shapes within the same datacube must match.");
+//         }
+
+//         let var = &mut file
+//             .root_mut()
+//             .add_variable::<T>(name, &[dim1_name, dim2_name, dim3_name])
+//             .unwrap();
+//         var.put_values(d.as_slice().unwrap(), None, None).unwrap();
+//     }
+// }
+pub fn save_as_netcdf<T: Numeric>(data: &Array3<T>, path: &Path) {
     let mut file = File::create(&path).expect("Unable to create netcdf file!");
 
-    let shape = data[0].1.shape();
+    let shape = data.shape();
 
     let dim1_name = "x";
     let dim2_name = "y";
@@ -32,15 +56,11 @@ pub fn save_as_netcdf<T: Numeric>(data: Vec<(&'static str, &Array3<T>)>, path: &
     file.root_mut().add_dimension(dim2_name, shape[1]).unwrap();
     file.root_mut().add_dimension(dim3_name, shape[2]).unwrap();
 
-    for (name, d) in data {
-        if d.shape() != shape {
-            panic!("Shapes within the same datacube must match.");
-        }
-
-        let var = &mut file
-            .root_mut()
-            .add_variable::<T>(name, &[dim1_name, dim2_name, dim3_name])
-            .unwrap();
-        var.put_values(d.as_slice().unwrap(), None, None).unwrap();
-    }
+    let var_name = "varstuff";
+    let var = &mut file
+        .root_mut()
+        .add_variable::<T>(var_name, &[dim1_name, dim2_name, dim3_name])
+        .unwrap();
+    var.put_values(data.as_slice().unwrap(), None, None)
+        .unwrap();
 }
