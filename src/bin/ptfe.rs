@@ -24,9 +24,9 @@ fn main() {
     let ent_map = load_ent_map(
         vec![(
             "vial",
-            vec![Box::new(arc::geom::Sphere::new(
-                Point3::new(0.0, 0.0, 0.0),
-                0.25,
+            vec![Box::new(Aabb::new(
+                Point3::new(-0.5, -0.5, -0.5),
+                Point3::new(0.5, 0.5, 0.5),
             ))],
             "ptfe",
             "intralipid",
@@ -34,7 +34,7 @@ fn main() {
         &mat_map,
     );
     let dom = Domain::new(
-        [51, 51, 51],
+        [21, 21, 21],
         Aabb::new(Point3::new(-1.0, -1.0, -1.0), Point3::new(1.0, 1.0, 1.0)),
         &ent_map,
     );
@@ -49,6 +49,17 @@ fn main() {
         }
     }
     let intersections = Array3::from_shape_vec(*dom.shape(), intersections).unwrap();
+
+    // let shape = dom.shape();
+    // for xi in 0..shape[0] {
+    //     for yi in 0..shape[1] {
+    //         for zi in 0..shape[2] {
+    //             print!("{},\t", intersections[(xi, yi, zi)]);
+    //         }
+    //         println!("");
+    //     }
+    //     println!("");
+    // }
 
     print::section("Output");
     arc::file::saveable::save_as_netcdf(vec![("surfs", &intersections)], &out.join("surfs.nc"));

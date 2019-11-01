@@ -1,6 +1,6 @@
 //! Geometic sphere structure.
 
-use super::{Aabb, Collidable, Ray, Shape, Traceable};
+use super::{Ray, Traceable};
 use contracts::pre;
 use nalgebra::{Point3, Unit, Vector3};
 use serde::{Deserialize, Serialize};
@@ -111,19 +111,3 @@ impl Traceable for Sphere {
         None
     }
 }
-
-impl Collidable for Sphere {
-    fn collides(&self, aabb: &Aabb) -> bool {
-        let p = aabb.closest_point(&self.centre);
-        let d = nalgebra::distance(&p, &self.centre);
-
-        d <= self.rad
-    }
-
-    fn boundary(&self) -> Aabb {
-        let half_width = Vector3::new(self.rad, self.rad, self.rad);
-        Aabb::new(self.centre - half_width, self.centre + half_width)
-    }
-}
-
-impl Shape for Sphere {}
