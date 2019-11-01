@@ -87,6 +87,16 @@ impl Aabb {
 
         q
     }
+
+    /// Determine if there is any overlap with the volume of the given Aabb.
+    fn overlap(&self, aabb: &Aabb) -> bool {
+        (self.mins.x <= aabb.maxs.x)
+            && (self.maxs.x >= aabb.mins.x)
+            && (self.mins.y <= aabb.maxs.y)
+            && (self.maxs.y >= aabb.mins.y)
+            && (self.mins.z <= aabb.maxs.z)
+            && (self.maxs.z >= aabb.mins.z)
+    }
 }
 
 impl Traceable for Aabb {
@@ -157,12 +167,27 @@ impl Traceable for Aabb {
 
 impl Collidable for Aabb {
     fn collides(&self, aabb: &Aabb) -> bool {
-        (self.mins.x <= aabb.maxs.x)
-            && (self.maxs.x >= aabb.mins.x)
-            && (self.mins.y <= aabb.maxs.y)
-            && (self.maxs.y >= aabb.mins.y)
-            && (self.mins.z <= aabb.maxs.z)
-            && (self.maxs.z >= aabb.mins.z)
+        let mut min = aabb.mins().clone();
+        let mut max = aabb.maxs().clone();
+
+        for i in 0..3 {
+            if self.mins[i] > min[i] {
+                min[i] = self.mins[i];
+            }
+
+            if self.maxs[i] < max[i] {
+                max[i] = self.maxs[i];
+            }
+        }
+
+        let lengths = max - min;
+        for i in 0..3 {
+            if lengths[i] < 0.0 {
+                return false;
+            }
+        }
+
+        return (lengths.x * lengths.y * lengths.z) < self.vol();
     }
 
     fn boundary(&self) -> Aabb {
