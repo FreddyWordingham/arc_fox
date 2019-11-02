@@ -39,10 +39,12 @@ fn main() {
         Aabb::new(Point3::new(-1.0, -1.0, -1.0), Point3::new(1.0, 1.0, 1.0)),
         &ent_map,
     );
+    let light = 
 
     print::section("Simulation");
     let mut intersections = Vec::with_capacity(dom.total_cells());
     let mut is_ptfe = Vec::with_capacity(dom.total_cells());
+    let mut is_intralipid = Vec::with_capacity(dom.total_cells());
     for cell in dom.cells() {
         if cell.is_empty() {
             intersections.push(0.0);
@@ -52,16 +54,30 @@ fn main() {
 
         if cell.mat().env(700.0e-9).inter_coeff > 100.0 {
             is_ptfe.push(1.0);
+            is_intralipid.push(0.0);
         } else {
             is_ptfe.push(0.0);
+            is_intralipid.push(1.0);
         }
     }
     let intersections = Array3::from_shape_vec(*dom.shape(), intersections).unwrap();
     let is_ptfe = Array3::from_shape_vec(*dom.shape(), is_ptfe).unwrap();
+    let is_intralipid = Array3::from_shape_vec(*dom.shape(), is_intralipid).unwrap();
+
+    let n = 1_000_000;
+    let bar = arc::util::progress::bar("Photon loop", n);
+    for _ in 0..n {
+        bar.inc(1);
+    }
+    bar.finish_with_message("Photon loop complete.");
 
     print::section("Output");
     arc::file::saveable::save_as_netcdf(vec![("surfs", &intersections)], &out.join("surfs.nc"));
     arc::file::saveable::save_as_netcdf(vec![("ptfe", &is_ptfe)], &out.join("ptfe_map.nc"));
+    arc::file::saveable::save_as_netcdf(
+        vec![("intralipid", &is_intralipid)],
+        &out.join("intralipid_map.nc"),
+    );
 }
 
 fn title() {
