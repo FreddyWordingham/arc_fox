@@ -31,6 +31,7 @@ impl<'a> Cell<'a> {
         }
     }
 
+    /// Initialise the list of colliding entity shapes.
     fn init_ents(
         boundary: &Aabb,
         ent_map: &'a EntMap<'a>,
