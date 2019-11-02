@@ -2,7 +2,7 @@
 
 use super::Entity;
 use crate::{
-    geom::{fibonnaci_ray_cast, Aabb, Ray, Traceable},
+    geom::{fibonacci_ray_cast, Aabb, Ray, Traceable},
     phys::Material,
 };
 use contracts::pre;
@@ -20,7 +20,7 @@ pub fn mat_at_point<'a>(point: &Point3<f64>, dom: &Aabb, ent_map: &'a EntMap) ->
     let mut power = 2;
     loop {
         for i in -n.pow(power)..=n.pow(power) {
-            let ray = Ray::new(point.clone(), fibonnaci_ray_cast(i, n.pow(power)));
+            let ray = Ray::new(point.clone(), fibonacci_ray_cast(i, n.pow(power)));
 
             let mut nearest: Option<(f64, Unit<Vector3<f64>>, &Entity)> = None;
             for (_name, ent) in ent_map {
