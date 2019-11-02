@@ -100,7 +100,7 @@ impl Aabb {
 }
 
 impl Traceable for Aabb {
-    fn intersect(&self, ray: &Ray) -> bool {
+    fn hit(&self, ray: &Ray) -> bool {
         let dir_frac = Vector3::new(1.0 / ray.dir.x, 1.0 / ray.dir.y, 1.0 / ray.dir.z);
 
         let tx0 = (self.mins.x - ray.pos.x) * dir_frac.x;

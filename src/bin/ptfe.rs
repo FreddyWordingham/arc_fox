@@ -41,28 +41,26 @@ fn main() {
 
     print::section("Simulation");
     let mut intersections = Vec::with_capacity(dom.total_cells());
+    let mut is_ptfe = Vec::with_capacity(dom.total_cells());
     for cell in dom.cells() {
         if cell.is_empty() {
             intersections.push(0.0);
         } else {
             intersections.push(cell.ents().len() as f64);
         }
+
+        if cell.mat().env(700.0e-9).inter_coeff > 100.0 {
+            is_ptfe.push(1.0);
+        } else {
+            is_ptfe.push(0.0);
+        }
     }
     let intersections = Array3::from_shape_vec(*dom.shape(), intersections).unwrap();
-
-    // let shape = dom.shape();
-    // for xi in 0..shape[0] {
-    //     for yi in 0..shape[1] {
-    //         for zi in 0..shape[2] {
-    //             print!("{},\t", intersections[(xi, yi, zi)]);
-    //         }
-    //         println!("");
-    //     }
-    //     println!("");
-    // }
+    let is_ptfe = Array3::from_shape_vec(*dom.shape(), is_ptfe).unwrap();
 
     print::section("Output");
     arc::file::saveable::save_as_netcdf(vec![("surfs", &intersections)], &out.join("surfs.nc"));
+    arc::file::saveable::save_as_netcdf(vec![("ptfe", &is_ptfe)], &out.join("ptfe_map.nc"));
 }
 
 fn title() {

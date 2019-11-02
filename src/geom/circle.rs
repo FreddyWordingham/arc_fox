@@ -50,7 +50,7 @@ impl Circle {
 }
 
 impl Traceable for Circle {
-    fn intersect(&self, ray: &Ray) -> bool {
+    fn hit(&self, ray: &Ray) -> bool {
         let d = self.norm.dot(&ray.dir);
 
         if d <= EPSILON {

@@ -5,8 +5,8 @@ use nalgebra::{Unit, Vector3};
 
 /// Types implementing this trait can be traced using a ray.
 pub trait Traceable {
-    /// Determine if an interaction occurs at all.
-    fn intersect(&self, ray: &Ray) -> bool;
+    /// Determine if a ray hit occurs at all.
+    fn hit(&self, ray: &Ray) -> bool;
 
     /// Distance to the surface along the ray's line of travel.
     fn dist(&self, ray: &Ray) -> Option<f64>;

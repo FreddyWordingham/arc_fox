@@ -50,7 +50,7 @@ impl Sphere {
 }
 
 impl Traceable for Sphere {
-    fn intersect(&self, ray: &Ray) -> bool {
+    fn hit(&self, ray: &Ray) -> bool {
         let oc = ray.pos - self.centre;
         let b = ray.dir.dot(&oc).powi(2);
         let c = oc.magnitude().powi(2) - self.rad.powi(2);

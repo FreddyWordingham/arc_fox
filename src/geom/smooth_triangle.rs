@@ -58,8 +58,8 @@ impl SmoothTriangle {
 }
 
 impl Traceable for SmoothTriangle {
-    fn intersect(&self, ray: &Ray) -> bool {
-        self.tri.intersect(ray)
+    fn hit(&self, ray: &Ray) -> bool {
+        self.tri.hit(ray)
     }
 
     fn dist(&self, ray: &Ray) -> Option<f64> {

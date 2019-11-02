@@ -52,7 +52,7 @@ impl Triangle {
 }
 
 impl Traceable for Triangle {
-    fn intersect(&self, ray: &Ray) -> bool {
+    fn hit(&self, ray: &Ray) -> bool {
         let e1 = self.verts[1] - self.verts[0];
         let e2 = self.verts[2] - self.verts[0];
 

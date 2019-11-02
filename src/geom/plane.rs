@@ -29,7 +29,7 @@ impl Plane {
 }
 
 impl Traceable for Plane {
-    fn intersect(&self, ray: &Ray) -> bool {
+    fn hit(&self, ray: &Ray) -> bool {
         let d = self.norm.dot(&ray.dir);
 
         if d.abs() > EPSILON {
