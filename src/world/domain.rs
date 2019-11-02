@@ -41,7 +41,7 @@ impl<'a> Domain<'a> {
                     let min = Point3::new(min_x, min_y, min_z);
                     let max = min + cell_size;
 
-                    cells.push(Cell::new(Aabb::new(min, max), ent_map));
+                    cells.push(Cell::new(&boundary, Aabb::new(min, max), ent_map));
                 }
             }
         }

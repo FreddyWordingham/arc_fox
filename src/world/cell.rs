@@ -21,7 +21,7 @@ pub struct Cell<'a> {
 
 impl<'a> Cell<'a> {
     /// Construct a new instance.
-    pub fn new(boundary: Aabb, ent_map: &'a EntMap<'a>) -> Self {
+    pub fn new(dom_bound: &Aabb, boundary: Aabb, ent_map: &'a EntMap<'a>) -> Self {
         let mut ents_list = Vec::new();
         for (_name, ent) in ent_map.iter() {
             if boundary.collides(ent.boundary()) {
@@ -45,12 +45,12 @@ impl<'a> Cell<'a> {
         };
 
         let centre = boundary.centre();
-        let n = 7;
-        for i in -n..n {
+        let n = 31;
+        for i in -n..=n {
             let ray = Ray::new(centre, fibonnaci_ray_cast(i, n));
 
             let mut nearest: Option<(f64, Unit<Vector3<f64>>, &Entity)> = None;
-            for (name, ent) in ent_map {
+            for (_name, ent) in ent_map {
                 if ent.boundary().hit(&ray) {
                     for s in ent.surfs() {
                         if let Some((dist, norm)) = s.dist_norm(&ray) {
@@ -63,7 +63,7 @@ impl<'a> Cell<'a> {
             }
 
             if let Some((dist, norm, ent)) = nearest {
-                if dist <= boundary.dist(&ray).unwrap() {
+                if dist <= dom_bound.dist(&ray).unwrap() {
                     let mat = if norm.dot(&ray.dir) < 0.0 {
                         ent.out_mat()
                     } else {
@@ -79,6 +79,7 @@ impl<'a> Cell<'a> {
             }
         }
 
+        println!(">> {}\t{}\t{}", centre.x, centre.y, centre.z);
         panic!("Unable to observe a material from a cell centre.");
     }
 
