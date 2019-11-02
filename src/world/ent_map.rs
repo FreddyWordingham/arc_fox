@@ -17,7 +17,7 @@ pub type EntMap<'a> = HashMap<&'static str, Entity<'a>>;
 #[pre(dom.contains(point))]
 pub fn mat_at_point<'a>(point: &Point3<f64>, dom: &Aabb, ent_map: &'a EntMap) -> &'a Material {
     let n: i32 = 7;
-    let mut power = 3;
+    let mut power = 2;
     loop {
         for i in -n.pow(power)..=n.pow(power) {
             let ray = Ray::new(point.clone(), fibonnaci_ray_cast(i, n.pow(power)));

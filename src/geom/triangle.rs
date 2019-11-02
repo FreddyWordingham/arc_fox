@@ -1,6 +1,6 @@
 //! Geometric triangle structure.
 
-use super::{Aabb, Collidable, Ray, Traceable};
+use super::{Aabb, Collidable, Ray, Shape, Traceable};
 use nalgebra::{Isometry3, Point3, Unit, Vector3};
 use serde::{Deserialize, Serialize};
 
@@ -267,3 +267,5 @@ impl Collidable for Triangle {
         Aabb::new(mins, maxs)
     }
 }
+
+impl Shape for Triangle {}

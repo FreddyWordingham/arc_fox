@@ -3,7 +3,7 @@
 use arc::{
     dir::init,
     file::Loadable,
-    geom::{Aabb, Shape},
+    geom::{Aabb, Shape, Sphere},
     phys::Material,
     report,
     util::{print, start_up::get_args},
@@ -24,10 +24,11 @@ fn main() {
     let ent_map = load_ent_map(
         vec![(
             "vial",
-            vec![Box::new(Aabb::new(
-                Point3::new(-0.5, -0.5, -0.5),
-                Point3::new(0.5, 0.5, 0.5),
-            ))],
+            // vec![Box::new(Aabb::new(
+            //     Point3::new(-0.5, -0.5, -0.5),
+            //     Point3::new(0.5, 0.5, 0.5),
+            // ))],
+            vec![Box::new(Sphere::new(Point3::new(-0.0, -0.0, -0.0), 0.5))],
             "ptfe",
             "intralipid",
         )],

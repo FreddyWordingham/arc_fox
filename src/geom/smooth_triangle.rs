@@ -1,6 +1,6 @@
 //! Geometric triangle structure with interpolated normals.
 
-use super::{Aabb, Collidable, Ray, Traceable, Triangle};
+use super::{Aabb, Collidable, Ray, Shape, Traceable, Triangle};
 use nalgebra::{Isometry3, Point3, Unit, Vector3};
 use serde::{Deserialize, Serialize};
 
@@ -122,3 +122,5 @@ impl Collidable for SmoothTriangle {
         self.tri.boundary()
     }
 }
+
+impl Shape for SmoothTriangle {}

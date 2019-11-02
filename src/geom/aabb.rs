@@ -74,6 +74,7 @@ impl Aabb {
     }
 
     /// Determine the closest contained point to a given point.
+    /// If the given point is contained, that value is returned.
     pub fn closest_point(&self, p: &Point3<f64>) -> Point3<f64> {
         let mut q = *p;
 
@@ -82,6 +83,28 @@ impl Aabb {
                 q[i] = self.mins[i];
             } else if p[i] > self.maxs[i] {
                 q[i] = self.maxs[i];
+            }
+        }
+
+        q
+    }
+
+    /// Determine the furthest contained point to a given point.
+    /// If the given point is contained, the furthest point on the surface is returned.
+    pub fn furthest_surf_point(&self, p: &Point3<f64>) -> Point3<f64> {
+        let mut q = *p;
+
+        for i in 0..3 {
+            if p[i] < self.mins[i] {
+                q[i] = self.maxs[i];
+            } else if p[i] > self.maxs[i] {
+                q[i] = self.mins[i];
+            } else {
+                if (p[i] - self.mins[i]) < (self.maxs[i] - p[i]) {
+                    q[i] = self.maxs[i];
+                } else {
+                    q[i] = self.mins[i];
+                }
             }
         }
 
