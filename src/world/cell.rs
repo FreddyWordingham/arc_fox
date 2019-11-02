@@ -23,28 +23,6 @@ pub struct Cell<'a> {
 impl<'a> Cell<'a> {
     /// Construct a new instance.
     pub fn new(dom_bound: &Aabb, boundary: Aabb, ent_map: &'a EntMap<'a>) -> Self {
-        let mut ents_list = Vec::new();
-        for (_name, ent) in ent_map.iter() {
-            if boundary.collides(ent.boundary()) {
-                let mut surfs = Vec::new();
-                for surf in ent.surfs() {
-                    if surf.collides(&boundary) {
-                        surfs.push(surf);
-                    }
-                }
-
-                if !surfs.is_empty() {
-                    ents_list.push((ent, surfs));
-                }
-            }
-        }
-
-        let ents = if ents_list.is_empty() {
-            None
-        } else {
-            Some(ents_list)
-        };
-
         let centre = boundary.centre();
         let n: i32 = 7;
         let mut power = 3;
@@ -73,6 +51,7 @@ impl<'a> Cell<'a> {
                             ent.in_mat()
                         };
 
+                        let ents = Self::init_ents(&boundary, ent_map);
                         return Self {
                             boundary,
                             ents,
@@ -95,6 +74,33 @@ impl<'a> Cell<'a> {
 
         println!(">> {}\t{}\t{}", centre.x, centre.y, centre.z);
         panic!("Unable to observe a material from a cell centre.");
+    }
+
+    fn init_ents(
+        boundary: &Aabb,
+        ent_map: &'a EntMap<'a>,
+    ) -> Option<Vec<(&'a Entity<'a>, Vec<&'a Box<dyn Shape>>)>> {
+        let mut ents = Vec::new();
+        for (_name, ent) in ent_map.iter() {
+            if boundary.collides(ent.boundary()) {
+                let mut surfs = Vec::new();
+                for surf in ent.surfs() {
+                    if surf.collides(&boundary) {
+                        surfs.push(surf);
+                    }
+                }
+
+                if !surfs.is_empty() {
+                    ents.push((ent, surfs));
+                }
+            }
+        }
+
+        if ents.is_empty() {
+            return None;
+        }
+
+        Some(ents)
     }
 
     /// Reference the intersecting entity shapes.
