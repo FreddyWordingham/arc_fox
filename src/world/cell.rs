@@ -6,6 +6,7 @@ use crate::{
     phys::Material,
 };
 use contracts::pre;
+use log::warn;
 use nalgebra::{Unit, Vector3};
 
 /// Domain cell structure.
@@ -45,37 +46,50 @@ impl<'a> Cell<'a> {
         };
 
         let centre = boundary.centre();
-        let n = 31;
-        for i in -n..=n {
-            let ray = Ray::new(centre, fibonnaci_ray_cast(i, n));
+        let n: i32 = 7;
+        let mut power = 3;
+        loop {
+            for i in -n.pow(power)..=n.pow(power) {
+                let ray = Ray::new(centre, fibonnaci_ray_cast(i, n.pow(power)));
 
-            let mut nearest: Option<(f64, Unit<Vector3<f64>>, &Entity)> = None;
-            for (_name, ent) in ent_map {
-                if ent.boundary().hit(&ray) {
-                    for s in ent.surfs() {
-                        if let Some((dist, norm)) = s.dist_norm(&ray) {
-                            if nearest.is_none() || (dist > nearest.unwrap().0) {
-                                nearest = Some((dist, norm, ent));
+                let mut nearest: Option<(f64, Unit<Vector3<f64>>, &Entity)> = None;
+                for (_name, ent) in ent_map {
+                    if ent.boundary().hit(&ray) {
+                        for s in ent.surfs() {
+                            if let Some((dist, norm)) = s.dist_norm(&ray) {
+                                if nearest.is_none() || (dist > nearest.unwrap().0) {
+                                    nearest = Some((dist, norm, ent));
+                                }
                             }
                         }
                     }
                 }
+
+                if let Some((dist, norm, ent)) = nearest {
+                    if dist <= dom_bound.dist(&ray).unwrap() {
+                        let mat = if norm.dot(&ray.dir) < 0.0 {
+                            ent.out_mat()
+                        } else {
+                            ent.in_mat()
+                        };
+
+                        return Self {
+                            boundary,
+                            ents,
+                            mat,
+                        };
+                    }
+                }
             }
 
-            if let Some((dist, norm, ent)) = nearest {
-                if dist <= dom_bound.dist(&ray).unwrap() {
-                    let mat = if norm.dot(&ray.dir) < 0.0 {
-                        ent.out_mat()
-                    } else {
-                        ent.in_mat()
-                    };
-
-                    return Self {
-                        boundary,
-                        ents,
-                        mat,
-                    };
-                }
+            if power < 4 {
+                warn!(
+                    "Increasing ray-casting power ({} rays)",
+                    (2 * n.pow(power)) + 1
+                );
+                power += 1;
+            } else {
+                break;
             }
         }
 
