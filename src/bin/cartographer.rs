@@ -1,12 +1,15 @@
 //! Cartographer binary.
 //! Creates a data cube mapping materials within a volume.
 
-use arc::{dir::init, print, report, util::start_up};
+use arc::{dir::init, print, report, util::start_up, world::MatMap};
 use std::path::PathBuf;
 
 fn main() {
     title();
     let (_args, _input, _output) = start_up();
+
+    print::section("Initialisation");
+    // let mat_map = MatMap::load(vec!["air", "fog"]);
 }
 
 fn title() {
