@@ -1,5 +1,5 @@
 //! World building structures.
 
-// pub mod entity;
-//
-// pub use self::entity::*;
+pub mod entity;
+
+pub use self::entity::*;
