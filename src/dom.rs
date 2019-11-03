@@ -1,3 +1,7 @@
 //! Domain structures and traits.
 
-// pub mod cell;
+pub mod aabb;
+pub mod cell;
+
+pub use self::aabb::*;
+pub use self::cell::*;

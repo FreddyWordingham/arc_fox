@@ -1,6 +1,6 @@
 //! Geometric cuboid structure.
 
-use contracts::pre;
+use contracts::{post, pre};
 use nalgebra::{Point3, Vector3};
 
 /// Axis-aligned box.
@@ -31,11 +31,17 @@ impl Aabb {
     }
 
     /// Calculate the widths.
+    #[post(ret.x > 0.0)]
+    #[post(ret.y > 0.0)]
+    #[post(ret.z > 0.0)]
     pub fn widths(&self) -> Vector3<f64> {
         self.maxs - self.mins
     }
 
     /// Calculate the half-widths.
+    #[post(ret.x > 0.0)]
+    #[post(ret.y > 0.0)]
+    #[post(ret.z > 0.0)]
     pub fn half_widths(&self) -> Vector3<f64> {
         (self.maxs - self.mins) / 2.0
     }
@@ -46,6 +52,7 @@ impl Aabb {
     }
 
     /// Calculate the area.
+    #[post(ret > 0.0)]
     pub fn area(&self) -> f64 {
         let ws = self.widths();
 
@@ -53,6 +60,7 @@ impl Aabb {
     }
 
     /// Calculate the volume.
+    #[post(ret > 0.0)]
     pub fn vol(&self) -> f64 {
         let ws = self.widths();
 
