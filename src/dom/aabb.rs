@@ -1,6 +1,6 @@
 //! Geometric cuboid structure.
 
-use crate::geom::Surface;
+use crate::geom::Shape;
 use contracts::{post, pre};
 use nalgebra::{Point3, Vector3};
 
@@ -44,7 +44,7 @@ impl Aabb {
     #[post(ret.y > 0.0)]
     #[post(ret.z > 0.0)]
     pub fn half_widths(&self) -> Vector3<f64> {
-        (self.maxs - self.mins) / 2.0
+        (self.maxs - self.mins) * 0.5
     }
 
     /// Calculate the centre position.
@@ -80,12 +80,32 @@ impl Aabb {
     }
 
     /// Determine if the given shape's surface intersects the aabb's surface.
-    pub fn intersect(&self, shape: &Surface) -> bool {
-        unimplemented!();
+    pub fn intersect(&self, shape: &Shape) -> bool {
+        return match shape {
+            Shape::Plane { dist, norm } => {
+                let c = self.centre();
+                let e = self.half_widths();
+
+                let r = (e.x * norm.x.abs()) + (e.y * norm.y.abs()) + (e.z * norm.z.abs());
+                let s = norm.dot(&c.coords) - dist;
+
+                s.abs() <= r
+            }
+        };
     }
 
     /// Determine if the given shape's volume overlaps with the aabb's.
-    pub fn overlap(&self, shape: &Surface) -> bool {
-        unimplemented!();
+    pub fn overlap(&self, shape: &Shape) -> bool {
+        return match shape {
+            Shape::Plane { dist, norm } => {
+                let c = self.centre();
+                let e = self.half_widths();
+
+                let r = (e.x * norm.x.abs()) + (e.y * norm.y.abs()) + (e.z * norm.z.abs());
+                let s = norm.dot(&c.coords) - dist;
+
+                s.abs() <= r
+            }
+        };
     }
 }

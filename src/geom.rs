@@ -1,5 +1,5 @@
-//! Geometry enumeration.
+//! Geometric shape enumeration.
 
-pub mod surface;
+pub mod shape;
 
-pub use self::surface::*;
+pub use self::shape::*;
