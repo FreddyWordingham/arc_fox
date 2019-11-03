@@ -1,8 +1,8 @@
 //! Numerical Range structure.
 
 use contracts::pre;
-use std::f64::{INFINITY, MIN_POSITIVE, NEG_INFINITY};
 use serde::{Deserialize, Serialize};
+use std::f64::{INFINITY, MIN_POSITIVE, NEG_INFINITY};
 
 /// One-dimensional inclusive Range.
 #[derive(Serialize, Deserialize)]

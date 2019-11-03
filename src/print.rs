@@ -61,19 +61,18 @@ pub fn section(title: &str) {
 
     print!("====");
 
-    let mut pos = 0;
-    for ch in title.chars() {
-        match pos % 6 {
-            0 => print!(" {}", format!("{}", ch).bright_red().bold()),
-            1 => print!(" {}", format!("{}", ch).bright_yellow().bold()),
-            2 => print!(" {}", format!("{}", ch).bright_green().bold()),
-            3 => print!(" {}", format!("{}", ch).bright_cyan().bold()),
-            4 => print!(" {}", format!("{}", ch).bright_blue().bold()),
-            5 => print!(" {}", format!("{}", ch).bright_magenta().bold()),
+    unsafe {
+        static mut SECTION: i32 = 0;
+        match SECTION % 6 {
+            0 => print!(" {}", title.bright_red().bold()),
+            1 => print!(" {}", title.bright_yellow().bold()),
+            2 => print!(" {}", title.bright_green().bold()),
+            3 => print!(" {}", title.bright_cyan().bold()),
+            4 => print!(" {}", title.bright_blue().bold()),
+            5 => print!(" {}", title.bright_magenta().bold()),
             _ => unreachable!(),
         }
-
-        pos += 1;
+        SECTION += 1;
     }
 
     let mut cur_len = 4 + (2 * title.len());

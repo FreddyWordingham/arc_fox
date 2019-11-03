@@ -1,7 +1,7 @@
 //! Mathematical formula enumeration.
 
-use std::f64::consts::PI;
 use serde::{Deserialize, Serialize};
+use std::f64::consts::PI;
 
 /// Mathematical formulae accepting a single scalar argument.
 #[derive(Serialize, Deserialize)]

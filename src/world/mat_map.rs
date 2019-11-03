@@ -1,6 +1,6 @@
 //! Material map alias.
 
-use crate::{phys::Material, file::Loadable};
+use crate::{file::Loadable, phys::Material};
 use contracts::pre;
 use log::{info, warn};
 use std::{collections::HashMap, path::Path};
