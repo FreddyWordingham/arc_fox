@@ -7,8 +7,10 @@ use std::{
 };
 
 pub mod init;
+pub mod res;
 
 pub use self::init::*;
+pub use self::res::*;
 
 /// Get the arc root directory path from the environment variable.
 /// Environment variable must be set.

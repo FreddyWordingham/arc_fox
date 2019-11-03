@@ -3,8 +3,10 @@
 use super::opt::Environment;
 use crate::{math::Formula, util::Range};
 use contracts::pre;
+use serde::{Deserialize, Serialize};
 
 /// Physical material structure.
+#[derive(Serialize, Deserialize)]
 pub struct Material {
     /// Range of valid wavelengths.
     range: Range,

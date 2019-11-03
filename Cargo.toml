@@ -10,8 +10,12 @@ edition = "2018"
 colog = "0.2.1"
 colored = "1.8.0"
 contracts = "0.3.0"
-nalgebra = "0.19.0"
 log = "0.4.8"
+nalgebra = { version = "0.19.0", features = ["serde-serialize"] }
+ndarray = "0.13.0"
+netcdf = "0.3.1"
+serde = { version = "1.0.102", features = ["derive"] }
+serde_json = "1.0.41"
 terminal_size = "0.1.8"
 
 # Development profile: "cargo build".

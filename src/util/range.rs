@@ -2,8 +2,10 @@
 
 use contracts::pre;
 use std::f64::{INFINITY, MIN_POSITIVE, NEG_INFINITY};
+use serde::{Deserialize, Serialize};
 
 /// One-dimensional inclusive Range.
+#[derive(Serialize, Deserialize)]
 pub struct Range {
     /// Minimum bound.
     min: f64,
