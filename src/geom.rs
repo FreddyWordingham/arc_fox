@@ -1,5 +1,5 @@
-//! Geometry structures.
+//! Geometry enumeration.
 
-// pub mod aabb;
+pub mod surface;
 
-// pub use self::aabb::*;
+pub use self::surface::*;

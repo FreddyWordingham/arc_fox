@@ -1,5 +1,6 @@
 //! Geometric cuboid structure.
 
+use crate::geom::Surface;
 use contracts::{post, pre};
 use nalgebra::{Point3, Vector3};
 
@@ -76,5 +77,15 @@ impl Aabb {
             && (point.y <= self.maxs.y)
             && (self.mins.z <= point.z)
             && (point.z <= self.maxs.z)
+    }
+
+    /// Determine if the given shape's surface intersects the aabb's surface.
+    pub fn intersect(&self, shape: &Surface) -> bool {
+        unimplemented!();
+    }
+
+    /// Determine if the given shape's volume overlaps with the aabb's.
+    pub fn overlap(&self, shape: &Surface) -> bool {
+        unimplemented!();
     }
 }
