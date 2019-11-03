@@ -3,6 +3,17 @@
 use colored::Colorize;
 use terminal_size::terminal_size;
 
+/// Report a value and either its associated name, or a human readable string if supplied.
+#[macro_export]
+macro_rules! report {
+    ($expression: expr) => {
+        info!("{: <31}: {: <31}", stringify!($expression), $expression);
+    };
+    ($expression: expr, $string: tt) => {
+        info!("{: <31}: {: <31}", $string, $expression);
+    };
+}
+
 /// Print a main title bar.
 pub fn title(title: &str) {
     let term_width = (terminal_size()
