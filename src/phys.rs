@@ -1,4 +1,4 @@
-//! Physical properties.
+//! Physical property structures.
 
 pub mod material;
 
