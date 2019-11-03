@@ -7,6 +7,10 @@ edition = "2018"
 # documention = "https://freddywordingham.github.io/arc"
 
 [dependencies]
+colog = "0.2.1"
+colored = "1.8.0"
+log = "0.4.8"
+terminal_size = "0.1.8"
 
 # Development profile: "cargo build".
 [profile.dev]
