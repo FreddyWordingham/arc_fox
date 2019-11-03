@@ -1,7 +1,7 @@
 //! Directory initialisation functions.
 
 use super::{input, output};
-use contracts::{post, pre};
+use contracts::pre;
 use std::{
     env::{current_dir, set_current_dir},
     fs::create_dir_all,
@@ -20,6 +20,7 @@ pub fn input_dir(sub_dir: &str) -> PathBuf {
 
 /// Create a path to the output directory.
 /// Create the directories if they do not exist.
+#[pre(!sub_dir.is_empty())]
 #[post(ret.is_dir())]
 pub fn output_dir(sub_dir: &str) -> PathBuf {
     let out = output().join(sub_dir);

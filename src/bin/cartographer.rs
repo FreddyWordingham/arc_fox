@@ -6,7 +6,7 @@ use std::path::PathBuf;
 
 fn main() {
     title();
-    let (_args, _cwd, _out) = start_up();
+    let (_args, _input, _output) = start_up();
 }
 
 fn title() {
@@ -22,11 +22,11 @@ fn start_up() -> (Vec<String>, PathBuf, PathBuf) {
         report!(args[i], (format!("args[{}]", i)));
     }
 
-    let cwd = init::input_dir("cartographer");
-    report!(cwd.display(), "input directory");
+    let input = init::input_dir("cartographer");
+    report!(input.display(), "input directory");
 
-    let out = init::output_dir("cartographer");
-    report!(out.display(), "output directory");
+    let output = init::output_dir("cartographer");
+    report!(output.display(), "output directory");
 
-    (args, cwd, out)
+    (args, input, output)
 }
