@@ -1,0 +1,21 @@
+{
+    "range": {
+        "min": 1.0e-9,
+        "max": 1000.0e-9
+    },
+    "ref_index": {
+        "Const": 1.0
+    },
+    "scat_coeff": {
+        "Const": 1.0
+    },
+    "abs_coeff": {
+        "Const": 0.0
+    },
+    "shift_coeff": {
+        "Const": 0.0
+    },
+    "asym": {
+        "Const": 0.0
+    }
+}
