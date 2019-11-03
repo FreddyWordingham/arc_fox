@@ -1,10 +1,8 @@
 //! Mathematical formula enumeration.
 
-use serde::{Deserialize, Serialize};
 use std::f64::consts::PI;
 
 /// Mathematical formulae accepting a single scalar argument.
-#[derive(Debug, Serialize, Deserialize)]
 pub enum Formula {
     /// Normal. f(x) = exp(- x^2 / 2) / sqrt(2 pi)
     Normal(),
