@@ -1,6 +1,6 @@
 //! Ray-traceable trait.
 
-use super::ray::Ray;
+use super::Ray;
 use nalgebra::{Unit, Vector3};
 
 /// Types implementing this trait can be traced using a ray.
