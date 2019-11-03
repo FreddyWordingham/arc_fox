@@ -9,6 +9,7 @@ edition = "2018"
 [dependencies]
 colog = "0.2.1"
 colored = "1.8.0"
+contracts = "0.3.0"
 log = "0.4.8"
 terminal_size = "0.1.8"
 

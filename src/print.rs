@@ -7,10 +7,10 @@ use terminal_size::terminal_size;
 #[macro_export]
 macro_rules! report {
     ($expression: expr) => {
-        info!("{: <31}: {: <31}", stringify!($expression), $expression);
+        log::info!("{: <31}: {: <31}", stringify!($expression), $expression);
     };
     ($expression: expr, $string: tt) => {
-        info!("{: <31}: {: <31}", $string, $expression);
+        log::info!("{: <31}: {: <31}", $string, $expression);
     };
 }
 
