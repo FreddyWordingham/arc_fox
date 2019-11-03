@@ -1,7 +1,6 @@
 //! Optical environment structure.
 
 use contracts::pre;
-use serde::{Deserialize, Serialize};
 
 /// Information about an optical.
 pub struct Environment {
