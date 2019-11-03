@@ -9,6 +9,7 @@
 
 pub mod dir;
 pub mod dom;
+pub mod file;
 pub mod geom;
 pub mod math;
 pub mod phys;
