@@ -10,6 +10,7 @@
 pub mod dir;
 pub mod dom;
 pub mod geom;
+pub mod math;
 pub mod print;
 pub mod rt;
 pub mod util;
