@@ -9,6 +9,7 @@ fn main() {
 
 fn title() {
     print::title("PTFE");
+    print::section("Next");
 
     colog::init();
 }
