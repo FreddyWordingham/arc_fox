@@ -1,4 +1,4 @@
-//! Ray tracing structures and traits.
+//! Ray tracing structures, traits and enumerations.
 
 pub mod ray;
 pub mod emitter;
