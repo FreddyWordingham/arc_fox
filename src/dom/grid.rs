@@ -50,11 +50,13 @@ impl<'a> Grid<'a> {
 
         let cells = Array3::from_shape_vec(*layout.nis(), cells).unwrap();
 
+        let recs = Array3::from_elem(*layout.nis(), Record::new());
+
         Self {
             layout,
             aabb,
             cells,
-            recs : Array3::from_elem(*layout.nis(), Record::new());
+            recs,
         }
     }
 
