@@ -2,10 +2,11 @@
 //! Creates a data cube mapping materials within a volume.
 
 use arc::{
+    dom::Grid,
     dir::init,
     geom::Shape,
     print, report,
-    util::start_up,
+    util::{start_up, Layout},
     world::{load_ent_map, load_mat_map},
 };
 use nalgebra::{Point3, Vector3};
@@ -34,6 +35,7 @@ fn main() {
             &mat_map["air"],
         ),
     ]);
+    let grid = Grid::new(Layout::new(17,17,17), Aabb::new(Point3::new(-1.0, -1.0, -1.0), Point3::new(1.0, 1.0, 1.0)));
 }
 
 fn title() {
