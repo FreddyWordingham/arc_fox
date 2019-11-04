@@ -12,6 +12,7 @@ const EPSILON: f64 = 1.0e-6;
 
 /// Shape enumeration.
 /// Used to compose entities.
+#[derive(Debug)]
 pub enum Shape {
     /// Plane shape.
     Plane {

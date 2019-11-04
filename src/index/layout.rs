@@ -4,6 +4,7 @@ use contracts::pre;
 
 /// Layout structure.
 /// Used by domain grids.
+#[derive(Debug)]
 pub struct Layout {
     /// Number of indices in each dimension.
     nis: [usize; 3],

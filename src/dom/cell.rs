@@ -10,6 +10,7 @@ use contracts::pre;
 use nalgebra::Point3;
 
 /// Single domain cell.
+#[derive(Debug)]
 pub struct Cell<'a> {
     /// Boundary.
     aabb: Aabb,

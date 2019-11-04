@@ -11,14 +11,14 @@ pub struct Entity {
     /// Entity surface shape.
     pub surf: Shape,
     /// Inside material keyname.
-    pub in_mat: String,
+    pub in_mat: &'static str,
     /// Outside material keyname.
-    pub out_mat: String,
+    pub out_mat: &'static str,
 }
 
 impl Entity {
     /// Construct a new instance.
-    pub fn new(surf: Shape, in_mat: String, out_mat: String) -> Self {
+    pub fn new(surf: Shape, in_mat: &'static str, out_mat: &'static str) -> Self {
         Self {
             surf,
             in_mat,
@@ -28,6 +28,6 @@ impl Entity {
 
     /// Manifest into a world entity.
     pub fn manifest(self, mat_map: &MatMap) -> WorldEntity {
-        WorldEntity::new(self.surf, &mat_map[&self.in_mat], &mat_map[&self.out_mat])
+        WorldEntity::new(self.surf, &mat_map[self.in_mat], &mat_map[self.out_mat])
     }
 }

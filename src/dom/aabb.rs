@@ -10,6 +10,7 @@ use nalgebra::{Point3, Unit, Vector3};
 
 /// Axis-aligned box.
 /// Used to partition domains.
+#[derive(Debug)]
 pub struct Aabb {
     /// Minimum bound.
     mins: Point3<f64>,

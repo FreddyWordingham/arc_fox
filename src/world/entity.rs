@@ -4,6 +4,7 @@ use crate::{geom::Shape, phys::Material};
 
 /// World entity structure.
 /// Binds a material to a shape.
+#[derive(Debug)]
 pub struct Entity<'a> {
     /// Surface shape.
     surf: Shape,

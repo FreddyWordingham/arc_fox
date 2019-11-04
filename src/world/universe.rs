@@ -1,40 +1,43 @@
 //! Universal information structure.
 
-// use super::load_mat_map;
-// use crate::dir::res::mats;
+#![allow(unused_variables)]
+
+use super::{load_ent_map, load_mat_map, EntMap, MatMap};
+use crate::{
+    dir::res::mats,
+    dom::{Aabb, Grid},
+    index::Layout,
+    proto::Entity as ProtoEntity,
+};
 use self_ref::self_referencing;
 use std::sync::Arc;
 
 /// Structure containing all simulation information.
 #[derive(Debug)]
 pub struct Universe<'a> {
-    a: f64,
-    b: &'a f64,
+    /// Map of all materials.
+    mat_map: MatMap,
+    /// Map of all entities.
+    ent_map: EntMap<'a>,
+    /// Grid of cells.
+    grid: Grid<'a>,
 }
 
 impl<'a> Universe<'a> {
     /// Construct a new instance.
-    pub fn new() -> Self {
-        // let mat_map = load_mat_map(&mats(), &vec!["air".to_string(), "fog".to_string()]);
-
-        // let ent_map = load_ent_map(vec![
-        //     (
-        //         "block_start".to_string(),
-        //         Shape::new_plane(Point3::new(0.3, 0.0, 0.0), -Vector3::x_axis()),
-        //         &mat_map["air"],
-        //         &mat_map["fog"],
-        //     ),
-        //     (
-        //         "block_end".to_string(),
-        //         Shape::new_plane(Point3::new(0.5, 0.0, 0.0), -Vector3::x_axis()),
-        //         &mat_map["fog"],
-        //         &mat_map["air"],
-        //     ),
-        // ]);
+    pub fn new(layout: Layout, aabb: Aabb, ents: Vec<ProtoEntity>) -> Self {
+        let mut mat_names = Vec::new();
+        for ent in ents.iter() {
+            mat_names.push(ent.in_mat);
+            mat_names.push(ent.out_mat);
+        }
+        mat_names.sort();
+        mat_names.dedup();
 
         Arc::try_unwrap(self_referencing!(Universe, {
-            a = 1.0;
-            b = &a;
+            mat_map = load_mat_map(&mats(), &mat_names);
+            ent_map = load_ent_map(ents, &mat_map);
+            grid = Grid::new(layout, aabb, &ent_map);
         }))
         .unwrap()
     }

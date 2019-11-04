@@ -3,14 +3,15 @@
 
 use arc::{
     dir::init,
+    dom::Aabb,
     // file::save_as_netcdf,
     geom::Shape,
-    // index::Layout,
+    index::Layout,
     print,
-    proto,
+    proto::Entity as ProtoEntity,
     report,
     util::start_up,
-    world::{load_ent_map, load_mat_map, Universe},
+    world::Universe,
 };
 use nalgebra::{Point3, Vector3};
 // use ndarray::Array3;
@@ -21,29 +22,22 @@ fn main() {
     let (_args, _input, _output) = start_up();
 
     print::section("Initialisation");
-
-    let mat_map = Box::new(load_mat_map(
-        &arc::dir::res::mats(),
-        &vec!["air".to_string(), "fog".to_string()],
-    ));
-
-    let _ent_map = load_ent_map(
+    let _uni = Universe::new(
+        Layout::new(17, 17, 17),
+        Aabb::new(Point3::new(-1.0, -1.0, -1.0), Point3::new(1.0, 1.0, 1.0)),
         vec![
-            proto::Entity::new(
+            ProtoEntity::new(
                 Shape::new_plane(Point3::new(0.3, 0.0, 0.0), -Vector3::x_axis()),
-                "air".to_string(),
-                "fog".to_string(),
+                "air",
+                "fog",
             ),
-            proto::Entity::new(
+            ProtoEntity::new(
                 Shape::new_plane(Point3::new(0.5, 0.0, 0.0), -Vector3::x_axis()),
-                "fog".to_string(),
-                "air".to_string(),
+                "fog",
+                "air",
             ),
         ],
-        &mat_map,
     );
-
-    let _uni = Universe::new();
 
     // let grid = Grid::new(
     //     Layout::new(17, 17, 17),

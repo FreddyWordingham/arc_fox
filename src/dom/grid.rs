@@ -6,6 +6,7 @@ use nalgebra::Point3;
 use ndarray::Array3;
 
 /// Domain cell grid.
+#[derive(Debug)]
 pub struct Grid<'a> {
     /// Layout.
     layout: Layout,

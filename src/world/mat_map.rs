@@ -6,11 +6,11 @@ use log::{info, warn};
 use std::{collections::HashMap, path::Path};
 
 /// Material map alias type.
-pub type MatMap = HashMap<String, Material>;
+pub type MatMap = HashMap<&'static str, Material>;
 
 #[pre(dir.is_dir())]
 #[pre(!names.is_empty())]
-pub fn load_mat_map(dir: &Path, names: &Vec<String>) -> MatMap {
+pub fn load_mat_map(dir: &Path, names: &Vec<&'static str>) -> MatMap {
     let mut sorted_names = names.clone();
     sorted_names.sort();
     sorted_names.dedup();
