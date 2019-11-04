@@ -16,7 +16,7 @@ fn main() {
     print::section("Initialisation");
     let uni = Universe::new(
         Layout::new(17, 17, 17),
-        Aabb::new(Point3::new(-1.0, -1.0, -1.0), Point3::new(1.0, 1.0, 1.0)),
+        Aabb::new_centred(&Point3::origin(), &Vector3::new(1.0, 1.0, 1.0)),
         vec![
             ProtoEntity::new(
                 Shape::new_plane(Point3::new(0.3, 0.0, 0.0), -Vector3::x_axis()),

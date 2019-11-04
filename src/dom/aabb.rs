@@ -25,6 +25,14 @@ impl Aabb {
         Self { mins, maxs }
     }
 
+    /// Construct a new instance centred on a point with given half_widths.
+    #[pre(hws.x > 0.0)]
+    #[pre(hws.y > 0.0)]
+    #[pre(hws.z > 0.0)]
+    pub fn new_centred(centre: &Point3<f64>, hws: &Vector3<f64>) -> Self {
+        Self::new(centre - hws, centre + hws)
+    }
+
     /// Reference the minimum bound.
     pub fn mins(&self) -> &Point3<f64> {
         &self.mins
