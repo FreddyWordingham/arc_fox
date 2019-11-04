@@ -32,7 +32,8 @@ pub fn load_ent_map<'a>(list: Vec<(String, Shape, &'a Material, &'a Material)>) 
 }
 
 #[pre(aabb.contains(p))]
-pub fn mat_at_point<'a>(p: &Point3<f64>, aabb: &Aabb, ent_map: &'a EntMap) -> &'a Material {
+#[pre(!ent_map.is_empty())]
+pub fn mat_at_point_from_map<'a>(p: &Point3<f64>, aabb: &Aabb, ent_map: &'a EntMap) -> &'a Material {
     let n: i32 = 7;
     let mut power = 2;
     loop {
@@ -41,10 +42,63 @@ pub fn mat_at_point<'a>(p: &Point3<f64>, aabb: &Aabb, ent_map: &'a EntMap) -> &'
 
             let mut nearest: Option<(f64, bool, &Entity)> = None;
             for (_name, ent) in ent_map {
-                let aabb = ent.shape().aabb();
-                if aabb.contains(p) || aabb.hit(&ray) {
+                let ent_aabb = ent.shape().aabb();
+                if ent_aabb.contains(p) || ent_aabb.hit(&ray) {
                     if let Some((dist, inside)) = ent.shape().dist_inside(&ray) {
-                        if nearest.is_some() || (dist < nearest.unwrap().0) {
+                        if nearest.is_none() || (dist < nearest.unwrap().0) {
+                            nearest = Some((dist, inside, ent));
+                        }
+                    }
+                }
+            }
+
+            if let Some((dist, inside, ent)) = nearest {
+                if dist <= aabb.dist(&ray).unwrap() {
+                    if inside {
+                        return ent.in_mat();
+                    }
+
+                    return ent.out_mat();
+                }
+            }
+        }
+
+        if power < 4 {
+            warn!(
+                "Increasing ray-casting power ({} rays)",
+                (2 * n.pow(power)) + 1
+            );
+
+            power += 1;
+        } else {
+            break;
+        }
+    }
+
+    panic!(
+        "Unable to observe a material from given point after {} samples.",
+        (2 * n.pow(power)) + 1
+    );
+}
+
+#[pre(aabb.contains(p))]
+#[pre(!ent_list.is_empty())]
+pub fn mat_at_point_from_list<'a>(
+    p: &Point3<f64>,
+    aabb: &Aabb,
+    ent_list: &Vec<(&'a Entity, Vec<&Shape>)>,
+) -> &'a Material {
+    let n: i32 = 7;
+    let mut power = 2;
+    loop {
+        for i in -n.pow(power)..=n.pow(power) {
+            let ray = Ray::new(*p, fibonacci_spiral(i, n.pow(power)));
+
+            let mut nearest: Option<(f64, bool, &Entity)> = None;
+            for (ent, shapes) in ent_list {
+                for s in shapes {
+                    if let Some((dist, inside)) = s.dist_inside(&ray) {
+                        if nearest.is_none() || (dist < nearest.unwrap().0) {
                             nearest = Some((dist, inside, ent));
                         }
                     }
