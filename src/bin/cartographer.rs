@@ -4,16 +4,16 @@
 use arc::{
     dir::init,
     dom::{Aabb, Grid},
-    geom::Shape,
     file::save_as_netcdf,
+    geom::Shape,
     index::Layout,
     print, report,
     util::start_up,
     world::{load_ent_map, load_mat_map},
 };
 use nalgebra::{Point3, Vector3};
-use std::path::PathBuf;
 use ndarray::Array3;
+use std::path::PathBuf;
 
 fn main() {
     title();
@@ -48,20 +48,22 @@ fn main() {
     print::section("Simulation");
     let mut scat_coeffs = Vec::with_capacity(layout.total_indices());
     for xi in 0..layout.x() {
-    for yi in 0..layout.y() {
-    for zi in 0..layout.z() {
-        let index = [xi, yi, zi];
-        let cell = &grid.cells()[index];
-        let mat = cell.mat();
+        for yi in 0..layout.y() {
+            for zi in 0..layout.z() {
+                let index = [xi, yi, zi];
+                let cell = &grid.cells()[index];
+                let mat = cell.mat();
 
-        scat_coeffs.push(mat.scat_coeff(700.0e-9));
-    }}}
+                scat_coeffs.push(mat.scat_coeff(700.0e-9));
+            }
+        }
+    }
 
     print::section("Post-processing");
     let scat_coeffs = Array3::from_shape_vec(*layout.nis(), scat_coeffs).unwrap();
 
     print::section("Output");
-    save_as_netcdf(&output.join("data.nc"),vec![("scat_coeff", &scat_coeffs)]);
+    save_as_netcdf(&output.join("data.nc"), vec![("scat_coeff", &scat_coeffs)]);
 
     print::section("Finished");
 }

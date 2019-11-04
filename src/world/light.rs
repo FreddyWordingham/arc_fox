@@ -15,9 +15,6 @@ impl Light {
     /// Construct a new instance.
     #[pre(pow > 0.0)]
     pub fn new(emit: Emitter, pow: f64) -> Self {
-        Self {
-            emit,
-            pow
-        }
+        Self { emit, pow }
     }
 }

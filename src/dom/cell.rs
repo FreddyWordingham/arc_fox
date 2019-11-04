@@ -40,15 +40,14 @@ impl<'a> Cell<'a> {
 
         let mat = if ent_list.is_empty() {
             mat_at_point_from_map(&aabb.centre(), dom_aabb, ent_map)
-        }
-        else {
+        } else {
             mat_at_point_from_list(&aabb.centre(), &aabb, &ent_list)
         };
 
         Self {
             aabb,
             ent_list,
-            mat
+            mat,
         }
     }
 
