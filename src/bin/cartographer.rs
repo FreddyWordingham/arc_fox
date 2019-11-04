@@ -43,11 +43,9 @@ fn main() {
         Aabb::new(Point3::new(-1.0, -1.0, -1.0), Point3::new(1.0, 1.0, 1.0)),
         &ent_map,
     );
-
-    print::section("Simulation");
-
     let layout = grid.layout();
 
+    print::section("Simulation");
     let mut scat_coeffs = Vec::with_capacity(layout.total_indices());
     for xi in 0..layout.x() {
     for yi in 0..layout.y() {
@@ -58,10 +56,14 @@ fn main() {
 
         scat_coeffs.push(mat.scat_coeff(700.0e-9));
     }}}
+
+    print::section("Post-processing");
     let scat_coeffs = Array3::from_shape_vec(*layout.nis(), scat_coeffs).unwrap();
 
     print::section("Output");
     save_as_netcdf(&output.join("data.nc"),vec![("scat_coeff", &scat_coeffs)]);
+
+    print::section("Finished");
 }
 
 fn title() {
