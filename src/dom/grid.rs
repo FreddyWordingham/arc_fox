@@ -1,7 +1,7 @@
 //! Grid structure.
 
 use super::{Aabb, Cell};
-use crate::{index::Layout, util::progress::bar, world::EntMap};
+use crate::{data::Record, index::Layout, util::progress::bar, world::EntMap};
 use nalgebra::Point3;
 use ndarray::Array3;
 
@@ -14,6 +14,8 @@ pub struct Grid<'a> {
     aabb: Aabb,
     /// Cells.
     cells: Array3<Cell<'a>>,
+    /// Data records.
+    recs: Array3<Record>,
 }
 
 impl<'a> Grid<'a> {
@@ -52,6 +54,7 @@ impl<'a> Grid<'a> {
             layout,
             aabb,
             cells,
+            recs : Array3::from_elem(*layout.nis(), Record::new());
         }
     }
 
