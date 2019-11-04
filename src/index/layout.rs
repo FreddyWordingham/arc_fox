@@ -13,14 +13,8 @@ impl Layout {
     #[pre(xi > 0)]
     #[pre(yi > 0)]
     #[pre(zi > 0)]
-    pub fn new(
-            xi: usize,
-            yi: usize,
-            zi: usize,
-    ) -> Self {
-        Self {
-            nis: [xi, yi, zi]
-        }
+    pub fn new(xi: usize, yi: usize, zi: usize) -> Self {
+        Self { nis: [xi, yi, zi] }
     }
 
     /// Get the total number of indices.
