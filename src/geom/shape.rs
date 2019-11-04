@@ -37,11 +37,18 @@ impl Shape {
             ),
         }
     }
+
+    /// Get a list of the component shapes.
+    pub fn components(&self) -> Vec<&Shape> {
+        match self {
+            Shape::Plane { pos: _, norm: _ } => vec![&self],
+        }
+    }
 }
 
 impl Traceable for Shape {
     fn hit(&self, ray: &Ray) -> bool {
-        return match self {
+        match self {
             Shape::Plane { pos, norm } => {
                 let d = norm.dot(&ray.dir);
 
@@ -54,7 +61,7 @@ impl Traceable for Shape {
 
                 false
             }
-        };
+        }
     }
 
     fn dist(&self, ray: &Ray) -> Option<f64> {

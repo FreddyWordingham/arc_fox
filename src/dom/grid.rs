@@ -1,23 +1,23 @@
 //! Grid structure.
 
 use super::{Aabb, Cell};
-use crate::{index::Layout, util::progress::bar};
-use ndarray::Array3;
+use crate::{index::Layout, util::progress::bar, world::EntMap};
 use nalgebra::Point3;
+use ndarray::Array3;
 
 /// Domain cell grid.
-pub struct Grid {
+pub struct Grid<'a> {
     /// Layout.
     layout: Layout,
     /// Boundary.
     aabb: Aabb,
     /// Cells.
-    cells: Array3<Cell>,
+    cells: Array3<Cell<'a>>,
 }
 
-impl Grid {
+impl<'a> Grid<'a> {
     /// Construct a new instance.
-    pub fn new(layout: Layout, aabb: Aabb) -> Self {
+    pub fn new(layout: Layout, aabb: Aabb, ent_map: &'a EntMap) -> Self {
         let mut cells = Vec::with_capacity(layout.total_indices());
         let mut cell_size = aabb.widths();
         for i in 0..3 {
@@ -39,13 +39,19 @@ impl Grid {
                     let mins = Point3::new(min_x, min_y, min_z);
                     let maxs = mins + cell_size;
 
-                    cells.push(Cell::new(Aabb::new(mins, maxs)));
-        }}}
+                    cells.push(Cell::new(Aabb::new(mins, maxs), ent_map, &aabb));
+                }
+            }
+        }
         bar.finish_with_message(&format!("{} cells constructed.", layout.total_indices()));
 
         let cells = Array3::from_shape_vec(*layout.nis(), cells).unwrap();
 
-        Self { layout, aabb, cells }
+        Self {
+            layout,
+            aabb,
+            cells,
+        }
     }
 
     /// Reference the boundary.

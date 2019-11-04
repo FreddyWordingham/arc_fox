@@ -22,7 +22,7 @@ fn main() {
         &arc::dir::res::mats(),
         &vec!["air".to_string(), "fog".to_string()],
     );
-    let _ent_map = load_ent_map(vec![
+    let ent_map = load_ent_map(vec![
         (
             "block_start".to_string(),
             Shape::new_plane(Point3::new(0.3, 0.0, 0.0), -Vector3::x_axis()),
@@ -36,9 +36,10 @@ fn main() {
             &mat_map["air"],
         ),
     ]);
-    let grid = Grid::new(
+    let _grid = Grid::new(
         Layout::new(17, 17, 17),
         Aabb::new(Point3::new(-1.0, -1.0, -1.0), Point3::new(1.0, 1.0, 1.0)),
+        &ent_map,
     );
 }
 
