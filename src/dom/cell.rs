@@ -16,7 +16,7 @@ pub struct Cell<'a> {
     /// List of intersecting entity shapes.
     ent_list: Vec<(&'a Entity<'a>, Vec<&'a Shape>)>,
     /// Central material.
-    centre_mat: &'a Material,
+    mat: &'a Material,
 }
 
 impl<'a> Cell<'a> {
@@ -38,7 +38,7 @@ impl<'a> Cell<'a> {
             }
         }
 
-        let centre_mat = if ent_list.is_empty() {
+        let mat = if ent_list.is_empty() {
             mat_at_point_from_map(&aabb.centre(), dom_aabb, ent_map)
         }
         else {
@@ -48,7 +48,7 @@ impl<'a> Cell<'a> {
         Self {
             aabb,
             ent_list,
-            centre_mat
+            mat
         }
     }
 
@@ -63,15 +63,15 @@ impl<'a> Cell<'a> {
     }
 
     /// Reference the central material.
-    pub fn centre_mat(&self) -> &Material {
-        &self.centre_mat
+    pub fn mat(&self) -> &Material {
+        &self.mat
     }
 
     /// Reference the material at the given point.
     #[pre(self.aabb.contains(p))]
     pub fn mat_at_point(&self, p: &Point3<f64>) -> &Material {
         if self.ent_list.is_empty() {
-            return self.centre_mat;
+            return self.mat;
         }
 
         mat_at_point_from_list(&p, &self.aabb, &self.ent_list)
