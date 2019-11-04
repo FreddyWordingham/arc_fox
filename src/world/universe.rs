@@ -1,10 +1,11 @@
 //! Universal information structure.
 
-use super::load_mat_map;
-use crate::dir::res::mats;
+// use super::load_mat_map;
+// use crate::dir::res::mats;
 use self_ref::self_referencing;
 use std::sync::Arc;
 
+/// Structure containing all simulation information.
 #[derive(Debug)]
 pub struct Universe<'a> {
     a: f64,
@@ -12,6 +13,7 @@ pub struct Universe<'a> {
 }
 
 impl<'a> Universe<'a> {
+    /// Construct a new instance.
     pub fn new() -> Self {
         // let mat_map = load_mat_map(&mats(), &vec!["air".to_string(), "fog".to_string()]);
 

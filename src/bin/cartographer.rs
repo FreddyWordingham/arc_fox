@@ -7,6 +7,7 @@ use arc::{
     geom::Shape,
     // index::Layout,
     print,
+    proto,
     report,
     util::start_up,
     world::{load_ent_map, load_mat_map, Universe},
@@ -26,20 +27,21 @@ fn main() {
         &vec!["air".to_string(), "fog".to_string()],
     ));
 
-    let _ent_map = load_ent_map(vec![
-        (
-            "block_start".to_string(),
-            Shape::new_plane(Point3::new(0.3, 0.0, 0.0), -Vector3::x_axis()),
-            &mat_map["air"],
-            &mat_map["fog"],
-        ),
-        (
-            "block_end".to_string(),
-            Shape::new_plane(Point3::new(0.5, 0.0, 0.0), -Vector3::x_axis()),
-            &mat_map["fog"],
-            &mat_map["air"],
-        ),
-    ]);
+    let _ent_map = load_ent_map(
+        vec![
+            proto::Entity::new(
+                Shape::new_plane(Point3::new(0.3, 0.0, 0.0), -Vector3::x_axis()),
+                "air".to_string(),
+                "fog".to_string(),
+            ),
+            proto::Entity::new(
+                Shape::new_plane(Point3::new(0.5, 0.0, 0.0), -Vector3::x_axis()),
+                "fog".to_string(),
+                "air".to_string(),
+            ),
+        ],
+        &mat_map,
+    );
 
     let _uni = Universe::new();
 

@@ -24,9 +24,9 @@ impl<'a> Cell<'a> {
     pub fn new(aabb: Aabb, ent_map: &'a EntMap, dom_aabb: &Aabb) -> Self {
         let mut ent_list = Vec::new();
         for (_name, ent) in ent_map {
-            if aabb.intersect(ent.shape()) {
+            if aabb.intersect(ent.surf()) {
                 let mut list = Vec::new();
-                for c in ent.shape().components() {
+                for c in ent.surf().components() {
                     if aabb.intersect(c) {
                         list.push(c);
                     }

@@ -6,7 +6,7 @@ use crate::{geom::Shape, phys::Material};
 /// Binds a material to a shape.
 pub struct Entity<'a> {
     /// Surface shape.
-    shape: Shape,
+    surf: Shape,
     /// Inside material.
     in_mat: &'a Material,
     /// Outside material.
@@ -15,17 +15,17 @@ pub struct Entity<'a> {
 
 impl<'a> Entity<'a> {
     /// Construct a new instance.
-    pub fn new(shape: Shape, in_mat: &'a Material, out_mat: &'a Material) -> Self {
+    pub fn new(surf: Shape, in_mat: &'a Material, out_mat: &'a Material) -> Self {
         Self {
-            shape,
+            surf,
             in_mat,
             out_mat,
         }
     }
 
-    /// Reference the shape.
-    pub fn shape(&self) -> &Shape {
-        &self.shape
+    /// Reference the surface shape.
+    pub fn surf(&self) -> &Shape {
+        &self.surf
     }
 
     /// Reference the inside material.
