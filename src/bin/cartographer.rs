@@ -2,27 +2,19 @@
 //! Creates a data cube mapping materials within a volume.
 
 use arc::{
-    dir::init,
-    dom::Aabb,
-    // file::save_as_netcdf,
-    geom::Shape,
-    index::Layout,
-    print,
-    proto::Entity as ProtoEntity,
-    report,
-    util::start_up,
-    world::Universe,
+    dir::init, dom::Aabb, file::save_as_netcdf, geom::Shape, index::Layout, print,
+    proto::Entity as ProtoEntity, report, util::start_up, world::Universe,
 };
 use nalgebra::{Point3, Vector3};
-// use ndarray::Array3;
+use ndarray::Array3;
 use std::path::PathBuf;
 
 fn main() {
     title();
-    let (_args, _input, _output) = start_up();
+    let (_args, _input, output) = start_up();
 
     print::section("Initialisation");
-    let _uni = Universe::new(
+    let uni = Universe::new(
         Layout::new(17, 17, 17),
         Aabb::new(Point3::new(-1.0, -1.0, -1.0), Point3::new(1.0, 1.0, 1.0)),
         vec![
@@ -39,34 +31,29 @@ fn main() {
         ],
     );
 
-    // let grid = Grid::new(
-    //     Layout::new(17, 17, 17),
-    //     Aabb::new(Point3::new(-1.0, -1.0, -1.0), Point3::new(1.0, 1.0, 1.0)),
-    //     &ent_map,
-    // );
-    // let layout = grid.layout();
+    print::section("Simulation");
+    let grid = uni.grid;
+    let layout = grid.layout();
+    let mut scat_coeffs = Vec::with_capacity(layout.total_indices());
+    for xi in 0..layout.x() {
+        for yi in 0..layout.y() {
+            for zi in 0..layout.z() {
+                let index = [xi, yi, zi];
+                let cell = &grid.cells()[index];
+                let mat = cell.mat();
 
-    // print::section("Simulation");
-    // let mut scat_coeffs = Vec::with_capacity(layout.total_indices());
-    // for xi in 0..layout.x() {
-    //     for yi in 0..layout.y() {
-    //         for zi in 0..layout.z() {
-    //             let index = [xi, yi, zi];
-    //             let cell = &grid.cells()[index];
-    //             let mat = cell.mat();
+                scat_coeffs.push(mat.scat_coeff(700.0e-9));
+            }
+        }
+    }
 
-    //             scat_coeffs.push(mat.scat_coeff(700.0e-9));
-    //         }
-    //     }
-    // }
+    print::section("Post-processing");
+    let scat_coeffs = Array3::from_shape_vec(*layout.nis(), scat_coeffs).unwrap();
 
-    // print::section("Post-processing");
-    // let scat_coeffs = Array3::from_shape_vec(*layout.nis(), scat_coeffs).unwrap();
+    print::section("Output");
+    save_as_netcdf(&output.join("data.nc"), vec![("scat_coeff", &scat_coeffs)]);
 
-    // print::section("Output");
-    // save_as_netcdf(&output.join("data.nc"), vec![("scat_coeff", &scat_coeffs)]);
-
-    // print::section("Finished");
+    print::section("Finished");
 }
 
 fn title() {

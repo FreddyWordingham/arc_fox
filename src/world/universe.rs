@@ -16,11 +16,11 @@ use std::sync::Arc;
 #[derive(Debug)]
 pub struct Universe<'a> {
     /// Map of all materials.
-    mat_map: MatMap,
+    pub mat_map: MatMap,
     /// Map of all entities.
-    ent_map: EntMap<'a>,
+    pub ent_map: EntMap<'a>,
     /// Grid of cells.
-    grid: Grid<'a>,
+    pub grid: Grid<'a>,
 }
 
 impl<'a> Universe<'a> {
