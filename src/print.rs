@@ -75,17 +75,15 @@ pub fn section(title: &str) {
         SECTION += 1;
     }
 
-    let mut cur_len = 4 + (2 * title.len());
+    let mut cur_len = 5 + title.len();
 
     if cur_len >= term_width {
         println!("");
-
         return;
     }
 
     print!(" ");
     cur_len += 1;
-
     while cur_len < term_width {
         print!("=");
         cur_len += 1;
