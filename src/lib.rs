@@ -15,6 +15,7 @@ pub mod index;
 pub mod math;
 pub mod phys;
 pub mod print;
+pub mod proto;
 pub mod rng;
 pub mod rt;
 pub mod util;

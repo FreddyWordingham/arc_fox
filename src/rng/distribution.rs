@@ -10,7 +10,7 @@ pub enum Distribution {
 
 impl Distribution {
     /// Construct a new constant distribution.
-    pub fn new_const(c: f64) -> Distribution {
+    pub fn new_const(c: f64) -> Self {
         Distribution::Const(c)
     }
 

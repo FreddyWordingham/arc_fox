@@ -3,28 +3,30 @@
 
 use arc::{
     dir::init,
-    dom::{Aabb, Grid},
-    file::save_as_netcdf,
+    // file::save_as_netcdf,
     geom::Shape,
-    index::Layout,
-    print, report,
+    // index::Layout,
+    print,
+    report,
     util::start_up,
-    world::{load_ent_map, load_mat_map},
+    world::{load_ent_map, load_mat_map, Universe},
 };
 use nalgebra::{Point3, Vector3};
-use ndarray::Array3;
+// use ndarray::Array3;
 use std::path::PathBuf;
 
 fn main() {
     title();
-    let (_args, _input, output) = start_up();
+    let (_args, _input, _output) = start_up();
 
     print::section("Initialisation");
-    let mat_map = load_mat_map(
+
+    let mat_map = Box::new(load_mat_map(
         &arc::dir::res::mats(),
         &vec!["air".to_string(), "fog".to_string()],
-    );
-    let ent_map = load_ent_map(vec![
+    ));
+
+    let _ent_map = load_ent_map(vec![
         (
             "block_start".to_string(),
             Shape::new_plane(Point3::new(0.3, 0.0, 0.0), -Vector3::x_axis()),
@@ -38,34 +40,37 @@ fn main() {
             &mat_map["air"],
         ),
     ]);
-    let grid = Grid::new(
-        Layout::new(17, 17, 17),
-        Aabb::new(Point3::new(-1.0, -1.0, -1.0), Point3::new(1.0, 1.0, 1.0)),
-        &ent_map,
-    );
-    let layout = grid.layout();
 
-    print::section("Simulation");
-    let mut scat_coeffs = Vec::with_capacity(layout.total_indices());
-    for xi in 0..layout.x() {
-        for yi in 0..layout.y() {
-            for zi in 0..layout.z() {
-                let index = [xi, yi, zi];
-                let cell = &grid.cells()[index];
-                let mat = cell.mat();
+    let _uni = Universe::new();
 
-                scat_coeffs.push(mat.scat_coeff(700.0e-9));
-            }
-        }
-    }
+    // let grid = Grid::new(
+    //     Layout::new(17, 17, 17),
+    //     Aabb::new(Point3::new(-1.0, -1.0, -1.0), Point3::new(1.0, 1.0, 1.0)),
+    //     &ent_map,
+    // );
+    // let layout = grid.layout();
 
-    print::section("Post-processing");
-    let scat_coeffs = Array3::from_shape_vec(*layout.nis(), scat_coeffs).unwrap();
+    // print::section("Simulation");
+    // let mut scat_coeffs = Vec::with_capacity(layout.total_indices());
+    // for xi in 0..layout.x() {
+    //     for yi in 0..layout.y() {
+    //         for zi in 0..layout.z() {
+    //             let index = [xi, yi, zi];
+    //             let cell = &grid.cells()[index];
+    //             let mat = cell.mat();
 
-    print::section("Output");
-    save_as_netcdf(&output.join("data.nc"), vec![("scat_coeff", &scat_coeffs)]);
+    //             scat_coeffs.push(mat.scat_coeff(700.0e-9));
+    //         }
+    //     }
+    // }
 
-    print::section("Finished");
+    // print::section("Post-processing");
+    // let scat_coeffs = Array3::from_shape_vec(*layout.nis(), scat_coeffs).unwrap();
+
+    // print::section("Output");
+    // save_as_netcdf(&output.join("data.nc"), vec![("scat_coeff", &scat_coeffs)]);
+
+    // print::section("Finished");
 }
 
 fn title() {

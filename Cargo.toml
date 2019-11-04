@@ -3,8 +3,8 @@ name = "arc"
 version = "0.1.0"
 authors = ["freddywordingham"]
 edition = "2018"
-# default-run = "hello_world"
-# documention = "https://freddywordingham.github.io/arc"
+default-run = "cartographer"
+documention = "https://freddywordingham.github.io/arc"
 
 [dependencies]
 colog = "0.2.1"
@@ -16,6 +16,7 @@ rand = "0.7.2"
 nalgebra = { version = "0.19.0", features = ["serde-serialize"] }
 ndarray = "0.13.0"
 netcdf = "0.3.1"
+self-ref = "0.1.2"
 serde = { version = "1.0.102", features = ["derive"] }
 serde_json = "1.0.41"
 terminal_size = "0.1.8"
