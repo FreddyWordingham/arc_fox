@@ -8,7 +8,7 @@ use arc::{
     util::start_up,
     world::{load_ent_map, load_mat_map},
 };
-use nalgebra::Vector3;
+use nalgebra::{Point3, Vector3};
 use std::path::PathBuf;
 
 fn main() {
@@ -20,14 +20,16 @@ fn main() {
         &arc::dir::res::mats(),
         &vec!["air".to_string(), "fog".to_string()],
     );
-    let _ent_map = load_ent_map(&vec![
+    let _ent_map = load_ent_map(vec![
         (
-            Shape::new_plane(0.3, -Vector3::x_axis()),
+            "block_start".to_string(),
+            Shape::new_plane(Point3::new(0.3, 0.0, 0.0), -Vector3::x_axis()),
             &mat_map["air"],
             &mat_map["fog"],
         ),
         (
-            Shape::new_plane(0.5, -Vector3::x_axis()),
+            "block_end".to_string(),
+            Shape::new_plane(Point3::new(0.5, 0.0, 0.0), -Vector3::x_axis()),
             &mat_map["fog"],
             &mat_map["air"],
         ),
