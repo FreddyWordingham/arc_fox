@@ -5,6 +5,8 @@ use contracts::pre;
 
 /// Optical photon structure.
 pub struct Photon {
+    /// Statistical weight.
+    weight: f64,
     /// Ray of travel.
     ray: Ray,
     /// Wavelength.
@@ -15,7 +17,11 @@ impl Photon {
     /// Construct a new instance.
     #[pre(wavelength > 0.0)]
     pub fn new(ray: Ray, wavelength: f64) -> Self {
-        Self { ray, wavelength }
+        Self {
+            weight: 1.0,
+            ray,
+            wavelength,
+        }
     }
 
     /// Reference the ray.
