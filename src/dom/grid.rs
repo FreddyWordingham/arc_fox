@@ -54,8 +54,18 @@ impl<'a> Grid<'a> {
         }
     }
 
+    /// Reference the layout.
+    pub fn layout(&self) -> &Layout {
+        &self.layout
+    }
+
     /// Reference the boundary.
     pub fn aabb(&self) -> &Aabb {
         &self.aabb
+    }
+
+    /// Reference the cells.
+    pub fn cells(&self) -> &Array3<Cell<'a>> {
+        &self.cells
     }
 }

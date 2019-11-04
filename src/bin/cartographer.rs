@@ -5,6 +5,7 @@ use arc::{
     dir::init,
     dom::{Aabb, Grid},
     geom::Shape,
+    file::save_as_netcdf,
     index::Layout,
     print, report,
     util::start_up,
@@ -12,10 +13,11 @@ use arc::{
 };
 use nalgebra::{Point3, Vector3};
 use std::path::PathBuf;
+use ndarray::Array3;
 
 fn main() {
     title();
-    let (_args, _input, _output) = start_up();
+    let (_args, _input, output) = start_up();
 
     print::section("Initialisation");
     let mat_map = load_mat_map(
@@ -36,11 +38,30 @@ fn main() {
             &mat_map["air"],
         ),
     ]);
-    let _grid = Grid::new(
+    let grid = Grid::new(
         Layout::new(17, 17, 17),
         Aabb::new(Point3::new(-1.0, -1.0, -1.0), Point3::new(1.0, 1.0, 1.0)),
         &ent_map,
     );
+
+    print::section("Simulation");
+
+    let layout = grid.layout();
+
+    let mut scat_coeffs = Vec::with_capacity(layout.total_indices());
+    for xi in 0..layout.x() {
+    for yi in 0..layout.y() {
+    for zi in 0..layout.z() {
+        let index = [xi, yi, zi];
+        let cell = &grid.cells()[index];
+        let mat = cell.mat();
+
+        scat_coeffs.push(mat.scat_coeff(700.0e-9));
+    }}}
+    let scat_coeffs = Array3::from_shape_vec(*layout.nis(), scat_coeffs).unwrap();
+
+    print::section("Output");
+    save_as_netcdf(&output.join("data.nc"),vec![("scat_coeff", &scat_coeffs)]);
 }
 
 fn title() {

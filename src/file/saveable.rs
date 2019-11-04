@@ -20,7 +20,7 @@ impl<T: Serialize> Saveable for T {
 }
 
 /// Save a three-dimensional array as a hdf5 datacube.
-pub fn save_as_netcdf<T: Numeric>(data: Vec<(&'static str, &Array3<T>)>, path: &Path) {
+pub fn save_as_netcdf<T: Numeric>(path: &Path, data: Vec<(&'static str, &Array3<T>)>) {
     let mut file = File::create(&path).expect("Unable to create netcdf file!");
 
     let shape = data[0].1.shape();

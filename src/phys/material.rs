@@ -43,6 +43,36 @@ impl Material {
         }
     }
 
+    /// Get the refractive index at the given wavelength.
+    #[pre(self.range.contains(w))]
+    pub fn ref_index(&self, w: f64) -> f64 {
+        self.ref_index.calc(w)
+    }
+
+    /// Get the scattering coefficient at the given wavelength.
+    #[pre(self.range.contains(w))]
+    pub fn scat_coeff(&self, w: f64) -> f64 {
+        self.scat_coeff.calc(w)
+    }
+
+    /// Get the absorption coefficient at the given wavelength.
+    #[pre(self.range.contains(w))]
+    pub fn abs_coeff(&self, w: f64) -> f64 {
+        self.abs_coeff.calc(w)
+    }
+
+    /// Get the shift coefficient at the given wavelength.
+    #[pre(self.range.contains(w))]
+    pub fn shift_coeff(&self, w: f64) -> f64 {
+        self.shift_coeff.calc(w)
+    }
+
+    /// Get the refractive index at the given wavelength.
+    #[pre(self.range.contains(w))]
+    pub fn asym(&self, w: f64) -> f64 {
+        self.asym.calc(w)
+    }
+
     /// Get the optical environment for a given wavelength.
     #[pre(self.range.contains(w))]
     pub fn env(&self, w: f64) -> Environment {
