@@ -12,6 +12,7 @@ use arc::{
     report,
     rng::Distribution,
     rt::Emitter,
+    sim,
     util::start_up,
     world::{Light, Universe},
 };
@@ -42,13 +43,15 @@ fn main() {
     );
 
     print::section("Simulation");
-    let _light_map = uni.mcrt(
+    let _light_map = sim::mcrt::run(
         4,
+        1_000,
         &Light::new(
             Emitter::new_point(Point3::origin()),
             Distribution::new_const(630.0e-9),
             1.0,
         ),
+        &uni,
     );
 
     let grid = uni.grid();
@@ -61,7 +64,7 @@ fn main() {
                 let cell = &grid.cells()[index];
                 let mat = cell.mat();
 
-                scat_coeffs.push(mat.scat_coeff(700.0e-9));
+                scat_coeffs.push(mat.scat_coeff(630.0e-9));
             }
         }
     }

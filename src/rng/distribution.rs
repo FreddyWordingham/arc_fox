@@ -5,7 +5,10 @@ use rand::rngs::ThreadRng;
 /// Distribution enumeration.
 pub enum Distribution {
     /// Constant number generation.
-    Const { c: f64 },
+    Const {
+        /// Constant value.
+        c: f64,
+    },
 }
 
 impl Distribution {
