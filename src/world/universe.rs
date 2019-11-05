@@ -2,7 +2,7 @@
 
 #![allow(unused_variables)]
 
-use super::{load_ent_map, load_mat_map, EntMap, MatMap};
+use super::{load_ent_map, load_mat_map, EntMap, Light, MatMap};
 use crate::{
     data::Archive,
     dir::res::mats,
@@ -10,6 +10,9 @@ use crate::{
     index::Layout,
     proto::Entity as ProtoEntity,
 };
+use contracts::pre;
+use log::info;
+use rayon::prelude::*;
 use self_ref::self_referencing;
 use std::sync::Arc;
 
@@ -59,7 +62,29 @@ impl<'a> Universe<'a> {
     }
 
     /// Run a MCRT simulation.
-    pub fn mcrt(&self) -> Archive {
+    #[pre(num_threads > 0)]
+    pub fn mcrt(&self, num_threads: usize, light: &Light) -> Archive {
+        if num_threads == 1 {
+            let thread_id = 0;
+            return self.mcrt_thread(thread_id, light);
+        }
+
+        let thread_ids: Vec<usize> = (0..num_threads).collect();
+        let mut archives: Vec<Archive> = thread_ids
+            .par_iter()
+            .map(|id| self.mcrt_thread(*id, light))
+            .collect();
+
+        let mut archive = archives.pop().unwrap();
+        for a in archives.iter() {
+            archive += a;
+        }
+
+        archive
+    }
+
+    fn mcrt_thread(&self, thread_id: usize, light: &Light) -> Archive {
+        info!("Running from thread: {}", thread_id);
         Archive::new(self.grid.layout().clone())
     }
 }

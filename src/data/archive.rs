@@ -3,6 +3,7 @@
 use super::Record;
 use crate::index::Layout;
 use ndarray::Array3;
+use std::ops::AddAssign;
 
 /// Record archive.
 pub struct Archive {
@@ -16,5 +17,11 @@ impl Archive {
         Self {
             recs: Array3::from_elem(*layout.nis(), Record::new()),
         }
+    }
+}
+
+impl AddAssign<&Archive> for Archive {
+    fn add_assign(&mut self, rhs: &Self) {
+        self.recs += &rhs.recs;
     }
 }

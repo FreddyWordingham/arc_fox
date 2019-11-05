@@ -10,13 +10,13 @@ pub struct Light {
     /// Wavelength distribution.
     dist: Distribution,
     /// Power. [J/s]
-    pow: f64,
+    power: f64,
 }
 
 impl Light {
     /// Construct a new instance.
-    #[pre(pow > 0.0)]
-    pub fn new(emit: Emitter, dist: Distribution, pow: f64) -> Self {
-        Self { emit, dist, pow }
+    #[pre(power > 0.0)]
+    pub fn new(emit: Emitter, dist: Distribution, power: f64) -> Self {
+        Self { emit, dist, power }
     }
 }

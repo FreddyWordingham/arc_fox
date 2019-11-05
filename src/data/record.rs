@@ -21,6 +21,10 @@ impl Add<&Self> for Record {
     }
 }
 
+impl AddAssign for Record {
+    fn add_assign(&mut self, _rhs: Self) {}
+}
+
 impl AddAssign<&Self> for Record {
     fn add_assign(&mut self, _rhs: &Self) {}
 }

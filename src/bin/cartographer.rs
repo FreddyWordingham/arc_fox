@@ -2,8 +2,18 @@
 //! Creates a data cube mapping materials within a volume.
 
 use arc::{
-    dir::init, dom::Aabb, file::save_as_netcdf, geom::Shape, index::Layout, print,
-    proto::Entity as ProtoEntity, report, util::start_up, world::Universe,
+    dir::init,
+    dom::Aabb,
+    file::save_as_netcdf,
+    geom::Shape,
+    index::Layout,
+    print,
+    proto::Entity as ProtoEntity,
+    report,
+    rng::Distribution,
+    rt::Emitter,
+    util::start_up,
+    world::{Light, Universe},
 };
 use nalgebra::{Point3, Vector3};
 use ndarray::Array3;
@@ -32,7 +42,14 @@ fn main() {
     );
 
     print::section("Simulation");
-    // let light_map = uni.mcrt();
+    let _light_map = uni.mcrt(
+        4,
+        &Light::new(
+            Emitter::new_point(Point3::origin()),
+            Distribution::new_const(630.0e-9),
+            1.0,
+        ),
+    );
 
     let grid = uni.grid();
     let layout = grid.layout();
