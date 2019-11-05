@@ -56,6 +56,16 @@ impl<'a> Cell<'a> {
         }
     }
 
+    /// Reference the data record.
+    pub fn rec(&self) -> &Record {
+        &self.rec
+    }
+
+    /// Destruct to recover the record.
+    pub fn get_rec(self) -> Record {
+        self.rec
+    }
+
     /// Reference the boundary.
     pub fn aabb(&self) -> &Aabb {
         &self.aabb

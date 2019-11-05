@@ -72,9 +72,9 @@ impl<'a> Grid<'a> {
     }
 
     /// Add an archive into the cells.
-    #[pre(self.cells.shape() == archive.recs.shape())]
+    #[pre(self.cells.shape() == archive.shape())]
     pub fn add_archive(&mut self, archive: Archive) {
-        for (cell, rec) in self.cells.iter_mut().zip(archive.recs.iter()) {
+        for (cell, rec) in self.cells.iter_mut().zip(archive.iter()) {
             cell.add_record(rec);
         }
     }
