@@ -10,10 +10,6 @@ use ndarray::Array3;
 use std::path::PathBuf;
 
 fn main() {
-    let mut rec0 = Array3::from_elem([5, 4, 3], arc::data::Record::new());
-    let rec1 = Array3::from_elem([5, 4, 3], arc::data::Record::new());
-    rec0 += &rec1;
-
     title();
     let (_args, _input, output) = start_up();
 
