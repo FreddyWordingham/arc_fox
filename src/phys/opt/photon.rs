@@ -7,18 +7,22 @@ use contracts::pre;
 pub struct Photon {
     /// Statistical weight.
     weight: f64,
+    /// Power [J/s].
+    power: f64,
     /// Ray of travel.
     ray: Ray,
-    /// Wavelength.
+    /// Wavelength [m].
     wavelength: f64,
 }
 
 impl Photon {
     /// Construct a new instance.
     #[pre(wavelength > 0.0)]
-    pub fn new(ray: Ray, wavelength: f64) -> Self {
+    #[pre(power > 0.0)]
+    pub fn new(ray: Ray, power: f64, wavelength: f64) -> Self {
         Self {
             weight: 1.0,
+            power,
             ray,
             wavelength,
         }
@@ -27,6 +31,11 @@ impl Photon {
     /// Reference the ray.
     pub fn ray(&self) -> &Ray {
         &self.ray
+    }
+
+    /// Get the power.
+    pub fn power(&self) -> f64 {
+        self.power
     }
 
     /// Get the wavelength.

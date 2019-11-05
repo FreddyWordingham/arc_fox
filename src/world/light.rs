@@ -22,7 +22,11 @@ impl Light {
     }
 
     /// Emit a new photon.
-    pub fn emit(&self, rng: &mut ThreadRng) -> Photon {
-        Photon::new(self.emit.emit(rng), self.dist.gen(rng))
+    pub fn emit(&self, rng: &mut ThreadRng, total_phot: u64) -> Photon {
+        Photon::new(
+            self.emit.emit(rng),
+            self.power / total_phot as f64,
+            self.dist.gen(rng),
+        )
     }
 }
