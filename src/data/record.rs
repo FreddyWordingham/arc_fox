@@ -13,14 +13,14 @@ impl Record {
     }
 }
 
-impl Add for Record {
+impl Add<&Self> for Record {
     type Output = Self;
 
-    fn add(self, _rhs: Self) -> Self {
-        Self {}
+    fn add(self, _rhs: &Self) -> Self {
+        Self::new()
     }
 }
 
-impl AddAssign for Record {
-    fn add_assign(&mut self, _rhs: Self) {}
+impl AddAssign<&Self> for Record {
+    fn add_assign(&mut self, _rhs: &Self) {}
 }

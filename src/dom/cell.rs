@@ -2,6 +2,7 @@
 
 use super::Aabb;
 use crate::{
+    data::Record,
     geom::Shape,
     phys::Material,
     world::{mat_at_point_from_list, mat_at_point_from_map, EntMap, Entity},
@@ -12,6 +13,8 @@ use nalgebra::Point3;
 /// Single domain cell.
 #[derive(Debug)]
 pub struct Cell<'a> {
+    /// Record.
+    rec: Record,
     /// Boundary.
     aabb: Aabb,
     /// List of intersecting entity shapes.
@@ -46,6 +49,7 @@ impl<'a> Cell<'a> {
         };
 
         Self {
+            rec: Record::new(),
             aabb,
             ent_list,
             mat,
@@ -75,5 +79,10 @@ impl<'a> Cell<'a> {
         }
 
         mat_at_point_from_list(&p, &self.aabb, &self.ent_list)
+    }
+
+    /// Add a record to this cell's record.
+    pub fn add_record(&mut self, rec: &Record) {
+        self.rec += rec;
     }
 }

@@ -1,7 +1,8 @@
 //! Grid structure.
 
 use super::{Aabb, Cell};
-use crate::{data::Record, index::Layout, util::progress::bar, world::EntMap};
+use crate::{data::Archive, index::Layout, util::progress::bar, world::EntMap};
+use contracts::pre;
 use nalgebra::Point3;
 use ndarray::Array3;
 
@@ -14,8 +15,6 @@ pub struct Grid<'a> {
     aabb: Aabb,
     /// Cells.
     cells: Array3<Cell<'a>>,
-    /// Data records.
-    recs: Array3<Record>,
 }
 
 impl<'a> Grid<'a> {
@@ -50,13 +49,10 @@ impl<'a> Grid<'a> {
 
         let cells = Array3::from_shape_vec(*layout.nis(), cells).unwrap();
 
-        let recs = Array3::from_elem(*layout.nis(), Record::new());
-
         Self {
             layout,
             aabb,
             cells,
-            recs,
         }
     }
 
@@ -73,5 +69,13 @@ impl<'a> Grid<'a> {
     /// Reference the cells.
     pub fn cells(&self) -> &Array3<Cell<'a>> {
         &self.cells
+    }
+
+    /// Add an archive into the cells.
+    #[pre(self.cells.shape() == archive.recs.shape())]
+    pub fn add_archive(&mut self, archive: Archive) {
+        for (cell, rec) in self.cells.iter_mut().zip(archive.recs.iter()) {
+            cell.add_record(rec);
+        }
     }
 }
