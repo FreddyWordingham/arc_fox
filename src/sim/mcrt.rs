@@ -38,23 +38,27 @@ pub fn run(num_threads: usize, total_phot: u64, light: &Light, uni: &Universe) -
     archive
 }
 
+/// Run a mcrt simulation behaving as a single thread.
 fn run_thread(
     thread_id: usize,
     total_phot: u64,
     mut num_phots: Arc<Mutex<Vec<u64>>>,
     mut bar: Arc<ProgressBar>,
-    _light: &Light,
+    light: &Light,
     uni: &Universe,
 ) -> Archive {
     let archive = Archive::new(uni.grid().layout().clone());
 
-    let _rng = thread_rng();
+    let mut rng = thread_rng();
 
-    while iterate(&mut bar, thread_id, total_phot, &mut num_phots) {}
+    while iterate(&mut bar, thread_id, total_phot, &mut num_phots) {
+        let phot = light.emit(&mut rng);
+    }
 
     archive
 }
 
+/// Iterate the progress one increment if possible.
 fn iterate(
     bar: &mut Arc<ProgressBar>,
     thread_id: usize,
