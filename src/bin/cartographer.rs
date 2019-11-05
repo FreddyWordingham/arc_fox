@@ -32,7 +32,9 @@ fn main() {
     );
 
     print::section("Simulation");
-    let grid = uni.grid;
+    // let light_map = uni.mcrt();
+
+    let grid = uni.grid();
     let layout = grid.layout();
     let mut scat_coeffs = Vec::with_capacity(layout.total_indices());
     for xi in 0..layout.x() {

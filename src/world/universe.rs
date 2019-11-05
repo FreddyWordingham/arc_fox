@@ -4,6 +4,7 @@
 
 use super::{load_ent_map, load_mat_map, EntMap, MatMap};
 use crate::{
+    data::Archive,
     dir::res::mats,
     dom::{Aabb, Grid},
     index::Layout,
@@ -16,11 +17,11 @@ use std::sync::Arc;
 #[derive(Debug)]
 pub struct Universe<'a> {
     /// Map of all materials.
-    pub mat_map: MatMap,
+    mat_map: MatMap,
     /// Map of all entities.
-    pub ent_map: EntMap<'a>,
+    ent_map: EntMap<'a>,
     /// Grid of cells.
-    pub grid: Grid<'a>,
+    grid: Grid<'a>,
 }
 
 impl<'a> Universe<'a> {
@@ -40,5 +41,25 @@ impl<'a> Universe<'a> {
             grid = Grid::new(layout, aabb, &ent_map);
         }))
         .unwrap()
+    }
+
+    /// Reference the material map.
+    pub fn mat_map(&self) -> &MatMap {
+        &self.mat_map
+    }
+
+    /// Reference the entity map.
+    pub fn ent_map(&self) -> &EntMap {
+        &self.ent_map
+    }
+
+    /// Reference the grid.
+    pub fn grid(&self) -> &Grid<'a> {
+        &self.grid
+    }
+
+    /// Run a MCRT simulation.
+    pub fn mcrt(&self) -> Archive {
+        Archive::new(self.grid.layout().clone())
     }
 }
