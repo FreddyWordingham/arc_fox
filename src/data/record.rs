@@ -31,8 +31,10 @@ impl Record {
 impl Add<&Self> for Record {
     type Output = Self;
 
-    fn add(self, _rhs: &Self) -> Self {
-        Self::new()
+    fn add(self, rhs: &Self) -> Self {
+        Self {
+            emissions: self.emissions + rhs.emissions,
+        }
     }
 }
 
