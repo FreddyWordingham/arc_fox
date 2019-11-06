@@ -1,6 +1,6 @@
 //! Physical material structure.
 
-use super::opt::Environment;
+use super::opt::{Environment, Photon};
 use crate::{dom::Range, math::Formula};
 use contracts::pre;
 use serde::{Deserialize, Serialize};
@@ -74,8 +74,10 @@ impl Material {
     }
 
     /// Get the optical environment for a given wavelength.
-    #[pre(self.range.contains(w))]
-    pub fn env(&self, w: f64) -> Environment {
+    #[pre(self.range.contains(phot.wavelength()))]
+    pub fn env(&self, phot: &Photon) -> Environment {
+        let w = phot.wavelength();
+
         Environment::new(
             self.ref_index.calc(w),
             self.scat_coeff.calc(w),

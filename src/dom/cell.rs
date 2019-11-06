@@ -9,7 +9,7 @@ use crate::{
     world::{mat_at_pos_from_list, mat_at_pos_from_map, EntMap, Entity},
 };
 use contracts::pre;
-use nalgebra::Point3;
+use nalgebra::{Point3, Unit, Vector3};
 
 /// Single domain cell.
 #[derive(Debug)]
@@ -72,15 +72,32 @@ impl<'a> Cell<'a> {
         &self.ent_list
     }
 
-    /// Determine the distance to an entity contained within the cell.
-    pub fn ent_dist_inside(&self, ray: &Ray) -> Option<(&'a Entity<'a>, f64, bool)> {
-        let mut closest: Option<(&'a Entity<'a>, f64, bool)> = None;
+    /// Determine the closest distance to an entity contained within the cell.
+    pub fn ent_dist(&self, ray: &Ray) -> Option<f64> {
+        let mut closest: Option<f64> = None;
+
+        for (_, shapes) in self.ent_list.iter() {
+            for s in shapes {
+                if let Some(dist) = s.dist(ray) {
+                    if closest.is_none() || (dist < closest.unwrap()) {
+                        closest = Some(dist);
+                    }
+                }
+            }
+        }
+
+        closest
+    }
+
+    /// Determine the distance to an entity, and the corresponding collision normal, contained within the cell.
+    pub fn ent_dist_norm(&self, ray: &Ray) -> Option<(&'a Entity<'a>, f64, Unit<Vector3<f64>>)> {
+        let mut closest: Option<(&'a Entity<'a>, f64, Unit<Vector3<f64>>)> = None;
 
         for (ent, shapes) in self.ent_list.iter() {
             for s in shapes {
-                if let Some((dist, inside)) = s.dist_inside(ray) {
+                if let Some((dist, norm)) = s.dist_norm(ray) {
                     if closest.is_none() || (dist < closest.unwrap().1) {
-                        closest = Some((ent, dist, inside));
+                        closest = Some((ent, dist, norm));
                     }
                 }
             }

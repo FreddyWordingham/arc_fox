@@ -2,6 +2,7 @@
 
 use crate::rt::Ray;
 use contracts::pre;
+use nalgebra::{Unit, Vector3};
 
 /// Optical photon structure.
 pub struct Photon {
@@ -58,6 +59,11 @@ impl Photon {
     #[pre(self.ray.dir.z.abs() != 1.0)]
     pub fn rotate(&mut self, pitch: f64, roll: f64) {
         self.ray.rotate(pitch, roll);
+    }
+
+    /// Set direction manually.
+    pub fn set_dir(&mut self, dir: Unit<Vector3<f64>>) {
+        self.ray.dir = dir;
     }
 
     #[pre(w > 0.0)]

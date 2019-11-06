@@ -4,11 +4,11 @@ use crate::{
     data::{Archive, Record},
     dom::Cell,
     index::bin,
-    phys::opt::Photon,
+    phys::opt::{Gate, Photon},
     rng::henyey_greenstein,
     rt::Traceable,
     util::progress::bar,
-    world::{Entity, Light, Universe},
+    world::{Light, Universe},
 };
 use contracts::pre;
 use indicatif::ProgressBar;
@@ -75,15 +75,14 @@ fn run_thread(
     while iterate(&mut bar, thread_id, total_phot, &mut num_phots) {
         let mut phot = light.emit(&mut rng, total_phot);
         let mut cell_rec = cell_and_record(&phot, uni, &mut archive);
-        let mat = cell_rec.0.mat_at_pos(&phot.ray().pos);
-        let env = mat.env(phot.wavelength());
+        let mut env = cell_rec.0.mat_at_pos(&phot.ray().pos).env(&phot);
 
         cell_rec.1.increase_emissions(&phot);
 
         loop {
             let inter_dist = -(rng.gen_range(0.0f64, 1.0)).ln() / env.inter_coeff;
             let cell_dist = cell_rec.0.aabb().dist(phot.ray()).unwrap();
-            let ent_info = cell_rec.0.ent_dist_inside(phot.ray());
+            let ent_info = cell_rec.0.ent_dist(phot.ray());
 
             match HitEvent::new(inter_dist, cell_dist, ent_info) {
                 HitEvent::Scattering { dist } => {
@@ -98,7 +97,7 @@ fn run_thread(
                     phot.multiply_weight(env.albedo);
                 }
                 HitEvent::Boundary { dist } => {
-                    phot.travel(dist + 0.00_000_1);
+                    phot.travel(dist + 0.00_01);
 
                     if !uni.grid().aabb().contains(&phot.ray().pos) {
                         break;
@@ -106,7 +105,28 @@ fn run_thread(
 
                     cell_rec = cell_and_record(&phot, uni, &mut archive);
                 }
-                HitEvent::Entity { dist } => {}
+                HitEvent::Entity { dist: _ } => {
+                    let (ent, dist, norm) = cell_rec.0.ent_dist_norm(phot.ray()).unwrap();
+                    let inside = phot.ray().dir.dot(&norm) > 0.0;
+
+                    let next_mat = if inside { ent.out_mat() } else { ent.in_mat() };
+                    let next_env = next_mat.env(&phot);
+
+                    let n_curr = env.ref_index;
+                    let n_next = next_env.ref_index;
+
+                    let gate = Gate::new(&phot.ray().dir, &norm, n_curr, n_next);
+
+                    if rng.gen_range(0.0, 1.0) <= gate.ref_prob() {
+                        phot.travel(dist - 0.00_01);
+                        phot.set_dir(*gate.ref_dir());
+                    } else {
+                        phot.travel(dist + 0.00_01);
+                        phot.set_dir(gate.trans_dir().unwrap());
+
+                        env = next_env;
+                    }
+                }
             }
         }
     }
@@ -181,13 +201,9 @@ impl HitEvent {
 
     #[pre(inter_dist > 0.0)]
     #[pre(cell_dist > 0.0)]
-    pub fn new<'a>(
-        inter_dist: f64,
-        cell_dist: f64,
-        ent_info: Option<(&'a Entity<'a>, f64, bool)>,
-    ) -> Self {
+    pub fn new(inter_dist: f64, cell_dist: f64, ent_dist: Option<f64>) -> Self {
         if cell_dist <= inter_dist {
-            if let Some((_ent, ent_dist, _inside)) = ent_info {
+            if let Some(ent_dist) = ent_dist {
                 if ent_dist < cell_dist {
                     return Self::new_entity(ent_dist);
                 }
@@ -196,7 +212,7 @@ impl HitEvent {
             return Self::new_boundary(cell_dist);
         }
 
-        if let Some((_ent, ent_dist, _inside)) = ent_info {
+        if let Some(ent_dist) = ent_dist {
             if ent_dist < inter_dist {
                 return Self::new_entity(ent_dist);
             }
