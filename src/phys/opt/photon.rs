@@ -28,6 +28,11 @@ impl Photon {
         }
     }
 
+    /// Get the weight.
+    pub fn weight(&self) -> f64 {
+        self.weight
+    }
+
     /// Reference the ray.
     pub fn ray(&self) -> &Ray {
         &self.ray

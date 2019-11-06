@@ -1,15 +1,25 @@
 //! Data record structure.
 
+use contracts::pre;
 use std::ops::{Add, AddAssign};
 
 /// Data record.
 #[derive(Debug, Clone)]
-pub struct Record {}
+pub struct Record {
+    /// Total weight of photon emissions.
+    emissions: f64,
+}
 
 impl Record {
     /// Construct a new instance.
     pub fn new() -> Self {
-        Self {}
+        Self { emissions: 0.0 }
+    }
+
+    /// Increase the number of recorded emissions.
+    #[pre(w > 0.0)]
+    pub fn increase_emissions(&mut self, w: f64) {
+        self.emissions += w;
     }
 }
 

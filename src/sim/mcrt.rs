@@ -1,7 +1,10 @@
 //! Monte-carlo radiative transfer.
 
 use crate::{
-    data::Archive,
+    data::{Archive, Record},
+    dom::Cell,
+    index::bin,
+    phys::opt::Photon,
     util::progress::bar,
     world::{Light, Universe},
 };
@@ -60,13 +63,17 @@ fn run_thread(
     light: &Light,
     uni: &Universe,
 ) -> Archive {
-    let archive = Archive::new(uni.grid().layout().clone());
+    let mut archive = Archive::new(uni.grid().layout().clone());
 
     let mut rng = thread_rng();
 
     while iterate(&mut bar, thread_id, total_phot, &mut num_phots) {
         let phot = light.emit(&mut rng, total_phot);
-        let _cell = uni.grid().get_cell(&phot.ray().pos);
+        let (cell, rec) = cell_and_record(&phot, uni, &mut archive);
+        let mat = cell.mat_at_pos(&phot.ray().pos);
+        let _env = mat.env(phot.wavelength());
+
+        rec.increase_emissions(phot.weight());
     }
 
     archive
@@ -89,4 +96,14 @@ fn iterate(
     }
 
     false
+}
+
+/// Retrieve a reference for the cell corresponding record a photon is located within.
+fn cell_and_record<'a>(
+    phot: &Photon,
+    uni: &'a Universe,
+    archive: &'a mut Archive,
+) -> (&'a Cell<'a>, &'a mut Record) {
+    let index = bin::point3(&phot.ray().pos, uni.grid().aabb(), uni.grid().layout());
+    (&uni.grid().cells()[index], &mut archive.recs[index])
 }

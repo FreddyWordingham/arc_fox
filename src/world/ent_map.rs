@@ -35,11 +35,7 @@ pub fn load_ent_map<'a>(list: Vec<ProtoEntity>, mat_map: &'a MatMap) -> EntMap<'
 
 #[pre(aabb.contains(p))]
 #[pre(!ent_map.is_empty())]
-pub fn mat_at_point_from_map<'a>(
-    p: &Point3<f64>,
-    aabb: &Aabb,
-    ent_map: &'a EntMap,
-) -> &'a Material {
+pub fn mat_at_pos_from_map<'a>(p: &Point3<f64>, aabb: &Aabb, ent_map: &'a EntMap) -> &'a Material {
     let n: i32 = 7;
     let mut power = 2;
     loop {
@@ -89,7 +85,7 @@ pub fn mat_at_point_from_map<'a>(
 
 #[pre(aabb.contains(p))]
 #[pre(!ent_map.is_empty())]
-pub fn mat_at_point_from_list<'a>(
+pub fn mat_at_pos_from_list<'a>(
     p: &Point3<f64>,
     aabb: &Aabb,
     ent_map: &Vec<(&'a Entity, Vec<&Shape>)>,

@@ -1,12 +1,7 @@
 //! Grid structure.
 
 use super::{Aabb, Cell};
-use crate::{
-    data::Archive,
-    index::{bin, Layout3},
-    util::progress::bar,
-    world::EntMap,
-};
+use crate::{data::Archive, index::Layout3, util::progress::bar, world::EntMap};
 use contracts::pre;
 use nalgebra::Point3;
 use ndarray::Array3;
@@ -73,12 +68,6 @@ impl<'a> Grid<'a> {
     /// Reference the cells.
     pub fn cells(&self) -> &Array3<Cell<'a>> {
         &self.cells
-    }
-
-    /// Reference a cell from a given position.
-    #[pre(self.aabb.contains(pos))]
-    pub fn get_cell(&self, pos: &Point3<f64>) -> &Cell<'a> {
-        &self.cells[bin::point3(pos, &self.aabb, &self.layout)]
     }
 
     /// Add an archive into the cells.

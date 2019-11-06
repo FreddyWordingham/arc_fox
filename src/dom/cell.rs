@@ -5,7 +5,7 @@ use crate::{
     data::Record,
     geom::Shape,
     phys::Material,
-    world::{mat_at_point_from_list, mat_at_point_from_map, EntMap, Entity},
+    world::{mat_at_pos_from_list, mat_at_pos_from_map, EntMap, Entity},
 };
 use contracts::pre;
 use nalgebra::Point3;
@@ -43,9 +43,9 @@ impl<'a> Cell<'a> {
         }
 
         let mat = if ent_list.is_empty() {
-            mat_at_point_from_map(&aabb.centre(), dom_aabb, ent_map)
+            mat_at_pos_from_map(&aabb.centre(), dom_aabb, ent_map)
         } else {
-            mat_at_point_from_list(&aabb.centre(), &aabb, &ent_list)
+            mat_at_pos_from_list(&aabb.centre(), &aabb, &ent_list)
         };
 
         Self {
@@ -59,11 +59,6 @@ impl<'a> Cell<'a> {
     /// Reference the data record.
     pub fn rec(&self) -> &Record {
         &self.rec
-    }
-
-    /// Destruct to recover the record.
-    pub fn get_rec(self) -> Record {
-        self.rec
     }
 
     /// Reference the boundary.
@@ -81,14 +76,14 @@ impl<'a> Cell<'a> {
         &self.mat
     }
 
-    /// Reference the material at the given point.
+    /// Reference the material at the given position.
     #[pre(self.aabb.contains(p))]
-    pub fn mat_at_point(&self, p: &Point3<f64>) -> &Material {
+    pub fn mat_at_pos(&self, p: &Point3<f64>) -> &Material {
         if self.ent_list.is_empty() {
             return self.mat;
         }
 
-        mat_at_point_from_list(&p, &self.aabb, &self.ent_list)
+        mat_at_pos_from_list(&p, &self.aabb, &self.ent_list)
     }
 
     /// Add a record to this cell's record.
