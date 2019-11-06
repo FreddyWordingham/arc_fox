@@ -45,7 +45,7 @@ fn main() {
 
     print::section("Simulation");
     let light_map = sim::mcrt::run(
-        4,
+        1,
         1_000,
         &Light::new(
             Emitter::new_point(Point3::origin()),
