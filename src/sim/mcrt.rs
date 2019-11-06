@@ -105,5 +105,6 @@ fn cell_and_record<'a>(
     archive: &'a mut Archive,
 ) -> (&'a Cell<'a>, &'a mut Record) {
     let index = bin::point3(&phot.ray().pos, uni.grid().aabb(), uni.grid().layout());
+
     (&uni.grid().cells()[index], &mut archive.recs[index])
 }

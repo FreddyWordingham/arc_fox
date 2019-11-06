@@ -37,9 +37,13 @@ impl Add<&Self> for Record {
 }
 
 impl AddAssign for Record {
-    fn add_assign(&mut self, _rhs: Self) {}
+    fn add_assign(&mut self, rhs: Self) {
+        self.emissions += rhs.emissions;
+    }
 }
 
 impl AddAssign<&Self> for Record {
-    fn add_assign(&mut self, _rhs: &Self) {}
+    fn add_assign(&mut self, rhs: &Self) {
+        self.emissions += rhs.emissions;
+    }
 }
