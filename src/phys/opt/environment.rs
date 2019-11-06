@@ -30,7 +30,7 @@ impl Environment {
         asym: f64,
     ) -> Self {
         let inter_coeff = scat_coeff + abs_coeff + shift_coeff;
-        let albedo = abs_coeff / inter_coeff;
+        let albedo = 1.0 - (abs_coeff / inter_coeff);
 
         Self {
             ref_index,
