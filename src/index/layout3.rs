@@ -2,15 +2,15 @@
 
 use contracts::pre;
 
-/// Layout structure.
+/// Three-dimensional layout structure.
 /// Used by domain grids.
 #[derive(Debug, Clone)]
-pub struct Layout {
+pub struct Layout3 {
     /// Number of indices in each dimension.
-    nis: [usize; 3],
+    pub nis: [usize; 3],
 }
 
-impl Layout {
+impl Layout3 {
     #[pre(xi > 0)]
     #[pre(yi > 0)]
     #[pre(zi > 0)]
@@ -23,22 +23,17 @@ impl Layout {
         self.nis[0] * self.nis[1] * self.nis[2]
     }
 
-    /// Reference the internal array.
-    pub fn nis(&self) -> &[usize; 3] {
-        &self.nis
-    }
-
-    /// Get the number of indices in the x-dimension.
+    /// Get the number of splits along the x-axis.
     pub fn x(&self) -> usize {
         self.nis[0]
     }
 
-    /// Get the number of indices in the y-dimension.
+    /// Get the number of splits along the y-axis.
     pub fn y(&self) -> usize {
         self.nis[1]
     }
 
-    /// Get the number of indices in the z-dimension.
+    /// Get the number of splits along the z-axis.
     pub fn z(&self) -> usize {
         self.nis[2]
     }

@@ -6,7 +6,7 @@ use super::{load_ent_map, load_mat_map, EntMap, MatMap};
 use crate::{
     dir::res::mats,
     dom::{Aabb, Grid},
-    index::Layout,
+    index::Layout3,
     proto::Entity as ProtoEntity,
 };
 use self_ref::self_referencing;
@@ -25,7 +25,7 @@ pub struct Universe<'a> {
 
 impl<'a> Universe<'a> {
     /// Construct a new instance.
-    pub fn new(layout: Layout, aabb: Aabb, ents: Vec<ProtoEntity>) -> Self {
+    pub fn new(layout: Layout3, aabb: Aabb, ents: Vec<ProtoEntity>) -> Self {
         let mut mat_names = Vec::new();
         for ent in ents.iter() {
             mat_names.push(ent.in_mat);

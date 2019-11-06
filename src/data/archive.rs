@@ -1,7 +1,7 @@
 //! Archive structure.
 
 use super::Record;
-use crate::index::Layout;
+use crate::index::Layout3;
 use ndarray::Array3;
 use std::ops::AddAssign;
 
@@ -13,9 +13,9 @@ pub struct Archive {
 
 impl Archive {
     /// Construct a new instance.
-    pub fn new(layout: Layout) -> Self {
+    pub fn new(layout: Layout3) -> Self {
         Self {
-            recs: Array3::from_elem(*layout.nis(), Record::new()),
+            recs: Array3::from_elem(layout.nis, Record::new()),
         }
     }
 }

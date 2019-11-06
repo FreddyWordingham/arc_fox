@@ -65,7 +65,8 @@ fn run_thread(
     let mut rng = thread_rng();
 
     while iterate(&mut bar, thread_id, total_phot, &mut num_phots) {
-        let _phot = light.emit(&mut rng, total_phot);
+        let phot = light.emit(&mut rng, total_phot);
+        let cell = uni.grid().get_cell(&phot.ray().pos);
     }
 
     archive

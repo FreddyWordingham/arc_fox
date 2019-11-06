@@ -1,7 +1,7 @@
 //! Grid structure.
 
 use super::{Aabb, Cell};
-use crate::{data::Archive, index::Layout, util::progress::bar, world::EntMap};
+use crate::{data::Archive, index::Layout3, util::progress::bar, world::EntMap};
 use contracts::pre;
 use nalgebra::Point3;
 use ndarray::Array3;
@@ -10,7 +10,7 @@ use ndarray::Array3;
 #[derive(Debug)]
 pub struct Grid<'a> {
     /// Layout.
-    layout: Layout,
+    layout: Layout3,
     /// Boundary.
     aabb: Aabb,
     /// Cells.
@@ -19,12 +19,14 @@ pub struct Grid<'a> {
 
 impl<'a> Grid<'a> {
     /// Construct a new instance.
-    pub fn new(layout: Layout, aabb: Aabb, ent_map: &'a EntMap) -> Self {
+    pub fn new(layout: Layout3, aabb: Aabb, ent_map: &'a EntMap) -> Self {
         let mut cells = Vec::with_capacity(layout.total_indices());
         let mut cell_size = aabb.widths();
-        for i in 0..3 {
-            cell_size[i] /= layout.nis()[i] as f64;
-        }
+        // for i in 0..3 {
+        //     cell_size[i] /= layout.nis[i] as f64;
+        // }
+
+        for (w, n) in aabb.widths().iter().zip(&layout.nis) {}
 
         let aabb_mins = aabb.mins();
 
@@ -47,7 +49,7 @@ impl<'a> Grid<'a> {
         }
         bar.finish_with_message(&format!("{} cells constructed.", layout.total_indices()));
 
-        let cells = Array3::from_shape_vec(*layout.nis(), cells).unwrap();
+        let cells = Array3::from_shape_vec(layout.nis, cells).unwrap();
 
         Self {
             layout,
@@ -57,7 +59,7 @@ impl<'a> Grid<'a> {
     }
 
     /// Reference the layout.
-    pub fn layout(&self) -> &Layout {
+    pub fn layout(&self) -> &Layout3 {
         &self.layout
     }
 
@@ -70,6 +72,10 @@ impl<'a> Grid<'a> {
     pub fn cells(&self) -> &Array3<Cell<'a>> {
         &self.cells
     }
+
+    /// Reference a cell from a given position.
+    #[pre(self.aabb.contains(pos))]
+    pub fn get_cell(&self, pos: &Point3<f64>) -> &Cell<'a> {}
 
     /// Add an archive into the cells.
     #[pre(self.cells.shape() == archive.recs.shape())]
