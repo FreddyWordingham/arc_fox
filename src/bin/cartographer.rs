@@ -16,6 +16,7 @@ use arc::{
     util::start_up,
     world::{Light, Universe},
 };
+use log::info;
 use nalgebra::{Point3, Vector3};
 use ndarray::Array3;
 use std::path::PathBuf;
@@ -25,7 +26,7 @@ fn main() {
     let (_args, _input, output) = start_up();
 
     print::section("Initialisation");
-    let uni = Universe::new(
+    let mut uni = Universe::new(
         Layout3::new(17, 17, 17),
         Aabb::new_centred(&Point3::origin(), &Vector3::new(1.0, 1.0, 1.0)),
         vec![
@@ -43,7 +44,7 @@ fn main() {
     );
 
     print::section("Simulation");
-    let _light_map = sim::mcrt::run(
+    let light_map = sim::mcrt::run(
         4,
         1_000,
         &Light::new(
@@ -53,27 +54,25 @@ fn main() {
         ),
         &uni,
     );
-
-    let grid = uni.grid();
-    let layout = grid.layout();
-    let mut scat_coeffs = Vec::with_capacity(layout.total_indices());
-    for xi in 0..layout.x() {
-        for yi in 0..layout.y() {
-            for zi in 0..layout.z() {
-                let index = [xi, yi, zi];
-                let cell = &grid.cells()[index];
-                let mat = cell.mat();
-
-                scat_coeffs.push(mat.scat_coeff(630.0e-9));
-            }
-        }
-    }
+    uni.add_archive(light_map);
 
     print::section("Post-processing");
-    let scat_coeffs = Array3::from_shape_vec(layout.nis, scat_coeffs).unwrap();
+    info!("Creating record cube.");
+    let recs = uni.grid().cells().map(|c| c.rec());
+
+    info!("Creating emission data cube.");
+    let mut emissions = Vec::with_capacity(uni.grid().layout().total_indices());
+    for rec in recs.iter() {
+        emissions.push(rec.emissions());
+    }
+    let emissions = Array3::from_shape_vec(uni.grid().layout().nis, emissions).unwrap();
 
     print::section("Output");
-    save_as_netcdf(&output.join("data.nc"), vec![("scat_coeff", &scat_coeffs)]);
+    info!("Saving emissions data.");
+    save_as_netcdf(
+        &output.join("emissions.nc"),
+        vec![("emissions", &emissions)],
+    );
 
     print::section("Finished");
 }

@@ -16,6 +16,11 @@ impl Record {
         Self { emissions: 0.0 }
     }
 
+    /// Get the number of recorded emissions.
+    pub fn emissions(&self) -> f64 {
+        self.emissions
+    }
+
     /// Increase the number of recorded emissions.
     #[pre(w > 0.0)]
     pub fn increase_emissions(&mut self, w: f64) {

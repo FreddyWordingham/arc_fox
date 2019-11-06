@@ -4,11 +4,13 @@
 
 use super::{load_ent_map, load_mat_map, EntMap, MatMap};
 use crate::{
+    data::Archive,
     dir::res::mats,
     dom::{Aabb, Grid},
     index::Layout3,
     proto::Entity as ProtoEntity,
 };
+use log::info;
 use self_ref::self_referencing;
 use std::sync::Arc;
 
@@ -55,5 +57,11 @@ impl<'a> Universe<'a> {
     /// Reference the grid.
     pub fn grid(&self) -> &Grid<'a> {
         &self.grid
+    }
+
+    /// Add an archive into the grid cells.
+    pub fn add_archive(&mut self, archive: Archive) {
+        info!("Updating world archive...");
+        self.grid.add_archive(archive);
     }
 }
