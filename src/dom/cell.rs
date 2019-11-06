@@ -5,6 +5,7 @@ use crate::{
     data::Record,
     geom::Shape,
     phys::Material,
+    rt::{Ray, Traceable},
     world::{mat_at_pos_from_list, mat_at_pos_from_map, EntMap, Entity},
 };
 use contracts::pre;
@@ -69,6 +70,23 @@ impl<'a> Cell<'a> {
     /// Reference the intersecting entity list.
     pub fn ent_list(&self) -> &Vec<(&'a Entity<'a>, Vec<&'a Shape>)> {
         &self.ent_list
+    }
+
+    /// Determine the distance to an entity contained within the cell.
+    pub fn ent_dist_inside(&self, ray: &Ray) -> Option<(&'a Entity<'a>, f64, bool)> {
+        let mut closest: Option<(&'a Entity<'a>, f64, bool)> = None;
+
+        for (ent, shapes) in self.ent_list.iter() {
+            for s in shapes {
+                if let Some((dist, inside)) = s.dist_inside(ray) {
+                    if closest.is_none() || (dist < closest.unwrap().1) {
+                        closest = Some((ent, dist, inside));
+                    }
+                }
+            }
+        }
+
+        closest
     }
 
     /// Reference the central material.

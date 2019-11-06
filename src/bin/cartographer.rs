@@ -62,16 +62,26 @@ fn main() {
 
     info!("Creating emission data cube.");
     let mut emissions = Vec::with_capacity(uni.grid().layout().total_indices());
+    let mut scatters = Vec::with_capacity(uni.grid().layout().total_indices());
+    let mut absorptions = Vec::with_capacity(uni.grid().layout().total_indices());
     for rec in recs.iter() {
         emissions.push(rec.emissions());
+        scatters.push(rec.scatters());
+        absorptions.push(rec.absorptions());
     }
     let emissions = Array3::from_shape_vec(uni.grid().layout().nis, emissions).unwrap();
+    let scatters = Array3::from_shape_vec(uni.grid().layout().nis, scatters).unwrap();
+    let absorptions = Array3::from_shape_vec(uni.grid().layout().nis, absorptions).unwrap();
 
     print::section("Output");
     info!("Saving emissions data.");
     save_as_netcdf(
         &output.join("emissions.nc"),
-        vec![("emissions", &emissions)],
+        vec![
+            ("emissions", &emissions),
+            ("scatters", &scatters),
+            ("absorptions", &absorptions),
+        ],
     );
 
     print::section("Finished");

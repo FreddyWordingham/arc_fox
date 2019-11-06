@@ -1,6 +1,6 @@
 //! Data record structure.
 
-use contracts::pre;
+use crate::phys::opt::Photon;
 use std::ops::{Add, AddAssign};
 
 /// Data record.
@@ -40,21 +40,18 @@ impl Record {
     }
 
     /// Increase the number of recorded scatterings.
-    #[pre(w > 0.0)]
-    pub fn increase_scatters(&mut self, w: f64) {
-        self.scatters += w;
+    pub fn increase_scatters(&mut self, phot: &Photon) {
+        self.scatters += phot.weight();
     }
 
     /// Increase the number of recorded emissions.
-    #[pre(w > 0.0)]
-    pub fn increase_emissions(&mut self, w: f64) {
-        self.emissions += w;
+    pub fn increase_emissions(&mut self, phot: &Photon) {
+        self.emissions += phot.weight();
     }
 
     /// Increase the number of recorded absorptions.
-    #[pre(w > 0.0)]
-    pub fn increase_absorptions(&mut self, w: f64) {
-        self.absorptions += w;
+    pub fn increase_absorptions(&mut self, phot: &Photon) {
+        self.absorptions += phot.weight();
     }
 }
 

@@ -59,4 +59,10 @@ impl Photon {
     pub fn rotate(&mut self, pitch: f64, roll: f64) {
         self.ray.rotate(pitch, roll);
     }
+
+    #[pre(w > 0.0)]
+    #[post(self.weight > 0.0)]
+    pub fn multiply_weight(&mut self, w: f64) {
+        self.weight *= w;
+    }
 }
