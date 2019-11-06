@@ -10,7 +10,7 @@ use crate::{
     util::progress::bar,
     world::{Light, Universe},
 };
-use contracts::pre;
+use contracts::{post, pre};
 use indicatif::ProgressBar;
 use log::info;
 use rand::{thread_rng, Rng};
@@ -94,7 +94,7 @@ fn run_thread(
 
             match HitEvent::new(inter_dist, cell_dist, ent_info) {
                 HitEvent::Scattering { dist } => {
-                    println!("0\t{}", dist);
+                    // println!("0\t{}", dist);
                     cell_rec.1.increase_scatters(&phot);
 
                     phot.travel(dist);
@@ -106,7 +106,7 @@ fn run_thread(
                     phot.multiply_weight(env.albedo);
                 }
                 HitEvent::Boundary { dist } => {
-                    println!("1\t{}", dist);
+                    // println!("1\t{}", dist);
                     phot.travel(dist + 0.00_01);
 
                     if !uni.grid().aabb().contains(&phot.ray().pos) {
@@ -116,7 +116,7 @@ fn run_thread(
                     cell_rec = cell_and_record(&phot, uni, &mut archive);
                 }
                 HitEvent::Entity { dist } => {
-                    println!("2\t{}", dist);
+                    // println!("2\t{}", dist);
                     let (ent, dist, norm) = cell_rec.0.ent_dist_norm(phot.ray()).unwrap();
                     let inside = phot.ray().dir.dot(&norm) > 0.0;
 
@@ -172,7 +172,9 @@ fn cell_and_record<'a>(
 ) -> (&'a Cell<'a>, &'a mut Record) {
     let index = bin::point3(&phot.ray().pos, uni.grid().aabb(), uni.grid().layout());
 
-    (&uni.grid().cells()[index], &mut archive.recs[index])
+    let ans = (&uni.grid().cells()[index], &mut archive.recs[index]);
+
+    ans
 }
 
 /// Hit event types.

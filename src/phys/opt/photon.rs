@@ -1,7 +1,7 @@
 //! Optical photon structure.
 
 use crate::rt::Ray;
-use contracts::{post, pre};
+use contracts::pre;
 use nalgebra::{Unit, Vector3};
 
 /// Optical photon structure.
@@ -62,7 +62,6 @@ impl Photon {
     }
 
     /// Set direction manually.
-    #[post(self.ray.dir.magnitude() != 1.0)]
     pub fn set_dir(&mut self, dir: Unit<Vector3<f64>>) {
         self.ray.dir = dir;
     }
