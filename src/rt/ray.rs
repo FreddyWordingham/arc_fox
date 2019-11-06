@@ -4,6 +4,7 @@ use contracts::pre;
 use nalgebra::{Point3, Rotation3, Unit, Vector3};
 use std::f64::consts::{FRAC_PI_2, PI};
 
+/// Solution to the quadratic equation x^2 - x - 1 = 0.
 const GOLDEN_RATIO: f64 = 1.61803398875;
 
 /// Line with an origin point that extends infinitely in one direction.

@@ -62,6 +62,7 @@ pub fn section(title: &str) {
     print!("====");
 
     unsafe {
+        /// Index of the section.
         static mut SECTION: i32 = 0;
         match SECTION % 6 {
             0 => print!(" {}", title.bright_red().bold()),
