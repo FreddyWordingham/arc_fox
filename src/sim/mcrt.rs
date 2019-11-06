@@ -84,8 +84,17 @@ fn run_thread(
             let cell_dist = cell_rec.0.aabb().dist(phot.ray()).unwrap();
             let ent_info = cell_rec.0.ent_dist(phot.ray());
 
+            if (1.0 - phot.ray().dir.norm()).abs() > 0.01 {
+                panic!("not normalised! {}", phot.ray().dir.norm());
+            }
+
+            if cell_dist > 10.0 {
+                panic!("cell dist > {}", cell_dist);
+            }
+
             match HitEvent::new(inter_dist, cell_dist, ent_info) {
                 HitEvent::Scattering { dist } => {
+                    println!("0\t{}", dist);
                     cell_rec.1.increase_scatters(&phot);
 
                     phot.travel(dist);
@@ -97,6 +106,7 @@ fn run_thread(
                     phot.multiply_weight(env.albedo);
                 }
                 HitEvent::Boundary { dist } => {
+                    println!("1\t{}", dist);
                     phot.travel(dist + 0.00_01);
 
                     if !uni.grid().aabb().contains(&phot.ray().pos) {
@@ -105,7 +115,8 @@ fn run_thread(
 
                     cell_rec = cell_and_record(&phot, uni, &mut archive);
                 }
-                HitEvent::Entity { dist: _ } => {
+                HitEvent::Entity { dist } => {
+                    println!("2\t{}", dist);
                     let (ent, dist, norm) = cell_rec.0.ent_dist_norm(phot.ray()).unwrap();
                     let inside = phot.ray().dir.dot(&norm) > 0.0;
 

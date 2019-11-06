@@ -37,6 +37,7 @@ impl Ray {
         let roll_rot = Rotation3::from_axis_angle(&self.dir, roll);
 
         self.dir = roll_rot * pitch_rot * self.dir;
+        self.dir.renormalize();
     }
 }
 
