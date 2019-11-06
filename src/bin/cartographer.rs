@@ -6,7 +6,7 @@ use arc::{
     dom::Aabb,
     file::save_as_netcdf,
     geom::Shape,
-    index::Layout,
+    index::Layout3,
     print,
     proto::Entity as ProtoEntity,
     report,
@@ -26,7 +26,7 @@ fn main() {
 
     print::section("Initialisation");
     let uni = Universe::new(
-        Layout::new(17, 17, 17),
+        Layout3::new(17, 17, 17),
         Aabb::new_centred(&Point3::origin(), &Vector3::new(1.0, 1.0, 1.0)),
         vec![
             ProtoEntity::new(
@@ -70,7 +70,7 @@ fn main() {
     }
 
     print::section("Post-processing");
-    let scat_coeffs = Array3::from_shape_vec(*layout.nis(), scat_coeffs).unwrap();
+    let scat_coeffs = Array3::from_shape_vec(layout.nis, scat_coeffs).unwrap();
 
     print::section("Output");
     save_as_netcdf(&output.join("data.nc"), vec![("scat_coeff", &scat_coeffs)]);

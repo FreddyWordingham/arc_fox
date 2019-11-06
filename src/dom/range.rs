@@ -8,9 +8,9 @@ use std::f64::{INFINITY, MIN_POSITIVE, NEG_INFINITY};
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Range {
     /// Minimum bound.
-    min: f64,
+    pub min: f64,
     /// Maximum bound.
-    max: f64,
+    pub max: f64,
 }
 
 impl Range {
@@ -43,16 +43,6 @@ impl Range {
     /// Construct a new non-negative range.
     pub fn non_negative() -> Self {
         Self::new(0.0, INFINITY)
-    }
-
-    /// Get the minimum bound.
-    pub fn min(&self) -> f64 {
-        self.min
-    }
-
-    /// Get the maximum bound.
-    pub fn max(&self) -> f64 {
-        self.max
     }
 
     /// Calculate the width of the Range.

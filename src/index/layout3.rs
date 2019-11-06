@@ -37,4 +37,9 @@ impl Layout3 {
     pub fn z(&self) -> usize {
         self.nis[2]
     }
+
+    /// Determine if the given index is contained within the layout.
+    pub fn contains(&self, index: &[usize; 3]) -> bool {
+        (index[0] < self.nis[0]) && (index[1] < self.nis[1]) && (index[2] < self.nis[2])
+    }
 }

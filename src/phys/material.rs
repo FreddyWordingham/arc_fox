@@ -1,7 +1,7 @@
 //! Physical material structure.
 
 use super::opt::Environment;
-use crate::{math::Formula, util::Range};
+use crate::{dom::Range, math::Formula};
 use contracts::pre;
 use serde::{Deserialize, Serialize};
 
@@ -24,7 +24,7 @@ pub struct Material {
 
 impl Material {
     /// Construct a new instance.
-    #[pre(range.min() > 0.0)]
+    #[pre(range.min > 0.0)]
     pub fn new(
         range: Range,
         ref_index: Formula,

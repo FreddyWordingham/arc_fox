@@ -1,7 +1,12 @@
 //! Grid structure.
 
 use super::{Aabb, Cell};
-use crate::{data::Archive, index::Layout3, util::progress::bar, world::EntMap};
+use crate::{
+    data::Archive,
+    index::{bin, Layout3},
+    util::progress::bar,
+    world::EntMap,
+};
 use contracts::pre;
 use nalgebra::Point3;
 use ndarray::Array3;
@@ -22,14 +27,11 @@ impl<'a> Grid<'a> {
     pub fn new(layout: Layout3, aabb: Aabb, ent_map: &'a EntMap) -> Self {
         let mut cells = Vec::with_capacity(layout.total_indices());
         let mut cell_size = aabb.widths();
-        // for i in 0..3 {
-        //     cell_size[i] /= layout.nis[i] as f64;
-        // }
-
-        for (w, n) in aabb.widths().iter().zip(&layout.nis) {}
+        for (w, n) in cell_size.iter_mut().zip(&layout.nis) {
+            *w /= *n as f64;
+        }
 
         let aabb_mins = aabb.mins();
-
         let bar = bar("Constructing cells", layout.total_indices() as u64);
         for xi in 0..layout.x() {
             let min_x = aabb_mins.x + (cell_size.x * xi as f64);
@@ -75,7 +77,9 @@ impl<'a> Grid<'a> {
 
     /// Reference a cell from a given position.
     #[pre(self.aabb.contains(pos))]
-    pub fn get_cell(&self, pos: &Point3<f64>) -> &Cell<'a> {}
+    pub fn get_cell(&self, pos: &Point3<f64>) -> &Cell<'a> {
+        &self.cells[bin::point3(pos, &self.aabb, &self.layout)]
+    }
 
     /// Add an archive into the cells.
     #[pre(self.cells.shape() == archive.recs.shape())]
