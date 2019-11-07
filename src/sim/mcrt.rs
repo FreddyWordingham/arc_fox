@@ -80,6 +80,7 @@ fn run_thread(
         let mut cell_rec = cell_and_record(&phot, uni, &mut archive);
         cell_rec.1.increase_emissions(phot.weight());
         let mut env = cell_rec.0.mat_at_pos(&phot.ray().pos).env(&phot);
+        let mut shifted = false;
 
         loop {
             let inter_dist = -(rng.gen_range(0.0f64, 1.0)).ln() / env.inter_coeff;
@@ -100,6 +101,10 @@ fn run_thread(
 
                     cell_rec.1.increase_absorptions(env.albedo * phot.weight());
                     phot.multiply_weight(env.albedo);
+
+                    if !shifted && rng.gen_range(0.0, 1.0) <= env.shift_prob {
+                        shifted = true;
+                    }
                 }
                 HitEvent::Boundary { dist } => {
                     phot.travel(dist + BUMP_DIST);

@@ -10,6 +10,8 @@ pub struct Environment {
     pub inter_coeff: f64,
     /// Single scattering albedo.
     pub albedo: f64,
+    /// Shift probability.
+    pub shift_prob: f64,
     /// Asymmetry parameter.
     pub asym: f64,
 }
@@ -22,6 +24,8 @@ impl Environment {
     #[pre(shift_coeff >= 0.0)]
     #[pre(asym >= -1.0)]
     #[pre(asym <= 1.0)]
+    #[post(ret.shift_prob >= 0.0)]
+    #[post(ret.shift_prob < 1.0)]
     pub fn new(
         ref_index: f64,
         scat_coeff: f64,
@@ -31,11 +35,13 @@ impl Environment {
     ) -> Self {
         let inter_coeff = scat_coeff + abs_coeff + shift_coeff;
         let albedo = 1.0 - (abs_coeff / inter_coeff);
+        let shift_prob = shift_coeff / inter_coeff;
 
         Self {
             ref_index,
             inter_coeff,
             albedo,
+            shift_prob,
             asym,
         }
     }
