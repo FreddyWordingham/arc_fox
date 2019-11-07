@@ -20,6 +20,9 @@ use std::{
     sync::{Arc, Mutex},
 };
 
+/// Distance to bump over boundaries to prevent getting stuck.
+const BUMP_DIST: f64 = 0.00_000_1;
+
 /// Run a MCRT simulation.
 #[pre(num_threads > 0)]
 pub fn run(num_threads: usize, total_phot: u64, light: &Light, uni: &Universe) -> Archive {
@@ -84,14 +87,6 @@ fn run_thread(
             let cell_dist = cell_rec.0.aabb().dist(phot.ray()).unwrap();
             let ent_info = cell_rec.0.ent_dist(phot.ray());
 
-            if (1.0 - phot.ray().dir.norm()).abs() > 0.01 {
-                panic!("not normalised! {}", phot.ray().dir.norm());
-            }
-
-            if cell_dist > 10.0 {
-                panic!("cell dist > {}", cell_dist);
-            }
-
             match HitEvent::new(inter_dist, cell_dist, ent_info) {
                 HitEvent::Scattering { dist } => {
                     cell_rec.1.increase_scatters(&phot);
@@ -105,7 +100,7 @@ fn run_thread(
                     phot.multiply_weight(env.albedo);
                 }
                 HitEvent::Boundary { dist } => {
-                    phot.travel(dist);
+                    phot.travel(dist + BUMP_DIST);
 
                     if !uni.grid().aabb().contains(&phot.ray().pos) {
                         break;
@@ -126,10 +121,10 @@ fn run_thread(
                     let gate = Gate::new(&phot.ray().dir, &norm, n_curr, n_next);
 
                     if rng.gen_range(0.0, 1.0) <= gate.ref_prob() {
-                        phot.travel(dist - 0.00_000_1);
+                        phot.travel(dist - BUMP_DIST);
                         phot.set_dir(*gate.ref_dir());
                     } else {
-                        phot.travel(dist + 0.00_000_1);
+                        phot.travel(dist + BUMP_DIST);
                         phot.set_dir(gate.trans_dir().unwrap());
 
                         env = next_env;
@@ -215,6 +210,10 @@ impl HitEvent {
         if cell_dist <= inter_dist {
             if let Some(ent_dist) = ent_dist {
                 if ent_dist < cell_dist {
+                    if (ent_dist - cell_dist).abs() <= BUMP_DIST {
+                        panic!("Entity and cell on close approach!");
+                    }
+
                     return Self::new_entity(ent_dist);
                 }
             }
@@ -223,7 +222,7 @@ impl HitEvent {
         }
 
         if let Some(ent_dist) = ent_dist {
-            if ent_dist < inter_dist {
+            if ent_dist < (inter_dist + BUMP_DIST) {
                 return Self::new_entity(ent_dist);
             }
         }
