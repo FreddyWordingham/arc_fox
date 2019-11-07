@@ -98,6 +98,7 @@ fn run_thread(
                         rng.gen_range(0.0, 2.0 * PI),
                     );
 
+                    cell_rec.1.increase_absorptions(env.albedo * phot.weight());
                     phot.multiply_weight(env.albedo);
                 }
                 HitEvent::Boundary { dist } => {
