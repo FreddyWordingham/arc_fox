@@ -78,9 +78,8 @@ fn run_thread(
     while iterate(&mut bar, thread_id, total_phot, &mut num_phots) {
         let mut phot = light.emit(&mut rng, total_phot);
         let mut cell_rec = cell_and_record(&phot, uni, &mut archive);
+        cell_rec.1.increase_emissions(phot.weight());
         let mut env = cell_rec.0.mat_at_pos(&phot.ray().pos).env(&phot);
-
-        cell_rec.1.increase_emissions(&phot);
 
         loop {
             let inter_dist = -(rng.gen_range(0.0f64, 1.0)).ln() / env.inter_coeff;
@@ -89,9 +88,11 @@ fn run_thread(
 
             match HitEvent::new(inter_dist, cell_dist, ent_info) {
                 HitEvent::Scattering { dist } => {
-                    cell_rec.1.increase_scatters(&phot);
+                    cell_rec.1.increase_scatters(phot.weight());
 
                     phot.travel(dist);
+                    cell_rec.1.increase_dist_travelled(dist);
+
                     phot.rotate(
                         henyey_greenstein(&mut rng, env.asym),
                         rng.gen_range(0.0, 2.0 * PI),
@@ -101,6 +102,7 @@ fn run_thread(
                 }
                 HitEvent::Boundary { dist } => {
                     phot.travel(dist + BUMP_DIST);
+                    cell_rec.1.increase_dist_travelled(dist + BUMP_DIST);
 
                     if !uni.grid().aabb().contains(&phot.ray().pos) {
                         break;
@@ -122,9 +124,11 @@ fn run_thread(
 
                     if rng.gen_range(0.0, 1.0) <= gate.ref_prob() {
                         phot.travel(dist - BUMP_DIST);
+                        cell_rec.1.increase_dist_travelled(dist - BUMP_DIST);
                         phot.set_dir(*gate.ref_dir());
                     } else {
                         phot.travel(dist + BUMP_DIST);
+                        cell_rec.1.increase_dist_travelled(dist + BUMP_DIST);
                         phot.set_dir(gate.trans_dir().unwrap());
 
                         env = next_env;
