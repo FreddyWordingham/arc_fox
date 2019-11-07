@@ -4,6 +4,7 @@ use crate::{
     dom::Aabb,
     rt::{Ray, Traceable},
 };
+use contracts::pre;
 use nalgebra::{Point3, Unit, Vector3};
 use std::f64::{INFINITY, NEG_INFINITY};
 

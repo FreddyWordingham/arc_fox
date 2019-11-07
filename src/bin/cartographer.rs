@@ -29,18 +29,11 @@ fn main() {
     let mut uni = Universe::new(
         Layout3::new(17, 17, 17),
         Aabb::new_centred(&Point3::origin(), &Vector3::new(1.0, 1.0, 1.0)),
-        vec![
-            ProtoEntity::new(
-                Shape::new_plane(Point3::new(0.25, 0.0, 0.0), -Vector3::x_axis()),
-                "fog",
-                "air",
-            ),
-            ProtoEntity::new(
-                Shape::new_plane(Point3::new(0.5, 0.0, 0.0), -Vector3::x_axis()),
-                "air",
-                "fog",
-            ),
-        ],
+        vec![ProtoEntity::new(
+            Shape::new_plane(Point3::new(0.5, 0.0, 0.0), -Vector3::x_axis()),
+            "fog",
+            "air",
+        )],
     );
 
     print::section("Simulation");
