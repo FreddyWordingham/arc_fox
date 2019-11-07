@@ -1,6 +1,5 @@
 //! Data record structure.
 
-use crate::phys::opt::Photon;
 use contracts::pre;
 use std::ops::{Add, AddAssign};
 
@@ -68,7 +67,7 @@ impl Record {
 
     /// Increase the total distance travelled.
     #[pre(d > 0.0)]
-    pub fn dist_travelled(&mut self, d: f64) {
+    pub fn increase_dist_travelled(&mut self, d: f64) {
         self.dist_travelled += d;
     }
 }

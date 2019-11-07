@@ -10,7 +10,7 @@ use crate::{
     util::progress::bar,
     world::{Light, Universe},
 };
-use contracts::{post, pre};
+use contracts::pre;
 use indicatif::ProgressBar;
 use log::info;
 use rand::{thread_rng, Rng};
@@ -110,7 +110,7 @@ fn run_thread(
 
                     cell_rec = cell_and_record(&phot, uni, &mut archive);
                 }
-                HitEvent::Entity { dist } => {
+                HitEvent::Entity { dist: _ } => {
                     let (ent, dist, norm) = cell_rec.0.ent_dist_norm(phot.ray()).unwrap();
                     let inside = phot.ray().dir.dot(&norm) > 0.0;
 
