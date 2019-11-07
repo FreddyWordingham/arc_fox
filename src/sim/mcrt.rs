@@ -94,7 +94,6 @@ fn run_thread(
 
             match HitEvent::new(inter_dist, cell_dist, ent_info) {
                 HitEvent::Scattering { dist } => {
-                    // println!("0\t{}", dist);
                     cell_rec.1.increase_scatters(&phot);
 
                     phot.travel(dist);
@@ -106,8 +105,7 @@ fn run_thread(
                     phot.multiply_weight(env.albedo);
                 }
                 HitEvent::Boundary { dist } => {
-                    // println!("1\t{}", dist);
-                    phot.travel(dist + 0.00_01);
+                    phot.travel(dist);
 
                     if !uni.grid().aabb().contains(&phot.ray().pos) {
                         break;
@@ -116,7 +114,6 @@ fn run_thread(
                     cell_rec = cell_and_record(&phot, uni, &mut archive);
                 }
                 HitEvent::Entity { dist } => {
-                    // println!("2\t{}", dist);
                     let (ent, dist, norm) = cell_rec.0.ent_dist_norm(phot.ray()).unwrap();
                     let inside = phot.ray().dir.dot(&norm) > 0.0;
 
@@ -129,10 +126,10 @@ fn run_thread(
                     let gate = Gate::new(&phot.ray().dir, &norm, n_curr, n_next);
 
                     if rng.gen_range(0.0, 1.0) <= gate.ref_prob() {
-                        phot.travel(dist - 0.00_01);
+                        phot.travel(dist - 0.00_000_1);
                         phot.set_dir(*gate.ref_dir());
                     } else {
-                        phot.travel(dist + 0.00_01);
+                        phot.travel(dist + 0.00_000_1);
                         phot.set_dir(gate.trans_dir().unwrap());
 
                         env = next_env;

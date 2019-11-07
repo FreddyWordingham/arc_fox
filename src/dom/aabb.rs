@@ -123,7 +123,6 @@ impl Aabb {
 }
 
 impl Traceable for Aabb {
-    #[pre(self.contains(&ray.pos))]
     fn hit(&self, ray: &Ray) -> bool {
         let dir_frac = Vector3::new(1.0 / ray.dir.x, 1.0 / ray.dir.y, 1.0 / ray.dir.z);
 
@@ -140,7 +139,6 @@ impl Traceable for Aabb {
         !((t_max < 0.0) || (t_min > t_max))
     }
 
-    #[pre(self.contains(&ray.pos))]
     fn dist(&self, ray: &Ray) -> Option<f64> {
         let dir_frac = Vector3::new(1.0 / ray.dir.x, 1.0 / ray.dir.y, 1.0 / ray.dir.z);
 
@@ -165,7 +163,6 @@ impl Traceable for Aabb {
         Some(t_max)
     }
 
-    #[pre(self.contains(&ray.pos))]
     fn dist_norm(&self, ray: &Ray) -> Option<(f64, Unit<Vector3<f64>>)> {
         let dir_frac = Vector3::new(1.0 / ray.dir.x, 1.0 / ray.dir.y, 1.0 / ray.dir.z);
 
