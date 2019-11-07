@@ -57,7 +57,7 @@ impl Emitter {
                 )
             }
             Emitter::Spotlight { pos, dir, cos_na } => {
-                let pitch = rng.gen_range(0.0, cos_na).acos();
+                let pitch = rng.gen_range(cos_na, 1.0).acos();
                 let roll = rng.gen_range(0.0, 2.0 * PI);
 
                 let mut ray = Ray::new(*pos, *dir);

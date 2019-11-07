@@ -31,24 +31,29 @@ fn main() {
         Aabb::new_centred(&Point3::origin(), &Vector3::new(1.0, 1.0, 1.0)),
         vec![
             ProtoEntity::new(
-                Shape::new_plane(Point3::new(0.25, 0.0, 0.0), -Vector3::x_axis()),
-                "air",
-                "fog",
-            ),
-            ProtoEntity::new(
-                Shape::new_plane(Point3::new(0.5, 0.0, 0.0), -Vector3::x_axis()),
+                Shape::new_plane(Point3::new(-0.95, 0.0, 0.0), -Vector3::x_axis()),
                 "fog",
                 "air",
             ),
+            // ProtoEntity::new(
+            //     Shape::new_plane(Point3::new(0.25, 0.0, 0.0), -Vector3::x_axis()),
+            //     "fog",
+            //     "air",
+            // ),
+            // ProtoEntity::new(
+            //     Shape::new_plane(Point3::new(0.5, 0.0, 0.0), -Vector3::x_axis()),
+            //     "air",
+            //     "fog",
+            // ),
         ],
     );
 
     print::section("Simulation");
     let light_map = sim::mcrt::run(
-        32,
+        4,
         1_000_000,
         &Light::new(
-            Emitter::new_point(Point3::origin()),
+            Emitter::new_spotlight(Point3::origin(), Vector3::x_axis(), 45.0f64.to_radians()),
             Distribution::new_const(630.0e-9),
             1.0,
         ),
