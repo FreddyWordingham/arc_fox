@@ -27,11 +27,11 @@ fn main() {
 
     print::section("Initialisation");
     let mut uni = Universe::new(
-        Layout3::new(17, 17, 17),
+        Layout3::new(101, 101, 101),
         Aabb::new_centred(&Point3::origin(), &Vector3::new(1.0, 1.0, 1.0)),
         vec![
             ProtoEntity::new(
-                Shape::new_plane(Point3::new(0.3, 0.0, 0.0), -Vector3::x_axis()),
+                Shape::new_plane(Point3::new(0.25, 0.0, 0.0), -Vector3::x_axis()),
                 "air",
                 "fog",
             ),
@@ -45,8 +45,8 @@ fn main() {
 
     print::section("Simulation");
     let light_map = sim::mcrt::run(
-        1,
-        1_000,
+        32,
+        1_000_000,
         &Light::new(
             Emitter::new_point(Point3::origin()),
             Distribution::new_const(630.0e-9),

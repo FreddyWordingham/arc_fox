@@ -21,7 +21,7 @@ use std::{
 };
 
 /// Distance to bump over boundaries to prevent getting stuck.
-const BUMP_DIST: f64 = 0.00_000_1;
+const BUMP_DIST: f64 = 0.00_000_000_1;
 
 /// Run a MCRT simulation.
 #[pre(num_threads > 0)]
