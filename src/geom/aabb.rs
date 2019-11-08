@@ -1,6 +1,6 @@
 //! Axis-aligned bounding box structure.
 
-use super::{Collision, Container};
+use super::{Collision, Container, Touchable};
 use crate::{
     rt::{Ray, Traceable},
     util::SortLabel,
@@ -10,6 +10,7 @@ use nalgebra::{Point3, Unit, Vector3};
 
 /// Axis-aligned box.
 /// Used to partition domains.
+#[derive(Clone)]
 pub struct Aabb {
     /// Minimum bound.
     mins: Point3<f64>,
@@ -65,6 +66,7 @@ impl Aabb {
 
     /// Determine the closest contained point to a given point.
     /// If the given point is contained, that value is returned.
+    #[post(self.contains(&ret))]
     pub fn closest_point(&self, p: &Point3<f64>) -> Point3<f64> {
         let mut q = *p;
 
@@ -147,6 +149,11 @@ impl Traceable for Aabb {
 }
 
 impl Collision for Aabb {
+    /// Construct an axis-aligned bounding box for the geometry.
+    fn bounding_box(&self) -> Aabb {
+        self.clone()
+    }
+
     fn overlap(&self, aabb: &Aabb) -> bool {
         (self.mins.x <= aabb.maxs.x)
             && (self.maxs.x >= aabb.mins.x)
@@ -165,5 +172,21 @@ impl Container for Aabb {
             && (p.y <= self.maxs.y)
             && (p.z >= self.mins.z)
             && (p.z <= self.maxs.z)
+    }
+}
+
+impl Touchable for Aabb {
+    #[post(self.contains(&ret))]
+    fn closest_point(&self, p: &Point3<f64>) -> Point3<f64> {
+        let ret = *p;
+        for i in 0..3 {
+            if p[i] < self.mins[i] {
+                p[i] = self.mins[i];
+            } else if p[i] > self.maxs[i] {
+                p[i] = self.maxs[i];
+            }
+        }
+
+        ret
     }
 }

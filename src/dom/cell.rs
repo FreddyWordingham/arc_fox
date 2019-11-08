@@ -5,7 +5,7 @@ use crate::{
     data::Record,
     geom::Shape,
     phys::Material,
-    rt::{Ray, Traceable},
+    rt::Ray,
     world::{mat_at_pos_from_list, mat_at_pos_from_map, EntMap, Entity},
 };
 use contracts::pre;
