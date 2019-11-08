@@ -1,5 +1,6 @@
 //! Axis-aligned bounding box structure.
 
+use super::Collision;
 use crate::{
     rt::{Ray, Traceable},
     util::SortLabel,
