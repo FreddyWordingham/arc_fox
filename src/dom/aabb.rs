@@ -91,6 +91,44 @@ impl Aabb {
             && (point.z <= self.maxs.z)
     }
 
+    /// Determine the closest contained point to a given point.
+    /// If the given point is contained, that value is returned.
+    pub fn closest_point(&self, p: &Point3<f64>) -> Point3<f64> {
+        let mut q = *p;
+
+        for i in 0..3 {
+            if p[i] < self.mins[i] {
+                q[i] = self.mins[i];
+            } else if p[i] > self.maxs[i] {
+                q[i] = self.maxs[i];
+            }
+        }
+
+        q
+    }
+
+    /// Determine the furthest contained point to a given point.
+    /// If the given point is contained, the furthest point on the surface is returned.
+    pub fn furthest_surf_point(&self, p: &Point3<f64>) -> Point3<f64> {
+        let mut q = *p;
+
+        for i in 0..3 {
+            if p[i] < self.mins[i] {
+                q[i] = self.maxs[i];
+            } else if p[i] > self.maxs[i] {
+                q[i] = self.mins[i];
+            } else {
+                if (p[i] - self.mins[i]) < (self.maxs[i] - p[i]) {
+                    q[i] = self.maxs[i];
+                } else {
+                    q[i] = self.mins[i];
+                }
+            }
+        }
+
+        q
+    }
+
     /// Determine if the given shape's surface intersects the aabb's surface.
     pub fn intersect(&self, shape: &Shape) -> bool {
         return match shape {
@@ -102,6 +140,17 @@ impl Aabb {
                 let s = norm.dot(&c.coords) - (pos.coords.dot(norm));
 
                 s.abs() <= r
+            }
+            Shape::Sphere { pos, rad } => {
+                let r0 = nalgebra::distance(pos, &self.closest_point(pos));
+
+                if r0 > *rad {
+                    return false;
+                }
+
+                let r1 = nalgebra::distance(pos, &self.furthest_surf_point(pos));
+
+                r1 <= *rad
             }
         };
     }
@@ -117,6 +166,11 @@ impl Aabb {
                 let s = norm.dot(&c.coords) - pos.coords.dot(norm);
 
                 s.abs() <= r
+            }
+            Shape::Sphere { pos, rad } => {
+                // let r0 = nalgebra::distance(&pos, &self.closest_point(pos));
+                let r0 = nalgebra::distance(pos, &self.closest_point(pos));
+                r0 <= *rad
             }
         };
     }
