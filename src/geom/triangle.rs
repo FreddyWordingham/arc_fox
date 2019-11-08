@@ -29,6 +29,16 @@ impl Triangle {
             plane_norm,
         }
     }
+
+    /// Reference the vertices.
+    pub fn verts(&self) -> &[Point3<f64>; 3] {
+        &self.verts
+    }
+
+    /// Reference the normal vectors.
+    pub fn norms(&self) -> &[Unit<Vector3<f64>>; 3] {
+        &self.norms
+    }
 }
 
 impl Traceable for Triangle {
