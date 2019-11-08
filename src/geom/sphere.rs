@@ -1,5 +1,6 @@
 //! Sphere structure.
 
+use super::{Aabb, Collision};
 use crate::rt::{Ray, Traceable};
 use contracts::pre;
 use nalgebra::{Point3, Unit, Vector3};
@@ -80,5 +81,11 @@ impl Traceable for Sphere {
         }
 
         None
+    }
+}
+
+impl Collision for Sphere {
+    fn contains(&self, aabb: &Aabb) -> bool {
+        self.rad >= nalgebra::distance(&self.pos, &aabb.closest_point(&self.pos))
     }
 }
