@@ -160,7 +160,7 @@ impl Traceable for Triangle {
 }
 
 impl Collision for Triangle {
-    fn contains(&self, aabb: &Aabb) -> bool {
+    fn overlap(&self, aabb: &Aabb) -> bool {
         let c = aabb.centre();
         let e = aabb.half_widths();
 

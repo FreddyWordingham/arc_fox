@@ -85,7 +85,7 @@ impl Traceable for Sphere {
 }
 
 impl Collision for Sphere {
-    fn contains(&self, aabb: &Aabb) -> bool {
+    fn overlap(&self, aabb: &Aabb) -> bool {
         self.rad >= nalgebra::distance(&self.pos, &aabb.closest_point(&self.pos))
     }
 }

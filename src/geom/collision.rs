@@ -6,5 +6,5 @@ use crate::geom::Aabb;
 /// Structures implementing this trait can be tested for collision with an axis-aligned bounding box.
 pub trait Collision {
     /// Check for a surface-volume overlap.
-    fn contains(&self, aabb: &Aabb) -> bool;
+    fn overlap(&self, aabb: &Aabb) -> bool;
 }

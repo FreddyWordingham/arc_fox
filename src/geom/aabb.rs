@@ -1,5 +1,6 @@
 //! Axis-aligned bounding box structure.
 
+use super::{Collision, Container};
 use crate::{
     rt::{Ray, Traceable},
     util::SortLabel,
@@ -142,5 +143,27 @@ impl Traceable for Aabb {
         }
 
         Some(t_max.components())
+    }
+}
+
+impl Collision for Aabb {
+    fn overlap(&self, aabb: &Aabb) -> bool {
+        (self.mins.x <= aabb.maxs.x)
+            && (self.maxs.x >= aabb.mins.x)
+            && (self.mins.y <= aabb.maxs.y)
+            && (self.maxs.y >= aabb.mins.y)
+            && (self.mins.z <= aabb.maxs.z)
+            && (self.maxs.z >= aabb.mins.z)
+    }
+}
+
+impl Container for Aabb {
+    fn contains(&self, p: &Point3<f64>) -> bool {
+        (p.x >= self.mins.x)
+            && (p.x <= self.maxs.x)
+            && (p.y >= self.mins.y)
+            && (p.y <= self.maxs.y)
+            && (p.z >= self.mins.z)
+            && (p.z <= self.maxs.z)
     }
 }

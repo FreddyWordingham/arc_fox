@@ -1,6 +1,6 @@
 //! Plane structure.
 
-use super::EPSILON;
+use super::{Aabb, Collision, EPSILON};
 use crate::rt::{Ray, Traceable};
 use nalgebra::{Point3, Unit, Vector3};
 
@@ -16,6 +16,14 @@ impl Plane {
     /// Construct a new instance.
     pub fn new(pos: Point3<f64>, norm: Unit<Vector3<f64>>) -> Self {
         Self { pos, norm }
+    }
+
+    /// Determine the closest point on the plane to the given point.
+    pub fn closest_point(&self, p: &Point3<f64>) -> Point3<f64> {
+        let t = (self.norm.dot(&p.coords) - self.norm.dot(&self.pos.coords))
+            / self.norm.dot(&self.norm);
+
+        p - (self.norm.into_inner() * t)
     }
 }
 
@@ -47,5 +55,11 @@ impl Traceable for Plane {
         }
 
         None
+    }
+}
+
+impl Collision for Plane {
+    fn overlap(&self, aabb: &Aabb) -> bool {
+        aabb.contains(&self.closest_point(&aabb.centre()))
     }
 }
