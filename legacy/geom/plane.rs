@@ -1,6 +1,6 @@
 //! Plane structure.
 
-use super::{Aabb, Collision, EPSILON};
+use super::{Aabb, Collision, Container, EPSILON};
 use crate::rt::{Ray, Traceable};
 use nalgebra::{Point3, Unit, Vector3};
 
