@@ -8,7 +8,7 @@ use arc::{
     geom::Shape,
     index::Layout3,
     print,
-    proto::Entity as ProtoEntity,
+    proto::{Entity as ProtoEntity, Reaction as ProtoReaction},
     report,
     rng::Distribution,
     rt::Emitter,
@@ -35,6 +35,11 @@ fn main() {
             "air",
         )],
     );
+    let _reactions = vec![ProtoReaction::new(
+        vec![(2, "A"), (1, "B")],
+        vec![(3, "C")],
+        1.0,
+    )];
 
     print::section("Simulation");
     let light_map = sim::mcrt::run(
