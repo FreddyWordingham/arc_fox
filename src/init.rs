@@ -1,7 +1,12 @@
 //! Initialisation functions.
 
 use crate::{dir::arc, util::bin_name};
-use std::path::PathBuf;
+use contracts::{post, pre};
+use std::{
+    env::{current_dir, set_current_dir},
+    fs::create_dir_all,
+    path::PathBuf,
+};
 
 /// Quickly import the command line arguments as their requested type.
 #[macro_export]
@@ -19,31 +24,33 @@ macro_rules! args {
 }
 
 /// Set and get the input and output directories.
-pub fn io(input: Option<PathBuf>, output: Option<PathBuf>) -> (PathBuf, PathBuf) {
+pub fn io_dirs(input: Option<PathBuf>, output: Option<PathBuf>) -> (PathBuf, PathBuf) {
     let in_dir = if input.is_some() {
         input.unwrap()
     } else {
         arc().join("input").join(bin_name())
     };
+
+    let out_dir = if output.is_some() {
+        output.unwrap()
+    } else {
+        arc().join("output").join(bin_name())
+    };
+
+    (input_dir(&in_dir), output_dir(&out_dir))
 }
 
-// /// Initialise the current working directory.
-// /// Sets the current working directory to the arc internal working folder.
-// fn input(sub_dir: &str) -> PathBuf {
-//     let cwd = arc().join("cwd").join(sub_dir);
+/// Initialise the current working directory.
+#[pre(dir.is_dir(), "Invalid input directory path requested.")]
+#[post(ret.is_dir(), "Input directory path is invalid.")]
+fn input_dir(dir: &PathBuf) -> PathBuf {
+    set_current_dir(dir).expect("Unable to set the current working directory.");
+    current_dir().expect("Unable to get the determine the current working directory.")
+}
 
-//     set_current_dir(cwd).expect("Unable to set the current working directory!");
-
-//     current_dir().expect("Unable to get the determine the current working directory.")
-// }
-
-// /// Create an output directory.
-// fn output() -> PathBuf {
-//     let out = current_dir()
-//         .expect("Unable to get the determine the current working directory.")
-//         .join("out");
-
-//     create_dir_all(&out).expect("Could not create output directory.");
-
-//     out
-// }
+/// Create an output directory.
+#[post(ret.is_dir(), "Output directory path is invalid.")]
+fn output_dir(dir: &PathBuf) -> PathBuf {
+    create_dir_all(&dir).expect("Could not create output directory.");
+    dir.to_path_buf()
+}
