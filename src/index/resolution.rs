@@ -23,7 +23,7 @@ impl Resolution {
     }
 
     /// Get the total number of indices.
-    pub fn total_indices(&self) -> usize {
+    pub fn total(&self) -> usize {
         self.arr[0] * self.arr[1] * self.arr[2]
     }
 

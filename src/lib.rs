@@ -10,6 +10,7 @@
 pub mod dir;
 pub mod dom;
 pub mod file;
+pub mod geom;
 pub mod index;
 pub mod init;
 pub mod print;

@@ -1,8 +1,8 @@
 //! Cartographer binary.
 //! Creates a data cube mapping materials within a volume.
 
-use arc::{args, init::io_dirs, print, report, util::bin_name, index::Resolution};
-use ndarray::Array3;
+use arc::{args, index::Resolution, init::io_dirs, print, report, util::bin_name};
+// use ndarray::Array3;
 
 fn main() {
     title();
@@ -10,13 +10,13 @@ fn main() {
     let (in_dir, out_dir) = io_dirs(None, None);
 
     print::section("Setup");
-    let res = Resolution::new();
+    let res = Resolution::new(8, 8, 8);
 
     print::section("Input");
     report!(in_dir.display(), "Input dir");
 
     print::section("Post-Processing");
-    let intersection = Vec::with_capacity(capacity: usize)
+    let _intersection: Vec<bool> = Vec::with_capacity(res.total());
 
     print::section("Output");
     report!(out_dir.display(), "Output dir");
