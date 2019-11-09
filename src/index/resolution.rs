@@ -1,9 +1,12 @@
 //! Layout structure.
 
+use super::Index;
+use crate::iter::Resolution as ResolutionIter;
 use contracts::pre;
 
 /// Three-dimensional resolution structure.
 /// Used by domain grids.
+#[derive(Clone)]
 pub struct Resolution {
     /// Number of indices in each dimension.
     arr: [usize; 3],
@@ -45,5 +48,19 @@ impl Resolution {
     /// Determine if the given index is contained within the layout.
     pub fn contains(&self, index: &[usize; 3]) -> bool {
         (index[0] < self.arr[0]) && (index[1] < self.arr[1]) && (index[2] < self.arr[2])
+    }
+
+    /// Create an iterator.
+    pub fn iter(&self) -> ResolutionIter {
+        (&self).into_iter()
+    }
+}
+
+impl IntoIterator for &Resolution {
+    type Item = Index;
+    type IntoIter = ResolutionIter;
+
+    fn into_iter(self) -> Self::IntoIter {
+        ResolutionIter::new(self.clone())
     }
 }
