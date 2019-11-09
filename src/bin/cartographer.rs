@@ -3,8 +3,12 @@
 
 use arc::args;
 fn main() {
-    args!(path: String, num_phot: usize);
+    args!(_bin_path: String);
 
-    println!("{}", path);
-    println!("{}", num_phot);
+    println!("Cwd: {}", arc::dir::arc().display());
+    println!("res: {}", arc::dir::res::root().display());
+    println!("materials: {}", arc::dir::res::materials().display());
+    println!("meshes: {}", arc::dir::res::meshes().display());
+    println!("reactions: {}", arc::dir::res::reactions().display());
+    println!("species: {}", arc::dir::res::species().display());
 }

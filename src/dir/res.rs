@@ -5,25 +5,21 @@ use contracts::post;
 use std::path::{Path, PathBuf};
 
 /// Get the root resources directory path.
-#[post(ret.is_dir())]
+#[post(ret.is_dir(), "Root resources subdirectory does not exist.")]
 pub fn root() -> PathBuf {
     Path::new(&arc().join("res")).to_path_buf()
 }
 
-/// Get the materials resources sub-directory path.
-#[post(ret.is_dir())]
-pub fn mats() -> PathBuf {
-    root().join("mats")
+macro_rules! get_subdir_path {
+    ($name:ident) => {
+        #[post(ret.is_dir(), "Resources subdirectory does not exist.")]
+        pub fn $name() -> PathBuf {
+            root().join(stringify!($name))
+        }
+    };
 }
 
-/// Get the shapes resources sub-directory path.
-#[post(ret.is_dir())]
-pub fn shapes() -> PathBuf {
-    root().join("shapes")
-}
-
-/// Get the species resources sub-directory path.
-#[post(ret.is_dir())]
-pub fn species() -> PathBuf {
-    root().join("species")
-}
+get_subdir_path!(materials);
+get_subdir_path!(meshes);
+get_subdir_path!(reactions);
+get_subdir_path!(species);
