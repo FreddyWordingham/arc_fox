@@ -21,7 +21,6 @@ impl<T: Serialize> Saveable for T {
     }
 }
 
-#[pre(path.is_file())]
 #[pre(data.shape().iter().all(|x| *x > 0))]
 pub fn save_as_netcdf<T: Numeric>(data: &Array3<T>, path: &Path) {
     let mut file = File::create(&path).expect("Unable to create netcdf file!");
