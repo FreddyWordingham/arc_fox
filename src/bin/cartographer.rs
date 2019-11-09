@@ -1,8 +1,11 @@
 //! Cartographer binary.
 //! Creates a data cube mapping materials within a volume.
 
-use arc::{args, index::Resolution, init::io_dirs, print, report, util::bin_name};
-// use ndarray::Array3;
+use arc::{
+    args, file::save_as_netcdf, index::Resolution, init::io_dirs, print, report, util::bin_name,
+};
+use ndarray::Array3;
+use std::path::Path;
 
 fn main() {
     title();
@@ -15,11 +18,22 @@ fn main() {
     print::section("Input");
     report!(in_dir.display(), "Input dir");
 
+    print::section("Simulation");
+
     print::section("Post-Processing");
-    let _intersection: Vec<bool> = Vec::with_capacity(res.total());
+    let mut intersection: Vec<f64> = Vec::with_capacity(res.total());
+    for _xi in 0..res.x() {
+        for _yi in 0..res.y() {
+            for _zi in 0..res.z() {
+                intersection.push(1.0);
+            }
+        }
+    }
+    let intersection = Array3::from_shape_vec(*res.arr(), intersection).unwrap();
 
     print::section("Output");
     report!(out_dir.display(), "Output dir");
+    save_as_netcdf(&intersection, Path::new("intersection.nc"));
 
     print::section("End");
 }

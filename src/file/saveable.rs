@@ -21,13 +21,12 @@ impl<T: Serialize> Saveable for T {
     }
 }
 
-/// Save a three-dimensional array as a hdf5 datacube.
-#[pre(path.is_file(), "Save path is not a file path.")]
-#[pre(!data.is_empty(), "Cannot save empty netcdf file.")]
-pub fn save_as_netcdf<T: Numeric>(path: &Path, data: Vec<(&'static str, &Array3<T>)>) {
+#[pre(path.is_file())]
+#[pre(data.shape().iter().all(|x| *x > 0))]
+pub fn save_as_netcdf<T: Numeric>(data: &Array3<T>, path: &Path) {
     let mut file = File::create(&path).expect("Unable to create netcdf file!");
 
-    let shape = data[0].1.shape();
+    let shape = data.shape();
 
     let dim1_name = "x";
     let dim2_name = "y";
@@ -36,15 +35,10 @@ pub fn save_as_netcdf<T: Numeric>(path: &Path, data: Vec<(&'static str, &Array3<
     file.root_mut().add_dimension(dim2_name, shape[1]).unwrap();
     file.root_mut().add_dimension(dim3_name, shape[2]).unwrap();
 
-    for (name, d) in data {
-        if d.shape() != shape {
-            panic!("Shapes within the same datacube must match.");
-        }
-
-        let var = &mut file
-            .root_mut()
-            .add_variable::<T>(name, &[dim1_name, dim2_name, dim3_name])
-            .unwrap();
-        var.put_values(d.as_slice().unwrap(), None, None).unwrap();
-    }
+    let var = &mut file
+        .root_mut()
+        .add_variable::<T>("data", &[dim1_name, dim2_name, dim3_name])
+        .unwrap();
+    var.put_values(data.as_slice().unwrap(), None, None)
+        .unwrap();
 }
