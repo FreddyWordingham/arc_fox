@@ -1,14 +1,11 @@
 //! Cartographer binary.
 //! Creates a data cube mapping materials within a volume.
 
-use arc::args;
+use arc::{args, init::io_dirs};
 fn main() {
     args!(_bin_path: String);
 
-    println!("Cwd: {}", arc::dir::arc().display());
-    println!("res: {}", arc::dir::res::root().display());
-    println!("materials: {}", arc::dir::res::materials().display());
-    println!("meshes: {}", arc::dir::res::meshes().display());
-    println!("reactions: {}", arc::dir::res::reactions().display());
-    println!("species: {}", arc::dir::res::species().display());
+    let (in_dir, out_dir) = io_dirs(None, None);
+    println!("Input  : {}", in_dir.display());
+    println!("Output : {}", out_dir.display());
 }
