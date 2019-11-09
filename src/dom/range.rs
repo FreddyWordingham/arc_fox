@@ -1,15 +1,14 @@
 //! Numerical Range structure.
 
-use contracts::pre;
-use serde::{Deserialize, Serialize};
+use contracts::{post, pre};
 use std::f64::{INFINITY, MIN_POSITIVE, NEG_INFINITY};
 
 /// One-dimensional inclusive Range.
 pub struct Range {
     /// Minimum bound.
-    pub min: f64,
+    min: f64,
     /// Maximum bound.
-    pub max: f64,
+    max: f64,
 }
 
 impl Range {
@@ -20,31 +19,42 @@ impl Range {
     }
 
     /// Construct an infinite range.
-    pub fn infinite() -> Self {
+    pub fn new_infinite() -> Self {
         Self::new(NEG_INFINITY, INFINITY)
     }
 
     /// Construct a new positive range.
-    pub fn positive() -> Self {
+    pub fn new_positive() -> Self {
         Self::new(MIN_POSITIVE, INFINITY)
     }
 
     /// Construct a new non-positive range.
-    pub fn non_positive() -> Self {
+    pub fn new_non_positive() -> Self {
         Self::new(NEG_INFINITY, 0.0)
     }
 
     /// Construct a new negative range.
-    pub fn negative() -> Self {
+    pub fn new_negative() -> Self {
         Self::new(NEG_INFINITY, -MIN_POSITIVE)
     }
 
     /// Construct a new non-negative range.
-    pub fn non_negative() -> Self {
+    pub fn new_non_negative() -> Self {
         Self::new(0.0, INFINITY)
     }
 
+    /// Get the minimum bound.
+    pub fn min(&self) -> f64 {
+        self.min
+    }
+
+    /// Get the maximum bound.
+    pub fn max(&self) -> f64 {
+        self.max
+    }
+
     /// Calculate the width of the Range.
+    #[post(ret > 0.0)]
     pub fn width(&self) -> f64 {
         self.max - self.min
     }

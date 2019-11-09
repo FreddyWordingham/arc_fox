@@ -1,7 +1,7 @@
 //! Binning functions.
 
 use super::Resolution;
-use crate::dom::{Aabb, Range};
+use crate::{dom::Range, geom::Aabb};
 use contracts::{post, pre};
 use nalgebra::Point3;
 use std::f64::MIN_POSITIVE;
@@ -10,7 +10,7 @@ use std::f64::MIN_POSITIVE;
 #[pre(range.contains(x))]
 #[post(ret < n)]
 pub fn float(x: f64, range: &Range, n: usize) -> usize {
-    (((x - range.min) / range.width()).min(1.0 - MIN_POSITIVE) * n as f64).floor() as usize
+    (((x - range.min()) / range.width()).min(1.0 - MIN_POSITIVE) * n as f64).floor() as usize
 }
 
 #[post(res.contains(&ret))]
