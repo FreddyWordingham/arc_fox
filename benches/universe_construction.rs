@@ -9,6 +9,7 @@ use test::Bencher;
 #[bench]
 fn bench_universe_construction(b: &mut Bencher) {
     b.iter(|| {
+        unimplemented!();
         let uni = Universe::new(
             Layout3::new(17, 17, 17),
             Aabb::new_centred(&Point3::origin(), &Vector3::new(1.0, 1.0, 1.0)),
