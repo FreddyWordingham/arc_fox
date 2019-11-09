@@ -8,6 +8,7 @@
 #![warn(clippy::missing_docs_in_private_items)]
 
 pub mod dir;
+pub mod file;
 pub mod init;
 pub mod print;
 pub mod util;
