@@ -1,7 +1,5 @@
 //! Index structure.
 
-use contracts::pre;
-
 /// Three-dimensional Index structure.
 pub struct Index {
     /// Number of indices in each dimension.
@@ -9,6 +7,7 @@ pub struct Index {
 }
 
 impl Index {
+    /// Construct a new instance.
     pub fn new(xi: usize, yi: usize, zi: usize) -> Self {
         Self { arr: [xi, yi, zi] }
     }
