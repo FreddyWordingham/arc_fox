@@ -7,7 +7,8 @@ macro_rules! args {
         let args: Vec<String> = std::env::args().collect();
         let mut args_iter = args.iter();
         $(
-            let $name = (*args_iter.next().unwrap()).parse::<$type>().expect(
+            let $name = (*args_iter.next().expect(
+                &format!("Command line argument <{}> missing.", stringify!($name)))).parse::<$type>().expect(
                 &format!("Unable to parse <{}> into {}.", stringify!($name), stringify!($type))
             );
         )*
