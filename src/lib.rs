@@ -9,6 +9,7 @@
 
 pub mod dir;
 pub mod file;
+pub mod index;
 pub mod init;
 pub mod print;
 pub mod util;
