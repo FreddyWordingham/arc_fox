@@ -7,9 +7,12 @@ fn main() {
     title();
     args!(_bin_path: String);
 
+    print::section("Setup");
     let (in_dir, out_dir) = io_dirs(None, None);
     report!(in_dir.display(), "Input dir");
     report!(out_dir.display(), "Output dir");
+
+    print::section("End");
 }
 
 fn title() {

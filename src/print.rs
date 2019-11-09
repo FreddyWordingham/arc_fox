@@ -61,7 +61,7 @@ pub fn section(title: &str) {
         .0)
         .0 as usize;
 
-    print!("====");
+    print!("\n====");
 
     unsafe {
         /// Index of the section.
