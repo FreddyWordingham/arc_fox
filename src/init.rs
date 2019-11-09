@@ -24,7 +24,7 @@ macro_rules! args {
 }
 
 /// Set and get the input and output directories.
-/// Returned pair is (intput, output).
+/// Returned pair is (input, output).
 #[post(ret.0.is_dir(), "Input directory path is invalid.")]
 #[post(ret.1.is_dir(), "Output directory path is invalid.")]
 pub fn io_dirs(input: Option<PathBuf>, output: Option<PathBuf>) -> (PathBuf, PathBuf) {
@@ -33,13 +33,11 @@ pub fn io_dirs(input: Option<PathBuf>, output: Option<PathBuf>) -> (PathBuf, Pat
     } else {
         arc().join("input").join(bin_name())
     };
-
     let out_dir = if output.is_some() {
         output.unwrap()
     } else {
         arc().join("output").join(bin_name())
     };
-
     (input_dir(&in_dir), output_dir(&out_dir))
 }
 
