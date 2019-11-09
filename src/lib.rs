@@ -13,6 +13,7 @@ pub mod file;
 pub mod geom;
 pub mod index;
 pub mod init;
+pub mod iter;
 pub mod print;
 pub mod rt;
 pub mod util;
