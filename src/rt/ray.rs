@@ -2,7 +2,6 @@
 
 use contracts::pre;
 use nalgebra::{Point3, Rotation3, Unit, Vector3};
-use std::f64::consts::{FRAC_PI_2, PI};
 
 /// Line with an origin point that extends infinitely in one direction.
 /// Used to determine the distance to a geometric shape.
@@ -28,7 +27,7 @@ impl Ray {
 
     /// Pitch towards the z-axis and then roll around previous direction.
     #[pre(self.dir.z.abs() != 1.0)]
-    #[post(self.dir.mag() == 1.0)]
+    #[post(self.dir.magnitude() == 1.0)]
     pub fn rotate(&mut self, pitch: f64, roll: f64) {
         let pitch_axis = Unit::new_normalize(self.dir.cross(&Vector3::z_axis()));
         let pitch_rot = Rotation3::from_axis_angle(&pitch_axis, pitch);
