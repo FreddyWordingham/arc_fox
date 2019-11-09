@@ -17,7 +17,7 @@ where
 {
     #[pre(path.is_file(), "Invalid file to load resource from.")]
     fn load(path: &Path) -> Self {
-        let file = File::open(path).expect("Unable to open file!");
-        from_reader(BufReader::new(file)).expect("Unable to parse object from json file!")
+        let file = File::open(path).expect("Unable to open file.");
+        from_reader(BufReader::new(file)).expect("Unable to parse object from json file.")
     }
 }
