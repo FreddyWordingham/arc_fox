@@ -7,6 +7,7 @@
 #![warn(missing_docs)]
 #![warn(clippy::missing_docs_in_private_items)]
 
+pub mod data;
 pub mod dim;
 pub mod dir;
 pub mod dom;

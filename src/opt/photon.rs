@@ -38,6 +38,7 @@ impl Photon {
     }
 
     /// Reference the ray.
+    #[post((ret.dir.magnitude() - 1.0).abs() < 1.0e-9)]
     pub fn ray(&self) -> &Ray {
         &self.ray
     }
