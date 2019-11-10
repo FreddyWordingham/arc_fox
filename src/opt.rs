@@ -1,4 +1,4 @@
-//! Physical property structures.
+//! Optical structures.
 
 pub mod photon;
 

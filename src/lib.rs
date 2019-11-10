@@ -16,7 +16,7 @@ pub mod index;
 pub mod init;
 pub mod iter;
 pub mod math;
-pub mod phys;
+pub mod opt;
 pub mod print;
 pub mod rt;
 pub mod util;
