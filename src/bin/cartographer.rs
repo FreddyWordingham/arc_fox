@@ -5,7 +5,6 @@ use arc::{
     args, file::save_as_netcdf, index::Resolution, init::io_dirs, print, report, util::bin_name,
 };
 use ndarray::Array3;
-use std::path::Path;
 
 fn main() {
     title();
@@ -13,7 +12,7 @@ fn main() {
     let (in_dir, out_dir) = io_dirs(None, None);
 
     print::section("Setup");
-    let res = Resolution::new(8, 8, 8);
+    let res = Resolution::new(2, 3, 4);
 
     print::section("Input");
     report!(in_dir.display(), "Input dir");
@@ -32,7 +31,7 @@ fn main() {
 
     print::section("Output");
     report!(out_dir.display(), "Output dir");
-    save_as_netcdf(&intersection, Path::new("intersection.nc"));
+    save_as_netcdf(&intersection, &out_dir.join("intersection.nc"));
 
     print::section("End");
 }

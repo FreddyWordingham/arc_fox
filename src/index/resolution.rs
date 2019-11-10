@@ -45,6 +45,16 @@ impl Resolution {
         self.arr[2]
     }
 
+    /// Get the index corresponding to the n-th entry in the block.
+    #[pre(n < self.total())]
+    pub fn nth_index(&self, n: usize) -> Index {
+        let xi = n % self.arr[0];
+        let yi = ((n - xi) / self.arr[0]) % self.arr[1];
+        let zi = (n - xi - (yi * self.arr[0])) / (self.arr[0] * self.arr[1]);
+
+        Index::new(xi, yi, zi)
+    }
+
     /// Determine if the given index is contained within the layout.
     pub fn contains(&self, index: &[usize; 3]) -> bool {
         (index[0] < self.arr[0]) && (index[1] < self.arr[1]) && (index[2] < self.arr[2])
