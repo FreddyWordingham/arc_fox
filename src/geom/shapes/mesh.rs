@@ -1,8 +1,12 @@
 //! Triangle mesh structure.
 
 use super::{super::Collision, Aabb, Triangle};
-use crate::dim::Greek::Alpha;
+use crate::{
+    dim::Greek::Alpha,
+    rt::{Ray, Traceable},
+};
 use contracts::pre;
+use nalgebra::{Unit, Vector3};
 
 /// Triangle mesh surface.
 pub struct Mesh {
@@ -59,5 +63,41 @@ impl Collision for Mesh {
         }
 
         false
+    }
+}
+
+impl Traceable for Mesh {
+    fn hit(&self, ray: &Ray) -> bool {
+        if !self.aabb.hit(ray) {
+            return false;
+        }
+
+        self.tris.iter().any(|t| t.hit(ray))
+    }
+
+    fn dist(&self, ray: &Ray) -> Option<f64> {
+        if !self.aabb.hit(ray) {
+            return None;
+        }
+
+        self.tris
+            .iter()
+            .map(|tri| tri.dist(ray))
+            .filter(|dist| dist.is_some())
+            .map(|o| o.unwrap())
+            .min_by(|a, b| a.partial_cmp(b).unwrap())
+    }
+
+    fn dist_norm(&self, ray: &Ray) -> Option<(f64, Unit<Vector3<f64>>)> {
+        if !self.aabb.hit(ray) {
+            return None;
+        }
+
+        self.tris
+            .iter()
+            .map(|tri| tri.dist_norm(ray))
+            .filter(|dist| dist.is_some())
+            .map(|o| o.unwrap())
+            .min_by(|a, b| a.0.partial_cmp(&b.0).unwrap())
     }
 }
