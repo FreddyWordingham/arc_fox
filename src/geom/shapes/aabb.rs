@@ -1,10 +1,12 @@
 //! Axis-aligned bounding box structure.
 
+use super::super::Collision;
 use contracts::{post, pre};
 use nalgebra::{Point3, Vector3};
 
 /// Axis-aligned box.
 /// Used to partition domains.
+#[derive(Clone)]
 pub struct Aabb {
     /// Minimum bound.
     mins: Point3<f64>,
@@ -83,5 +85,20 @@ impl Aabb {
             && (p.y <= self.maxs.y)
             && (p.z >= self.mins.z)
             && (p.z <= self.maxs.z)
+    }
+}
+
+impl Collision for Aabb {
+    fn bounding_box(&self) -> Aabb {
+        self.clone()
+    }
+
+    fn overlap(&self, aabb: &Aabb) -> bool {
+        (self.mins.x <= aabb.maxs.x)
+            && (self.maxs.x >= aabb.mins.x)
+            && (self.mins.y <= aabb.maxs.y)
+            && (self.maxs.y >= aabb.mins.y)
+            && (self.mins.z <= aabb.maxs.z)
+            && (self.maxs.z >= aabb.mins.z)
     }
 }
