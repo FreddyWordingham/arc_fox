@@ -78,6 +78,7 @@ impl Photon {
         self.ray.dir = dir;
     }
 
+    /// Multiply the weight of the photon.
     #[pre(x > 0.0)]
     #[post(self.weight > 0.0)]
     pub fn multiply_weight(&mut self, x: f64) {

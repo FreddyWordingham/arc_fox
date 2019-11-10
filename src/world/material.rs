@@ -4,6 +4,7 @@ use crate::{
     dom::Range,
     file::{as_json, from_json, Loadable, Saveable},
     math::Formula,
+    opt::{Environment, Photon},
 };
 use contracts::pre;
 use serde::{Deserialize, Serialize};
@@ -77,19 +78,19 @@ impl Material {
         self.asym.res(w)
     }
 
-    // /// Get the optical environment for a given wavelength.
-    // #[pre(self.range.contains(phot.wavelength()))]
-    // pub fn env(&self, phot: &Photon) -> Environment {
-    //     let w = phot.wavelength();
+    /// Get the optical environment for a given wavelength.
+    #[pre(self.range.contains(phot.wavelength()))]
+    pub fn env(&self, phot: &Photon) -> Environment {
+        let w = phot.wavelength();
 
-    //     Environment::new(
-    //         self.ref_index.res(w),
-    //         self.scat_coeff.res(w),
-    //         self.abs_coeff.res(w),
-    //         self.shift_coeff.res(w),
-    //         self.asym.res(w),
-    //     )
-    // }
+        Environment::new(
+            self.ref_index.res(w),
+            self.scat_coeff.res(w),
+            self.abs_coeff.res(w),
+            self.shift_coeff.res(w),
+            self.asym.res(w),
+        )
+    }
 }
 
 impl Saveable for Material {
