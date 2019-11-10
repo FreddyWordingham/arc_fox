@@ -1,5 +1,6 @@
 //! Saveable to file trait.
 
+use crate::dim::Cartesian::{X, Y, Z};
 use contracts::pre;
 use ndarray::Array3;
 use netcdf::{variable::Numeric, File};
@@ -31,13 +32,13 @@ pub fn save_as_netcdf<T: Numeric>(data: &Array3<T>, path: &Path) {
     let dim2_name = "y";
     let dim3_name = "z";
     file.root_mut()
-        .add_dimension(dim1_name, shape[0])
+        .add_dimension(dim1_name, shape[X as usize])
         .expect("Unable to add dimension.");
     file.root_mut()
-        .add_dimension(dim2_name, shape[1])
+        .add_dimension(dim2_name, shape[Y as usize])
         .expect("Unable to add dimension.");
     file.root_mut()
-        .add_dimension(dim3_name, shape[2])
+        .add_dimension(dim3_name, shape[Z as usize])
         .expect("Unable to add dimension.");
 
     let var = &mut file
