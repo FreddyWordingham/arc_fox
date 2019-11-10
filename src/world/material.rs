@@ -1,8 +1,13 @@
 //! Material structure.
 
-use crate::{dom::Range, math::Formula};
+use crate::{
+    dom::Range,
+    file::{as_json, from_json, Loadable, Saveable},
+    math::Formula,
+};
 use contracts::pre;
 use serde::{Deserialize, Serialize};
+use std::path::Path;
 
 /// Physical material structure.
 #[derive(Serialize, Deserialize)]
@@ -85,4 +90,16 @@ impl Material {
     //         self.asym.res(w),
     //     )
     // }
+}
+
+impl Saveable for Material {
+    fn save(&self, path: &Path) {
+        as_json(self, path);
+    }
+}
+
+impl Loadable for Material {
+    fn load(path: &Path) -> Self {
+        from_json(path)
+    }
 }
