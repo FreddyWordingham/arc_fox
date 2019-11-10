@@ -15,6 +15,7 @@ pub mod geom;
 pub mod index;
 pub mod init;
 pub mod iter;
+pub mod math;
 pub mod print;
 pub mod rt;
 pub mod util;
