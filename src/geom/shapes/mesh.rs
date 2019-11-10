@@ -1,6 +1,6 @@
 //! Triangle mesh structure.
 
-use super::{Aabb, Triangle};
+use super::{super::Collision, Aabb, Triangle};
 use crate::dim::Greek::Alpha;
 use contracts::pre;
 
@@ -34,5 +34,30 @@ impl Mesh {
             tris,
             aabb: Aabb::new(mins, maxs),
         }
+    }
+
+    /// Reference the list of triangles.
+    pub fn tris(&self) -> &Vec<Triangle> {
+        &self.tris
+    }
+}
+
+impl Collision for Mesh {
+    fn bounding_box(&self) -> Aabb {
+        self.aabb.clone()
+    }
+
+    fn overlap(&self, aabb: &Aabb) -> bool {
+        if !self.aabb.overlap(aabb) {
+            return false;
+        }
+
+        for tri in self.tris.iter() {
+            if tri.overlap(aabb) {
+                return true;
+            }
+        }
+
+        false
     }
 }
