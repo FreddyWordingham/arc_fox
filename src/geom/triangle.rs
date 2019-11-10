@@ -1,9 +1,6 @@
 //! Triangle structure.
 
-use super::{
-    super::{Collision, Transform},
-    {Aabb, EPSILON},
-};
+use super::{Aabb, Collision, Transform, EPSILON};
 use crate::{
     dim::Greek::{Alpha, Beta, Gamma},
     file::Loadable,

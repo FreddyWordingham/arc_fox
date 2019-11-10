@@ -1,9 +1,6 @@
 //! Triangle mesh structure.
 
-use super::{
-    super::{Collision, Transform},
-    Aabb, Triangle,
-};
+use super::{Aabb, Collision, Transform, Triangle};
 use crate::{
     dim::Greek::Alpha,
     rt::{Ray, Traceable},

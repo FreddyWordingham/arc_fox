@@ -4,10 +4,7 @@
 use arc::{
     args,
     file::{Loadable, Saveable},
-    geom::{
-        shapes::{Aabb, Mesh},
-        Transform,
-    },
+    geom::{Aabb, Mesh, Transform},
     index::Resolution,
     init::io_dirs,
     print, report,

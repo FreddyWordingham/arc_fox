@@ -1,7 +1,7 @@
 //! Binning functions.
 
 use super::Resolution;
-use crate::{dom::Range, geom::shapes::Aabb};
+use crate::{dom::Range, geom::Aabb};
 use contracts::{post, pre};
 use nalgebra::Point3;
 use std::f64::MIN_POSITIVE;
