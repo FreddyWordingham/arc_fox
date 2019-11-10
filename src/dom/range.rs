@@ -1,9 +1,11 @@
 //! Numerical Range structure.
 
 use contracts::{post, pre};
+use serde::{Deserialize, Serialize};
 use std::f64::{INFINITY, MIN_POSITIVE, NEG_INFINITY};
 
 /// One-dimensional inclusive Range.
+#[derive(Serialize, Deserialize)]
 pub struct Range {
     /// Minimum bound.
     min: f64,
