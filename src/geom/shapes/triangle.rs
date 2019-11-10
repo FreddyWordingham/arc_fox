@@ -1,7 +1,7 @@
 //! Triangle structure.
 
 use super::{
-    super::Collision,
+    super::{Collision, Transform},
     {Aabb, EPSILON},
 };
 use crate::{
@@ -11,7 +11,7 @@ use crate::{
 };
 use contracts::pre;
 use log::info;
-use nalgebra::{Point3, Unit, Vector3};
+use nalgebra::{Isometry3, Point3, Unit, Vector3};
 use std::{
     fs::File,
     io::{BufRead, BufReader},
@@ -166,6 +166,20 @@ impl Collision for Triangle {
         }
 
         true
+    }
+}
+
+impl Transform for Triangle {
+    fn trans(&mut self, trans: &Isometry3<f64>) {
+        self.plane_norm = trans * self.plane_norm;
+
+        for v in self.verts.iter_mut() {
+            *v = trans * *v;
+        }
+
+        for n in self.norms.iter_mut() {
+            *n = trans * *n;
+        }
     }
 }
 
