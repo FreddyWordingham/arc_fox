@@ -1,6 +1,7 @@
 //! Index structure.
 
 use crate::dim::Cartesian::{X, Y, Z};
+use std::fmt::{Display, Formatter, Result};
 
 /// Three-dimensional Index structure.
 #[derive(Clone)]
@@ -28,5 +29,15 @@ impl Index {
     /// Get the z component.
     pub fn z(&self) -> usize {
         self.arr[Z as usize]
+    }
+}
+
+impl Display for Index {
+    fn fmt(&self, f: &mut Formatter) -> Result {
+        write!(
+            f,
+            "[{}:{}:{}]",
+            self.arr[X as usize], self.arr[Y as usize], self.arr[Z as usize]
+        )
     }
 }

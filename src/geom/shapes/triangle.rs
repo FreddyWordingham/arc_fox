@@ -10,6 +10,7 @@ use crate::{
     rt::{Ray, Traceable},
 };
 use contracts::pre;
+use log::info;
 use nalgebra::{Point3, Unit, Vector3};
 use std::{
     fs::File,
@@ -290,6 +291,8 @@ impl Traceable for Triangle {
 
 impl Loadable for Vec<Triangle> {
     fn load(path: &Path) -> Self {
+        info!("Loading obj file: {}", path.display());
+
         let vertex_lines = BufReader::new(File::open(path).expect("Unable to open file!"))
             .lines()
             .map(|line| line.unwrap())

@@ -2,7 +2,12 @@
 //! Creates a data cube mapping materials within a volume.
 
 use arc::{
-    args, file::Saveable, geom::shapes::Aabb, index::Resolution, init::io_dirs, print, report,
+    args,
+    file::{Loadable, Saveable},
+    geom::shapes::{Aabb, Mesh},
+    index::Resolution,
+    init::io_dirs,
+    print, report,
     util::bin_name,
 };
 use contracts::pre;
@@ -24,7 +29,8 @@ fn main() {
     print::section("Initialisation");
     let res = Resolution::new(101, 101, 101);
     let dom = Aabb::new_centred(&Point3::origin(), &Vector3::new(1.0, 1.0, 1.0));
-    let geom = Aabb::new_centred(&Point3::origin(), &Vector3::new(0.5, 0.25, 0.4));
+    let tris = Vec::load(&arc::dir::res::meshes().join("cube.obj"));
+    let geom = Mesh::new(tris);
 
     print::section("Simulation");
     let intersection = intersect_test(1, &res, &dom, &geom);
@@ -46,7 +52,7 @@ fn title() {
 use arc::geom::Collision;
 
 #[pre(num_threads > 0)]
-fn intersect_test(num_threads: usize, res: &Resolution, dom: &Aabb, shape: &Aabb) -> Array3<f64> {
+fn intersect_test(num_threads: usize, res: &Resolution, dom: &Aabb, shape: &Mesh) -> Array3<f64> {
     if num_threads == 1 {
         info!("Running as single thread.");
 
@@ -57,6 +63,7 @@ fn intersect_test(num_threads: usize, res: &Resolution, dom: &Aabb, shape: &Aabb
 
         let mut intersections = Vec::with_capacity(res.total());
         for index in res {
+            println!("{}", index);
             let mut mins = dom.mins().clone();
             mins.x += box_size.x * index.x() as f64;
             mins.y += box_size.y * index.y() as f64;
