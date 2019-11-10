@@ -19,7 +19,7 @@ pub fn title(title: &str) {
     let title = title.to_uppercase();
 
     let term_width = (terminal_size()
-        .expect("Unable to determine terminal width.")
+        .expect("Unable to determine the terminal size.")
         .0)
         .0 as usize;
 
@@ -57,7 +57,7 @@ pub fn title(title: &str) {
 /// Print a section bar.
 pub fn section(title: &str) {
     let term_width = (terminal_size()
-        .expect("Unable to determine terminal width.")
+        .expect("Unable to determine the terminal size.")
         .0)
         .0 as usize;
 

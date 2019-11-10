@@ -15,9 +15,9 @@ impl<T> Loadable for T
 where
     for<'a> T: Deserialize<'a>,
 {
-    #[pre(path.is_file(), "Invalid file to load resource from.")]
+    #[pre(path.is_file())]
     fn load(path: &Path) -> Self {
         let file = File::open(path).expect("Unable to open file.");
-        from_reader(BufReader::new(file)).expect("Unable to parse object from json file.")
+        from_reader(BufReader::new(file)).expect("Unable to parse json file.")
     }
 }

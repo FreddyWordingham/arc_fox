@@ -12,7 +12,7 @@ use std::{
 
 /// Get the arc directory path from the environment variable.
 /// Environment variable must be set.
-#[post(ret.is_dir(), "Invalid ARC_DIR environment variable.")]
+#[post(ret.is_dir())]
 pub fn arc() -> PathBuf {
-    Path::new(&var("ARC_DIR").expect("Environment variable ARC_DIR is not set.")).to_path_buf()
+    Path::new(&var("ARC_DIR").expect("ARC_DIR environment variable is not set.")).to_path_buf()
 }
