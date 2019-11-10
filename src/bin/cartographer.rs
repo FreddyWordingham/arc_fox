@@ -4,7 +4,10 @@
 use arc::{
     args,
     file::{Loadable, Saveable},
-    geom::shapes::{Aabb, Mesh},
+    geom::{
+        shapes::{Aabb, Mesh},
+        Transform,
+    },
     index::Resolution,
     init::io_dirs,
     print, report,
@@ -12,7 +15,7 @@ use arc::{
 };
 use contracts::pre;
 use log::info;
-use nalgebra::{Point3, Vector3};
+use nalgebra::{Point3, Similarity3, Translation3, UnitQuaternion, Vector3};
 use ndarray::Array3;
 use rayon::prelude::*;
 
@@ -31,7 +34,14 @@ fn main() {
     let res = Resolution::new(n, n, n);
     let dom = Aabb::new_centred(&Point3::origin(), &Vector3::new(1.5, 1.5, 1.5));
     let tris = Vec::load(&arc::dir::res::meshes().join("torus.obj"));
-    let geom = Mesh::new(tris);
+    let mut geom = Mesh::new(tris);
+
+    let t = Similarity3::from_parts(
+        Translation3::new(0.0, 0.0, 1.0),
+        UnitQuaternion::from_euler_angles(0.0, std::f64::consts::FRAC_PI_4, 0.0),
+        0.75,
+    );
+    geom.trans(&t);
 
     print::section("Simulation");
     let intersection = intersect_test(1, &res, &dom, &geom);
