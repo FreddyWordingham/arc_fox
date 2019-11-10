@@ -1,8 +1,9 @@
 //! Optical photon structure.
 
 use crate::rt::Ray;
-use contracts::pre;
+use contracts::{post, pre};
 use nalgebra::{Unit, Vector3};
+use std::f64::consts::PI;
 
 /// Optical photon structure.
 pub struct Photon {
@@ -30,6 +31,8 @@ impl Photon {
     }
 
     /// Get the weight.
+    #[post(ret > 0.0)]
+    #[post(ret <= 1.0)]
     pub fn weight(&self) -> f64 {
         self.weight
     }
@@ -40,11 +43,13 @@ impl Photon {
     }
 
     /// Get the power.
+    #[post(ret > 0.0)]
     pub fn power(&self) -> f64 {
         self.power
     }
 
     /// Get the wavelength.
+    #[post(ret > 0.0)]
     pub fn wavelength(&self) -> f64 {
         self.wavelength
     }
@@ -57,11 +62,18 @@ impl Photon {
 
     /// Pitch towards the z-axis and then roll around previous direction.
     #[pre(self.ray.dir.z.abs() != 1.0)]
+    #[pre(pitch > 0.0)]
+    #[pre(pitch < PI)]
+    #[pre(pitch > 0.0)]
+    #[pre(pitch < (2.0 * PI))]
+    #[post((self.ray.dir.magnitude() - 1.0).abs() < 1.0e-9)]
     pub fn rotate(&mut self, pitch: f64, roll: f64) {
         self.ray.rotate(pitch, roll);
     }
 
     /// Set direction manually.
+    #[pre((dir.magnitude() - 1.0).abs() < 1.0e-9)]
+    #[post((self.ray.dir.magnitude() - 1.0).abs() < 1.0e-9)]
     pub fn set_dir(&mut self, dir: Unit<Vector3<f64>>) {
         self.ray.dir = dir;
     }
