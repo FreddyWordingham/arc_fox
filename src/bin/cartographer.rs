@@ -27,9 +27,10 @@ fn main() {
     print::section("Setup");
 
     print::section("Initialisation");
-    let res = Resolution::new(101, 101, 101);
-    let dom = Aabb::new_centred(&Point3::origin(), &Vector3::new(1.0, 1.0, 1.0));
-    let tris = Vec::load(&arc::dir::res::meshes().join("cube.obj"));
+    let n = 25;
+    let res = Resolution::new(n, n, n);
+    let dom = Aabb::new_centred(&Point3::origin(), &Vector3::new(1.5, 1.5, 1.5));
+    let tris = Vec::load(&arc::dir::res::meshes().join("torus.obj"));
     let geom = Mesh::new(tris);
 
     print::section("Simulation");
@@ -63,7 +64,9 @@ fn intersect_test(num_threads: usize, res: &Resolution, dom: &Aabb, shape: &Mesh
 
         let mut intersections = Vec::with_capacity(res.total());
         for index in res {
-            println!("{}", index);
+            if (index.x() == 0) && (index.y() == 0) {
+                println!("{}", index);
+            }
             let mut mins = dom.mins().clone();
             mins.x += box_size.x * index.x() as f64;
             mins.y += box_size.y * index.y() as f64;

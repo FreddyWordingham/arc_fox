@@ -30,9 +30,7 @@ pub struct Triangle {
 
 impl Triangle {
     /// Construct a new object.
-    #[pre(norms[Alpha as usize].magnitude() == 1.0)]
-    #[pre(norms[Beta as usize].magnitude() == 1.0)]
-    #[pre(norms[Gamma as usize].magnitude() == 1.0)]
+    #[pre(norms.iter().all(|n| (n.magnitude() - 1.0).abs() < 1.0e-9))]
     pub fn new(verts: [Point3<f64>; 3], norms: [Unit<Vector3<f64>>; 3]) -> Self {
         let plane_norm = Unit::new_normalize(
             (verts[Beta as usize] - verts[Alpha as usize])
