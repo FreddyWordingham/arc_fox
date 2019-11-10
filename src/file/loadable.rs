@@ -1,6 +1,5 @@
 //! Loadable from file trait.
 
-use contracts::pre;
 use serde::Deserialize;
 use serde_json::from_reader;
 use std::{fs::File, io::BufReader, path::Path};
@@ -11,13 +10,11 @@ pub trait Loadable {
     fn load(path: &Path) -> Self;
 }
 
-impl<T> Loadable for T
+/// Deserialise the object in json format if it implements the Deserialize trait.
+pub fn from_json<T>(path: &Path) -> T
 where
-    for<'a> T: Deserialize<'a>,
+    for<'de> T: Deserialize<'de>,
 {
-    #[pre(path.is_file())]
-    fn load(path: &Path) -> Self {
-        let file = File::open(path).expect("Unable to open file.");
-        from_reader(BufReader::new(file)).expect("Unable to parse json file.")
-    }
+    let file = File::open(path).expect("Unable to open file.");
+    from_reader(BufReader::new(file)).expect("Unable to parse object from json file.")
 }

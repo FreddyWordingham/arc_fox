@@ -2,8 +2,8 @@
 //! Creates a data cube mapping materials within a volume.
 
 use arc::{
-    args, file::save_as_netcdf, geom::shapes::Aabb, index::Resolution, init::io_dirs, print,
-    report, util::bin_name,
+    args, file::Saveable, geom::shapes::Aabb, index::Resolution, init::io_dirs, print, report,
+    util::bin_name,
 };
 use contracts::pre;
 use log::info;
@@ -33,7 +33,7 @@ fn main() {
 
     print::section("Output");
     report!(out_dir.display(), "Output dir");
-    save_as_netcdf(&intersection, &out_dir.join("intersection.nc"));
+    intersection.save(&out_dir.join("intersection.nc"));
 
     print::section("End");
 }
