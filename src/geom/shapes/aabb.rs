@@ -31,6 +31,21 @@ impl Aabb {
         Self::new(centre - hws, centre + hws)
     }
 
+    /// Create a tightened axis-aligned box.
+    #[pre(f > 0.0)]
+    #[pre(f < 1.0)]
+    pub fn tighten(&self, f: f64) -> Self {
+        let delta = self.half_widths() * (1.0 - f);
+        Self::new(self.mins + delta, self.maxs - delta)
+    }
+
+    /// Create a loosened axis-aligned box.
+    #[pre(f > 0.0)]
+    pub fn loosen(&self, f: f64) -> Self {
+        let delta = self.half_widths() * (f + 1.0);
+        Self::new(self.mins + delta, self.maxs - delta)
+    }
+
     /// Reference the minimum bound.
     pub fn mins(&self) -> &Point3<f64> {
         &self.mins
