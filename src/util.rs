@@ -1,5 +1,9 @@
 //! Utility functions and structures.
 
+pub mod sort_label;
+
+pub use self::sort_label::*;
+
 use std::{env::args, path::Path};
 
 /// Get the binary name.
