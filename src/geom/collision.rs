@@ -8,6 +8,6 @@ pub trait Collision {
     /// Construct an axis-aligned bounding box for the geometry.
     fn bounding_box(&self) -> Aabb;
 
-    /// Check for a surface-volume overlap.
+    /// Check for an overlapping collision.
     fn overlap(&self, aabb: &Aabb) -> bool;
 }
