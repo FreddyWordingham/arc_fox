@@ -75,9 +75,9 @@ impl Collision for Mesh {
 }
 
 impl Transform for Mesh {
-    fn trans(&mut self, trans: &Similarity3<f64>) {
+    fn transform(&mut self, trans: &Similarity3<f64>) {
         for tri in self.tris.iter_mut() {
-            tri.trans(trans)
+            tri.transform(trans)
         }
 
         self.aabb = Self::init_aabb(&self.tris);

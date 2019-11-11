@@ -3,8 +3,7 @@
 
 use arc::{
     args,
-    file::{Loadable, Saveable},
-    geom::{Aabb, Mesh, Transform},
+    geom::{Aabb, Mesh},
     index::Resolution,
     init::io_dirs,
     print, report,
@@ -28,28 +27,50 @@ fn main() {
 
     print::section("Initialisation");
     let n = 25;
-    let res = Resolution::new(n, n, n);
-    let dom = Aabb::new_centred(&Point3::origin(), &Vector3::new(1.5, 1.5, 1.5));
-    let mut geom = Mesh::load(&arc::dir::res::meshes().join("torus.obj"));
-    geom.trans(&Similarity3::from_parts(
-        Translation3::new(0.0, 0.0, 1.0),
-        UnitQuaternion::from_euler_angles(0.0, std::f64::consts::FRAC_PI_4, 0.0),
-        0.75,
-    ));
+    let _res = Resolution::new(n, n, n);
+    let _dom = Aabb::new_centred(&Point3::origin(), &Vector3::new(1.0, 1.0, 1.0));
 
-    let _mats = arc::world::load::mats(
+    let mats = arc::world::load::mats(
         &arc::dir::res::materials(),
         vec!["air".to_string(), "fog".to_string()],
     );
 
+    let _ents = arc::world::load::ents(
+        &arc::dir::res::meshes(),
+        vec![
+            ("torus", "torus", None, "fog", "air"),
+            (
+                "upper-plane",
+                "plane",
+                Some(Similarity3::from_parts(
+                    Translation3::new(0.0, 0.0, 0.75),
+                    UnitQuaternion::from_euler_angles(0.0, 0.0, 0.0),
+                    1.0,
+                )),
+                "air",
+                "fog",
+            ),
+            (
+                "lower-plane",
+                "plane",
+                Some(Similarity3::from_parts(
+                    Translation3::new(0.0, 0.0, -0.75),
+                    UnitQuaternion::from_euler_angles(0.0, 0.0, 0.0),
+                    1.0,
+                )),
+                "air",
+                "fog",
+            ),
+        ],
+        &mats,
+    );
+
     print::section("Simulation");
-    let intersection = intersect_test(1, &res, &dom, &geom);
 
     print::section("Post-Processing");
 
     print::section("Output");
     report!(out_dir.display(), "Output dir");
-    intersection.save(&out_dir.join("intersection.nc"));
 
     print::section("End");
 }

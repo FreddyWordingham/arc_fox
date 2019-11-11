@@ -238,7 +238,7 @@ impl Collision for Triangle {
 }
 
 impl Transform for Triangle {
-    fn trans(&mut self, trans: &Similarity3<f64>) {
+    fn transform(&mut self, trans: &Similarity3<f64>) {
         self.plane_norm = Unit::new_normalize(trans.transform_vector(self.plane_norm.as_ref()));
 
         for v in self.verts.iter_mut() {
