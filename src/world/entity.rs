@@ -67,26 +67,22 @@ pub fn mat_at_pos_from_list<'a>(p: Point3<f64>, dom: &Aabb, ents: &'a Vec<Entity
         for i in -n.pow(power)..=n.pow(power) {
             let ray = Ray::new_fibonacci_spiral(p, i, n.pow(power));
 
-            let mut nearest: Option<(f64, Unit<Vector3<f64>>, &Entity)> = None;
+            let mut nearest: Option<(f64, bool, &Entity)> = None;
             for ent in ents.iter() {
-                if let Some((dist, norm)) = ent.mesh().dist_norm(&ray) {
+                if let Some((dist, inside)) = ent.mesh().dist_inside(&ray) {
                     if nearest.is_none() || dist < nearest.unwrap().0 {
-                        nearest = Some((dist, norm, ent));
+                        nearest = Some((dist, inside, ent));
                     }
                 }
             }
 
-            if let Some((dist, norm, ent)) = nearest {
+            if let Some((dist, inside, ent)) = nearest {
                 if dist
                     <= dom
                         .dist(&ray)
                         .expect("Failed to determine internal dom distance.")
                 {
-                    if norm.dot(&ray.dir) > 0.0 {
-                        return ent.in_mat();
-                    }
-
-                    return ent.out_mat();
+                    return if inside { ent.in_mat() } else { ent.out_mat() };
                 }
             }
         }
@@ -127,28 +123,24 @@ pub fn mat_at_pos_from_sublist<'a>(
         for i in -n.pow(power)..=n.pow(power) {
             let ray = Ray::new_fibonacci_spiral(p, i, n.pow(power));
 
-            let mut nearest: Option<(f64, Unit<Vector3<f64>>, &Entity)> = None;
+            let mut nearest: Option<(f64, bool, &Entity)> = None;
             for (ent, tris) in ent_tris.iter() {
                 for tri in tris.iter() {
-                    if let Some((dist, norm)) = tri.dist_norm(&ray) {
+                    if let Some((dist, inside)) = tri.dist_inside(&ray) {
                         if nearest.is_none() || dist < nearest.unwrap().0 {
-                            nearest = Some((dist, norm, ent));
+                            nearest = Some((dist, inside, ent));
                         }
                     }
                 }
             }
 
-            if let Some((dist, norm, ent)) = nearest {
+            if let Some((dist, inside, ent)) = nearest {
                 if dist
                     <= aabb
                         .dist(&ray)
                         .expect("Failed to determine internal aabb distance.")
                 {
-                    if norm.dot(&ray.dir) > 0.0 {
-                        return ent.in_mat();
-                    }
-
-                    return ent.out_mat();
+                    return if inside { ent.in_mat() } else { ent.out_mat() };
                 }
             }
         }
