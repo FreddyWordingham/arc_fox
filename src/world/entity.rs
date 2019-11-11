@@ -7,7 +7,7 @@ use crate::{
 };
 use contracts::{post, pre};
 use log::warn;
-use nalgebra::{Point3, Unit, Vector3};
+use nalgebra::Point3;
 
 /// World entity structure.
 /// Binds a material to a shape.
@@ -87,17 +87,16 @@ pub fn mat_at_pos_from_list<'a>(p: Point3<f64>, dom: &Aabb, ents: &'a Vec<Entity
             }
         }
 
-        if power < 4 {
+        if power > 5 {
+            break;
+        } else if power > 3 {
             warn!(
-                "Increasing ray-casting power to {} ({} rays)",
+                "Increasing world-casting power to {} ({} rays)",
                 power,
                 (2 * n.pow(power)) + 1
             );
-
-            power += 1;
-        } else {
-            break;
         }
+        power += 1;
     }
 
     panic!(
@@ -145,17 +144,10 @@ pub fn mat_at_pos_from_sublist<'a>(
             }
         }
 
-        if power < 4 {
-            warn!(
-                "Increasing ray-casting power to {} ({} rays)",
-                power,
-                (2 * n.pow(power)) + 1
-            );
-
-            power += 1;
-        } else {
+        if power > 4 {
             break;
         }
+        power += 1;
     }
 
     warn!("Falling back on world-cast.");

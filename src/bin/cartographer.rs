@@ -32,7 +32,17 @@ fn main() {
         Aabb::new_centred(&Point3::origin(), &Vector3::new(l, l, l)),
         res.clone(),
         vec![
-            ("torus", "torus", None, "fog", "air"),
+            (
+                "plane",
+                "plane",
+                Some(Similarity3::from_parts(
+                    Translation3::new(0.0, 0.0, 0.15),
+                    UnitQuaternion::from_euler_angles(0.0, 0.0, 0.0),
+                    1.75,
+                )),
+                "fog",
+                "air",
+            ),
             // (
             //     "upper-plane",
             //     "plane",
