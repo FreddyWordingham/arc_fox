@@ -19,6 +19,7 @@ pub mod iter;
 pub mod math;
 pub mod opt;
 pub mod print;
+pub mod rng;
 pub mod rt;
 pub mod util;
 pub mod world;
