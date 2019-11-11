@@ -91,7 +91,7 @@ impl Aabb {
     }
 
     /// Determine if the given point if contained.
-    fn contains(&self, p: &Point3<f64>) -> bool {
+    pub fn contains(&self, p: &Point3<f64>) -> bool {
         (p.x >= self.mins.x)
             && (p.x <= self.maxs.x)
             && (p.y >= self.mins.y)
