@@ -6,13 +6,15 @@ use crate::{
     opt::{Environment, Photon},
     util::Range,
 };
-use contracts::pre;
+use contracts::{post, pre};
 use serde::{Deserialize, Serialize};
 use std::path::Path;
 
 /// Physical material structure.
 #[derive(Serialize, Deserialize)]
 pub struct Material {
+    /// Identification string.
+    id: String,
     /// Range of valid wavelengths.
     range: Range,
     /// Refractive index.
@@ -29,8 +31,10 @@ pub struct Material {
 
 impl Material {
     /// Construct a new instance.
+    #[pre(!id.is_empty())]
     #[pre(range.min() > 0.0)]
     pub fn new(
+        id: String,
         range: Range,
         ref_index: Formula,
         scat_coeff: Formula,
@@ -39,6 +43,7 @@ impl Material {
         asym: Formula,
     ) -> Self {
         Self {
+            id,
             range,
             ref_index,
             scat_coeff,
@@ -46,6 +51,12 @@ impl Material {
             shift_coeff,
             asym,
         }
+    }
+
+    /// Reference the id.
+    #[post(!ret.is_empty())]
+    pub fn id(&self) -> &str {
+        &self.id
     }
 
     /// Get the refractive index at the given wavelength.

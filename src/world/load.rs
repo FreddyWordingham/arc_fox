@@ -24,10 +24,15 @@ pub fn mats(dir: &Path, names: Vec<String>) -> Vec<Material> {
 
     let mut mats = Vec::with_capacity(sorted_names.len());
     for name in sorted_names {
-        info!("Loading mat: {}", name);
-
         let path = dir.join(format!("{}.json", name));
-        mats.push(Material::load(&path));
+        info!("Loading mat from file: {}", path.display());
+
+        let mat = Material::load(&path);
+        if mat.id() != name {
+            warn!("Material id {} differs from name {}", mat.id(), name);
+        }
+
+        mats.push(mat);
     }
 
     mats
