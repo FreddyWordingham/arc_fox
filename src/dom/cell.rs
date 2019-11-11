@@ -24,12 +24,13 @@ impl<'a> Cell<'a> {
     /// Construct a new instance.
     #[pre(!ents.is_empty())]
     pub fn new(dom: &Aabb, ents: &'a Vec<Entity>, aabb: Aabb) -> Self {
+        let det_box = aabb.loosen(0.01);
         let mut ent_tris = Vec::new();
         for ent in ents {
-            if ent.mesh().overlap(&aabb) {
+            if ent.mesh().overlap(&det_box) {
                 let mut list = Vec::new();
                 for tri in ent.mesh().tris() {
-                    if tri.overlap(&aabb) {
+                    if tri.overlap(&det_box) {
                         list.push(tri);
                     }
                 }
@@ -43,7 +44,7 @@ impl<'a> Cell<'a> {
         let mat = if ent_tris.is_empty() {
             mat_at_pos_from_list(aabb.centre(), &dom, ents)
         } else {
-            mat_at_pos_from_sublist(aabb.centre(), &dom, ents, &aabb, &ent_tris)
+            mat_at_pos_from_sublist(aabb.centre(), &dom, ents, &det_box, &ent_tris)
         };
 
         Self {
