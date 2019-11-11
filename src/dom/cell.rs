@@ -4,7 +4,7 @@ use super::SIGMA;
 use crate::{
     data::Record,
     geom::{Aabb, Collision, Triangle},
-    world::Entity,
+    world::{mat_at_pos_from_list, mat_at_pos_from_sublist, Entity, Material},
 };
 use contracts::pre;
 
@@ -17,12 +17,14 @@ pub struct Cell<'a> {
     rec: Record,
     /// Intersecting entity triangles.
     ent_tris: Vec<(&'a Entity<'a>, Vec<&'a Triangle>)>,
+    /// Central material.
+    mat: &'a Material,
 }
 
 impl<'a> Cell<'a> {
     /// Construct a new instance.
     #[pre(!ents.is_empty())]
-    pub fn new(ents: &'a Vec<Entity>, aabb: Aabb) -> Self {
+    pub fn new(dom: &Aabb, ents: &'a Vec<Entity>, aabb: Aabb) -> Self {
         let mut ent_tris = Vec::new();
         let detection_box = aabb.loosen(SIGMA);
         for ent in ents {
@@ -40,10 +42,17 @@ impl<'a> Cell<'a> {
             }
         }
 
+        let mat = if ent_tris.is_empty() {
+            mat_at_pos_from_list(aabb.centre(), &dom, ents)
+        } else {
+            mat_at_pos_from_sublist(aabb.centre(), &aabb, &ent_tris)
+        };
+
         Self {
             aabb,
             rec: Record::new(),
             ent_tris,
+            mat,
         }
     }
 

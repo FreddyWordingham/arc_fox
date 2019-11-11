@@ -37,7 +37,7 @@ impl<'a> Grid<'a> {
                 );
             let maxs = mins + cell_size;
 
-            cells.push(Cell::new(ents, Aabb::new(mins, maxs)));
+            cells.push(Cell::new(&aabb, ents, Aabb::new(mins, maxs)));
         }
         bar.finish_with_message(&format!("{} cells constructed.", res.total()));
 
