@@ -12,7 +12,7 @@ use contracts::pre;
 #[derive(Clone)]
 pub struct Resolution {
     /// Number of indices in each dimension.
-    arr: [usize; 3],
+    pub arr: [usize; 3],
 }
 
 impl Resolution {
@@ -21,11 +21,6 @@ impl Resolution {
     #[pre(zi > 0)]
     pub fn new(xi: usize, yi: usize, zi: usize) -> Self {
         Self { arr: [xi, yi, zi] }
-    }
-
-    /// Reference the internal array of indices.
-    pub fn arr(&self) -> &[usize; 3] {
-        &self.arr
     }
 
     /// Get the total number of indices.

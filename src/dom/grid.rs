@@ -20,7 +20,7 @@ impl<'a> Grid<'a> {
     #[pre(!ents.is_empty())]
     pub fn new(aabb: Aabb, res: Resolution, ents: &'a Vec<Entity>) -> Self {
         let mut cell_size = aabb.widths();
-        for (bw, n) in cell_size.iter_mut().zip(res.arr()) {
+        for (bw, n) in cell_size.iter_mut().zip(res.arr.iter()) {
             *bw /= *n as f64;
         }
 
@@ -41,7 +41,7 @@ impl<'a> Grid<'a> {
         }
         bar.finish_with_message(&format!("{} cells constructed.", res.total()));
 
-        let cells = Array3::from_shape_vec(*res.arr(), cells).unwrap();
+        let cells = Array3::from_shape_vec(res.arr, cells).unwrap();
 
         Self { aabb, cells }
     }

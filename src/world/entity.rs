@@ -58,13 +58,9 @@ impl<'a> Identity for Entity<'a> {
     }
 }
 
-#[pre(aabb.contains(&p))]
+#[pre(dom.contains(&p))]
 #[pre(!ents.is_empty())]
-pub fn mat_at_pos_from_list<'a>(
-    p: Point3<f64>,
-    aabb: &Aabb,
-    ents: &'a Vec<Entity>,
-) -> &'a Material {
+pub fn mat_at_pos_from_list<'a>(p: Point3<f64>, dom: &Aabb, ents: &'a Vec<Entity>) -> &'a Material {
     let n: i32 = 7;
     let mut power = 2;
     loop {
@@ -80,9 +76,9 @@ pub fn mat_at_pos_from_list<'a>(
 
             if let Some((dist, norm, ent)) = nearest {
                 if dist
-                    <= aabb
+                    <= dom
                         .dist(&ray)
-                        .expect("Failed to determine internal aabb distance.")
+                        .expect("Failed to determine internal dom distance.")
                 {
                     if norm.dot(&ray.dir) > 0.0 {
                         return ent.in_mat();
@@ -112,10 +108,14 @@ pub fn mat_at_pos_from_list<'a>(
     );
 }
 
+#[pre(dom.contains(&p))]
+#[pre(!ents.is_empty())]
 #[pre(aabb.contains(&p))]
 #[pre(!ent_tris.is_empty())]
 pub fn mat_at_pos_from_sublist<'a>(
     p: Point3<f64>,
+    dom: &Aabb,
+    ents: &'a Vec<Entity>,
     aabb: &Aabb,
     ent_tris: &Vec<(&'a Entity, Vec<&Triangle>)>,
 ) -> &'a Material {
@@ -162,8 +162,6 @@ pub fn mat_at_pos_from_sublist<'a>(
         }
     }
 
-    panic!(
-        "Unable to observe a material from given point after {} samples.",
-        (2 * n.pow(power)) + 1
-    );
+    warn!("Falling back on world-cast.");
+    mat_at_pos_from_list(p, dom, ents)
 }

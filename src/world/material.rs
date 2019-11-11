@@ -4,7 +4,7 @@ use super::Identity;
 use crate::{
     file::{as_json, from_json, Loadable, Saveable},
     math::Formula,
-    opt::{Environment, Photon},
+    opt::Environment,
     util::Range,
 };
 use contracts::{post, pre};
@@ -85,10 +85,8 @@ impl Material {
     }
 
     /// Get the optical environment for a given wavelength.
-    #[pre(self.range.contains(phot.wavelength()))]
-    pub fn env(&self, phot: &Photon) -> Environment {
-        let w = phot.wavelength();
-
+    #[pre(self.range.contains(w))]
+    pub fn env(&self, w: f64) -> Environment {
         Environment::new(
             self.ref_index.res(w),
             self.scat_coeff.res(w),

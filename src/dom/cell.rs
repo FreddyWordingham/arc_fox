@@ -1,6 +1,5 @@
 //! Cell structure.
 
-use super::SIGMA;
 use crate::{
     data::Record,
     geom::{Aabb, Collision, Triangle},
@@ -26,12 +25,11 @@ impl<'a> Cell<'a> {
     #[pre(!ents.is_empty())]
     pub fn new(dom: &Aabb, ents: &'a Vec<Entity>, aabb: Aabb) -> Self {
         let mut ent_tris = Vec::new();
-        let detection_box = aabb.loosen(SIGMA);
         for ent in ents {
-            if ent.mesh().overlap(&detection_box) {
+            if ent.mesh().overlap(&aabb) {
                 let mut list = Vec::new();
                 for tri in ent.mesh().tris() {
-                    if tri.overlap(&detection_box) {
+                    if tri.overlap(&aabb) {
                         list.push(tri);
                     }
                 }
@@ -45,7 +43,7 @@ impl<'a> Cell<'a> {
         let mat = if ent_tris.is_empty() {
             mat_at_pos_from_list(aabb.centre(), &dom, ents)
         } else {
-            mat_at_pos_from_sublist(aabb.centre(), &aabb, &ent_tris)
+            mat_at_pos_from_sublist(aabb.centre(), &dom, ents, &aabb, &ent_tris)
         };
 
         Self {
@@ -54,6 +52,11 @@ impl<'a> Cell<'a> {
             ent_tris,
             mat,
         }
+    }
+
+    /// Reference the central material.
+    pub fn mat(&self) -> &Material {
+        &self.mat
     }
 
     /// Add a record to this cell's record.

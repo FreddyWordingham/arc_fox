@@ -2,10 +2,17 @@
 //! Creates a data cube mapping materials within a volume.
 
 use arc::{
-    args, geom::Aabb, index::Resolution, init::io_dirs, print, report, util::bin_name,
-    world::Universe,
+    args,
+    file::Saveable,
+    geom::Aabb,
+    index::Resolution,
+    init::io_dirs,
+    print, report,
+    util::bin_name,
+    world::{Identity, Universe},
 };
 use nalgebra::{Point3, Similarity3, Translation3, UnitQuaternion, Vector3};
+use ndarray::Array3;
 
 fn main() {
     title();
@@ -19,11 +26,13 @@ fn main() {
 
     print::section("Initialisation");
     let n = 25;
+    let l = 1.0125;
+    let res = Resolution::new(n, n, n);
     let uni = Universe::new(
-        Aabb::new_centred(&Point3::origin(), &Vector3::new(1.0, 1.0, 1.0)),
-        Resolution::new(n, n, n),
+        Aabb::new_centred(&Point3::origin(), &Vector3::new(l, l, l)),
+        res.clone(),
         vec![
-            // ("torus", "torus", None, "fog", "air"),
+            ("torus", "torus", None, "fog", "air"),
             (
                 "upper-plane",
                 "plane",
@@ -35,26 +44,40 @@ fn main() {
                 "air",
                 "fog",
             ),
-            // (
-            //     "lower-plane",
-            //     "plane",
-            //     Some(Similarity3::from_parts(
-            //         Translation3::new(0.0, 0.0, -0.75),
-            //         UnitQuaternion::from_euler_angles(0.0, 0.0, 0.0),
-            //         1.0,
-            //     )),
-            //     "air",
-            //     "fog",
-            // ),
+            (
+                "lower-plane",
+                "plane",
+                Some(Similarity3::from_parts(
+                    Translation3::new(0.0, 0.0, -0.75),
+                    UnitQuaternion::from_euler_angles(0.0, 0.0, 0.0),
+                    1.0,
+                )),
+                "fog",
+                "air",
+            ),
         ],
     );
 
     print::section("Simulation");
 
     print::section("Post-Processing");
+    let mut vals = Vec::with_capacity(res.total());
+    for index in res.iter() {
+        match uni.grid().cells()[index.arr].mat().id() {
+            "air" => {
+                vals.push(1.0);
+            }
+            "fog" => {
+                vals.push(2.0);
+            }
+            _ => unreachable!("Can't get here..."),
+        }
+    }
+    let map = Array3::from_shape_vec(res.arr, vals).unwrap();
 
     print::section("Output");
     report!(out_dir.display(), "Output dir");
+    map.save(&out_dir.join("map.nc"));
 
     print::section("End");
 }

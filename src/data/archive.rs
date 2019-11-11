@@ -15,7 +15,7 @@ impl Archive {
     /// Construct a new instance.
     pub fn new(res: Resolution) -> Self {
         Self {
-            recs: Array3::from_elem(*res.arr(), Record::new()),
+            recs: Array3::from_elem(res.arr, Record::new()),
         }
     }
 }

@@ -39,4 +39,9 @@ impl<'a> Universe<'a> {
         }))
         .expect("Could not create universe instance.")
     }
+
+    /// Reference the grid.
+    pub fn grid(&self) -> &'a Grid {
+        &self.grid
+    }
 }
