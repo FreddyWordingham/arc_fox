@@ -1,10 +1,12 @@
 //! Cell structure.
 
+use super::SIGMA;
 use crate::{
     data::Record,
     geom::{Aabb, Collision, Triangle},
     world::Entity,
 };
+use contracts::pre;
 
 /// Single domain cell.
 pub struct Cell<'a> {
@@ -18,13 +20,15 @@ pub struct Cell<'a> {
 
 impl<'a> Cell<'a> {
     /// Construct a new instance.
-    pub fn new(aabb: Aabb, ents: &'a Vec<Entity>) -> Self {
+    #[pre(!ents.is_empty())]
+    pub fn new(ents: &'a Vec<Entity>, aabb: Aabb) -> Self {
         let mut ent_tris = Vec::new();
+        let detection_box = aabb.loosen(SIGMA);
         for ent in ents {
-            if ent.mesh().overlap(&aabb) {
+            if ent.mesh().overlap(&detection_box) {
                 let mut list = Vec::new();
                 for tri in ent.mesh().tris() {
-                    if tri.overlap(&aabb) {
+                    if tri.overlap(&detection_box) {
                         list.push(tri);
                     }
                 }
