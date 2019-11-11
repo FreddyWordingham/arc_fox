@@ -6,6 +6,8 @@ use crate::geom::Mesh;
 /// World entity structure.
 /// Binds a material to a shape.
 pub struct Entity<'a> {
+    /// Id string.
+    id: String,
     /// Surface mesh.
     mesh: Mesh,
     /// Inside material.
@@ -16,8 +18,10 @@ pub struct Entity<'a> {
 
 impl<'a> Entity<'a> {
     /// Construct a new instance.
-    pub fn new(mesh: Mesh, in_mat: &'a Material, out_mat: &'a Material) -> Self {
+    #[pre(!id.is_empty())]
+    pub fn new(id: String, mesh: Mesh, in_mat: &'a Material, out_mat: &'a Material) -> Self {
         Self {
+            id,
             mesh,
             in_mat,
             out_mat,
