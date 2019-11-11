@@ -37,6 +37,11 @@ fn main() {
         0.75,
     ));
 
+    let _mats = arc::world::load::mats(
+        &arc::dir::res::materials(),
+        vec!["air".to_string(), "fog".to_string()],
+    );
+
     print::section("Simulation");
     let intersection = intersect_test(1, &res, &dom, &geom);
 
