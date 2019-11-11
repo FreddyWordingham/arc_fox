@@ -1,15 +1,15 @@
 //! Light structure.
 
-use crate::{opt::Photon, rng::Distribution, rt::Emitter};
+use crate::{opt::Photon, rt::Emitter};
 use contracts::pre;
 use rand::rngs::ThreadRng;
 
 /// Photon emission structure.
 pub struct Light {
     /// Emission surface.
-    emit: Emitter,
-    /// Wavelength distribution.
-    dist: Distribution,
+    emit: Box<dyn Emitter>,
+    /// Emission wavelength.
+    wavelength: f64,
     /// Power. [J/s]
     power: f64,
 }
@@ -17,8 +17,13 @@ pub struct Light {
 impl Light {
     /// Construct a new instance.
     #[pre(power > 0.0)]
-    pub fn new(emit: Emitter, dist: Distribution, power: f64) -> Self {
-        Self { emit, dist, power }
+    #[pre(wavelength > 0.0)]
+    pub fn new(emit: Box<dyn Emitter>, wavelength: f64, power: f64) -> Self {
+        Self {
+            emit,
+            wavelength,
+            power,
+        }
     }
 
     /// Emit a new photon.
@@ -27,7 +32,7 @@ impl Light {
         Photon::new(
             self.emit.emit(rng),
             self.power / total_phot as f64,
-            self.dist.gen(rng),
+            self.wavelength,
         )
     }
 }

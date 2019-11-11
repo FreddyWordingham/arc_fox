@@ -1,9 +1,5 @@
 //! Random number generation functions traits.
 
-pub mod sample;
-
-pub use self::sample::*;
-
 use contracts::pre;
 use rand::{rngs::ThreadRng, Rng};
 use std::f64::consts::PI;
