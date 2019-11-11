@@ -45,4 +45,9 @@ impl<'a> Cell<'a> {
             ent_tris,
         }
     }
+
+    /// Add a record to this cell's record.
+    pub fn add_record(&mut self, rec: &Record) {
+        self.rec += rec;
+    }
 }

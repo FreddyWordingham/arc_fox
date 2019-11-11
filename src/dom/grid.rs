@@ -1,7 +1,7 @@
 //! Grid structure.
 
 use super::Cell;
-use crate::{geom::Aabb, index::Resolution, util::progress::bar, world::Entity};
+use crate::{data::Archive, geom::Aabb, index::Resolution, util::progress::bar, world::Entity};
 use contracts::pre;
 use nalgebra::Vector3;
 use ndarray::Array3;
@@ -10,8 +10,6 @@ use ndarray::Array3;
 pub struct Grid<'a> {
     /// Boundary.
     aabb: Aabb,
-    /// Resolution.
-    res: Resolution,
     /// Cells.
     cells: Array3<Cell<'a>>,
 }
@@ -44,12 +42,7 @@ impl<'a> Grid<'a> {
 
         let cells = Array3::from_shape_vec(*res.arr(), cells).unwrap();
 
-        Self { res, aabb, cells }
-    }
-
-    /// Reference the resolution.
-    pub fn res(&self) -> &Resolution {
-        &self.res
+        Self { aabb, cells }
     }
 
     /// Reference the boundary.
@@ -60,5 +53,13 @@ impl<'a> Grid<'a> {
     /// Reference the cells.
     pub fn cells(&self) -> &Array3<Cell<'a>> {
         &self.cells
+    }
+
+    /// Add an archive into the cells.
+    #[pre(self.cells.shape() == archive.recs.shape())]
+    pub fn add_archive(&mut self, archive: Archive) {
+        for (cell, rec) in self.cells.iter_mut().zip(archive.recs.iter()) {
+            cell.add_record(rec);
+        }
     }
 }
