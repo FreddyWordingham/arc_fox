@@ -1,5 +1,6 @@
 //! Material structure.
 
+use super::Identity;
 use crate::{
     file::{as_json, from_json, Loadable, Saveable},
     math::Formula,
@@ -53,12 +54,6 @@ impl Material {
         }
     }
 
-    /// Reference the id.
-    #[post(!ret.is_empty())]
-    pub fn id(&self) -> &str {
-        &self.id
-    }
-
     /// Get the refractive index at the given wavelength.
     #[pre(self.range.contains(w))]
     pub fn ref_index(&self, w: f64) -> f64 {
@@ -101,6 +96,13 @@ impl Material {
             self.shift_coeff.res(w),
             self.asym.res(w),
         )
+    }
+}
+
+impl Identity for Material {
+    #[post(!ret.is_empty())]
+    fn id(&self) -> &str {
+        &self.id
     }
 }
 

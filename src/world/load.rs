@@ -1,6 +1,6 @@
 //! World loading functions.
 
-use super::{Entity, Material};
+use super::{find_by_id, Entity, Identity, Material};
 use crate::{
     file::Loadable,
     geom::{Mesh, Transform},
@@ -62,8 +62,8 @@ pub fn ents<'a>(
             mesh.transform(&trans);
         }
 
-        let in_mat = ref_mat_id(mats, in_mat_id);
-        let out_mat = ref_mat_id(mats, out_mat_id);
+        let in_mat = find_by_id(mats, in_mat_id);
+        let out_mat = find_by_id(mats, out_mat_id);
 
         ents.push(Entity::new(id.to_string(), mesh, in_mat, out_mat))
     }
