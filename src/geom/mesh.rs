@@ -3,10 +3,12 @@
 use super::{Aabb, Collision, Transform, Triangle};
 use crate::{
     dim::Greek::Alpha,
+    file::Loadable,
     rt::{Ray, Traceable},
 };
 use contracts::pre;
 use nalgebra::{Similarity3, Unit, Vector3};
+use std::path::Path;
 
 /// Triangle mesh surface.
 pub struct Mesh {
@@ -115,5 +117,11 @@ impl Traceable for Mesh {
             .filter(|dist| dist.is_some())
             .map(|o| o.unwrap())
             .min_by(|a, b| a.0.partial_cmp(&b.0).unwrap())
+    }
+}
+
+impl Loadable for Mesh {
+    fn load(path: &Path) -> Self {
+        Mesh::new(Vec::load(path))
     }
 }

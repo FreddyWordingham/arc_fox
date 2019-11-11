@@ -30,15 +30,12 @@ fn main() {
     let n = 25;
     let res = Resolution::new(n, n, n);
     let dom = Aabb::new_centred(&Point3::origin(), &Vector3::new(1.5, 1.5, 1.5));
-    let tris = Vec::load(&arc::dir::res::meshes().join("torus.obj"));
-    let mut geom = Mesh::new(tris);
-
-    let t = Similarity3::from_parts(
+    let mut geom = Mesh::load(&arc::dir::res::meshes().join("torus.obj"));
+    geom.trans(&Similarity3::from_parts(
         Translation3::new(0.0, 0.0, 1.0),
         UnitQuaternion::from_euler_angles(0.0, std::f64::consts::FRAC_PI_4, 0.0),
         0.75,
-    );
-    geom.trans(&t);
+    ));
 
     print::section("Simulation");
     let intersection = intersect_test(1, &res, &dom, &geom);
