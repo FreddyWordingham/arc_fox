@@ -2,12 +2,12 @@
 
 use super::{Identity, Material};
 use crate::{
-    geom::{Aabb, Collision, Mesh, Triangle},
+    geom::{Aabb, Mesh, Triangle},
     rt::{Ray, Traceable},
 };
 use contracts::{post, pre};
 use log::warn;
-use nalgebra::{Point3, Unit, Vector3};
+use nalgebra::Point3;
 
 /// World entity structure.
 /// Binds a material to a shape.
@@ -63,7 +63,7 @@ impl<'a> Identity for Entity<'a> {
 pub fn mat_at_pos_from_list<'a>(
     p: Point3<f64>,
     aabb: &Aabb,
-    ents: &'a Vec<Entity<'a>>,
+    ents: &'a Vec<Entity>,
 ) -> &'a Material {
     let n: i32 = 7;
     let mut power = 2;
@@ -117,6 +117,53 @@ pub fn mat_at_pos_from_list<'a>(
 pub fn mat_at_pos_from_sublist<'a>(
     p: Point3<f64>,
     aabb: &Aabb,
-    ent_tris: &Vec<(&Entity<'a>, Vec<&Triangle>)>,
+    ent_tris: &Vec<(&'a Entity, Vec<&Triangle>)>,
 ) -> &'a Material {
+    let n: i32 = 7;
+    let mut power = 2;
+    loop {
+        for i in -n.pow(power)..=n.pow(power) {
+            let ray = Ray::new_fibonacci_spiral(p, i, n.pow(power));
+
+            let mut nearest = None;
+            for (ent, tris) in ent_tris.iter() {
+                for tri in tris.iter() {
+                    if let Some((dist, norm)) = tri.dist_norm(&ray) {
+                        nearest = Some((dist, norm, ent));
+                    }
+                }
+            }
+
+            if let Some((dist, norm, ent)) = nearest {
+                if dist
+                    <= aabb
+                        .dist(&ray)
+                        .expect("Failed to determine internal aabb distance.")
+                {
+                    if norm.dot(&ray.dir) > 0.0 {
+                        return ent.in_mat();
+                    }
+
+                    return ent.out_mat();
+                }
+            }
+        }
+
+        if power < 4 {
+            warn!(
+                "Increasing ray-casting power to {} ({} rays)",
+                power,
+                (2 * n.pow(power)) + 1
+            );
+
+            power += 1;
+        } else {
+            break;
+        }
+    }
+
+    panic!(
+        "Unable to observe a material from given point after {} samples.",
+        (2 * n.pow(power)) + 1
+    );
 }

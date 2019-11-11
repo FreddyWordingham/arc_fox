@@ -23,7 +23,7 @@ fn main() {
         Aabb::new_centred(&Point3::origin(), &Vector3::new(1.0, 1.0, 1.0)),
         Resolution::new(n, n, n),
         vec![
-            ("torus", "torus", None, "fog", "air"),
+            // ("torus", "torus", None, "fog", "air"),
             (
                 "upper-plane",
                 "plane",
@@ -35,17 +35,17 @@ fn main() {
                 "air",
                 "fog",
             ),
-            (
-                "lower-plane",
-                "plane",
-                Some(Similarity3::from_parts(
-                    Translation3::new(0.0, 0.0, -0.75),
-                    UnitQuaternion::from_euler_angles(0.0, 0.0, 0.0),
-                    1.0,
-                )),
-                "air",
-                "fog",
-            ),
+            // (
+            //     "lower-plane",
+            //     "plane",
+            //     Some(Similarity3::from_parts(
+            //         Translation3::new(0.0, 0.0, -0.75),
+            //         UnitQuaternion::from_euler_angles(0.0, 0.0, 0.0),
+            //         1.0,
+            //     )),
+            //     "air",
+            //     "fog",
+            // ),
         ],
     );
 
