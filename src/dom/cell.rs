@@ -1,5 +1,6 @@
 //! Cell structure.
 
+use super::SIGMA;
 use crate::{
     data::Record,
     geom::{Aabb, Collision, Triangle},
@@ -24,7 +25,7 @@ impl<'a> Cell<'a> {
     /// Construct a new instance.
     #[pre(!ents.is_empty())]
     pub fn new(dom: &Aabb, ents: &'a Vec<Entity>, aabb: Aabb) -> Self {
-        let det_box = aabb.loosen(0.01);
+        let det_box = aabb.loosen(SIGMA);
         let mut ent_tris = Vec::new();
         for ent in ents {
             if ent.mesh().overlap(&det_box) {
