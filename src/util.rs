@@ -1,8 +1,10 @@
 //! Utility functions and structures.
 
 pub mod progress;
+pub mod range;
 pub mod sort_label;
 
+pub use self::range::*;
 pub use self::sort_label::*;
 
 use std::{env::args, path::Path};

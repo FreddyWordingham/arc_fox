@@ -1,10 +1,10 @@
 //! Material structure.
 
 use crate::{
-    dom::Range,
     file::{as_json, from_json, Loadable, Saveable},
     math::Formula,
     opt::{Environment, Photon},
+    util::Range,
 };
 use contracts::pre;
 use serde::{Deserialize, Serialize};

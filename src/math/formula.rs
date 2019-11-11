@@ -1,6 +1,6 @@
 //! Mathematical formula enumeration.
 
-use crate::dom::Range;
+use crate::util::Range;
 use serde::{Deserialize, Serialize};
 
 /// Mathematical formulae accepting a single scalar argument.
