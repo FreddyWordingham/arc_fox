@@ -48,7 +48,7 @@ pub fn mats(dir: &Path, names: Vec<String>) -> Vec<Material> {
 pub fn ents<'a>(
     dir: &Path,
     ent_info: Vec<(&str, &str, Option<Similarity3<f64>>, &str, &str)>,
-    mats: &Vec<Material>,
+    mats: &'a Vec<Material>,
 ) -> Vec<Entity<'a>> {
     let mut ents = Vec::new();
 
@@ -65,18 +65,8 @@ pub fn ents<'a>(
         let in_mat = ref_mat_id(mats, in_mat_id);
         let out_mat = ref_mat_id(mats, out_mat_id);
 
-        ents.push(Entity::new(id, mesh, in_mat, out_mat))
+        ents.push(Entity::new(id.to_string(), mesh, in_mat, out_mat))
     }
 
     ents
-}
-
-pub fn ref_mat_id<'a>(mats: &'a Vec<Material>, id: &str) -> &'a Material {
-    for mat in mats {
-        if mat.id() == id {
-            return mat;
-        }
-    }
-
-    unreachable!("Material id {} missing.", id);
 }

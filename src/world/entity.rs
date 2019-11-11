@@ -1,7 +1,8 @@
 //! World entity structure.
 
-use super::Material;
+use super::{Material, Tag};
 use crate::geom::Mesh;
+use contracts::pre;
 
 /// World entity structure.
 /// Binds a material to a shape.
@@ -41,5 +42,11 @@ impl<'a> Entity<'a> {
     /// Reference the outside material.
     pub fn out_mat(&self) -> &Material {
         &self.out_mat
+    }
+}
+
+impl<'a> Tag for Entity<'a> {
+    fn id(&self) -> &str {
+        &self.id
     }
 }
