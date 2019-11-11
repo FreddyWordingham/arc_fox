@@ -33,38 +33,38 @@ fn main() {
         res.clone(),
         vec![
             (
-                "plane",
-                "plane",
+                "torus",
+                "torus",
                 Some(Similarity3::from_parts(
-                    Translation3::new(0.0, 0.0, 0.15),
+                    Translation3::new(0.0, 0.0, 0.0),
                     UnitQuaternion::from_euler_angles(0.0, 0.0, 0.0),
-                    1.75,
+                    0.75,
                 )),
                 "fog",
                 "air",
             ),
-            // (
-            //     "upper-plane",
-            //     "plane",
-            //     Some(Similarity3::from_parts(
-            //         Translation3::new(0.0, 0.0, 0.75),
-            //         UnitQuaternion::from_euler_angles(0.0, 0.0, 0.0),
-            //         1.0,
-            //     )),
-            //     "air",
-            //     "fog",
-            // ),
-            // (
-            //     "lower-plane",
-            //     "plane",
-            //     Some(Similarity3::from_parts(
-            //         Translation3::new(0.0, 0.0, -0.75),
-            //         UnitQuaternion::from_euler_angles(0.0, 0.0, 0.0),
-            //         1.0,
-            //     )),
-            //     "fog",
-            //     "air",
-            // ),
+            (
+                "upper-plane",
+                "plane",
+                Some(Similarity3::from_parts(
+                    Translation3::new(0.0, 0.0, 1.5),
+                    UnitQuaternion::from_euler_angles(0.0, 0.0, 0.0),
+                    2.5,
+                )),
+                "air",
+                "fog",
+            ),
+            (
+                "lower-plane",
+                "plane",
+                Some(Similarity3::from_parts(
+                    Translation3::new(0.0, 0.0, -1.5),
+                    UnitQuaternion::from_euler_angles(0.0, 0.0, 0.0),
+                    2.5,
+                )),
+                "fog",
+                "air",
+            ),
         ],
     );
 
