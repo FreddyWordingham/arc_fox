@@ -9,6 +9,7 @@ use crate::{
 use contracts::pre;
 
 /// Single domain cell.
+#[derive(Debug)]
 pub struct Cell<'a> {
     /// Boundary.
     aabb: Aabb,

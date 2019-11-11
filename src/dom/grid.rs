@@ -7,6 +7,7 @@ use nalgebra::Vector3;
 use ndarray::Array3;
 
 /// Domain cell grid.
+#[derive(Debug)]
 pub struct Grid<'a> {
     /// Boundary.
     aabb: Aabb,
@@ -17,7 +18,7 @@ pub struct Grid<'a> {
 impl<'a> Grid<'a> {
     /// Construct a new instance.
     #[pre(!ents.is_empty())]
-    pub fn new(ents: &'a Vec<Entity>, aabb: Aabb, res: Resolution) -> Self {
+    pub fn new(aabb: Aabb, res: Resolution, ents: &'a Vec<Entity>) -> Self {
         let mut cell_size = aabb.widths();
         for (bw, n) in cell_size.iter_mut().zip(res.arr()) {
             *bw /= *n as f64;

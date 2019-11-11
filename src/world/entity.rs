@@ -6,6 +6,7 @@ use contracts::{post, pre};
 
 /// World entity structure.
 /// Binds a material to a shape.
+#[derive(Debug)]
 pub struct Entity<'a> {
     /// Id string.
     id: String,

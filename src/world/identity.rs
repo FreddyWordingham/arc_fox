@@ -14,5 +14,5 @@ pub fn find_by_id<'a, T: Identity>(objs: &'a Vec<T>, id: &str) -> &'a T {
         }
     }
 
-    panic!("Could not find id: {}", id);
+    panic!("Could not find matching id for: {}", id);
 }

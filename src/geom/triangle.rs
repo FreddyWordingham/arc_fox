@@ -16,6 +16,7 @@ use std::{
 };
 
 /// Triangle geometry with normal interpolation.
+#[derive(Debug)]
 pub struct Triangle {
     /// Vertex points.
     verts: [Point3<f64>; 3],

@@ -12,7 +12,7 @@ use serde::{Deserialize, Serialize};
 use std::path::Path;
 
 /// Physical material structure.
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Material {
     /// Identification string.
     id: String,

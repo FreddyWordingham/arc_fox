@@ -11,6 +11,7 @@ use nalgebra::{Similarity3, Unit, Vector3};
 use std::path::Path;
 
 /// Triangle mesh surface.
+#[derive(Debug)]
 pub struct Mesh {
     /// List of component triangles.
     tris: Vec<Triangle>,
