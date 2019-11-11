@@ -180,4 +180,12 @@ impl Traceable for Aabb {
 
         Some(t_max.components())
     }
+
+    fn dist_inside(&self, ray: &Ray) -> Option<(f64, bool)> {
+        if let Some(dist) = self.dist(ray) {
+            return Some((dist, self.contains(&ray.pos)));
+        }
+
+        None
+    }
 }

@@ -7,7 +7,7 @@ use crate::{
 };
 use contracts::{post, pre};
 use log::warn;
-use nalgebra::Point3;
+use nalgebra::{Point3, Unit, Vector3};
 
 /// World entity structure.
 /// Binds a material to a shape.
@@ -67,10 +67,12 @@ pub fn mat_at_pos_from_list<'a>(p: Point3<f64>, dom: &Aabb, ents: &'a Vec<Entity
         for i in -n.pow(power)..=n.pow(power) {
             let ray = Ray::new_fibonacci_spiral(p, i, n.pow(power));
 
-            let mut nearest = None;
+            let mut nearest: Option<(f64, Unit<Vector3<f64>>, &Entity)> = None;
             for ent in ents.iter() {
                 if let Some((dist, norm)) = ent.mesh().dist_norm(&ray) {
-                    nearest = Some((dist, norm, ent));
+                    if nearest.is_none() || dist < nearest.unwrap().0 {
+                        nearest = Some((dist, norm, ent));
+                    }
                 }
             }
 
@@ -125,11 +127,13 @@ pub fn mat_at_pos_from_sublist<'a>(
         for i in -n.pow(power)..=n.pow(power) {
             let ray = Ray::new_fibonacci_spiral(p, i, n.pow(power));
 
-            let mut nearest = None;
+            let mut nearest: Option<(f64, Unit<Vector3<f64>>, &Entity)> = None;
             for (ent, tris) in ent_tris.iter() {
                 for tri in tris.iter() {
                     if let Some((dist, norm)) = tri.dist_norm(&ray) {
-                        nearest = Some((dist, norm, ent));
+                        if nearest.is_none() || dist < nearest.unwrap().0 {
+                            nearest = Some((dist, norm, ent));
+                        }
                     }
                 }
             }

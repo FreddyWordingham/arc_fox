@@ -42,11 +42,12 @@ impl<'a> Cell<'a> {
             }
         }
 
-        let mat = if ent_tris.is_empty() {
-            mat_at_pos_from_list(aabb.centre(), &dom, ents)
-        } else {
-            mat_at_pos_from_sublist(aabb.centre(), &dom, ents, &det_box, &ent_tris)
-        };
+        // let mat = if ent_tris.is_empty() {
+        //     mat_at_pos_from_list(aabb.centre(), &dom, ents)
+        // } else {
+        //     mat_at_pos_from_sublist(aabb.centre(), &dom, ents, &det_box, &ent_tris)
+        // };
+        let mat = mat_at_pos_from_list(aabb.centre(), &dom, ents);
 
         Self {
             aabb,
@@ -54,6 +55,11 @@ impl<'a> Cell<'a> {
             ent_tris,
             mat,
         }
+    }
+
+    /// Check if the cell contains intersecting triangles.
+    pub fn is_empty(&self) -> bool {
+        self.ent_tris.is_empty()
     }
 
     /// Reference the central material.

@@ -115,7 +115,20 @@ impl Traceable for Mesh {
         self.tris
             .iter()
             .map(|tri| tri.dist_norm(ray))
-            .filter(|dist| dist.is_some())
+            .filter(|dist_norm| dist_norm.is_some())
+            .map(|o| o.unwrap())
+            .min_by(|a, b| a.0.partial_cmp(&b.0).unwrap())
+    }
+
+    fn dist_inside(&self, ray: &Ray) -> Option<(f64, bool)> {
+        if !self.aabb.hit(ray) {
+            return None;
+        }
+
+        self.tris
+            .iter()
+            .map(|tri| tri.dist_inside(ray))
+            .filter(|dist_inside| dist_inside.is_some())
             .map(|o| o.unwrap())
             .min_by(|a, b| a.0.partial_cmp(&b.0).unwrap())
     }
