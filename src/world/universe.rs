@@ -4,6 +4,7 @@
 
 use super::{load, Entity, Material};
 use crate::{
+    data::Archive,
     dim::Cartesian::{X, Y, Z},
     dir::res,
     dom::Grid,
@@ -12,6 +13,7 @@ use crate::{
     index::Resolution,
 };
 use contracts::pre;
+use log::info;
 use nalgebra::{Point3, Similarity3, Vector3};
 use self_ref::self_referencing;
 use std::sync::Arc;
@@ -84,5 +86,11 @@ impl<'a> Universe<'a> {
     /// Reference the grid.
     pub fn grid(&self) -> &Grid<'a> {
         &self.grid
+    }
+
+    /// Add an archive into the grid cells.
+    pub fn add_archive(&mut self, archive: Archive) {
+        info!("Updating world archive...");
+        self.grid.add_archive(archive);
     }
 }

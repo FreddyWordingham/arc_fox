@@ -25,7 +25,7 @@ fn main() {
     let setup = Setup::load(&in_dir.join("setup.json"));
 
     print::section("Initialisation");
-    let uni = Universe::new_from_setup(setup);
+    let mut uni = Universe::new_from_setup(setup);
     let light = Light::new(
         Box::new((
             Point3::new(-0.1, -0.123, 0.241),
