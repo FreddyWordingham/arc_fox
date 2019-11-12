@@ -11,6 +11,8 @@ use ndarray::Array3;
 pub struct Grid<'a> {
     /// Boundary.
     aabb: Aabb,
+    /// Resolution.
+    res: Resolution,
     /// Cells.
     cells: Array3<Cell<'a>>,
 }
@@ -43,12 +45,17 @@ impl<'a> Grid<'a> {
 
         let cells = Array3::from_shape_vec(res.arr, cells).unwrap();
 
-        Self { aabb, cells }
+        Self { aabb, res, cells }
     }
 
     /// Reference the boundary.
     pub fn aabb(&self) -> &Aabb {
         &self.aabb
+    }
+
+    /// Reference the grid resolution.
+    pub fn res(&self) -> &Resolution {
+        &self.res
     }
 
     /// Reference the cells.

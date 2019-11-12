@@ -9,7 +9,7 @@ use contracts::pre;
 
 /// Three-dimensional resolution structure.
 /// Used by domain grids.
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct Resolution {
     /// Number of indices in each dimension.
     pub arr: [usize; 3],

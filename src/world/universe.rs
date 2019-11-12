@@ -1,5 +1,7 @@
 //! Universal information structure.
 
+#![allow(unused_variables)]
+
 use super::{load, Entity, Material};
 use crate::{dir::res, dom::Grid, geom::Aabb, index::Resolution};
 use contracts::pre;

@@ -6,6 +6,7 @@ pub mod saveable;
 pub use self::loadable::*;
 pub use self::saveable::*;
 
+/// Enable the structure to be serialised and de-serialised from a json file.
 #[macro_export]
 macro_rules! json {
     ($type:ident) => {
