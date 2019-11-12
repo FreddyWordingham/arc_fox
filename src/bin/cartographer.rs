@@ -3,7 +3,10 @@
 
 use arc::{
     args,
+    dim::Cartesian::{X, Y, Z},
+    file::Loadable,
     file::Saveable,
+    form::Setup,
     geom::Aabb,
     index::Resolution,
     init::io_dirs,
@@ -21,13 +24,25 @@ fn main() {
 
     print::section("Input");
     report!(in_dir.display(), "Input dir");
+    let setup = Setup::load(&in_dir.join("setup.json"));
+    // let setup = Setup::example();
+    // setup.save(&in_dir.join("setup.json"));
 
     print::section("Initialisation");
-    let n = 51;
-    let l = 2.0;
-    let res = Resolution::new(n, n, n);
+    let res = Resolution::new(
+        setup.resolution[X as usize],
+        setup.resolution[Y as usize],
+        setup.resolution[Z as usize],
+    );
     let uni = Universe::new(
-        Aabb::new_centred(&Point3::origin(), &Vector3::new(l, l, l)),
+        Aabb::new_centred(
+            &Point3::origin(),
+            &Vector3::new(
+                setup.half_widths[X as usize],
+                setup.half_widths[Y as usize],
+                setup.half_widths[Z as usize],
+            ),
+        ),
         res.clone(),
         vec![
             (
