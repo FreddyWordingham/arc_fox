@@ -1,12 +1,7 @@
 //! Material structure.
 
 use super::Identity;
-use crate::{
-    file::{as_json, from_json, Loadable, Saveable},
-    math::Formula,
-    opt::Environment,
-    util::Range,
-};
+use crate::{json, math::Formula, opt::Environment, util::Range};
 use contracts::{post, pre};
 use serde::{Deserialize, Serialize};
 use std::path::Path;
@@ -104,14 +99,4 @@ impl Identity for Material {
     }
 }
 
-impl Saveable for Material {
-    fn save(&self, path: &Path) {
-        as_json(self, path);
-    }
-}
-
-impl Loadable for Material {
-    fn load(path: &Path) -> Self {
-        from_json(path)
-    }
-}
+json!(Material);

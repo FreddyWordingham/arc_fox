@@ -2,6 +2,7 @@
 
 use super::{load, Entity, Material};
 use crate::{dir::res, dom::Grid, geom::Aabb, index::Resolution};
+use contracts::pre;
 use nalgebra::Similarity3;
 use self_ref::self_referencing;
 use std::sync::Arc;
@@ -19,6 +20,7 @@ pub struct Universe<'a> {
 
 impl<'a> Universe<'a> {
     /// Construct a new instance.
+    #[pre(!ent_info.is_empty())]
     pub fn new(
         dom: Aabb,
         res: Resolution,
@@ -38,6 +40,16 @@ impl<'a> Universe<'a> {
             grid = Grid::new(dom, res, &ents);
         }))
         .expect("Could not create universe instance.")
+    }
+
+    /// Reference the materials.
+    pub fn mats(&self) -> &Vec<Material> {
+        &self.mats
+    }
+
+    /// Reference the entities.
+    pub fn ents(&self) -> &Vec<Entity> {
+        &self.ents
     }
 
     /// Reference the grid.

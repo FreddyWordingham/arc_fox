@@ -12,6 +12,7 @@ pub mod dim;
 pub mod dir;
 pub mod dom;
 pub mod file;
+pub mod form;
 pub mod geom;
 pub mod index;
 pub mod init;

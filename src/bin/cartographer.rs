@@ -22,8 +22,6 @@ fn main() {
     print::section("Input");
     report!(in_dir.display(), "Input dir");
 
-    print::section("Setup");
-
     print::section("Initialisation");
     let n = 51;
     let l = 2.0;
@@ -40,7 +38,7 @@ fn main() {
                     UnitQuaternion::from_euler_angles(0.0, 0.0, 0.0),
                     0.75,
                 )),
-                "fog",
+                "thick_fog",
                 "air",
             ),
             (
@@ -68,9 +66,15 @@ fn main() {
         ],
     );
 
-    print::section("Simulation");
+    // let light = Light::new(
+    //     Box::new(
+    //         (Point3::origin(), Vector3::x_axis(), 45.0f64.to_radians())
+    //     ),
+    //     630.0e-9, // [m]
+    //     1.0 // [J/s]
+    //  );
 
-    print::section("Post-Processing");
+    print::section("Mapping");
     let mut intersections = Vec::with_capacity(res.total());
     let mut vals = Vec::with_capacity(res.total());
     for index in res.iter() {
@@ -82,14 +86,13 @@ fn main() {
             intersections.push(1.0);
         }
 
-        match cell.mat().id() {
-            "air" => {
-                vals.push(1.0);
+        let mut misses = 0;
+        for mat in uni.mats().iter() {
+            if cell.mat().id() == mat.id() {
+                vals.push(misses as f64);
+                break;
             }
-            "fog" => {
-                vals.push(2.0);
-            }
-            _ => unreachable!("Can't get here..."),
+            misses += 1;
         }
     }
     let map = Array3::from_shape_vec(res.arr, vals).unwrap();
