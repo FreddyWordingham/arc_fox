@@ -17,7 +17,7 @@ use ndarray::Array3;
 
 fn main() {
     title();
-    args!(_bin_path: String);
+    args!(_bin_path: String, total_phot: u64, num_threads: usize);
     let (in_dir, out_dir) = io_dirs(None, None);
 
     print::section("Input");
@@ -37,7 +37,7 @@ fn main() {
     );
 
     print::section("Simulation");
-    let mcrt_data = mcrt::run(1, 1_000, &light, &uni);
+    let mcrt_data = mcrt::run(num_threads, total_phot, &light, &uni);
     uni.add_archive(mcrt_data);
 
     print::section("Post-Processing");

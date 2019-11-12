@@ -13,7 +13,7 @@ use crate::{
 };
 use contracts::pre;
 use indicatif::ProgressBar;
-use log::info;
+use log::{info, warn};
 use rand::rngs::ThreadRng;
 use rand::{thread_rng, Rng};
 use rayon::prelude::*;
@@ -23,7 +23,7 @@ use std::{
 };
 
 /// Distance to bump over boundaries to prevent getting stuck.
-const BUMP_DIST: f64 = 1.0e-6;
+const BUMP_DIST: f64 = 1.0e-9;
 
 /// Run a MCRT simulation.
 #[pre(num_threads > 0)]
@@ -266,7 +266,7 @@ impl HitEvent {
             if let Some(ent_dist) = ent_dist {
                 if ent_dist < cell_dist {
                     if (ent_dist - cell_dist).abs() <= BUMP_DIST {
-                        panic!("Entity and cell on close approach!");
+                        warn!("Entity and cell on close approach!");
                     }
 
                     return Self::new_entity(ent_dist);
