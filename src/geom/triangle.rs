@@ -305,6 +305,53 @@ impl Traceable for Triangle {
             None
         };
     }
+
+    fn dist_norm_inside(&self, ray: &Ray) -> Option<(f64, Unit<Vector3<f64>>, bool)> {
+        let verts = self.verts;
+
+        let e1 = verts[Beta as usize] - verts[Alpha as usize];
+        let e2 = verts[Gamma as usize] - verts[Alpha as usize];
+
+        let h = ray.dir.cross(&e2);
+        let a = e1.dot(&h);
+
+        if a.abs() < EPSILON {
+            return None;
+        }
+
+        let f = 1.0 / a;
+        let s = ray.pos - verts[Alpha as usize];
+        let u = f * s.dot(&h);
+
+        if (u < 0.0) || (u > 1.0) {
+            return None;
+        }
+
+        let q = s.cross(&e1);
+        let v = f * ray.dir.dot(&q);
+
+        if (v < 0.0) || ((u + v) > 1.0) {
+            return None;
+        }
+
+        let dist = f * e2.dot(&q);
+
+        if dist < EPSILON {
+            return None;
+        }
+
+        let w = 1.0 - u - v;
+
+        Some((
+            dist,
+            Unit::new_normalize(
+                (self.norms[Beta as usize].into_inner() * u)
+                    + (self.norms[Gamma as usize].into_inner() * v)
+                    + (self.norms[Alpha as usize].into_inner() * w),
+            ),
+            self.plane_norm.dot(&ray.dir) > 0.0,
+        ))
+    }
 }
 
 impl Loadable for Vec<Triangle> {
