@@ -2,6 +2,7 @@
 
 use crate::{
     data::{Archive, Record},
+    dim::Cartesian::{X, Y, Z},
     dom::Cell,
     index::bin,
     opt::Photon,
@@ -22,7 +23,7 @@ use std::{
 };
 
 /// Distance to bump over boundaries to prevent getting stuck.
-const BUMP_DIST: f64 = 1.0e-9;
+const BUMP_DIST: f64 = 1.0e-6;
 
 /// Run a MCRT simulation.
 #[pre(num_threads > 0)]
@@ -102,6 +103,7 @@ fn iterate(
     false
 }
 
+/// Simulate the life of a single photon.
 fn run_photon(
     mut archive: &mut Archive,
     mut rng: &mut ThreadRng,
@@ -125,6 +127,7 @@ fn run_photon(
 
         match HitEvent::new(inter_dist, cell_dist, ent_info) {
             HitEvent::Scattering { dist } => {
+                // println!("Scattering");
                 cell_rec.1.increase_scatters(phot.weight());
 
                 phot.travel(dist);
@@ -143,6 +146,7 @@ fn run_photon(
                 }
             }
             HitEvent::Boundary { dist } => {
+                // println!("Boundary");
                 phot.travel(dist + BUMP_DIST);
                 cell_rec.1.increase_dist_travelled(dist + BUMP_DIST);
 
@@ -153,6 +157,7 @@ fn run_photon(
                 cell_rec = cell_and_record(&phot, uni, &mut archive);
             }
             HitEvent::Entity { dist: _ } => {
+                // println!("Entity");
                 let (dist, norm, ent) = cell_rec.0.ent_dist_norm_ent(phot.ray()).unwrap();
                 let inside = phot.ray().dir.dot(&norm) > 0.0;
 
@@ -189,6 +194,32 @@ fn cell_and_record<'a>(
     let index = bin::point3(&phot.ray().pos, uni.grid().aabb(), uni.grid().res());
 
     let ans = (&uni.grid().cells()[index], &mut archive.recs[index]);
+
+    if !ans.0.aabb().contains(&phot.ray().pos) {
+        // let aabb = ans.0.aabb();
+        let aabb = uni.grid().cells()[[1, 0, 0]].aabb();
+        println!(
+            "{}\t{}\t{}\t>\t{}\t{}\t{}",
+            aabb.mins().x,
+            aabb.mins().y,
+            aabb.mins().z,
+            aabb.maxs().x,
+            aabb.maxs().y,
+            aabb.maxs().z
+        );
+        println!(
+            "{}\t{}\t{}",
+            phot.ray().pos.x,
+            phot.ray().pos.y,
+            phot.ray().pos.z
+        );
+        println!(
+            "{}\t{}\t{}",
+            index[X as usize], index[Y as usize], index[Z as usize]
+        );
+
+        panic!("Not inside that Aabb!");
+    }
 
     ans
 }

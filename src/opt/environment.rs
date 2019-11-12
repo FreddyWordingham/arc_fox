@@ -27,7 +27,7 @@ impl Environment {
     #[post(ret.ref_index >= 1.0)]
     #[post(ret.inter_coeff > 0.0)]
     #[post(ret.albedo > 0.0)]
-    #[post(ret.albedo < 1.0)]
+    #[post(ret.albedo <= 1.0)]
     #[post(ret.shift_prob >= 0.0)]
     #[post(ret.shift_prob < 1.0)]
     #[post(ret.asym > -1.0)]

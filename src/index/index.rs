@@ -4,7 +4,7 @@ use crate::dim::Cartesian::{X, Y, Z};
 use std::fmt::{Display, Formatter, Result};
 
 /// Three-dimensional Index structure.
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct Index {
     /// Number of indices in each dimension.
     pub arr: [usize; 3],

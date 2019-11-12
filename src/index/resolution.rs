@@ -46,10 +46,10 @@ impl Resolution {
     /// Get the index corresponding to the n-th entry in the block.
     #[pre(n < self.total())]
     pub fn nth_index(&self, n: usize) -> Index {
-        let xi = n % self.arr[X as usize];
-        let yi = ((n - xi) / self.arr[X as usize]) % self.arr[Y as usize];
-        let zi =
-            (n - xi - (yi * self.arr[X as usize])) / (self.arr[X as usize] * self.arr[Y as usize]);
+        let zi = n % self.arr[X as usize];
+        let yi = ((n - zi) / self.arr[X as usize]) % self.arr[Y as usize];
+        let xi =
+            (n - zi - (yi * self.arr[X as usize])) / (self.arr[X as usize] * self.arr[Y as usize]);
 
         Index::new(xi, yi, zi)
     }
