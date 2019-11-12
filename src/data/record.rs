@@ -28,25 +28,25 @@ impl Record {
     }
 
     /// Get the number of recorded emissions.
-    #[post(ret > 0.0)]
+    #[post(ret >= 0.0)]
     pub fn emissions(&self) -> f64 {
         self.emissions
     }
 
     /// Get the number of recorded scatterings.
-    #[post(ret > 0.0)]
+    #[post(ret >= 0.0)]
     pub fn scatters(&self) -> f64 {
         self.scatters
     }
 
     /// Get the number of recorded absorptions.
-    #[post(ret > 0.0)]
+    #[post(ret >= 0.0)]
     pub fn absorptions(&self) -> f64 {
         self.absorptions
     }
 
     /// Get the distance travelled.
-    #[post(ret > 0.0)]
+    #[post(ret >= 0.0)]
     pub fn dist_travelled(&self) -> f64 {
         self.dist_travelled
     }
