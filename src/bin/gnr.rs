@@ -1,4 +1,4 @@
-//! MCRT test binary.
+//! Charlie's GNR investigation binary.
 
 use arc::{
     args,

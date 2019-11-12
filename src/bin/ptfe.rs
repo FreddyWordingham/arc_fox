@@ -1,4 +1,4 @@
-//! MCRT test binary.
+//! Laura's PTFE investigation binary.
 
 use arc::{
     args,
