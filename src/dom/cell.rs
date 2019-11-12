@@ -87,14 +87,14 @@ impl<'a> Cell<'a> {
     }
 
     /// Determine the distance to an entity contained within the cell.
-    pub fn ent_dist(&self, ray: &Ray) -> Option<(f64, &'a Entity<'a>)> {
-        let mut closest: Option<(f64, &'a Entity<'a>)> = None;
+    pub fn ent_dist(&self, ray: &Ray) -> Option<f64> {
+        let mut closest = None;
 
-        for (ent, tris) in self.ent_tris.iter() {
+        for (_ent, tris) in self.ent_tris.iter() {
             for tri in tris {
                 if let Some(dist) = tri.dist(ray) {
-                    if closest.is_none() || (dist < closest.unwrap().0) {
-                        closest = Some((dist, ent));
+                    if closest.is_none() || (dist < closest.unwrap()) {
+                        closest = Some(dist);
                     }
                 }
             }
@@ -104,7 +104,10 @@ impl<'a> Cell<'a> {
     }
 
     /// Determine the distance to an entity, and the corresponding collision normal, contained within the cell.
-    pub fn ent_dist_norm(&self, ray: &Ray) -> Option<(f64, Unit<Vector3<f64>>, &'a Entity<'a>)> {
+    pub fn ent_dist_norm_ent(
+        &self,
+        ray: &Ray,
+    ) -> Option<(f64, Unit<Vector3<f64>>, &'a Entity<'a>)> {
         let mut closest: Option<(f64, Unit<Vector3<f64>>, &'a Entity<'a>)> = None;
 
         for (ent, tris) in self.ent_tris.iter() {

@@ -153,11 +153,11 @@ fn run_photon(
                 cell_rec = cell_and_record(&phot, uni, &mut archive);
             }
             HitEvent::Entity { dist: _ } => {
-                let (ent, dist, norm) = cell_rec.0.ent_dist_norm(phot.ray()).unwrap();
+                let (dist, norm, ent) = cell_rec.0.ent_dist_norm_ent(phot.ray()).unwrap();
                 let inside = phot.ray().dir.dot(&norm) > 0.0;
 
                 let next_mat = if inside { ent.out_mat() } else { ent.in_mat() };
-                let next_env = next_mat.env(&phot);
+                let next_env = next_mat.env(phot.wavelength());
 
                 let n_curr = env.ref_index;
                 let n_next = next_env.ref_index;
