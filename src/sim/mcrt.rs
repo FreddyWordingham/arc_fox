@@ -158,8 +158,8 @@ fn run_photon(
             }
             HitEvent::Entity { dist: _ } => {
                 // println!("Entity");
-                let (dist, norm, ent) = cell_rec.0.ent_dist_norm_ent(phot.ray()).unwrap();
-                let inside = phot.ray().dir.dot(&norm) > 0.0;
+                let (dist, norm, inside, ent) =
+                    cell_rec.0.ent_dist_norm_inside_ent(phot.ray()).unwrap();
 
                 let next_mat = if inside { ent.out_mat() } else { ent.in_mat() };
                 let next_env = next_mat.env(phot.wavelength());

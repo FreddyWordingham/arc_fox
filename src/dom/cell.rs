@@ -127,6 +127,26 @@ impl<'a> Cell<'a> {
         closest
     }
 
+    /// Determine the distance to an entity, and the corresponding collision normal and if the photon is inside, contained within the cell.
+    pub fn ent_dist_norm_inside_ent(
+        &self,
+        ray: &Ray,
+    ) -> Option<(f64, Unit<Vector3<f64>>, bool, &'a Entity<'a>)> {
+        let mut closest: Option<(f64, Unit<Vector3<f64>>, bool, &'a Entity<'a>)> = None;
+
+        for (ent, tris) in self.ent_tris.iter() {
+            for tri in tris {
+                if let Some((dist, norm, inside)) = tri.dist_norm_inside(ray) {
+                    if closest.is_none() || (dist < closest.unwrap().0) {
+                        closest = Some((dist, norm, inside, ent));
+                    }
+                }
+            }
+        }
+
+        closest
+    }
+
     /// Add a record to this cell's record.
     pub fn add_record(&mut self, rec: &Record) {
         self.rec += rec;

@@ -23,6 +23,15 @@ pub trait Traceable {
         };
     }
 
+    /// Distance to the surface along the ray's line of travel, normal unit vector at the point of collision and side of collision;
+    fn dist_norm_inside(&self, ray: &Ray) -> Option<(f64, Unit<Vector3<f64>>, bool)> {
+        return if let Some((dist, norm)) = self.dist_norm(ray) {
+            Some((dist, norm, norm.dot(&ray.dir) > 0.0))
+        } else {
+            None
+        };
+    }
+
     /// Calculate the hit point of a ray.
     fn hit_point(&self, ray: &Ray) -> Option<Point3<f64>> {
         return if let Some(dist) = self.dist(ray) {
