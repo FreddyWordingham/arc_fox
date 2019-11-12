@@ -7,6 +7,7 @@ use arc::{
     form::Setup,
     init::io_dirs,
     print, report,
+    sim::mcrt,
     util::bin_name,
     world::{Light, Universe},
 };
@@ -30,7 +31,7 @@ fn main() {
     );
 
     print::section("Simulation");
-    let mcrt_data = 
+    let _mcrt_data = mcrt::run(4, 1_000_000, &light, &uni);
 
     print::section("Post-Processing");
 

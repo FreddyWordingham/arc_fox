@@ -7,7 +7,7 @@ use rand::{rngs::ThreadRng, Rng};
 use std::f64::consts::PI;
 
 /// Trait implemented by geometries which can be randomly sampled for rays.
-pub trait Emitter {
+pub trait Emitter: Sync {
     /// Emit a new ray.
     fn emit(&self, rng: &mut ThreadRng) -> Ray;
 }
