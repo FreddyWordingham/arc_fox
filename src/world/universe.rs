@@ -3,9 +3,16 @@
 #![allow(unused_variables)]
 
 use super::{load, Entity, Material};
-use crate::{dir::res, dom::Grid, geom::Aabb, index::Resolution};
+use crate::{
+    dim::Cartesian::{X, Y, Z},
+    dir::res,
+    dom::Grid,
+    form::Setup,
+    geom::Aabb,
+    index::Resolution,
+};
 use contracts::pre;
-use nalgebra::Similarity3;
+use nalgebra::{Point3, Similarity3, Vector3};
 use self_ref::self_referencing;
 use std::sync::Arc;
 
@@ -42,6 +49,26 @@ impl<'a> Universe<'a> {
             grid = Grid::new(dom, res, &ents);
         }))
         .expect("Could not create universe instance.")
+    }
+
+    /// Construct a new instance from a setup form struct.
+    pub fn new_from_setup(setup: Setup) -> Self {
+        Universe::new(
+            Aabb::new_centred(
+                &Point3::origin(),
+                &Vector3::new(
+                    setup.half_widths[X as usize],
+                    setup.half_widths[Y as usize],
+                    setup.half_widths[Z as usize],
+                ),
+            ),
+            Resolution::new(
+                setup.resolution[X as usize],
+                setup.resolution[Y as usize],
+                setup.resolution[Z as usize],
+            ),
+            setup.ent_info,
+        )
     }
 
     /// Reference the materials.

@@ -1,5 +1,5 @@
-//! Cartographer binary.
-//! Creates a data cube mapping materials within a volume.
+//! Monte-Carlo Radiative Transfer binary.
+//! Sets up and runs an MCRT simulation.
 
 use arc::{
     args,
@@ -12,6 +12,7 @@ use arc::{
     init::io_dirs,
     print, report,
     util::bin_name,
+    world::Light,
     world::{Identity, Universe},
 };
 use nalgebra::{Point3, Vector3};
@@ -46,35 +47,15 @@ fn main() {
         setup.ent_info,
     );
 
-    print::section("Mapping");
-    let res = uni.grid().res();
-    let mut intersections = Vec::with_capacity(res.total());
-    let mut vals = Vec::with_capacity(res.total());
-    for index in res.iter() {
-        let cell = &uni.grid().cells()[index.arr];
+    let light = Light::new(
+        Box::new((Point3::origin(), Vector3::x_axis(), 45.0f64.to_radians())),
+        630.0e-9, // [m]
+        1.0,      // [J/s]
+    );
 
-        if cell.is_empty() {
-            intersections.push(0.0);
-        } else {
-            intersections.push(1.0);
-        }
-
-        let mut misses = 0;
-        for mat in uni.mats().iter() {
-            if cell.mat().id() == mat.id() {
-                vals.push(misses as f64);
-                break;
-            }
-            misses += 1;
-        }
-    }
-    let map = Array3::from_shape_vec(res.arr, vals).unwrap();
-    let surf = Array3::from_shape_vec(res.arr, intersections).unwrap();
+    print::section("Post-Processing");
 
     print::section("Output");
-    report!(out_dir.display(), "Output dir");
-    map.save(&out_dir.join("map.nc"));
-    surf.save(&out_dir.join("surf.nc"));
 
     print::section("End");
 }
