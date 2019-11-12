@@ -3,18 +3,14 @@
 
 use arc::{
     args,
-    dim::Cartesian::{X, Y, Z},
     file::Loadable,
     file::Saveable,
     form::Setup,
-    geom::Aabb,
-    index::Resolution,
     init::io_dirs,
     print, report,
     util::bin_name,
     world::{Identity, Universe},
 };
-use nalgebra::{Point3, Vector3};
 use ndarray::Array3;
 
 fn main() {
@@ -29,22 +25,7 @@ fn main() {
     // setup.save(&in_dir.join("setup.json"));
 
     print::section("Initialisation");
-    let uni = Universe::new(
-        Aabb::new_centred(
-            &Point3::origin(),
-            &Vector3::new(
-                setup.half_widths[X as usize],
-                setup.half_widths[Y as usize],
-                setup.half_widths[Z as usize],
-            ),
-        ),
-        Resolution::new(
-            setup.resolution[X as usize],
-            setup.resolution[Y as usize],
-            setup.resolution[Z as usize],
-        ),
-        setup.ent_info,
-    );
+    let uni = Universe::new_from_setup(setup);
 
     print::section("Mapping");
     let res = uni.grid().res();
