@@ -19,7 +19,7 @@ pub struct Ray {
 
 impl Ray {
     /// Construct a new instance.
-    #[pre((dir.magnitude() - 1.0).abs() < 1.0e-9)]
+    #[pre((dir.magnitude() - 1.0).abs() < 1.0e-6)]
     pub fn new(pos: Point3<f64>, dir: Unit<Vector3<f64>>) -> Self {
         Self { pos, dir }
     }
@@ -48,7 +48,7 @@ impl Ray {
 
     /// Pitch towards the z-axis and then roll around previous direction.
     #[pre(self.dir.z.abs() != 1.0)]
-    #[post((self.dir.magnitude() - 1.0).abs() < 1.0e-9)]
+    #[post((self.dir.magnitude() - 1.0).abs() < 1.0e-6)]
     pub fn rotate(&mut self, pitch: f64, roll: f64) {
         let pitch_axis = Unit::new_normalize(self.dir.cross(&Vector3::z_axis()));
         let pitch_rot = Rotation3::from_axis_angle(&pitch_axis, pitch);
@@ -56,5 +56,6 @@ impl Ray {
         let roll_rot = Rotation3::from_axis_angle(&self.dir, roll);
 
         self.dir = roll_rot * pitch_rot * self.dir;
+        self.dir.renormalize();
     }
 }

@@ -38,7 +38,7 @@ impl Photon {
     }
 
     /// Reference the ray.
-    #[post((ret.dir.magnitude() - 1.0).abs() < 1.0e-9)]
+    #[post((ret.dir.magnitude() - 1.0).abs() < 1.0e-6)]
     pub fn ray(&self) -> &Ray {
         &self.ray
     }
@@ -67,14 +67,14 @@ impl Photon {
     #[pre(pitch < PI)]
     #[pre(pitch > 0.0)]
     #[pre(pitch < (2.0 * PI))]
-    #[post((self.ray.dir.magnitude() - 1.0).abs() < 1.0e-9)]
+    #[post((self.ray.dir.magnitude() - 1.0).abs() < 1.0e-6)]
     pub fn rotate(&mut self, pitch: f64, roll: f64) {
         self.ray.rotate(pitch, roll);
     }
 
     /// Set direction manually.
-    #[pre((dir.magnitude() - 1.0).abs() < 1.0e-9)]
-    #[post((self.ray.dir.magnitude() - 1.0).abs() < 1.0e-9)]
+    #[pre((dir.magnitude() - 1.0).abs() < 1.0e-6)]
+    #[post((self.ray.dir.magnitude() - 1.0).abs() < 1.0e-6)]
     pub fn set_dir(&mut self, dir: Unit<Vector3<f64>>) {
         self.ray.dir = dir;
     }

@@ -15,8 +15,8 @@ pub struct Gate {
 
 impl Gate {
     /// Construct a new object.
-    #[pre((inc.magnitude() - 1.0).abs() < 1.0e-9)]
-    #[pre((face_norm.magnitude() - 1.0).abs() < 1.0e-9)]
+    #[pre((inc.magnitude() - 1.0).abs() < 1.0e-6)]
+    #[pre((face_norm.magnitude() - 1.0).abs() < 1.0e-6)]
     #[pre(n_curr >= 1.0)]
     #[pre(n_next >= 1.0)]
     pub fn new(

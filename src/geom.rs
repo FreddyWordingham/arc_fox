@@ -13,4 +13,4 @@ pub use self::transform::*;
 pub use self::triangle::*;
 
 /// Parallel ray catch value.
-const EPSILON: f64 = 1.0e-9;
+const EPSILON: f64 = 1.0e-6;
