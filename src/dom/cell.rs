@@ -83,6 +83,10 @@ impl<'a> Cell<'a> {
     #[pre(self.aabb.contains(&p))]
     #[pre(!ents.is_empty())]
     pub fn mat_at_pos(&self, p: &Point3<f64>, dom: &Aabb, ents: &'a Vec<Entity>) -> &'a Material {
+        if self.ent_tris.is_empty() {
+            return self.mat;
+        }
+
         mat_at_pos_from_sublist(p.clone(), dom, ents, &self.aabb, &self.ent_tris)
     }
 

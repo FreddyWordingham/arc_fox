@@ -31,7 +31,7 @@ fn main() {
     );
 
     print::section("Simulation");
-    let _mcrt_data = mcrt::run(4, 1_000_000, &light, &uni);
+    let _mcrt_data = mcrt::run(1, 1_000, &light, &uni);
 
     print::section("Post-Processing");
 
