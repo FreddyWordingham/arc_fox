@@ -27,11 +27,7 @@ fn main() {
     print::section("Initialisation");
     let mut uni = Universe::new_from_setup(setup);
     let light = Light::new(
-        Box::new((
-            Point3::new(-0.1, -0.123, 0.241),
-            Vector3::x_axis(),
-            45.0f64.to_radians(),
-        )),
+        Box::new((Point3::origin(), Vector3::x_axis(), 45.0f64.to_radians())),
         630.0e-9, // [m]
         1.0,      // [J/s]
     );
