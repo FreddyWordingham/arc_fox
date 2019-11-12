@@ -3,7 +3,7 @@
 
 use arc::{
     args,
-    file::Loadable,
+    file::{Loadable, Saveable},
     form::Setup,
     init::io_dirs,
     print, report,
@@ -11,12 +11,14 @@ use arc::{
     util::bin_name,
     world::{Light, Universe},
 };
+use log::info;
 use nalgebra::{Point3, Vector3};
+use ndarray::Array3;
 
 fn main() {
     title();
     args!(_bin_path: String);
-    let (in_dir, _out_dir) = io_dirs(None, None);
+    let (in_dir, out_dir) = io_dirs(None, None);
 
     print::section("Input");
     report!(in_dir.display(), "Input dir");
@@ -35,11 +37,35 @@ fn main() {
     );
 
     print::section("Simulation");
-    let _mcrt_data = mcrt::run(1, 1_000, &light, &uni);
+    let mcrt_data = mcrt::run(1, 1_000, &light, &uni);
+    uni.add_archive(mcrt_data);
 
     print::section("Post-Processing");
+    info!("Creating record cube.");
+    let recs = uni.grid().cells().map(|c| c.rec());
+
+    info!("Creating emission data cube.");
+    let mut emissions = Vec::with_capacity(uni.grid().res().total());
+    let mut scatters = Vec::with_capacity(uni.grid().res().total());
+    let mut absorptions = Vec::with_capacity(uni.grid().res().total());
+    let mut dist_travelled = Vec::with_capacity(uni.grid().res().total());
+    for rec in recs.iter() {
+        emissions.push(rec.emissions());
+        scatters.push(rec.scatters());
+        absorptions.push(rec.absorptions());
+        dist_travelled.push(rec.absorptions());
+    }
+    let emissions = Array3::from_shape_vec(uni.grid().res().arr, emissions).unwrap();
+    let scatters = Array3::from_shape_vec(uni.grid().res().arr, scatters).unwrap();
+    let absorptions = Array3::from_shape_vec(uni.grid().res().arr, absorptions).unwrap();
+    let dist_travelled = Array3::from_shape_vec(uni.grid().res().arr, dist_travelled).unwrap();
 
     print::section("Output");
+    report!(out_dir.display(), "Output dir");
+    emissions.save(&out_dir.join("emissions.nc"));
+    scatters.save(&out_dir.join("scatters.nc"));
+    absorptions.save(&out_dir.join("absorptions.nc"));
+    dist_travelled.save(&out_dir.join("dist_travelled.nc"));
 
     print::section("End");
 }
