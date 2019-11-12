@@ -22,5 +22,6 @@ pub mod opt;
 pub mod print;
 pub mod rng;
 pub mod rt;
+pub mod sim;
 pub mod util;
 pub mod world;
