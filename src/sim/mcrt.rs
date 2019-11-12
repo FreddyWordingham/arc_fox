@@ -1,13 +1,18 @@
 //! Monte-carlo radiative transfer.
 
 use crate::{
-    data::Archive,
+    data::{Archive, Record},
+    dom::Cell,
+    index::bin,
+    opt::Photon,
     util::progress::bar,
     world::{Light, Universe},
 };
 use contracts::pre;
 use indicatif::ProgressBar;
 use log::info;
+use rand::rngs::ThreadRng;
+use rand::thread_rng;
 use rayon::prelude::*;
 use std::sync::{Arc, Mutex};
 
@@ -54,15 +59,67 @@ pub fn run(num_threads: usize, total_phot: u64, light: &Light, uni: &Universe) -
 
 /// Run a mcrt simulation behaving as a single thread.
 fn run_thread(
-    _thread_id: usize,
-    _total_phot: u64,
-    mut _num_phots: Arc<Mutex<Vec<u64>>>,
-    mut _bar: Arc<ProgressBar>,
-    _light: &Light,
+    thread_id: usize,
+    total_phot: u64,
+    mut num_phots: Arc<Mutex<Vec<u64>>>,
+    mut bar: Arc<ProgressBar>,
+    light: &Light,
     uni: &Universe,
 ) -> Archive {
     let res = uni.grid().res().clone();
-    let archive = Archive::new(res);
+    let mut archive = Archive::new(res);
+
+    let mut rng = thread_rng();
+
+    while iterate(&mut bar, thread_id, total_phot, &mut num_phots) {
+        run_photon(&mut archive, &mut rng, total_phot, light, uni);
+    }
 
     archive
+}
+
+/// Iterate the progress one increment if possible.
+fn iterate(
+    bar: &mut Arc<ProgressBar>,
+    thread_id: usize,
+    total_phot: u64,
+    num_phots: &mut Arc<Mutex<Vec<u64>>>,
+) -> bool {
+    let mut num_phots = num_phots.lock().unwrap();
+
+    let sum_phot: u64 = num_phots.iter().sum();
+    if sum_phot < total_phot {
+        bar.inc(1);
+        num_phots[thread_id] += 1;
+        return true;
+    }
+
+    false
+}
+
+fn run_photon(
+    archive: &mut Archive,
+    rng: &mut ThreadRng,
+    total_phot: u64,
+    light: &Light,
+    uni: &Universe,
+) {
+    let mut phot = light.emit(&mut rng, total_phot);
+    let mut cell_rec = cell_and_record(&phot, uni, &mut archive);
+    cell_rec.1.increase_emissions(phot.weight());
+    let mut env = cell_rec.0.mat_at_pos(&phot.ray().pos).env(&phot);
+    let mut shifted = false;
+}
+
+/// Retrieve a reference for the cell corresponding record a photon is located within.
+fn cell_and_record<'a>(
+    phot: &Photon,
+    uni: &'a Universe,
+    archive: &'a mut Archive,
+) -> (&'a Cell<'a>, &'a mut Record) {
+    let index = bin::point3(&phot.ray().pos, uni.grid().aabb(), uni.grid().res());
+
+    let ans = (&uni.grid().cells()[index], &mut archive.recs[index]);
+
+    ans
 }
