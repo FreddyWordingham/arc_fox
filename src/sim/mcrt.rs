@@ -13,7 +13,7 @@ use crate::{
 };
 use contracts::pre;
 use indicatif::ProgressBar;
-use log::{info, warn};
+use log::info;
 use rand::rngs::ThreadRng;
 use rand::{thread_rng, Rng};
 use rayon::prelude::*;
@@ -181,6 +181,38 @@ fn run_photon(
                     env = next_env;
                 }
             }
+            HitEvent::EntityBoundary { dist: _ } => {
+                // println!("Entity-Boundary");
+                let (dist, norm, ent) = cell_rec.0.ent_dist_norm_ent(phot.ray()).unwrap();
+                let inside = phot.ray().dir.dot(&norm) > 0.0;
+
+                let next_mat = if inside { ent.out_mat() } else { ent.in_mat() };
+                let next_env = next_mat.env(phot.wavelength());
+
+                let n_curr = env.ref_index;
+                let n_next = next_env.ref_index;
+
+                let gate = Gate::new(&phot.ray().dir, &norm, n_curr, n_next);
+
+                if rng.gen_range(0.0, 1.0) <= gate.ref_prob() {
+                    phot.travel(dist - BUMP_DIST);
+                    cell_rec.1.increase_dist_travelled(dist - BUMP_DIST);
+                    phot.set_dir(*gate.ref_dir());
+                } else {
+                    phot.travel(dist + BUMP_DIST);
+                    cell_rec.1.increase_dist_travelled(dist + BUMP_DIST);
+                    phot.set_dir(gate.trans_dir().unwrap());
+
+                    env = next_env;
+                }
+
+                println!("USED!");
+                if !uni.grid().aabb().contains(&phot.ray().pos) {
+                    break;
+                }
+
+                cell_rec = cell_and_record(&phot, uni, &mut archive);
+            }
         }
     }
 }
@@ -241,6 +273,11 @@ enum HitEvent {
         /// Distance to the entity surface.
         dist: f64,
     },
+    /// Entity surface collision, followed by a close boundary collision.
+    EntityBoundary {
+        /// Distance to the entity surface.
+        dist: f64,
+    },
 }
 
 impl HitEvent {
@@ -259,14 +296,19 @@ impl HitEvent {
         Self::Entity { dist }
     }
 
+    #[pre(dist > 0.0)]
+    pub fn new_entity_boundary(dist: f64) -> Self {
+        Self::EntityBoundary { dist }
+    }
+
     #[pre(inter_dist > 0.0)]
     #[pre(cell_dist > 0.0)]
     pub fn new(inter_dist: f64, cell_dist: f64, ent_dist: Option<f64>) -> Self {
         if cell_dist <= inter_dist {
             if let Some(ent_dist) = ent_dist {
                 if ent_dist < cell_dist {
-                    if (ent_dist - cell_dist).abs() <= BUMP_DIST {
-                        warn!("Entity and cell on close approach!");
+                    if (ent_dist - cell_dist).abs() <= (10.0 * BUMP_DIST) {
+                        return Self::new_entity_boundary(ent_dist);
                     }
 
                     return Self::new_entity(ent_dist);
