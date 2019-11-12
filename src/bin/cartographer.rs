@@ -14,7 +14,7 @@ use arc::{
     util::bin_name,
     world::{Identity, Universe},
 };
-use nalgebra::{Point3, Similarity3, Translation3, UnitQuaternion, Vector3};
+use nalgebra::{Point3, Vector3};
 use ndarray::Array3;
 
 fn main() {
@@ -24,16 +24,11 @@ fn main() {
 
     print::section("Input");
     report!(in_dir.display(), "Input dir");
-    let setup = Setup::load(&in_dir.join("setup.json"));
-    // let setup = Setup::example();
-    // setup.save(&in_dir.join("setup.json"));
+    // let setup = Setup::load(&in_dir.join("setup.json"));
+    let setup = Setup::example();
+    setup.save(&in_dir.join("setup.json"));
 
     print::section("Initialisation");
-    let res = Resolution::new(
-        setup.resolution[X as usize],
-        setup.resolution[Y as usize],
-        setup.resolution[Z as usize],
-    );
     let uni = Universe::new(
         Aabb::new_centred(
             &Point3::origin(),
@@ -43,42 +38,12 @@ fn main() {
                 setup.half_widths[Z as usize],
             ),
         ),
-        res.clone(),
-        vec![
-            (
-                "torus",
-                "torus",
-                Some(Similarity3::from_parts(
-                    Translation3::new(0.0, 0.0, 0.0),
-                    UnitQuaternion::from_euler_angles(0.0, 0.0, 0.0),
-                    0.75,
-                )),
-                "thick_fog",
-                "air",
-            ),
-            (
-                "upper-plane",
-                "plane",
-                Some(Similarity3::from_parts(
-                    Translation3::new(0.0, 0.0, 1.5),
-                    UnitQuaternion::from_euler_angles(0.0, 0.0, 0.0),
-                    2.5,
-                )),
-                "air",
-                "fog",
-            ),
-            (
-                "lower-plane",
-                "plane",
-                Some(Similarity3::from_parts(
-                    Translation3::new(0.0, 0.0, -1.5),
-                    UnitQuaternion::from_euler_angles(0.0, 0.0, 0.0),
-                    2.5,
-                )),
-                "fog",
-                "air",
-            ),
-        ],
+        Resolution::new(
+            setup.resolution[X as usize],
+            setup.resolution[Y as usize],
+            setup.resolution[Z as usize],
+        ),
+        setup.ent_info,
     );
 
     // let light = Light::new(
@@ -90,6 +55,7 @@ fn main() {
     //  );
 
     print::section("Mapping");
+    let res = uni.grid().res();
     let mut intersections = Vec::with_capacity(res.total());
     let mut vals = Vec::with_capacity(res.total());
     for index in res.iter() {

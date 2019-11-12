@@ -1,12 +1,1 @@
-{
-    "resolution": [
-        17,
-        17,
-        17
-    ],
-    "half_widths": [
-        1.0,
-        1.0,
-        1.0
-    ]
-}
+{"resolution":[17,17,17],"half_widths":[1.0,1.0,1.0],"ent_info":[["torus","torus",{"isometry":{"rotation":[0.0,0.0,0.0,1.0],"translation":[0.0,0.0,0.0]},"scaling":0.75},"thick_fog","air"],["upper-plane","plane",{"isometry":{"rotation":[0.0,0.0,0.0,1.0],"translation":[0.0,0.0,1.5]},"scaling":2.5},"air","fog"],["lower-plane","plane",{"isometry":{"rotation":[0.0,0.0,0.0,1.0],"translation":[0.0,0.0,-1.5]},"scaling":2.5},"fog","air"]]}

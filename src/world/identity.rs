@@ -7,7 +7,7 @@ pub trait Identity {
 }
 
 /// Reference the first object with a matching id.
-pub fn find_by_id<'a, T: Identity>(objs: &'a Vec<T>, id: &str) -> &'a T {
+pub fn find_by_id<'a, T: Identity>(objs: &'a Vec<T>, id: String) -> &'a T {
     for obj in objs {
         if obj.id() == id {
             return &obj;

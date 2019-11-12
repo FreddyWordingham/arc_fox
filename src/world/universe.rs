@@ -26,7 +26,7 @@ impl<'a> Universe<'a> {
     pub fn new(
         dom: Aabb,
         res: Resolution,
-        ent_info: Vec<(&str, &str, Option<Similarity3<f64>>, &str, &str)>,
+        ent_info: Vec<(String, String, Option<Similarity3<f64>>, String, String)>,
     ) -> Self {
         let mut mat_names = Vec::new();
         for (_id, _mesh, _trans, in_mat, out_mat) in ent_info.iter() {

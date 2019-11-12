@@ -14,7 +14,7 @@ use std::path::Path;
 #[pre(dir.is_dir())]
 #[pre(!names.is_empty())]
 #[post(!ret.is_empty())]
-pub fn mats(dir: &Path, names: Vec<&str>) -> Vec<Material> {
+pub fn mats(dir: &Path, names: Vec<String>) -> Vec<Material> {
     let mut sorted_names = names.clone();
     sorted_names.sort();
     sorted_names.dedup();
@@ -47,7 +47,7 @@ pub fn mats(dir: &Path, names: Vec<&str>) -> Vec<Material> {
 #[post(!ret.is_empty())]
 pub fn ents<'a>(
     dir: &Path,
-    ent_info: Vec<(&str, &str, Option<Similarity3<f64>>, &str, &str)>,
+    ent_info: Vec<(String, String, Option<Similarity3<f64>>, String, String)>,
     mats: &'a Vec<Material>,
 ) -> Vec<Entity<'a>> {
     let mut ents = Vec::new();
