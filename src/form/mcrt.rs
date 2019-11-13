@@ -1,5 +1,6 @@
 //! MCRT form structure.
 
+use super::Entity;
 use crate::{index::Resolution, json};
 use contracts::post;
 use nalgebra::Vector3;
@@ -17,6 +18,8 @@ pub struct Mcrt {
     total_phot: u64,
     /// Number of threads to use.
     num_threads: usize,
+    /// Entity list.
+    ents: Vec<Entity>,
 }
 
 impl Mcrt {
@@ -27,12 +30,18 @@ impl Mcrt {
             half_widths: Vector3::new(1.0, 1.0, 1.0),
             total_phot: 1_000,
             num_threads: 1,
+            ents: vec![Entity::new(None), Entity::new(None), Entity::new(None)],
         }
     }
 
     /// Get the resolution.
     pub fn res(&self) -> Resolution {
         Resolution::new(self.res[0], self.res[1], self.res[2])
+    }
+
+    /// Reference the entity list.
+    pub fn ents(&self) -> &Vec<Entity> {
+        &self.ents
     }
 
     /// Reference the half-width values.
