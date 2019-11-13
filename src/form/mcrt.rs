@@ -30,7 +30,11 @@ impl Mcrt {
             half_widths: Vector3::new(1.0, 1.0, 1.0),
             total_phot: 1_000,
             num_threads: 1,
-            ents: vec![Entity::new(None), Entity::new(None), Entity::new(None)],
+            ents: vec![
+                Entity::new("ent-0".to_string(), None),
+                Entity::new("ent-1".to_string(), None),
+                Entity::new("ent-2".to_string(), None),
+            ],
         }
     }
 
