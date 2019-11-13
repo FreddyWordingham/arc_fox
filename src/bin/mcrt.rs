@@ -1,6 +1,6 @@
 //! MCRT test binary.
 
-use arc::{args, init::io_dirs, print, report, util::bin_name};
+use arc::{args, file::Saveable, form::Mcrt, init::io_dirs, print, report, util::bin_name};
 use log::info;
 use std::path::Path;
 
@@ -15,7 +15,8 @@ fn main() {
 
     print::section("Initialisation");
     info!("Loading form: {}", form_path.display());
-    // let form =
+    let form = Mcrt::example();
+    form.save(&in_dir.join("example.json"));
 
     print::section("Simulation");
 
