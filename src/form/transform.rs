@@ -3,7 +3,6 @@
 use crate::json;
 use nalgebra::{Similarity3, Translation3, UnitQuaternion, Vector3};
 use serde::{Deserialize, Serialize};
-use std::path::Path;
 
 /// Transform input form.
 #[derive(Serialize, Deserialize)]

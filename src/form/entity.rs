@@ -4,7 +4,6 @@ use super::Transform;
 use crate::json;
 use contracts::pre;
 use serde::{Deserialize, Serialize};
-use std::path::Path;
 
 /// Entity input form.
 #[derive(Serialize, Deserialize)]

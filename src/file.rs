@@ -11,6 +11,7 @@ pub use self::saveable::*;
 macro_rules! json {
     ($type:ident) => {
         use crate::file::{as_json, from_json, Loadable, Saveable};
+        use std::path::Path;
 
         impl Saveable for $type {
             fn save(&self, path: &Path) {

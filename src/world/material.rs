@@ -4,7 +4,6 @@ use super::Identity;
 use crate::{json, math::Formula, opt::Environment, util::Range};
 use contracts::{post, pre};
 use serde::{Deserialize, Serialize};
-use std::path::Path;
 
 /// Physical material structure.
 #[derive(Debug, Serialize, Deserialize)]

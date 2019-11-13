@@ -6,7 +6,6 @@ use contracts::post;
 use nalgebra::Translation3;
 use nalgebra::Vector3;
 use serde::{Deserialize, Serialize};
-use std::path::Path;
 
 /// Monte-Carlo Radiative Transfer input form parameters.
 #[derive(Serialize, Deserialize)]

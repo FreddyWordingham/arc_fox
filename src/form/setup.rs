@@ -3,7 +3,6 @@
 use crate::json;
 use nalgebra::{Similarity3, Translation3, UnitQuaternion};
 use serde::{Deserialize, Serialize};
-use std::path::Path;
 
 /// Universe setup information.
 #[derive(Serialize, Deserialize)]

@@ -1,8 +1,10 @@
 //! Molecule structure.
 
-use crate::world::Identity;
+use crate::{json, world::Identity};
+use serde::{Deserialize, Serialize};
 
 /// Chemical molecule structure.
+#[derive(Serialize, Deserialize)]
 pub struct Molecule {
     /// Identification string.
     id: String,
@@ -22,3 +24,5 @@ impl Identity for Molecule {
         &self.id
     }
 }
+
+json!(Molecule);
