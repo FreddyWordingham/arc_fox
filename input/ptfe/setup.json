@@ -5,16 +5,17 @@
         17
     ],
     "half_widths": [
-        1.0,
-        1.0,
-        1.0
+        0.013,
+        0.0205,
+        0.0205
     ],
     "ent_info": [
         [
-            "torus",
-            "torus",
+            "slab_front",
+            "cube",
             {
-                "isometry": {
+                "isometry":
+                {
                     "rotation": [
                         0.0,
                         0.0,
@@ -27,10 +28,10 @@
                         0.0
                     ]
                 },
-                "scaling": 0.75
+                "scaling": 0.001
             },
-            "thick_fog",
-            "air"
+            "ptfe",
+            "intra_quarterpc"
         ]
     ]
 }

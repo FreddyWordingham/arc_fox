@@ -77,8 +77,10 @@ fn run_thread(
 
     let mut rng = thread_rng();
 
+    let mut tot_raman = 0;
+
     while iterate(&mut bar, thread_id, total_phot, &mut num_phots) {
-        run_photon(&mut archive, &mut rng, total_phot, light, uni);
+        run_photon(&mut archive, &mut rng, total_phot, light, uni, tot_raman);
     }
 
     archive
@@ -110,6 +112,7 @@ fn run_photon(
     total_phot: u64,
     light: &Light,
     uni: &Universe,
+    mut tot_raman: u64
 ) {
     let mut phot = light.emit(&mut rng, total_phot);
     let mut cell_rec = cell_and_record(&phot, uni, &mut archive);
@@ -143,6 +146,7 @@ fn run_photon(
 
                 if !shifted && rng.gen_range(0.0, 1.0) <= env.shift_prob {
                     shifted = true;
+                    cell_rec.1.increase_tot_raman(phot.weight());
                 }
             }
             HitEvent::Boundary { dist } => {
@@ -182,6 +186,9 @@ fn run_photon(
                 }
             }
         }
+    }
+    if shifted == true{
+        tot_raman += 1;
     }
 }
 
