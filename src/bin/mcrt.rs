@@ -25,10 +25,10 @@ fn main() {
     report!("Total cells", res.total());
 
     let dom = Aabb::new_centred(&Point3::origin(), form.half_widths());
-    report!("X-width", dom.half_widths().x);
-    report!("Y-width", dom.half_widths().y);
-    report!("Z-width", dom.half_widths().z);
-    report!("Volume", dom.vol());
+    report!("X-width", dom.half_widths().x, "m");
+    report!("Y-width", dom.half_widths().y, "m");
+    report!("Z-width", dom.half_widths().z, "m");
+    report!("Volume", dom.vol(), "m^3");
 
     print::section("Simulation");
 
