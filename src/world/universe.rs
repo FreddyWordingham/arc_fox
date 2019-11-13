@@ -31,6 +31,13 @@ pub struct Universe<'a> {
 
 impl<'a> Universe<'a> {
     /// Construct a new instance.
+    #[pre(!mats.is_empty())]
+    #[pre(!ents.is_empty())]
+    pub fn newish(mats: Vec<Material>, ents: Vec<Entity<'a>>, grid: Grid<'a>) -> Self {
+        Self { mats, ents, grid }
+    }
+
+    /// Construct a new instance.
     #[pre(!ent_info.is_empty())]
     pub fn new(
         dom: Aabb,

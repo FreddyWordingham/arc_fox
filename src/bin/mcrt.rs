@@ -30,6 +30,8 @@ fn main() {
     report!("Z-width", dom.widths().z, "m");
     report!("Volume", dom.vol(), "m^3");
 
+    // let uni = Universe::
+
     print::section("Simulation");
 
     print::section("Post-Processing");
