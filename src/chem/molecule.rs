@@ -1,6 +1,7 @@
 //! Molecule structure.
 
 use crate::{json, world::Identity};
+use contracts::pre;
 use serde::{Deserialize, Serialize};
 
 /// Chemical molecule structure.
@@ -13,6 +14,8 @@ pub struct Molecule {
 }
 
 impl Molecule {
+    #[pre(!id.is_empty())]
+    #[pre(rad > 0.0)]
     /// Construct a new instance.
     pub fn new(id: String, rad: f64) -> Self {
         Self { id, rad }
