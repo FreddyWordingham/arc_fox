@@ -72,7 +72,7 @@ impl Display for Resolution {
     fn fmt(&self, f: &mut Formatter) -> Result {
         write!(
             f,
-            "{} : {} : {}",
+            "[ {} : {} : {}]",
             self.arr[X as usize], self.arr[Y as usize], self.arr[Z as usize]
         )
     }

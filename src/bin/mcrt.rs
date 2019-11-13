@@ -1,7 +1,10 @@
 //! MCRT test binary.
 
-use arc::{args, file::Saveable, form::Mcrt, init::io_dirs, print, report, util::bin_name};
+use arc::{
+    args, file::Saveable, form::Mcrt, geom::Aabb, init::io_dirs, print, report, util::bin_name,
+};
 use log::info;
+use nalgebra::Point3;
 use std::path::Path;
 
 fn main() {
@@ -19,6 +22,11 @@ fn main() {
     print::section("Initialisation");
     let res = form.res();
     report!(res, "Grid resolution");
+    report!(res.total(), "Total cells");
+
+    let dom = Aabb::new_centred(&Point3::origin(), form.half_widths());
+    report!(dom.half_widths(), "Half-widths");
+    report!(dom.vol(), "Volume");
 
     print::section("Simulation");
 

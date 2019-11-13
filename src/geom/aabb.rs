@@ -31,6 +31,14 @@ impl Aabb {
         Self::new(centre - hws, centre + hws)
     }
 
+    /// Calculate the volume.
+    #[post(ret > 0.0)]
+    pub fn vol(&self) -> f64 {
+        let ws = self.widths();
+
+        ws.x * ws.y * ws.z
+    }
+
     /// Create a tightened axis-aligned box.
     #[pre(f > 0.0)]
     #[pre(f < 1.0)]
