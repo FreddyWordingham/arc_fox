@@ -19,7 +19,7 @@ fn main() {
     let (in_dir, out_dir) = io_dirs(None, None);
 
     print::section("Input");
-    report!(in_dir.display(), "Input dir");
+    report!("Input dir", in_dir.display());
     let setup = Setup::load(&in_dir.join("setup.json"));
     // let setup = Setup::example();
     // setup.save(&in_dir.join("setup.json"));
@@ -53,7 +53,7 @@ fn main() {
     let surf = Array3::from_shape_vec(res.arr, intersections).unwrap();
 
     print::section("Output");
-    report!(out_dir.display(), "Output dir");
+    report!("Output dir", out_dir.display());
     map.save(&out_dir.join("map.nc"));
     surf.save(&out_dir.join("surf.nc"));
 

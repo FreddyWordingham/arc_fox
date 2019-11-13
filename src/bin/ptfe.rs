@@ -20,7 +20,7 @@ fn main() {
     let (in_dir, out_dir) = io_dirs(None, None);
 
     print::section("Input");
-    report!(in_dir.display(), "Input dir");
+    report!("Input dir", in_dir.display());
     let setup = Setup::load(&in_dir.join("setup.json"));
 
     print::section("Initialisation");
@@ -56,7 +56,7 @@ fn main() {
     let dist_travelled = Array3::from_shape_vec(uni.grid().res().arr, dist_travelled).unwrap();
 
     print::section("Output");
-    report!(out_dir.display(), "Output dir");
+    report!("Output dir", out_dir.display());
     emissions.save(&out_dir.join("emissions.nc"));
     scatters.save(&out_dir.join("scatters.nc"));
     absorptions.save(&out_dir.join("absorptions.nc"));

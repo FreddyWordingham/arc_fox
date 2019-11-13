@@ -9,8 +9,11 @@ macro_rules! report {
     ($expression: expr) => {
         log::info!("{: <31}: {: <31}", stringify!($expression), $expression);
     };
-    ($expression: expr, $string: tt) => {
-        log::info!("{: <31}: {: <31}", $string, $expression);
+    ($desc: tt, $expression: expr) => {
+        log::info!("{: <31}: {: <31}", $desc, $expression);
+    };
+    ($desc: tt, $expression: expr, $units: tt) => {
+        log::info!("{: <31}: {: <31} [{}]", $desc, $expression, $units);
     };
 }
 
