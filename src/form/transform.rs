@@ -9,11 +9,11 @@ use std::path::Path;
 #[derive(Serialize, Deserialize)]
 pub struct Transform {
     /// Optional translation to apply.
-    pub trans: Option<Translation3<f64>>,
+    trans: Option<Translation3<f64>>,
     /// Rotation applied as Euler angles.
-    pub rot: Option<Vector3<f64>>,
+    rot: Option<Vector3<f64>>,
     /// Optional uniform scaling to apply.
-    pub scale: Option<f64>,
+    scale: Option<f64>,
 }
 
 impl Transform {
