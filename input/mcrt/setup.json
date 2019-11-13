@@ -1,8 +1,8 @@
 {
     "resolution": [
-        17,
-        17,
-        17
+        101,
+        101,
+        101
     ],
     "half_widths": [
         1.0,
@@ -11,7 +11,7 @@
     ],
     "ent_info": [
         [
-            "torus",
+            "breaker",
             "torus",
             {
                 "isometry": {
