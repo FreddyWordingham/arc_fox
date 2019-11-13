@@ -6,6 +6,7 @@ use crate::{
     iter::Resolution as ResolutionIter,
 };
 use contracts::pre;
+use std::fmt::{Display, Formatter, Result};
 
 /// Three-dimensional resolution structure.
 /// Used by domain grids.
@@ -64,6 +65,16 @@ impl Resolution {
     /// Create an iterator.
     pub fn iter(&self) -> ResolutionIter {
         (&self).into_iter()
+    }
+}
+
+impl Display for Resolution {
+    fn fmt(&self, f: &mut Formatter) -> Result {
+        write!(
+            f,
+            "{} : {} : {}",
+            self.arr[X as usize], self.arr[Y as usize], self.arr[Z as usize]
+        )
     }
 }
 

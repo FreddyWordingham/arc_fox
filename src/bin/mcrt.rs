@@ -12,11 +12,13 @@ fn main() {
 
     print::section("Input");
     report!(in_dir.display(), "Input directory");
-
-    print::section("Initialisation");
     info!("Loading form: {}", form_path.display());
     let form = Mcrt::example();
     form.save(&in_dir.join("example.json"));
+
+    print::section("Initialisation");
+    let res = form.res();
+    report!(res, "Grid resolution");
 
     print::section("Simulation");
 
