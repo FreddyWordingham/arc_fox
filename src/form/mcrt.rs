@@ -1,4 +1,4 @@
-//! Setup form structure.
+//! MCRT form structure.
 
 use crate::{index::Resolution, json};
 use contracts::post;

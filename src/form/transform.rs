@@ -1,4 +1,4 @@
-//! Setup form structure.
+//! Transform form structure.
 
 use crate::json;
 use nalgebra::{Similarity3, Translation3, UnitQuaternion, Vector3};
