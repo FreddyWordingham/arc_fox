@@ -1,10 +1,17 @@
 //! MCRT test binary.
 
 use arc::{
-    args, file::Saveable, form::Entity as EntityForm, form::Mcrt, geom::Aabb, init::io_dirs, print,
-    report, util::bin_name, world::Material,
+    args,
+    file::{Loadable, Saveable},
+    form::Entity as EntityForm,
+    form::Mcrt,
+    geom::Aabb,
+    init::io_dirs,
+    print, report,
+    util::bin_name,
+    world::Material,
 };
-use contracts::{post, pre};
+use contracts::pre;
 use log::info;
 use nalgebra::Point3;
 use std::path::Path;
@@ -32,7 +39,7 @@ fn main() {
     report!("Z-width", dom.widths().z, "m");
     report!("Volume", dom.vol(), "m^3");
 
-    let _mats = load_mats(form.ents());
+    let _mats = load_mats(&in_dir.join("mats"), form.ents());
 
     // let uni = Universe::
 
@@ -51,7 +58,18 @@ fn title() {
     colog::init();
 }
 
-fn load_mats(ents: &Vec<EntityForm>) -> Vec<Material> {
+#[pre(dir.is_dir())]
+#[pre(!ents.is_empty())]
+fn load_mats(dir: &Path, ents: &Vec<EntityForm>) -> Vec<Material> {
+    let names = get_mat_names(ents);
+
+    let mut mats = Vec::with_capacity(names.len());
+    for name in names.iter() {
+        info!("Loading material: {}", name);
+        let path = dir.join(format!("{}.json", name));
+        mats.push(Material::load(&path));
+    }
+
     let mats = Vec::new();
 
     mats
@@ -60,15 +78,15 @@ fn load_mats(ents: &Vec<EntityForm>) -> Vec<Material> {
 #[pre(!ents.is_empty())]
 #[post(!ret.is_empty())]
 fn get_mat_names(ents: &Vec<EntityForm>) -> Vec<String> {
-    let mut mat_names;
+    let mut names: Vec<String> = Vec::new();
 
     for ent in ents.iter() {
-        mat_names.push(ent.in_mat.clone());
-        mat_names.push(ent.out_mat.clone());
+        names.push(ent.in_mat.clone());
+        names.push(ent.out_mat.clone());
     }
 
-    mat_names.sort();
-    mat_names.dedup();
+    names.sort();
+    names.dedup();
 
-    mat_names
+    names
 }

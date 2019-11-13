@@ -1,9 +1,5 @@
 //! Directory setup and locations.
 
-pub mod res;
-
-pub use self::res::*;
-
 use contracts::post;
 use std::{
     env::var,

@@ -6,7 +6,6 @@ use super::{load, Entity, Material};
 use crate::{
     data::Archive,
     dim::Cartesian::{X, Y, Z},
-    dir::res,
     dom::Grid,
     form::Setup,
     geom::Aabb,
@@ -35,49 +34,6 @@ impl<'a> Universe<'a> {
     #[pre(!ents.is_empty())]
     pub fn newish(mats: Vec<Material>, ents: Vec<Entity<'a>>, grid: Grid<'a>) -> Self {
         Self { mats, ents, grid }
-    }
-
-    /// Construct a new instance.
-    #[pre(!ent_info.is_empty())]
-    pub fn new(
-        dom: Aabb,
-        res: Resolution,
-        ent_info: Vec<(String, String, Option<Similarity3<f64>>, String, String)>,
-    ) -> Self {
-        let mut mat_names = Vec::new();
-        for (_id, _mesh, _trans, in_mat, out_mat) in ent_info.iter() {
-            mat_names.push(in_mat.clone());
-            mat_names.push(out_mat.clone());
-        }
-        mat_names.sort();
-        mat_names.dedup();
-
-        Arc::try_unwrap(self_referencing!(Universe, {
-            mats = load::mats(&res::materials(), mat_names);
-            ents = load::ents(&res::meshes(), ent_info, &mats);
-            grid = Grid::new(dom, res, &ents);
-        }))
-        .expect("Could not create universe instance.")
-    }
-
-    /// Construct a new instance from a setup form struct.
-    pub fn new_from_setup(setup: Setup) -> Self {
-        Universe::new(
-            Aabb::new_centred(
-                &Point3::origin(),
-                &Vector3::new(
-                    setup.half_widths[X as usize],
-                    setup.half_widths[Y as usize],
-                    setup.half_widths[Z as usize],
-                ),
-            ),
-            Resolution::new(
-                setup.resolution[X as usize],
-                setup.resolution[Y as usize],
-                setup.resolution[Z as usize],
-            ),
-            setup.ent_info,
-        )
     }
 
     /// Reference the materials.
