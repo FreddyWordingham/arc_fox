@@ -69,8 +69,7 @@ fn load_mats(dir: &Path, ents: &Vec<EntityForm>) -> Vec<Material> {
         let path = dir.join(format!("{}.json", name));
         mats.push(Material::load(&path));
     }
-
-    let mats = Vec::new();
+    info!("Loaded {} materials total.", mats.len());
 
     mats
 }
