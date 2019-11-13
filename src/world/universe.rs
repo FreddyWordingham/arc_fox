@@ -2,20 +2,10 @@
 
 #![allow(unused_variables)]
 
-use super::{load, Entity, Material};
-use crate::{
-    data::Archive,
-    dim::Cartesian::{X, Y, Z},
-    dom::Grid,
-    form::Setup,
-    geom::Aabb,
-    index::Resolution,
-};
+use super::{Entity, Material};
+use crate::{data::Archive, dom::Grid};
 use contracts::pre;
 use log::info;
-use nalgebra::{Point3, Similarity3, Vector3};
-use self_ref::self_referencing;
-use std::sync::Arc;
 
 /// Structure containing all simulation information.
 #[derive(Debug)]
