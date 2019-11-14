@@ -1,9 +1,11 @@
 //! Reaction structure.
 
-use crate::world::Identity;
+use crate::{json, world::Identity};
 use contracts::pre;
+use serde::{Deserialize, Serialize};
 
 /// Chemical reaction structure.
+#[derive(Serialize, Deserialize)]
 pub struct Reaction {
     /// Identification string.
     id: String,
@@ -43,3 +45,5 @@ impl Identity for Reaction {
         &self.id
     }
 }
+
+json!(Reaction);
