@@ -1,10 +1,10 @@
-//! Reaction structure.
+//! Reaction form structure.
 
 use crate::{json, world::Identity};
 use contracts::pre;
 use serde::{Deserialize, Serialize};
 
-/// Chemical reaction structure.
+/// Chemical reaction form structure.
 #[derive(Serialize, Deserialize)]
 pub struct Reaction {
     /// Identification string.
