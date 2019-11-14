@@ -51,32 +51,32 @@ fn main() {
     let mcrt_data = mcrt::run(form.num_threads(), form.total_phot(), &light, &uni);
     uni.add_archive(mcrt_data);
 
-    print::section("Post-Processing");
-    info!("Creating record cube.");
-    let recs = uni.grid().cells().map(|c| c.rec());
+    // print::section("Post-Processing");
+    // info!("Creating record cube.");
+    // let recs = uni.grid().cells().map(|c| c.rec());
 
-    info!("Creating emission data cube.");
-    let mut emissions = Vec::with_capacity(uni.grid().res().total());
-    let mut scatters = Vec::with_capacity(uni.grid().res().total());
-    let mut absorptions = Vec::with_capacity(uni.grid().res().total());
-    let mut dist_travelled = Vec::with_capacity(uni.grid().res().total());
-    for rec in recs.iter() {
-        emissions.push(rec.emissions());
-        scatters.push(rec.scatters());
-        absorptions.push(rec.absorptions());
-        dist_travelled.push(rec.absorptions());
-    }
-    let emissions = Array3::from_shape_vec(uni.grid().res().arr, emissions).unwrap();
-    let scatters = Array3::from_shape_vec(uni.grid().res().arr, scatters).unwrap();
-    let absorptions = Array3::from_shape_vec(uni.grid().res().arr, absorptions).unwrap();
-    let dist_travelled = Array3::from_shape_vec(uni.grid().res().arr, dist_travelled).unwrap();
+    // info!("Creating emission data cube.");
+    // let mut emissions = Vec::with_capacity(uni.grid().res().total());
+    // let mut scatters = Vec::with_capacity(uni.grid().res().total());
+    // let mut absorptions = Vec::with_capacity(uni.grid().res().total());
+    // let mut dist_travelled = Vec::with_capacity(uni.grid().res().total());
+    // for rec in recs.iter() {
+    //     emissions.push(rec.emissions());
+    //     scatters.push(rec.scatters());
+    //     absorptions.push(rec.absorptions());
+    //     dist_travelled.push(rec.absorptions());
+    // }
+    // let emissions = Array3::from_shape_vec(uni.grid().res().arr, emissions).unwrap();
+    // let scatters = Array3::from_shape_vec(uni.grid().res().arr, scatters).unwrap();
+    // let absorptions = Array3::from_shape_vec(uni.grid().res().arr, absorptions).unwrap();
+    // let dist_travelled = Array3::from_shape_vec(uni.grid().res().arr, dist_travelled).unwrap();
 
-    print::section("Output");
-    report!("Output dir", out_dir.display());
-    emissions.save(&out_dir.join("emissions.nc"));
-    scatters.save(&out_dir.join("scatters.nc"));
-    absorptions.save(&out_dir.join("absorptions.nc"));
-    dist_travelled.save(&out_dir.join("dist_travelled.nc"));
+    // print::section("Output");
+    // report!("Output dir", out_dir.display());
+    // emissions.save(&out_dir.join("emissions.nc"));
+    // scatters.save(&out_dir.join("scatters.nc"));
+    // absorptions.save(&out_dir.join("absorptions.nc"));
+    // dist_travelled.save(&out_dir.join("dist_travelled.nc"));
 
     print::section("End");
 }
