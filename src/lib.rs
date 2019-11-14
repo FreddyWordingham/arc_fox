@@ -21,6 +21,7 @@ pub mod iter;
 pub mod math;
 pub mod opt;
 pub mod print;
+pub mod proto;
 pub mod rng;
 pub mod rt;
 pub mod sim;

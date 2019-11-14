@@ -62,8 +62,8 @@ pub fn ents<'a>(
             mesh.transform(&trans);
         }
 
-        let in_mat = find_by_id(mats, in_mat_id);
-        let out_mat = find_by_id(mats, out_mat_id);
+        let in_mat = find_by_id(mats, &in_mat_id);
+        let out_mat = find_by_id(mats, &out_mat_id);
 
         ents.push(Entity::new(id.to_string(), mesh, in_mat, out_mat))
     }
