@@ -11,8 +11,8 @@
     ],
     "ent_info": [
         [
-            "slab_front",
-            "cube",
+            "slab",
+            "ptfe_bigslab",
             {
                 "isometry":
                 {
@@ -28,7 +28,7 @@
                         0.0
                     ]
                 },
-                "scaling": 0.001
+                "scaling": 1.0
             },
             "ptfe",
             "intra_quarterpc"

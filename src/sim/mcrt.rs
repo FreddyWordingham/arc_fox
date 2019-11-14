@@ -77,10 +77,8 @@ fn run_thread(
 
     let mut rng = thread_rng();
 
-    let mut tot_raman = 0;
-
     while iterate(&mut bar, thread_id, total_phot, &mut num_phots) {
-        run_photon(&mut archive, &mut rng, total_phot, light, uni, tot_raman);
+        run_photon(&mut archive, &mut rng, total_phot, light, uni);
     }
 
     archive
@@ -112,7 +110,6 @@ fn run_photon(
     total_phot: u64,
     light: &Light,
     uni: &Universe,
-    mut tot_raman: u64
 ) {
     let mut phot = light.emit(&mut rng, total_phot);
     let mut cell_rec = cell_and_record(&phot, uni, &mut archive);
@@ -155,6 +152,12 @@ fn run_photon(
                 cell_rec.1.increase_dist_travelled(dist + BUMP_DIST);
 
                 if !uni.grid().aabb().contains(&phot.ray().pos) {
+                    if shifted == true {
+                        let square_pos = (phot.ray().pos.y*phot.ray().pos.y) + (phot.ray().pos.z*phot.ray().pos.z);
+                        if (phot.ray().pos.x >= 0.0129) && (square_pos <= 0.000001){
+                            cell_rec.1.increase_det_raman(phot.weight());
+                        }
+                    }
                     break;
                 }
 
@@ -186,9 +189,6 @@ fn run_photon(
                 }
             }
         }
-    }
-    if shifted == true{
-        tot_raman += 1;
     }
 }
 

@@ -15,7 +15,9 @@ pub struct Record {
     /// Total distance travelled by photons.
     dist_travelled: f64,
     /// Number of Raman photons created
-    tot_raman: f64
+    tot_raman: f64,
+    /// Number of Raman photons detected
+    det_raman: f64
 }
 
 impl Record {
@@ -26,7 +28,8 @@ impl Record {
             scatters: 0.0,
             absorptions: 0.0,
             dist_travelled: 0.0,
-            tot_raman: 0.0
+            tot_raman: 0.0,
+            det_raman: 0.0
         }
     }
 
@@ -54,10 +57,16 @@ impl Record {
         self.dist_travelled
     }
 
-    /// Get the number of Raman photons.
+    /// Get the number of Raman photons created.
     #[post(ret >= 0.0)]
     pub fn tot_raman(&self) -> f64 {
         self.tot_raman
+    }
+
+    /// Get the number of Raman photons detected.
+    #[post(ret >= 0.0)]
+    pub fn det_raman(&self) -> f64 {
+        self.det_raman
     }
 
     /// Increase the number of recorded scatterings.
@@ -89,6 +98,12 @@ impl Record {
     pub fn increase_tot_raman(&mut self, x: f64) {
         self.tot_raman += x;
     }
+
+    /// Increase the number of Raman photons created.
+    #[pre(x > 0.0)]
+    pub fn increase_det_raman(&mut self, x: f64) {
+        self.det_raman += x;
+    }
 }
 
 impl Add<&Self> for Record {
@@ -101,6 +116,7 @@ impl Add<&Self> for Record {
             absorptions: self.absorptions + rhs.absorptions,
             dist_travelled: self.dist_travelled + rhs.dist_travelled,
             tot_raman: self.tot_raman + rhs.tot_raman,
+            det_raman: self.det_raman + rhs.det_raman
         }
     }
 }
@@ -112,6 +128,7 @@ impl AddAssign for Record {
         self.absorptions += rhs.absorptions;
         self.dist_travelled += rhs.dist_travelled;
         self.tot_raman += rhs.tot_raman;
+        self.det_raman += rhs.det_raman
     }
 }
 
@@ -122,5 +139,6 @@ impl AddAssign<&Self> for Record {
         self.absorptions += rhs.absorptions;
         self.dist_travelled += rhs.dist_travelled;
         self.tot_raman += rhs.tot_raman;
+        self.det_raman += rhs.det_raman
     }
 }

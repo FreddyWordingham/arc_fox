@@ -45,18 +45,21 @@ fn main() {
     let mut absorptions = Vec::with_capacity(uni.grid().res().total());
     let mut dist_travelled = Vec::with_capacity(uni.grid().res().total());
     let mut tot_raman = Vec::with_capacity(uni.grid().res().total());
+    let mut det_raman = Vec::with_capacity(uni.grid().res().total());
     for rec in recs.iter() {
         emissions.push(rec.emissions());
         scatters.push(rec.scatters());
         absorptions.push(rec.absorptions());
         dist_travelled.push(rec.dist_travelled());
         tot_raman.push(rec.tot_raman());
+        det_raman.push(rec.det_raman());
     }
     let emissions = Array3::from_shape_vec(uni.grid().res().arr, emissions).unwrap();
     let scatters = Array3::from_shape_vec(uni.grid().res().arr, scatters).unwrap();
     let absorptions = Array3::from_shape_vec(uni.grid().res().arr, absorptions).unwrap();
     let dist_travelled = Array3::from_shape_vec(uni.grid().res().arr, dist_travelled).unwrap();
     let tot_raman = Array3::from_shape_vec(uni.grid().res().arr, tot_raman).unwrap();
+    let det_raman = Array3::from_shape_vec(uni.grid().res().arr, det_raman).unwrap();
 
     print::section("Output");
     report!(out_dir.display(), "Output dir");
@@ -65,8 +68,10 @@ fn main() {
     absorptions.save(&out_dir.join("absorptions.nc"));
     dist_travelled.save(&out_dir.join("dist_travelled.nc"));
     tot_raman.save(&out_dir.join("tot_raman.nc"));
+    det_raman.save(&out_dir.join("det_raman.nc"));
 
     info!("Total Raman photons: {}", tot_raman.sum());
+    info!("Detected Raman photons: {}", det_raman.sum());
 
     print::section("End");
 }
