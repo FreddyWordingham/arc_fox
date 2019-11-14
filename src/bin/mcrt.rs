@@ -2,18 +2,18 @@
 
 use arc::{
     args,
-    file::{Loadable, Saveable},
-    form::Entity as EntityForm,
+    file::Saveable,
     form::Mcrt,
-    geom::{Aabb, Mesh},
+    geom::Aabb,
     init::io_dirs,
     print, report,
+    sim::mcrt,
     util::bin_name,
-    world::{find_by_id, Entity, Material},
+    world::{Light, Universe},
 };
-use contracts::pre;
 use log::info;
-use nalgebra::Point3;
+use nalgebra::{Point3, Vector3};
+use ndarray::Array3;
 use std::path::Path;
 
 fn main() {
@@ -39,17 +39,44 @@ fn main() {
     report!("Z-width", dom.widths().z, "m");
     report!("Volume", dom.vol(), "m^3");
 
-    let mats = load_mats(&in_dir.join("mats"), form.ents());
-    let _ents = load_ents(&in_dir.join("meshes"), form.ents(), &mats);
+    let mut uni = Universe::new(&in_dir, dom, res, form.ents());
 
-    // let uni = Universe::
+    let light = Light::new(
+        Box::new((Point3::origin(), Vector3::x_axis(), 45.0f64.to_radians())),
+        630.0e-9, // [m]
+        1.0,      // [J/s]
+    );
 
     print::section("Simulation");
+    let mcrt_data = mcrt::run(form.num_threads(), form.total_phot(), &light, &uni);
+    uni.add_archive(mcrt_data);
 
     print::section("Post-Processing");
+    info!("Creating record cube.");
+    let recs = uni.grid().cells().map(|c| c.rec());
+
+    info!("Creating emission data cube.");
+    let mut emissions = Vec::with_capacity(uni.grid().res().total());
+    let mut scatters = Vec::with_capacity(uni.grid().res().total());
+    let mut absorptions = Vec::with_capacity(uni.grid().res().total());
+    let mut dist_travelled = Vec::with_capacity(uni.grid().res().total());
+    for rec in recs.iter() {
+        emissions.push(rec.emissions());
+        scatters.push(rec.scatters());
+        absorptions.push(rec.absorptions());
+        dist_travelled.push(rec.absorptions());
+    }
+    let emissions = Array3::from_shape_vec(uni.grid().res().arr, emissions).unwrap();
+    let scatters = Array3::from_shape_vec(uni.grid().res().arr, scatters).unwrap();
+    let absorptions = Array3::from_shape_vec(uni.grid().res().arr, absorptions).unwrap();
+    let dist_travelled = Array3::from_shape_vec(uni.grid().res().arr, dist_travelled).unwrap();
 
     print::section("Output");
-    report!("Output directory", out_dir.display());
+    report!("Output dir", out_dir.display());
+    emissions.save(&out_dir.join("emissions.nc"));
+    scatters.save(&out_dir.join("scatters.nc"));
+    absorptions.save(&out_dir.join("absorptions.nc"));
+    dist_travelled.save(&out_dir.join("dist_travelled.nc"));
 
     print::section("End");
 }
@@ -57,63 +84,4 @@ fn main() {
 fn title() {
     print::title(&bin_name());
     colog::init();
-}
-
-#[pre(dir.is_dir())]
-#[pre(!ents.is_empty())]
-fn load_mats(dir: &Path, ents: &Vec<EntityForm>) -> Vec<Material> {
-    let ids = get_mat_ids(ents);
-
-    let mut mats = Vec::with_capacity(ids.len());
-    for id in ids.iter() {
-        info!("Loading material: {}", id);
-
-        let path = dir.join(format!("{}.json", id));
-        mats.push(Material::load(&path));
-    }
-    info!("Loaded {} materials total.", mats.len());
-
-    mats
-}
-
-#[pre(!ents.is_empty())]
-#[post(!ret.is_empty())]
-fn get_mat_ids(ents: &Vec<EntityForm>) -> Vec<String> {
-    let mut ids: Vec<String> = Vec::new();
-
-    for ent in ents.iter() {
-        ids.push(ent.in_mat.clone());
-        ids.push(ent.out_mat.clone());
-    }
-
-    ids.sort();
-    ids.dedup();
-
-    ids
-}
-
-#[pre(dir.is_dir())]
-#[pre(!ent_forms.is_empty())]
-fn load_ents<'a>(
-    dir: &Path,
-    ent_forms: &Vec<EntityForm>,
-    mats: &'a Vec<Material>,
-) -> Vec<Entity<'a>> {
-    let mut ents = Vec::with_capacity(ent_forms.len());
-    for ent in ent_forms.iter() {
-        info!("Loading entity: {}", ent.id);
-
-        let path = dir.join(format!("{}.obj", ent.mesh));
-        let mut mesh = Mesh::load(&path);
-
-        ents.push(Entity::new(
-            ent.id.clone(),
-            mesh,
-            find_by_id(mats, &ent.in_mat),
-            find_by_id(mats, &ent.out_mat),
-        ))
-    }
-    info!("Loaded {} entities total.", ents.len());
-
-    ents
 }

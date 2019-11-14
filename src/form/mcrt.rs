@@ -80,6 +80,12 @@ impl Mcrt {
         &self.half_widths
     }
 
+    /// Get the total number of photons to run.
+    #[post(ret > 0)]
+    pub fn total_phot(&self) -> u64 {
+        self.total_phot()
+    }
+
     /// Get the number of threads to use.
     #[post(ret > 0)]
     pub fn num_threads(&self) -> usize {
