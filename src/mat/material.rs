@@ -1,8 +1,8 @@
-//! Material trait.
+//! Material structure.
 
-use std::fmt::Debug;
-
-/// Material trait implementation.
-pub trait Material: Debug {
-    // Methods.
+/// Material structure implementation.
+/// Stores the local optical, diffusive and kinematic information.
+#[derive(Debug)]
+pub struct Material {
+    // Fields.
 }
