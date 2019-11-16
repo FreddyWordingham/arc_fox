@@ -1,17 +1,23 @@
 //! Setup structure.
 
-use contracts::pre;
+use crate::{base::Resolution, json};
+use serde::{Deserialize, Serialize};
 
 /// Setup structure implementation.
-#[derive(Debug)]
+/// Load-time setup information.
+#[derive(Debug, Deserialize, Serialize)]
 pub struct Setup {
-    // Fields.
+    /// Resolution of the grid.
+    res: Resolution,
 }
 
 impl Setup {
     /// Construct a new instance.
-    #[pre(true)]
-    pub fn new() -> Self {
-        Self {}
+    pub fn example() -> Self {
+        Self {
+            res: Resolution::new(9, 9, 9),
+        }
     }
 }
+
+json!(Setup);

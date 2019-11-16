@@ -2,6 +2,8 @@
 
 use arc::{
     args,
+    file::Load,
+    form::Setup,
     init::io_dirs,
     print::term::{section, title},
     report,
@@ -25,6 +27,7 @@ fn main() {
     section("Input");
     report!("Input dir", in_dir.display());
     info!("Loading input form... {}", form_path.display());
+    let form = Setup::load(form_path);
 
     section("Setup");
 
