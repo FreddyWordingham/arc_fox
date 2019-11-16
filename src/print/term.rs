@@ -44,3 +44,44 @@ pub fn title(title: &str) {
 
     println!("  {}", "█".repeat(right_bar));
 }
+
+/// Print a section bar.
+pub fn section(title: &str) {
+    let term_width = (terminal_size()
+        .expect("Unable to determine the terminal size.")
+        .0)
+        .0 as usize;
+
+    print!("\n====");
+
+    unsafe {
+        /// Index of the section.
+        static mut SECTION: i32 = 0;
+        match SECTION % 6 {
+            0 => print!(" {}", title.bright_red().bold()),
+            1 => print!(" {}", title.bright_yellow().bold()),
+            2 => print!(" {}", title.bright_green().bold()),
+            3 => print!(" {}", title.bright_cyan().bold()),
+            4 => print!(" {}", title.bright_blue().bold()),
+            5 => print!(" {}", title.bright_magenta().bold()),
+            _ => unreachable!(),
+        }
+        SECTION += 1;
+    }
+
+    let mut cur_len = 5 + title.len();
+
+    if cur_len >= term_width {
+        println!("");
+        return;
+    }
+
+    print!(" ");
+    cur_len += 1;
+    while cur_len < term_width {
+        print!("=");
+        cur_len += 1;
+    }
+
+    println!("");
+}
