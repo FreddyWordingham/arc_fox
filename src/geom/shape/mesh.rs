@@ -1,14 +1,14 @@
-//! Archive structure.
+//! Mesh structure.
 
 use contracts::pre;
 
-/// Archive structure.
+/// Mesh structure.
 #[derive(Debug)]
-pub struct Archive {
+pub struct Mesh {
     // Fields.
 }
 
-impl Archive {
+impl Mesh {
     /// Construct a new instance.
     #[pre(true)]
     pub fn new() -> Self {

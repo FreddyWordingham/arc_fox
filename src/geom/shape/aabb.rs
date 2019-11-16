@@ -1,14 +1,14 @@
-//! Archive structure.
+//! Aabb structure.
 
 use contracts::pre;
 
-/// Archive structure.
+/// Aabb structure.
 #[derive(Debug)]
-pub struct Archive {
+pub struct Aabb {
     // Fields.
 }
 
-impl Archive {
+impl Aabb {
     /// Construct a new instance.
     #[pre(true)]
     pub fn new() -> Self {

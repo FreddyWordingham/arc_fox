@@ -1,14 +1,14 @@
-//! Archive structure.
+//! Setup structure.
 
 use contracts::pre;
 
-/// Archive structure.
+/// Setup structure.
 #[derive(Debug)]
-pub struct Archive {
+pub struct Setup {
     // Fields.
 }
 
-impl Archive {
+impl Setup {
     /// Construct a new instance.
     #[pre(true)]
     pub fn new() -> Self {

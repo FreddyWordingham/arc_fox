@@ -18,6 +18,7 @@ pub mod form;
 pub mod geom;
 pub mod init;
 pub mod iter;
+pub mod list;
 pub mod mat;
 pub mod opt;
 pub mod print;

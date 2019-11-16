@@ -1,14 +1,14 @@
-//! Archive structure.
+//! Triangle structure.
 
 use contracts::pre;
 
-/// Archive structure.
+/// Triangle structure.
 #[derive(Debug)]
-pub struct Archive {
+pub struct Triangle {
     // Fields.
 }
 
-impl Archive {
+impl Triangle {
     /// Construct a new instance.
     #[pre(true)]
     pub fn new() -> Self {

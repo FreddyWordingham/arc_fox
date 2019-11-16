@@ -1,5 +1,5 @@
 //! Form module.
 
-pub mod main;
+pub mod setup;
 
-pub use self::main::*;
+pub use self::setup::*;
