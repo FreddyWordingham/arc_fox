@@ -2,7 +2,7 @@
 
 use contracts::pre;
 
-/// Vacuum structure.
+/// Vacuum structure implementation.
 #[derive(Debug)]
 pub struct Vacuum {
     // Fields.

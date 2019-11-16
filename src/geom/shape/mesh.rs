@@ -2,7 +2,7 @@
 
 use contracts::pre;
 
-/// Mesh structure.
+/// Mesh structure implementation.
 #[derive(Debug)]
 pub struct Mesh {
     // Fields.

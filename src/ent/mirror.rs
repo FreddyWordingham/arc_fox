@@ -2,7 +2,7 @@
 
 use contracts::pre;
 
-/// Mirror structure.
+/// Mirror structure implementation.
 #[derive(Debug)]
 pub struct Mirror {
     // Fields.

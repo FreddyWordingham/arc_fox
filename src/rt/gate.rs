@@ -2,7 +2,7 @@
 
 use contracts::pre;
 
-/// Gate structure.
+/// Gate structure implementation.
 #[derive(Debug)]
 pub struct Gate {
     // Fields.

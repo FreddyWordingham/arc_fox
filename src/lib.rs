@@ -20,6 +20,7 @@ pub mod init;
 pub mod iter;
 pub mod list;
 pub mod mat;
+pub mod math;
 pub mod opt;
 pub mod print;
 pub mod rng;

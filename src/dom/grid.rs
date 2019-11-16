@@ -2,7 +2,7 @@
 
 use contracts::pre;
 
-/// Grid structure.
+/// Grid structure implementation.
 #[derive(Debug)]
 pub struct Grid {
     // Fields.

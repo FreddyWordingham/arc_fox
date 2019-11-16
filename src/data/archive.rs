@@ -2,7 +2,7 @@
 
 use contracts::pre;
 
-/// Archive structure.
+/// Archive structure implementation.
 #[derive(Debug)]
 pub struct Archive {
     // Fields.

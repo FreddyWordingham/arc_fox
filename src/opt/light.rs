@@ -2,7 +2,7 @@
 
 use contracts::pre;
 
-/// Light structure.
+/// Light structure implementation.
 #[derive(Debug)]
 pub struct Light {
     // Fields.

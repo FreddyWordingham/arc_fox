@@ -2,7 +2,7 @@
 
 use contracts::pre;
 
-/// Setup structure.
+/// Setup structure implementation.
 #[derive(Debug)]
 pub struct Setup {
     // Fields.

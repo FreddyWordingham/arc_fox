@@ -2,7 +2,7 @@
 
 use contracts::pre;
 
-/// Environment structure.
+/// Environment structure implementation.
 #[derive(Debug)]
 pub struct Environment {
     // Fields.

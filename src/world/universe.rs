@@ -2,7 +2,7 @@
 
 use contracts::pre;
 
-/// Universe structure.
+/// Universe structure implementation.
 #[derive(Debug)]
 pub struct Universe {
     // Fields.

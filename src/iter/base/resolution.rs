@@ -2,7 +2,7 @@
 
 use contracts::pre;
 
-/// Resolution structure.
+/// Resolution structure implementation.
 #[derive(Debug)]
 pub struct Resolution {
     // Fields.

@@ -2,7 +2,7 @@
 
 use contracts::pre;
 
-/// Range structure.
+/// Range structure implementation.
 #[derive(Debug)]
 pub struct Range {
     // Fields.

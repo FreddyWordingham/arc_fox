@@ -2,7 +2,7 @@
 
 use contracts::pre;
 
-/// Record structure.
+/// Record structure implementation.
 #[derive(Debug)]
 pub struct Record {
     // Fields.

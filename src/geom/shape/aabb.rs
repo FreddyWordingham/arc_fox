@@ -2,7 +2,7 @@
 
 use contracts::pre;
 
-/// Aabb structure.
+/// Aabb structure implementation.
 #[derive(Debug)]
 pub struct Aabb {
     // Fields.

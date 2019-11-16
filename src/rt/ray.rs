@@ -2,7 +2,7 @@
 
 use contracts::pre;
 
-/// Ray structure.
+/// Ray structure implementation.
 #[derive(Debug)]
 pub struct Ray {
     // Fields.

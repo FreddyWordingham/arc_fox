@@ -2,7 +2,7 @@
 
 use contracts::pre;
 
-/// Diffusive structure.
+/// Diffusive structure implementation.
 #[derive(Debug)]
 pub struct Diffusive {
     // Fields.

@@ -2,7 +2,7 @@
 
 use contracts::pre;
 
-/// Reaction structure.
+/// Reaction structure implementation.
 #[derive(Debug)]
 pub struct Reaction {
     // Fields.

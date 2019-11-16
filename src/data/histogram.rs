@@ -2,7 +2,7 @@
 
 use contracts::pre;
 
-/// Histogram structure.
+/// Histogram structure implementation.
 #[derive(Debug)]
 pub struct Histogram {
     // Fields.

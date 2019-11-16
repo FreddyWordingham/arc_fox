@@ -2,7 +2,7 @@
 
 use contracts::pre;
 
-/// Index structure.
+/// Index structure implementation.
 #[derive(Debug)]
 pub struct Index {
     // Fields.

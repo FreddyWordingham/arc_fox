@@ -2,7 +2,7 @@
 
 use contracts::pre;
 
-/// Tag structure.
+/// Tag structure implementation.
 #[derive(Debug)]
 pub struct Tag {
     // Fields.

@@ -2,7 +2,7 @@
 
 use contracts::pre;
 
-/// Isogram structure.
+/// Isogram structure implementation.
 #[derive(Debug)]
 pub struct Isogram {
     // Fields.

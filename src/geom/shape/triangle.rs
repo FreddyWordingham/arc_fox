@@ -2,7 +2,7 @@
 
 use contracts::pre;
 
-/// Triangle structure.
+/// Triangle structure implementation.
 #[derive(Debug)]
 pub struct Triangle {
     // Fields.

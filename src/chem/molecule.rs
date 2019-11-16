@@ -2,7 +2,7 @@
 
 use contracts::pre;
 
-/// Molecule structure.
+/// Molecule structure implementation.
 #[derive(Debug)]
 pub struct Molecule {
     // Fields.

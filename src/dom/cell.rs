@@ -2,7 +2,7 @@
 
 use contracts::pre;
 
-/// Cell structure.
+/// Cell structure implementation.
 #[derive(Debug)]
 pub struct Cell {
     // Fields.

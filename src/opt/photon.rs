@@ -2,7 +2,7 @@
 
 use contracts::pre;
 
-/// Photon structure.
+/// Photon structure implementation.
 #[derive(Debug)]
 pub struct Photon {
     // Fields.

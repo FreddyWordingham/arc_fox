@@ -2,7 +2,7 @@
 
 use contracts::pre;
 
-/// Interface structure.
+/// Interface structure implementation.
 #[derive(Debug)]
 pub struct Interface {
     // Fields.
