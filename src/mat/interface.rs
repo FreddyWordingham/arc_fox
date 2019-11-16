@@ -57,9 +57,9 @@ impl ProtoInterface {
     }
 
     /// Build an interface.
-    pub fn build<'a>(&self, mat_map: &'a MatMap) -> Interface<'a> {
+    pub fn build<'a>(&self, mesh_dir: &Path, mat_map: &'a MatMap) -> Interface<'a> {
         Interface::new(
-            self.mesh.build(),
+            self.mesh.build(mesh_dir),
             &mat_map[&self.in_mat],
             &mat_map[&self.out_mat],
         )

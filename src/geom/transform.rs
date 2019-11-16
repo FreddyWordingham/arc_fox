@@ -6,9 +6,10 @@ use nalgebra::{Similarity3, Translation3, UnitQuaternion, Vector3};
 use serde::{Deserialize, Serialize};
 use std::fmt::Debug;
 
-/// Transform trait implementation.
+/// Geometries implementing this trait may be transformed.
 pub trait Transform: Debug {
-    // Methods.
+    /// Apply the given transformation.
+    fn transform(&mut self, trans: &Similarity3<f64>);
 }
 
 /// Proto-Transform structure implementation.
