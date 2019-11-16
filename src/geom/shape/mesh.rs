@@ -1,6 +1,9 @@
 //! Mesh structure.
 
+use super::super::ProtoTransform;
+use crate::json;
 use contracts::pre;
+use serde::{Deserialize, Serialize};
 
 /// Mesh structure implementation.
 #[derive(Debug)]
@@ -15,3 +18,23 @@ impl Mesh {
         Self {}
     }
 }
+
+/// Proto-Transform structure implementation.
+/// Stores information required to build a mesh.
+#[derive(Debug, Serialize, Deserialize)]
+pub struct ProtoMesh {
+    /// Mesh name.
+    name: String,
+    /// Optional transform.
+    trans: Option<ProtoTransform>,
+}
+
+impl ProtoMesh {
+    /// Construct a new instance.
+    #[pre(!name.is_empty())]
+    pub fn new(name: String, trans: Option<ProtoTransform>) -> Self {
+        Self { name, trans }
+    }
+}
+
+json!(ProtoMesh);
