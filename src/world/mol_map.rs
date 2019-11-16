@@ -1,0 +1,1 @@
+//! Molecule-map alias.
