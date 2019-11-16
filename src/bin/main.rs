@@ -2,7 +2,7 @@
 
 use arc::{
     args,
-    file::Load,
+    file::{Load, Save},
     form::Setup,
     init::io_dirs,
     print::term::{section, title},
@@ -26,11 +26,23 @@ fn main() {
 
     section("Input");
     report!("Input dir", in_dir.display());
-    info!("Loading input form... {}", form_path.display());
-    let form = Setup::load(form_path);
+    // let form = load_form(Some(&in_dir.join(form_path)));
+    let form = load_form(None);
 
     section("Setup");
 
     section("Output");
     report!("Output dir", out_dir.display());
+    info!("Saving copy of input form.");
+    form.save(&in_dir.join(form_path));
+}
+
+fn load_form(path: Option<&Path>) -> Setup {
+    if let Some(path) = path {
+        report!("Loading setup from file", path.display());
+        Setup::load(path)
+    } else {
+        info!("Using example setup.");
+        Setup::example()
+    }
 }
