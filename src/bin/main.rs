@@ -1,5 +1,8 @@
 //! Main example function showing main capabilities.
 
+use arc::{print::term::title, util::exec};
+
 fn main() {
-    println!("Hello world!");
+    title(&exec::name());
+    colog::init();
 }
