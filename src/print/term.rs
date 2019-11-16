@@ -1,9 +1,11 @@
 //! Term functions.
 
 use colored::Colorize;
+use contracts::pre;
 use terminal_size::terminal_size;
 
 /// Print a main title bar.
+#[pre(!title.is_empty())]
 pub fn title(title: &str) {
     let title = title.to_uppercase();
 
