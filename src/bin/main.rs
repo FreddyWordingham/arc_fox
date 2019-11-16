@@ -26,6 +26,8 @@ fn main() {
     report!("Input dir", in_dir.display());
     info!("Loading input form... {}", form_path.display());
 
+    section("Setup");
+
     section("Output");
     report!("Output dir", out_dir.display());
 }
