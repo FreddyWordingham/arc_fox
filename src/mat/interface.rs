@@ -1,6 +1,13 @@
 //! Interface structure.
 
-use crate::{geom::shape::Mesh, mat::Material};
+use crate::{
+    geom::shape::{Mesh, ProtoMesh},
+    json,
+    mat::Material,
+    world::MatMap,
+};
+use contracts::pre;
+use serde::{Deserialize, Serialize};
 
 /// Interface structure implementation.
 /// Forms the boundary between two regions of material.
@@ -24,3 +31,39 @@ impl<'a> Interface<'a> {
         }
     }
 }
+
+/// Proto-Interface structure implementation.
+/// Stores information required to build an interface.
+#[derive(Debug, Serialize, Deserialize)]
+pub struct ProtoInterface {
+    /// Proto-mesh.
+    mesh: ProtoMesh,
+    /// Inside material key.
+    in_mat: String,
+    /// Outside material key.
+    out_mat: String,
+}
+
+impl ProtoInterface {
+    /// Construct a new instance.
+    #[pre(!in_mat.is_empty())]
+    #[pre(!out_mat.is_empty())]
+    pub fn new(mesh: ProtoMesh, in_mat: String, out_mat: String) -> Self {
+        Self {
+            mesh,
+            in_mat,
+            out_mat,
+        }
+    }
+
+    /// Build an interface.
+    pub fn build<'a>(&self, mat_map: &'a MatMap) -> Interface<'a> {
+        Interface::new(
+            self.mesh.build(),
+            &mat_map[&self.in_mat],
+            &mat_map[&self.out_mat],
+        )
+    }
+}
+
+json!(ProtoInterface);

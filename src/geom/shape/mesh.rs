@@ -35,6 +35,11 @@ impl ProtoMesh {
     pub fn new(name: String, trans: Option<ProtoTransform>) -> Self {
         Self { name, trans }
     }
+
+    /// Build a mesh.
+    pub fn build(&self) -> Mesh {
+        Mesh::new()
+    }
 }
 
 json!(ProtoMesh);

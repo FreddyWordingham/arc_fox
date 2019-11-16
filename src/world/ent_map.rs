@@ -1,1 +1,0 @@
-//! Entity-map alias.
