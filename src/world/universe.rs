@@ -1,7 +1,9 @@
 //! Universe structure.
 
 use crate::{base::Resolution, json, mat::ProtoInterface};
-use contracts::pre;
+use contracts::{post, pre};
+use log::info;
+use nalgebra::Vector3;
 use serde::{Deserialize, Serialize};
 
 /// Universe structure implementation.
@@ -12,8 +14,9 @@ pub struct Universe {
 
 impl Universe {
     /// Construct a new instance.
-    #[pre(true)]
-    pub fn new() -> Self {
+    pub fn build(_proto: &ProtoUniverse) -> Self {
+        info!("Building universe...");
+
         Self {}
     }
 }
@@ -24,6 +27,8 @@ impl Universe {
 pub struct ProtoUniverse {
     /// Grid resolution.
     res: Resolution,
+    /// Half-extents.
+    half_extents: Vector3<f64>,
     /// Interfaces.
     inters: Vec<ProtoInterface>,
 }
@@ -31,8 +36,29 @@ pub struct ProtoUniverse {
 impl ProtoUniverse {
     /// Construct a new instance.
     #[pre(!inters.is_empty())]
-    pub fn new(res: Resolution, inters: Vec<ProtoInterface>) -> Self {
-        Self { res, inters }
+    #[pre(half_extents.iter().all(|x| *x > 0.0))]
+    pub fn new(res: Resolution, half_extents: Vector3<f64>, inters: Vec<ProtoInterface>) -> Self {
+        Self {
+            res,
+            half_extents,
+            inters,
+        }
+    }
+
+    /// Construct a list of material names.
+    #[post(!ret.is_empty())]
+    fn mat_list(&self) -> Vec<&str> {
+        let mut mat_list = Vec::new();
+
+        for inter in self.inters.iter() {
+            mat_list.push(inter.in_mat());
+            mat_list.push(inter.out_mat());
+        }
+
+        mat_list.sort();
+        mat_list.dedup();
+
+        mat_list
     }
 }
 

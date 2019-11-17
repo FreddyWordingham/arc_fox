@@ -8,6 +8,7 @@ use arc::{
     print::term::{section, title},
     report,
     util::exec,
+    world::Universe,
 };
 use log::info;
 use std::path::Path;
@@ -30,6 +31,7 @@ fn main() {
     let form = load_form(None);
 
     section("Setup");
+    let uni = Universe::build(form.uni());
 
     section("Output");
     report!("Output dir", out_dir.display());

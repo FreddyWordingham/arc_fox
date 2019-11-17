@@ -56,6 +56,21 @@ impl ProtoInterface {
         }
     }
 
+    /// Reference the mesh.
+    pub fn mesh(&self) -> &ProtoMesh {
+        &self.mesh
+    }
+
+    /// Reference the inside material.
+    pub fn in_mat(&self) -> &str {
+        &self.in_mat
+    }
+
+    /// Reference the outside material.
+    pub fn out_mat(&self) -> &str {
+        &self.out_mat
+    }
+
     /// Build an interface.
     pub fn build<'a>(&self, mesh_dir: &Path, mat_map: &'a MatMap) -> Interface<'a> {
         Interface::new(
