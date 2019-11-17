@@ -1,5 +1,9 @@
 //! Aabb structure.
 
+use crate::{
+    base::{Index, Resolution},
+    util::Range,
+};
 use contracts::{post, pre};
 use nalgebra::{Point3, Vector3};
 
@@ -58,5 +62,26 @@ impl Aabb {
     pub fn vol(&self) -> f64 {
         let ws = self.widths();
         ws.x * ws.y * ws.z
+    }
+
+    /// Determine if the given point if contained.
+    pub fn contains(&self, p: &Point3<f64>) -> bool {
+        (p.x >= self.mins.x)
+            && (p.x <= self.maxs.x)
+            && (p.y >= self.mins.y)
+            && (p.y <= self.maxs.y)
+            && (p.z >= self.mins.z)
+            && (p.z <= self.maxs.z)
+    }
+
+    /// Determine the index corresponding to a given point in the range.
+    #[pre(self.contains(p))]
+    #[post(res.contains(&ret))]
+    pub fn find_index(&self, p: &Point3<f64>, res: &Resolution) -> Index {
+        let xi = Range::new(self.mins.x, self.maxs.x).find_index(p.x, res.x());
+        let yi = Range::new(self.mins.y, self.maxs.y).find_index(p.y, res.y());
+        let zi = Range::new(self.mins.z, self.maxs.z).find_index(p.z, res.z());
+
+        Index::new(xi, yi, zi)
     }
 }

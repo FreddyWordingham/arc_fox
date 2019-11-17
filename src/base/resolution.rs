@@ -9,7 +9,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct Resolution {
     /// Number of indices in each dimension.
-    pub arr: [usize; 3],
+    arr: [usize; 3],
 }
 
 impl Resolution {
@@ -39,10 +39,20 @@ impl Resolution {
         self.arr[Z as usize]
     }
 
+    /// Reference the underlying array.
+    pub fn arr(&self) -> &[usize; 3] {
+        &self.arr
+    }
+
     /// Get the total number of indices.
     #[post(ret > 0)]
     pub fn total(&self) -> usize {
         self.arr[X as usize] * self.arr[Y as usize] * self.arr[Z as usize]
+    }
+
+    /// Determine if a given index is contained.
+    pub fn contains(&self, index: &Index) -> bool {
+        index.arr().iter().zip(self.arr.iter()).all(|(i, r)| i < r)
     }
 
     /// Get the index corresponding to the n-th entry in the block.

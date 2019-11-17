@@ -1,7 +1,7 @@
 //! Range structure.
 
 use contracts::{post, pre};
-use std::f64::{INFINITY, NEG_INFINITY};
+use std::f64::{INFINITY, MIN_POSITIVE, NEG_INFINITY};
 
 /// Range structure implementation.
 /// One-dimensional inclusive Range.
@@ -69,5 +69,12 @@ impl Range {
         let max = self.max.min(other.max);
 
         Some(Self::new(min, max))
+    }
+
+    /// Determine the index corresponding to a given point in the range.
+    #[pre(self.contains(x))]
+    #[post(ret < n)]
+    pub fn find_index(&self, x: f64, n: usize) -> usize {
+        (((x - self.min) / self.width()).min(1.0 - MIN_POSITIVE) * n as f64).floor() as usize
     }
 }

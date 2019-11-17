@@ -7,7 +7,7 @@ use contracts::{post, pre};
 #[derive(Debug, Clone)]
 pub struct Index {
     /// Number of indices in each dimension.
-    pub arr: [usize; 3],
+    arr: [usize; 3],
 }
 
 impl Index {
@@ -35,5 +35,10 @@ impl Index {
     #[post(ret > 0)]
     pub fn z(&self) -> usize {
         self.arr[Z as usize]
+    }
+
+    /// Reference the underlying array.
+    pub fn arr(&self) -> &[usize; 3] {
+        &self.arr
     }
 }
