@@ -33,7 +33,7 @@ impl<'a> Universe<'a> {
 
         Arc::try_unwrap(self_referencing!(Universe, {
             mol_map = new_mol_map(&input_dir.join("mols"), proto_uni.mol_list());
-            react_map = new_react_map(&input_dir.join("reacts"), proto_uni.react_map(), &mol_map);
+            react_map = new_react_map(proto_uni.react_map(), &mol_map);
             mat_map = new_mat_map(&input_dir.join("mats"), proto_uni.mat_list());
             inter_map = new_inter_map(&input_dir.join("meshes"), proto_uni.inter_map(), &mat_map);
         }))
@@ -105,7 +105,7 @@ impl ProtoUniverse {
             for reactant in react.reactants().iter() {
                 mol_list.push(reactant.1.clone());
             }
-            for product in react.reactants().iter() {
+            for product in react.products().iter() {
                 mol_list.push(product.1.clone());
             }
             for depend in react.rate().dependants().iter() {
@@ -113,8 +113,10 @@ impl ProtoUniverse {
             }
         }
 
-        for (_id, _inter) in self.inter_map.iter() {
-            // Todo: Get any concentrations set within the material.
+        for (_id, region) in self.region_map.iter() {
+            for (mol_id, (_init_conc, _source)) in region.init_conc_sources().iter() {
+                mol_list.push(mol_id.to_string());
+            }
         }
 
         mol_list.sort();
