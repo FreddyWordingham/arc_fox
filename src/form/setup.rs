@@ -3,7 +3,7 @@
 use crate::{
     base::Resolution,
     chem::{ProtoRate, ProtoReaction},
-    dom::ProtoRegion,
+    dom::{ProtoGrid, ProtoRegion},
     geom::{shape::ProtoMesh, ProtoTransform},
     json, map,
     mat::ProtoInterface,
@@ -93,8 +93,7 @@ impl Setup {
         Self {
             num_threads: 4,
             uni: ProtoUniverse::new(
-                Resolution::new(9, 9, 9),
-                Vector3::new(1.0, 1.0, 1.0),
+                ProtoGrid::new(Resolution::new(9, 9, 9), Vector3::new(1.0, 1.0, 1.0)),
                 react_map,
                 inter_map,
                 region_map,
