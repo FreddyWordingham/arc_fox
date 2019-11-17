@@ -29,15 +29,19 @@ pub struct Universe<'a> {
 impl<'a> Universe<'a> {
     /// Construct a new instance.
     pub fn build(input_dir: &Path, proto_uni: &ProtoUniverse) -> Self {
-        info!("Building universe...");
+        info!("Building universe...\n");
 
-        Arc::try_unwrap(self_referencing!(Universe, {
+        let uni = Arc::try_unwrap(self_referencing!(Universe, {
             mol_map = new_mol_map(&input_dir.join("mols"), proto_uni.mol_list());
             react_map = new_react_map(proto_uni.react_map(), &mol_map);
             mat_map = new_mat_map(&input_dir.join("mats"), proto_uni.mat_list());
             inter_map = new_inter_map(&input_dir.join("meshes"), proto_uni.inter_map(), &mat_map);
         }))
-        .expect("Could not create universe instance.")
+        .expect("Could not create universe instance.");
+
+        info!("Universe constructed.");
+
+        uni
     }
 }
 

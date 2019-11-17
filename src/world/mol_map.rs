@@ -20,14 +20,14 @@ pub fn new_mol_map(mol_dir: &Path, mut ids: Vec<String>) -> MolMap {
 
     let mut mol_map = MolMap::with_capacity(ids.len());
     for id in ids.iter() {
-        info!("Loading molecule: {}", id);
+        info!("\tLoading molecule: {}", id);
         mol_map.insert(
             id.to_string(),
             Molecule::load(&mol_dir.join(format!("{}.json", id))),
         );
     }
 
-    info!("Loaded {} total molecules.", mol_map.len());
+    info!("Loaded {} total molecules.\n", mol_map.len());
 
     mol_map
 }

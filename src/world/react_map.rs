@@ -20,11 +20,11 @@ pub fn new_react_map(
 
     let mut react_map = ReactMap::with_capacity(proto_react_map.len());
     for (id, proto_react) in proto_react_map.iter() {
-        info!("Loading reaction: {}", id);
+        info!("\tLoading reaction: {}", id);
         react_map.insert(id.to_string(), Reaction::build(mol_map, proto_react));
     }
 
-    info!("Loaded {} total reactions.", react_map.len());
+    info!("Loaded {} total reactions.\n", react_map.len());
 
     react_map
 }

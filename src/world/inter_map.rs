@@ -22,14 +22,14 @@ pub fn new_inter_map<'a>(
 
     let mut inter_map = InterMap::with_capacity(proto_inter_map.len());
     for (id, proto_inter) in proto_inter_map.iter() {
-        info!("Loading interface: {}", id);
+        info!("\tLoading interface: {}", id);
         inter_map.insert(
             id.to_string(),
             Interface::build(mesh_dir, proto_inter, mat_map),
         );
     }
 
-    info!("Loaded {} total interfaces.", inter_map.len());
+    info!("Loaded {} total interfaces.\n", inter_map.len());
 
     inter_map
 }

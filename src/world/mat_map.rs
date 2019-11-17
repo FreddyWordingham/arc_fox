@@ -20,11 +20,11 @@ pub fn new_mat_map(mat_dir: &Path, mut ids: Vec<String>) -> MatMap {
 
     let mut mat_map = MatMap::with_capacity(ids.len());
     for id in ids.iter() {
-        info!("Loading material: {}", id);
+        info!("\tLoading material: {}", id);
         mat_map.insert(id.to_string(), Material::new());
     }
 
-    info!("Loaded {} total materials.", mat_map.len());
+    info!("Loaded {} total materials.\n", mat_map.len());
 
     mat_map
 }
