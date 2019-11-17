@@ -1,5 +1,6 @@
 //! Univariate enumeration.
 
+use contracts::pre;
 use ndarray::Array1;
 
 /// Univariate enumeration implementation.
@@ -7,19 +8,38 @@ use ndarray::Array1;
 #[derive(Debug)]
 pub enum Rate {
     /// Constant value. f(cs) = C
-    Const(f64),
+    Zeroth(f64),
+    /// Proportional to one reactant concentration.
+    First(f64, usize),
+    /// Proportional to two reactant concentrations.
+    Second(f64, usize, usize),
 }
 
 impl Rate {
-    /// Construct a new constant formula.
-    pub fn new_const(c: f64) -> Self {
-        Rate::Const(c)
+    /// Construct a new zeroth order instance.
+    #[pre(k > 0.0)]
+    pub fn new_zeroth_order(k: f64) -> Self {
+        Rate::Zeroth(k)
+    }
+
+    /// Construct a new first order instance.
+    #[pre(k > 0.0)]
+    pub fn new_first_order(k: f64, ci: usize) -> Self {
+        Rate::First(k, ci)
+    }
+
+    /// Construct a new second order instance.
+    #[pre(k > 0.0)]
+    pub fn new_second_order(k: f64, ci_0: usize, ci_1: usize) -> Self {
+        Rate::Second(k, ci_0, ci_1)
     }
 
     /// Calculate the result of the formula.
-    pub fn res(&self, _concs: Array1<f64>) -> f64 {
+    pub fn res(&self, concs: &Array1<f64>) -> f64 {
         match self {
-            Rate::Const(c) => *c,
+            Rate::Zeroth(k) => -*k,
+            Rate::First(k, ci) => -*k * concs[*ci],
+            Rate::Second(k, ci_0, ci_1) => -*k * concs[*ci_0] * concs[*ci_1],
         }
     }
 }
