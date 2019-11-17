@@ -1,7 +1,7 @@
 //! Reaction structure.
 
 use super::{ProtoRate, Rate};
-use crate::json;
+use crate::{json, world::MolMap};
 use contracts::pre;
 use serde::{Deserialize, Serialize};
 
@@ -26,6 +26,15 @@ impl Reaction {
             products,
             rate,
         }
+    }
+
+    /// Build an instance from a proto-reaction.
+    pub fn build(mol_map: &MolMap, proto_reaction: &ProtoReaction) -> Self {
+        let reactants = Vec::with_capacity(proto_reaction.reactants().len());
+        let products = Vec::with_capacity(proto_reaction.products().len());
+        let rate = Rate::build(mol_map, proto_reaction.rate());
+
+        Self::new(reactants, products, rate)
     }
 }
 

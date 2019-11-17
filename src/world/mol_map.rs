@@ -8,26 +8,26 @@ use std::{collections::HashMap, path::Path};
 /// Molecule-map alias.
 pub type MolMap = HashMap<String, Molecule>;
 
-/// Construct a molecule-map from a list of molecule names.
+/// Construct a molecule-map from a list of molecule ids.
 #[pre(mol_dir.is_dir())]
-#[pre(!names.is_empty())]
+#[pre(!ids.is_empty())]
 #[post(!ret.is_empty())]
-pub fn new_mol_map(mol_dir: &Path, mut names: Vec<String>) -> MolMap {
+pub fn new_mol_map(mol_dir: &Path, mut ids: Vec<String>) -> MolMap {
     info!("Constructing the molecule map...");
 
-    names.sort();
-    names.dedup();
+    ids.sort();
+    ids.dedup();
 
-    let mut mol_map = MolMap::with_capacity(names.len());
-    for name in names.iter() {
-        info!("Loading molecule: {}", name);
+    let mut mol_map = MolMap::with_capacity(ids.len());
+    for id in ids.iter() {
+        info!("Loading molecule: {}", id);
         mol_map.insert(
-            name.to_string(),
-            Molecule::load(&mol_dir.join(format!("{}.json", name))),
+            id.to_string(),
+            Molecule::load(&mol_dir.join(format!("{}.json", id))),
         );
     }
 
-    info!("Loaded {} total molecule.", mol_map.len());
+    info!("Loaded {} total molecules.", mol_map.len());
 
     mol_map
 }

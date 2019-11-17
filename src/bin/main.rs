@@ -25,9 +25,6 @@ fn main() {
     let form_path = Path::new(&form_path);
     let (in_dir, out_dir) = io_dirs(None, None);
 
-    // let mol = arc::chem::Molecule::new(0.1);
-    // mol.save(&in_dir.join("ala.json"));
-
     section("Input");
     report!("Input dir", in_dir.display());
     // let form = load_form(Some(&in_dir.join(form_path)));
