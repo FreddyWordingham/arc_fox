@@ -1,12 +1,16 @@
 //! Mesh structure.
 
 use super::{
-    super::{ProtoTransform, Transform},
+    super::{Collide, ProtoTransform, Transform},
     Aabb, Triangle,
 };
-use crate::{json, list::alphabet::Greek::Alpha};
+use crate::{
+    json,
+    list::alphabet::Greek::Alpha,
+    rt::{Ray, Trace},
+};
 use contracts::pre;
-use nalgebra::Similarity3;
+use nalgebra::{Similarity3, Unit, Vector3};
 use serde::{Deserialize, Serialize};
 
 /// Mesh structure implementation.
@@ -57,6 +61,62 @@ impl Transform for Mesh {
         }
 
         self.aabb = Self::init_aabb(&self.tris);
+    }
+}
+
+impl Collide for Mesh {
+    fn bounding_box(&self) -> Aabb {
+        self.aabb.clone()
+    }
+
+    fn overlap(&self, aabb: &Aabb) -> bool {
+        if !self.aabb.overlap(aabb) {
+            return false;
+        }
+
+        for tri in self.tris.iter() {
+            if tri.overlap(aabb) {
+                return true;
+            }
+        }
+
+        false
+    }
+}
+
+impl Trace for Mesh {
+    fn hit(&self, ray: &Ray) -> bool {
+        if !self.aabb.hit(ray) {
+            return false;
+        }
+
+        self.tris.iter().any(|t| t.hit(ray))
+    }
+
+    fn dist(&self, ray: &Ray) -> Option<f64> {
+        if !self.aabb.hit(ray) {
+            return None;
+        }
+
+        self.tris
+            .iter()
+            .map(|tri| tri.dist(ray))
+            .filter(|dist| dist.is_some())
+            .map(|o| o.unwrap())
+            .min_by(|a, b| a.partial_cmp(b).unwrap())
+    }
+
+    fn dist_norm(&self, ray: &Ray) -> Option<(f64, Unit<Vector3<f64>>)> {
+        if !self.aabb.hit(ray) {
+            return None;
+        }
+
+        self.tris
+            .iter()
+            .map(|tri| tri.dist_norm(ray))
+            .filter(|dist_norm| dist_norm.is_some())
+            .map(|o| o.unwrap())
+            .min_by(|a, b| a.0.partial_cmp(&b.0).unwrap())
     }
 }
 
