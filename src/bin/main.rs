@@ -31,7 +31,7 @@ fn main() {
     let form = load_form(None);
 
     section("Setup");
-    let uni = Universe::build(form.uni());
+    let uni = Universe::build(&in_dir.join("mats"), form.uni());
 
     section("Output");
     report!("Output dir", out_dir.display());

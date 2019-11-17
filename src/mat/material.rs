@@ -6,3 +6,10 @@
 pub struct Material {
     // Fields.
 }
+
+impl Material {
+    /// Construct a new instance.
+    pub fn new() -> Self {
+        Self {}
+    }
+}

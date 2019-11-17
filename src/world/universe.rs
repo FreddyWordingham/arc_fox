@@ -1,5 +1,6 @@
 //! Universe structure.
 
+use super::{new_mat_map, MatMap};
 use crate::{base::Resolution, json, mat::ProtoInterface};
 use contracts::{post, pre};
 use log::info;
@@ -9,15 +10,18 @@ use serde::{Deserialize, Serialize};
 /// Universe structure implementation.
 #[derive(Debug)]
 pub struct Universe {
-    // Fields.
+    // Material-map.
+    mat_map: MatMap,
 }
 
 impl Universe {
     /// Construct a new instance.
-    pub fn build(_proto: &ProtoUniverse) -> Self {
+    pub fn build(mat_dir: &Path, proto_uni: &ProtoUniverse) -> Self {
         info!("Building universe...");
 
-        Self {}
+        let mat_map = new_mat_map(mat_dir, proto_uni.mat_list());
+
+        Self { mat_map }
     }
 }
 
