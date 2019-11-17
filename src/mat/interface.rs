@@ -13,22 +13,38 @@ use serde::{Deserialize, Serialize};
 /// Forms the boundary between two regions of material.
 #[derive(Debug)]
 pub struct Interface<'a> {
-    /// Surface mesh.
-    mesh: Mesh,
     /// Inside material.
     in_mat: &'a Material,
     /// Outside material.
     out_mat: &'a Material,
+    /// Surface mesh.
+    mesh: Mesh,
 }
 
 impl<'a> Interface<'a> {
     /// Construct a new instance.
-    pub fn new(mesh: Mesh, in_mat: &'a Material, out_mat: &'a Material) -> Self {
+    pub fn new(in_mat: &'a Material, out_mat: &'a Material, mesh: Mesh) -> Self {
         Self {
-            mesh,
             in_mat,
             out_mat,
+            mesh,
         }
+    }
+
+    /// Build an instance from a proto-interface.
+    #[pre(!mat_map.is_empty())]
+    #[pre(mesh_dir.is_dir())]
+    pub fn build(
+        &self,
+        mat_map: &'a MatMap,
+        mesh_dir: &Path,
+        proto_inter: &ProtoInterface,
+    ) -> Self {
+        Self::new(
+            &mat_map[proto_inter.in_mat()],
+            &mat_map[proto_inter.out_mat()],
+            Mesh::build(mesh_dir, proto_inter.mesh()),
+        )
     }
 }
 
@@ -69,15 +85,6 @@ impl ProtoInterface {
     /// Reference the outside material.
     pub fn out_mat(&self) -> &str {
         &self.out_mat
-    }
-
-    /// Build an interface.
-    pub fn build<'a>(&self, mesh_dir: &Path, mat_map: &'a MatMap) -> Interface<'a> {
-        Interface::new(
-            self.mesh.build(mesh_dir),
-            &mat_map[&self.in_mat],
-            &mat_map[&self.out_mat],
-        )
     }
 }
 

@@ -39,9 +39,9 @@ impl Rate {
         Rate::SecondOrder(k, ci_0, ci_1)
     }
 
-    /// Build a new instance from a proto-reaction.
+    /// Build an instance from a proto-reaction.
     #[pre(!mol_map.is_empty())]
-    pub fn build(proto_rate: &ProtoRate, mol_map: &MolMap) -> Self {
+    pub fn build(mol_map: &MolMap, proto_rate: &ProtoRate) -> Self {
         match proto_rate {
             ProtoRate::ZerothOrder(k) => Self::new_zeroth_order(*k),
             ProtoRate::FirstOrder(k, c_id) => {

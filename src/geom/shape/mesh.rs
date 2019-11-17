@@ -33,6 +33,20 @@ impl Mesh {
         }
     }
 
+    /// Build an instance from a proto-mesh.
+    #[pre(mesh_dir.is_dir())]
+    pub fn build(mesh_dir: &Path, proto_mesh: &ProtoMesh) -> Self {
+        let tris = Vec::load(&mesh_dir.join(format!("{}.obj", proto_mesh.name())));
+        let mut mesh = Mesh::new(tris);
+
+        if let Some(trans) = proto_mesh.trans() {
+            let trans = trans.build();
+            mesh.transform(&trans);
+        }
+
+        mesh
+    }
+
     /// Initialise the axis-aligned bounding box for the given list of triangles.
     fn init_aabb(tris: &Vec<Triangle>) -> Aabb {
         let mut mins = tris[0].verts()[Alpha as usize];
@@ -137,17 +151,14 @@ impl ProtoMesh {
         Self { name, trans }
     }
 
-    /// Build a mesh.
-    pub fn build(&self, mesh_dir: &Path) -> Mesh {
-        let tris = Vec::load(&mesh_dir.join(format!("{}.obj", self.name)));
-        let mut mesh = Mesh::new(tris);
+    /// Reference the mesh name.
+    pub fn name(&self) -> &str {
+        &self.name
+    }
 
-        if let Some(trans) = &self.trans {
-            let trans = trans.build();
-            mesh.transform(&trans);
-        }
-
-        mesh
+    /// Reference the optional transform.
+    pub fn trans(&self) -> &Option<ProtoTransform> {
+        &self.trans
     }
 }
 
