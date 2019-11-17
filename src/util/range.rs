@@ -1,11 +1,13 @@
 //! Range structure.
 
+use crate::json;
 use contracts::{post, pre};
+use serde::{Deserialize, Serialize};
 use std::f64::{INFINITY, MIN_POSITIVE, NEG_INFINITY};
 
 /// Range structure implementation.
 /// One-dimensional inclusive Range.
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Range {
     /// Minimum bound.
     min: f64,
@@ -78,3 +80,5 @@ impl Range {
         (((x - self.min) / self.width()).min(1.0 - MIN_POSITIVE) * n as f64).floor() as usize
     }
 }
+
+json!(Range);
