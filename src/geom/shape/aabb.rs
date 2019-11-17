@@ -21,7 +21,7 @@ pub struct Aabb {
 
 impl Aabb {
     /// Construct a new instance.
-    #[pre(mins < maxs)]
+    // #[pre(mins < maxs)] TODO: Supervise this.
     pub fn new(mins: Point3<f64>, maxs: Point3<f64>) -> Self {
         Self { mins, maxs }
     }

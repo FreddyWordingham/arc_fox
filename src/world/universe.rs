@@ -1,38 +1,43 @@
 //! Universe structure.
 
-use super::{new_mat_map, new_mol_map, new_react_map, MatMap, MolMap, ReactMap};
+#![allow(unused_variables)]
+
+use super::{
+    new_inter_map, new_mat_map, new_mol_map, new_react_map, InterMap, MatMap, MolMap, ReactMap,
+};
 use crate::{base::Resolution, chem::ProtoReaction, json, mat::ProtoInterface};
 use contracts::{post, pre};
 use log::info;
 use nalgebra::Vector3;
+use self_ref::self_referencing;
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
+use std::{collections::HashMap, sync::Arc};
 
 /// Universe structure implementation.
 #[derive(Debug)]
-pub struct Universe {
+pub struct Universe<'a> {
     /// Molecule-map.
     mol_map: MolMap,
     // Reaction-map.
     react_map: ReactMap,
     /// Material-map.
     mat_map: MatMap,
+    /// Interface-map.
+    inter_map: InterMap<'a>,
 }
 
-impl Universe {
+impl<'a> Universe<'a> {
     /// Construct a new instance.
     pub fn build(input_dir: &Path, proto_uni: &ProtoUniverse) -> Self {
         info!("Building universe...");
 
-        let mol_map = new_mol_map(&input_dir.join("mols"), proto_uni.mol_list());
-        let react_map = new_react_map(&input_dir.join("reacts"), proto_uni.react_map(), &mol_map);
-        let mat_map = new_mat_map(&input_dir.join("mats"), proto_uni.mat_list());
-
-        Self {
-            mol_map,
-            react_map,
-            mat_map,
-        }
+        Arc::try_unwrap(self_referencing!(Universe, {
+            mol_map = new_mol_map(&input_dir.join("mols"), proto_uni.mol_list());
+            react_map = new_react_map(&input_dir.join("reacts"), proto_uni.react_map(), &mol_map);
+            mat_map = new_mat_map(&input_dir.join("mats"), proto_uni.mat_list());
+            inter_map = new_inter_map(&input_dir.join("meshes"), proto_uni.inter_map(), &mat_map);
+        }))
+        .expect("Could not create universe instance.")
     }
 }
 
@@ -47,24 +52,25 @@ pub struct ProtoUniverse {
     /// Reactions.
     react_map: HashMap<String, ProtoReaction>,
     /// Interfaces.
-    inters: HashMap<String, ProtoInterface>,
+    inter_map: HashMap<String, ProtoInterface>,
 }
 
 impl ProtoUniverse {
     /// Construct a new instance.
-    #[pre(!inters.is_empty())]
+    #[pre(!react_map.is_empty())]
+    #[pre(!inter_map.is_empty())]
     #[pre(half_extents.iter().all(|x| *x > 0.0))]
     pub fn new(
         res: Resolution,
         half_extents: Vector3<f64>,
         react_map: HashMap<String, ProtoReaction>,
-        inters: HashMap<String, ProtoInterface>,
+        inter_map: HashMap<String, ProtoInterface>,
     ) -> Self {
         Self {
             res,
             half_extents,
             react_map,
-            inters,
+            inter_map,
         }
     }
 
@@ -72,6 +78,12 @@ impl ProtoUniverse {
     #[post(!ret.is_empty())]
     fn react_map(&self) -> &HashMap<String, ProtoReaction> {
         &self.react_map
+    }
+
+    /// Reference the interface map.
+    #[post(!ret.is_empty())]
+    fn inter_map(&self) -> &HashMap<String, ProtoInterface> {
+        &self.inter_map
     }
 
     /// Construct a list of molecule names.
@@ -91,7 +103,7 @@ impl ProtoUniverse {
             }
         }
 
-        for (_id, _inter) in self.inters.iter() {
+        for (_id, _inter) in self.inter_map.iter() {
             // Todo: Get any concentrations set within the material.
         }
 
@@ -106,7 +118,7 @@ impl ProtoUniverse {
     fn mat_list(&self) -> Vec<String> {
         let mut mat_list = Vec::new();
 
-        for (_id, inter) in self.inters.iter() {
+        for (_id, inter) in self.inter_map.iter() {
             mat_list.push(inter.in_mat().to_string());
             mat_list.push(inter.out_mat().to_string());
         }

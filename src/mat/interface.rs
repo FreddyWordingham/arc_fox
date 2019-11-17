@@ -32,14 +32,9 @@ impl<'a> Interface<'a> {
     }
 
     /// Build an instance from a proto-interface.
-    #[pre(!mat_map.is_empty())]
     #[pre(mesh_dir.is_dir())]
-    pub fn build(
-        &self,
-        mat_map: &'a MatMap,
-        mesh_dir: &Path,
-        proto_inter: &ProtoInterface,
-    ) -> Self {
+    #[pre(!mat_map.is_empty())]
+    pub fn build(mesh_dir: &Path, proto_inter: &ProtoInterface, mat_map: &'a MatMap) -> Self {
         Self::new(
             &mat_map[proto_inter.in_mat()],
             &mat_map[proto_inter.out_mat()],
