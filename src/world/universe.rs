@@ -5,7 +5,7 @@
 use super::{
     new_inter_map, new_mat_map, new_mol_map, new_react_map, InterMap, MatMap, MolMap, ReactMap,
 };
-use crate::{base::Resolution, chem::ProtoReaction, json, mat::ProtoInterface};
+use crate::{base::Resolution, chem::ProtoReaction, dom::ProtoRegion, json, mat::ProtoInterface};
 use contracts::{post, pre};
 use log::info;
 use nalgebra::Vector3;
@@ -53,6 +53,8 @@ pub struct ProtoUniverse {
     react_map: HashMap<String, ProtoReaction>,
     /// Interfaces.
     inter_map: HashMap<String, ProtoInterface>,
+    /// Regions to initialise.
+    region_map: HashMap<String, ProtoRegion>,
 }
 
 impl ProtoUniverse {
@@ -65,12 +67,14 @@ impl ProtoUniverse {
         half_extents: Vector3<f64>,
         react_map: HashMap<String, ProtoReaction>,
         inter_map: HashMap<String, ProtoInterface>,
+        region_map: HashMap<String, ProtoRegion>,
     ) -> Self {
         Self {
             res,
             half_extents,
             react_map,
             inter_map,
+            region_map,
         }
     }
 
@@ -84,6 +88,12 @@ impl ProtoUniverse {
     #[post(!ret.is_empty())]
     fn inter_map(&self) -> &HashMap<String, ProtoInterface> {
         &self.inter_map
+    }
+
+    /// Reference the region map initialisation list.
+    #[post(!ret.is_empty())]
+    fn region_map(&self) -> &HashMap<String, ProtoRegion> {
+        &self.region_map
     }
 
     /// Construct a list of molecule names.

@@ -3,14 +3,14 @@
 use crate::{
     base::Resolution,
     chem::{ProtoRate, ProtoReaction},
+    dom::ProtoRegion,
     geom::{shape::ProtoMesh, ProtoTransform},
-    json,
+    json, map,
     mat::ProtoInterface,
     world::ProtoUniverse,
 };
 use nalgebra::{Translation3, Vector3};
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
 
 /// Setup structure implementation.
 /// Load-time setup information.
@@ -27,63 +27,68 @@ pub struct Setup {
 impl Setup {
     /// Construct a new instance.
     pub fn example() -> Self {
-        let mut react_map = HashMap::with_capacity(2);
-        react_map.insert(
-            "ppix_formation".to_string(),
+        let react_map = map!(
+            "ppix_formation".to_string() =>
             ProtoReaction::new(
                 vec![(8, "ala".to_string())],
                 vec![(1, "ppix".to_string())],
                 ProtoRate::new_first_order(0.05, "ala".to_string()),
             ),
-        );
-        react_map.insert(
-            "cell_death_mechanism".to_string(),
+            "cell_death_mechanism".to_string() =>
             ProtoReaction::new(
                 vec![(1, "ppix".to_string()), (1, "udens".to_string())],
                 vec![(1, "death".to_string())],
                 ProtoRate::new_second_order(0.75, "ppix".to_string(), "udens".to_string()),
-            ),
+            )
         );
 
-        let mut inter_map = HashMap::with_capacity(3);
-        inter_map.insert(
-            "top_plane".to_string(),
-            ProtoInterface::new(
-                ProtoMesh::new(
-                    "plane".to_string(),
-                    Some(ProtoTransform::new(
-                        Some(Translation3::new(0.0, 0.0, 0.75)),
-                        None,
-                        Some(1.05),
-                    )),
-                ),
-                "fog".to_string(),
-                "air".to_string(),
+        let inter_map = map!(
+        "top_plane".to_string() =>
+        ProtoInterface::new(
+            ProtoMesh::new(
+                "plane".to_string(),
+                Some(ProtoTransform::new(
+                    Some(Translation3::new(0.0, 0.0, 0.75)),
+                    None,
+                    Some(1.05),
+                )),
             ),
-        );
-        inter_map.insert(
-            "torus".to_string(),
-            ProtoInterface::new(
-                ProtoMesh::new("torus".to_string(), None),
-                "fog".to_string(),
-                "air".to_string(),
+            "fog".to_string(),
+            "air".to_string(),
+        ),
+        "torus".to_string() =>
+        ProtoInterface::new(
+            ProtoMesh::new("torus".to_string(), None),
+            "fog".to_string(),
+            "air".to_string(),
+        ),
+        "bottom_plane".to_string() =>
+        ProtoInterface::new(
+            ProtoMesh::new(
+                "plane".to_string(),
+                Some(ProtoTransform::new(
+                    Some(Translation3::new(0.0, 0.0, -0.75)),
+                    None,
+                    Some(1.05),
+                )),
             ),
-        );
-        inter_map.insert(
-            "bottom_plane".to_string(),
-            ProtoInterface::new(
-                ProtoMesh::new(
-                    "plane".to_string(),
-                    Some(ProtoTransform::new(
-                        Some(Translation3::new(0.0, 0.0, -0.75)),
-                        None,
-                        Some(1.05),
-                    )),
-                ),
-                "air".to_string(),
-                "fog".to_string(),
+            "air".to_string(),
+            "fog".to_string(),
+        ));
+
+        let region_map = map!(
+        "application_cream".to_string() =>
+        ProtoRegion::new(
+            ProtoMesh::new(
+                "cube".to_string(),
+                Some(ProtoTransform::new(
+                    Some(Translation3::new(0.0, 0.0, 0.5)),
+                    None,
+                    Some(0.1),
+                )),
             ),
-        );
+            map!("ala".to_string() => (1.0, 0.0)),
+        ));
 
         Self {
             num_threads: 4,
@@ -92,6 +97,7 @@ impl Setup {
                 Vector3::new(1.0, 1.0, 1.0),
                 react_map,
                 inter_map,
+                region_map,
             ),
             total_phot: 1_000,
         }

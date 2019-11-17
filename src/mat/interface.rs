@@ -13,21 +13,21 @@ use serde::{Deserialize, Serialize};
 /// Forms the boundary between two regions of material.
 #[derive(Debug)]
 pub struct Interface<'a> {
+    /// Surface mesh.
+    mesh: Mesh,
     /// Inside material.
     in_mat: &'a Material,
     /// Outside material.
     out_mat: &'a Material,
-    /// Surface mesh.
-    mesh: Mesh,
 }
 
 impl<'a> Interface<'a> {
     /// Construct a new instance.
-    pub fn new(in_mat: &'a Material, out_mat: &'a Material, mesh: Mesh) -> Self {
+    pub fn new(mesh: Mesh, in_mat: &'a Material, out_mat: &'a Material) -> Self {
         Self {
+            mesh,
             in_mat,
             out_mat,
-            mesh,
         }
     }
 
@@ -36,9 +36,9 @@ impl<'a> Interface<'a> {
     #[pre(!mat_map.is_empty())]
     pub fn build(mesh_dir: &Path, proto_inter: &ProtoInterface, mat_map: &'a MatMap) -> Self {
         Self::new(
+            Mesh::build(mesh_dir, proto_inter.mesh()),
             &mat_map[proto_inter.in_mat()],
             &mat_map[proto_inter.out_mat()],
-            Mesh::build(mesh_dir, proto_inter.mesh()),
         )
     }
 }
