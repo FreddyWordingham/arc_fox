@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 /// Formulae that accept a single scalar value, and return a single scalar value.
 #[derive(Debug, Serialize, Deserialize)]
 pub enum Univariate {
-    /// Constant value. f(x) = c
+    /// Constant value. f(x) = C
     Const(f64),
 }
 

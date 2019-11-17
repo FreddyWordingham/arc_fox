@@ -1,17 +1,22 @@
 //! Molecule structure.
 
+use crate::json;
 use contracts::pre;
+use serde::{Deserialize, Serialize};
 
 /// Molecule structure implementation.
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Molecule {
-    // Fields.
+    /// Radius of the molecule [m].
+    rad: f64,
 }
 
 impl Molecule {
     /// Construct a new instance.
-    #[pre(true)]
-    pub fn new() -> Self {
-        Self {}
+    #[pre(rad > 0.0)]
+    pub fn new(rad: f64) -> Self {
+        Self { rad }
     }
 }
+
+json!(Molecule);
