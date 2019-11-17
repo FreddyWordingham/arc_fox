@@ -1,6 +1,7 @@
 //! World module.
 
 pub mod inter_map;
+pub mod map;
 pub mod mat_map;
 pub mod mol_map;
 pub mod react_map;
