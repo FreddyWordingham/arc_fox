@@ -25,13 +25,16 @@ fn main() {
     let form_path = Path::new(&form_path);
     let (in_dir, out_dir) = io_dirs(None, None);
 
+    // let mol = arc::chem::Molecule::new(0.1);
+    // mol.save(&in_dir.join("ala.json"));
+
     section("Input");
     report!("Input dir", in_dir.display());
     // let form = load_form(Some(&in_dir.join(form_path)));
     let form = load_form(None);
 
     section("Setup");
-    let uni = Universe::build(&in_dir.join("mats"), form.uni());
+    let uni = Universe::build(&in_dir, form.uni());
 
     section("Output");
     report!("Output dir", out_dir.display());

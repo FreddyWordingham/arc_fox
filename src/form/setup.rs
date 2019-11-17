@@ -2,6 +2,7 @@
 
 use crate::{
     base::Resolution,
+    chem::{ProtoRate, ProtoReaction},
     geom::{shape::ProtoMesh, ProtoTransform},
     json,
     mat::ProtoInterface,
@@ -30,6 +31,18 @@ impl Setup {
             uni: ProtoUniverse::new(
                 Resolution::new(9, 9, 9),
                 Vector3::new(1.0, 1.0, 1.0),
+                vec![
+                    ProtoReaction::new(
+                        vec![(8, "ala".to_string())],
+                        vec![(1, "ppix".to_string())],
+                        ProtoRate::new_first_order(0.05, "ala".to_string()),
+                    ),
+                    ProtoReaction::new(
+                        vec![(1, "ppix".to_string()), (1, "udens".to_string())],
+                        vec![(1, "death".to_string())],
+                        ProtoRate::new_second_order(0.75, "ppix".to_string(), "udens".to_string()),
+                    ),
+                ],
                 vec![
                     ProtoInterface::new(
                         ProtoMesh::new(

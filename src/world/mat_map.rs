@@ -12,7 +12,7 @@ pub type MatMap = HashMap<String, Material>;
 #[pre(mat_dir.is_dir())]
 #[pre(!names.is_empty())]
 #[post(!ret.is_empty())]
-pub fn new_mat_map(mat_dir: &Path, mut names: Vec<&str>) -> MatMap {
+pub fn new_mat_map(mat_dir: &Path, mut names: Vec<String>) -> MatMap {
     info!("Constructing the material map...");
 
     names.sort();

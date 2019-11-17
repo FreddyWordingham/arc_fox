@@ -7,14 +7,14 @@ use serde::{Deserialize, Serialize};
 /// Molecule structure implementation.
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Molecule {
-    /// Radius of the molecule [m].
-    rad: f64,
+    /// Optional of the molecule [m].
+    rad: Option<f64>,
 }
 
 impl Molecule {
     /// Construct a new instance.
-    #[pre(rad > 0.0)]
-    pub fn new(rad: f64) -> Self {
+    #[pre(rad.is_none() || rad.unwrap() > 0.0)]
+    pub fn new(rad: Option<f64>) -> Self {
         Self { rad }
     }
 }
