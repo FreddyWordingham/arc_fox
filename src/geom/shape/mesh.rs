@@ -150,6 +150,19 @@ impl Trace for Mesh {
             .map(|o| o.unwrap())
             .min_by(|a, b| a.0.partial_cmp(&b.0).unwrap())
     }
+
+    fn dist_inside_norm(&self, ray: &Ray) -> Option<(f64, bool, Unit<Vector3<f64>>)> {
+        if !self.aabb.hit(ray) {
+            return None;
+        }
+
+        self.tris
+            .iter()
+            .map(|tri| tri.dist_inside_norm(ray))
+            .filter(|dist_inside_norm| dist_inside_norm.is_some())
+            .map(|o| o.unwrap())
+            .min_by(|a, b| a.0.partial_cmp(&b.0).unwrap())
+    }
 }
 
 /// Proto-Transform structure implementation.

@@ -1,6 +1,6 @@
 //! Environment structure.
 
-use contracts::pre;
+use contracts::{post, pre};
 
 /// Environment structure implementation.
 /// Information about the local optical environment.
@@ -44,5 +44,38 @@ impl Environment {
             shift_prob,
             asym,
         }
+    }
+
+    /// Get the refractive index.
+    #[post(ret >= 1.0)]
+    pub fn ref_index(&self) -> f64 {
+        self.ref_index
+    }
+
+    /// Get the interaction coefficient. [m^-1]
+    #[post(ret > 0.0)]
+    pub fn inter_coeff(&self) -> f64 {
+        self.inter_coeff
+    }
+
+    /// Get the single scattering albedo.
+    #[post(ret > 0.0)]
+    #[post(ret <= 1.0)]
+    pub fn albedo(&self) -> f64 {
+        self.albedo
+    }
+
+    /// Get the shift probability.
+    #[post(ret >= 0.0)]
+    #[post(ret < 1.0)]
+    pub fn shift_prob(&self) -> f64 {
+        self.shift_prob
+    }
+
+    /// Get the asymmetry parameter.
+    #[post(ret > -1.0)]
+    #[post(ret < 1.0)]
+    pub fn asym(&self) -> f64 {
+        self.asym
     }
 }

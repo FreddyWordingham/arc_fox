@@ -67,4 +67,11 @@ impl Ray {
         self.dir = roll_rot * pitch_rot * self.dir;
         self.dir.renormalize();
     }
+
+    /// Set direction manually.
+    #[pre((dir.magnitude() - 1.0).abs() < 1.0e-6)]
+    #[post((self.dir.magnitude() - 1.0).abs() < 1.0e-6)]
+    pub fn set_dir(&mut self, dir: Unit<Vector3<f64>>) {
+        self.dir = dir;
+    }
 }

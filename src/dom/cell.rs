@@ -8,13 +8,14 @@ use crate::{
         Collide,
     },
     mat::{Interface, Material},
+    rt::{Ray, Trace},
     world::{
         concs_sources_from_map, mat_at_pos_from_map, mat_at_pos_from_sublist, InterMap, MolMap,
         RegionMap,
     },
 };
 use contracts::pre;
-use nalgebra::Point3;
+use nalgebra::{Point3, Unit, Vector3};
 use ndarray::Array1;
 
 /// Cell structure implementation.
@@ -121,5 +122,42 @@ impl<'a> Cell<'a> {
         }
 
         mat_at_pos_from_sublist(p.clone(), dom, inter_map, &self.aabb, &self.inter_tris)
+    }
+
+    /// Determine the distance to an interface contained within the cell.
+    pub fn inter_dist(&self, ray: &Ray) -> Option<f64> {
+        let mut closest = None;
+
+        for (_inter, tris) in self.inter_tris.iter() {
+            for tri in tris {
+                if let Some(dist) = tri.dist(ray) {
+                    if closest.is_none() || (dist < closest.unwrap()) {
+                        closest = Some(dist);
+                    }
+                }
+            }
+        }
+
+        closest
+    }
+
+    /// Determine the distance to an interface contained within the cell, if hitting on the inside of the interface, and the normal at the intersection point.
+    pub fn inter_dist_inside_norm_inter(
+        &self,
+        ray: &Ray,
+    ) -> Option<(f64, bool, Unit<Vector3<f64>>, &Interface)> {
+        let mut closest: Option<(f64, bool, Unit<Vector3<f64>>, &Interface)> = None;
+
+        for (inter, tris) in self.inter_tris.iter() {
+            for tri in tris {
+                if let Some((dist, inside, norm)) = tri.dist_inside_norm(ray) {
+                    if closest.is_none() || (dist < closest.unwrap().0) {
+                        closest = Some((dist, inside, norm, inter));
+                    }
+                }
+            }
+        }
+
+        closest
     }
 }

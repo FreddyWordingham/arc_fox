@@ -190,4 +190,13 @@ impl Trace for Aabb {
 
         None
     }
+
+    fn dist_inside_norm(&self, ray: &Ray) -> Option<(f64, bool, Unit<Vector3<f64>>)> {
+        return if let Some((dist, norm)) = self.dist_norm(ray) {
+            let inside = self.contains(&ray.pos());
+            Some((dist, inside, norm))
+        } else {
+            None
+        };
+    }
 }

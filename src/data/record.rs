@@ -12,6 +12,8 @@ pub struct Record {
     scatters: f64,
     /// Total weight of absorption events.
     absorptions: f64,
+    /// Total weight of shift events.
+    shifts: f64,
     /// Total distance travelled by photons.
     dist_travelled: f64,
 }
@@ -23,6 +25,7 @@ impl Record {
             emissions: 0.0,
             scatters: 0.0,
             absorptions: 0.0,
+            shifts: 0.0,
             dist_travelled: 0.0,
         }
     }
@@ -43,6 +46,11 @@ impl Record {
     }
 
     #[pre(x > 0.0)]
+    pub fn increase_shifts(&mut self, x: f64) {
+        self.shifts += x;
+    }
+
+    #[pre(x > 0.0)]
     pub fn increase_dist_travelled(&mut self, x: f64) {
         self.dist_travelled += x;
     }
@@ -56,6 +64,7 @@ impl Add<&Self> for Record {
             emissions: self.emissions + rhs.emissions,
             scatters: self.scatters + rhs.scatters,
             absorptions: self.absorptions + rhs.absorptions,
+            shifts: self.shifts + rhs.shifts,
             dist_travelled: self.dist_travelled + rhs.dist_travelled,
         }
     }
@@ -66,6 +75,7 @@ impl AddAssign for Record {
         self.emissions += rhs.emissions;
         self.scatters += rhs.scatters;
         self.absorptions += rhs.absorptions;
+        self.shifts += rhs.shifts;
         self.dist_travelled += rhs.dist_travelled;
     }
 }
@@ -75,6 +85,7 @@ impl AddAssign<&Self> for Record {
         self.emissions += rhs.emissions;
         self.scatters += rhs.scatters;
         self.absorptions += rhs.absorptions;
+        self.shifts += rhs.shifts;
         self.dist_travelled += rhs.dist_travelled;
     }
 }

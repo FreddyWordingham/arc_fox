@@ -2,6 +2,7 @@
 
 use crate::rt::Ray;
 use contracts::{post, pre};
+use nalgebra::{Unit, Vector3};
 
 /// Photon structure implementation.
 #[derive(Debug)]
@@ -52,5 +53,32 @@ impl Photon {
     #[post((ret.dir().magnitude() - 1.0).abs() < 1.0e-6)]
     pub fn ray(&self) -> &Ray {
         &self.ray
+    }
+
+    /// Multiply the weight of the photon.
+    #[pre(x > 0.0)]
+    #[post(self.weight > 0.0)]
+    pub fn multiply_weight(&mut self, x: f64) {
+        self.weight *= x;
+    }
+
+    /// Move along the direction the given distance.
+    #[pre(dist > 0.0)]
+    pub fn travel(&mut self, dist: f64) {
+        self.ray.travel(dist);
+    }
+
+    /// Pitch towards the z-axis and then roll around previous direction.
+    #[pre(self.ray.dir().z.abs() != 1.0)]
+    #[post((self.ray.dir().magnitude() - 1.0).abs() < 1.0e-6)]
+    pub fn rotate(&mut self, pitch: f64, roll: f64) {
+        self.ray.rotate(pitch, roll);
+    }
+
+    /// Set direction manually.
+    #[pre((dir.magnitude() - 1.0).abs() < 1.0e-6)]
+    #[post((self.ray.dir().magnitude() - 1.0).abs() < 1.0e-6)]
+    pub fn set_dir(&mut self, dir: Unit<Vector3<f64>>) {
+        self.ray.set_dir(dir);
     }
 }
