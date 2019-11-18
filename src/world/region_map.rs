@@ -4,7 +4,7 @@ use super::MolMap;
 use crate::{
     dom::{ProtoRegion, Region},
     geom::shape::Aabb,
-    rt::Ray,
+    rt::{Ray, Trace},
 };
 use contracts::pre;
 use log::info;
@@ -48,29 +48,31 @@ pub fn concs_sources_from_map(
     mol_map: &MolMap,
     region_map: &RegionMap,
 ) -> (Array1<f64>, Array1<f64>) {
-    let concs = Array1::zeros(mol_map.len());
-    let sources = Array1::zeros(mol_map.len());
-
     let n: i32 = 7;
     let mut power = 3;
-    loop {
-        for i in -n.pow(power)..=n.pow(power) {
-            let ray = Ray::new_fibonacci_spiral(p, i, n.pow(power));
+    for i in -n.pow(power)..=n.pow(power) {
+        let ray = Ray::new_fibonacci_spiral(p, i, n.pow(power));
 
-            let mut nearest: Option<(f64, &Region) = None;
-            for (_id, region) in region_map.iter() {
-                if let Some((dist, inside)) = region.mesh().dist_inside(&ray) {
-                    if inside && (nearest.is_none() || dist < nearest.unwrap().0) {
-                        nearest = Some((dist, region));
-                    }
+        let mut nearest: Option<(f64, bool, &Region)> = None;
+        for (_id, region) in region_map.iter() {
+            if let Some((dist, inside)) = region.mesh().dist_inside(&ray) {
+                if nearest.is_none() || dist < nearest.unwrap().0 {
+                    nearest = Some((dist, inside, region));
                 }
             }
+        }
 
-            if let Some((_dist, region)) = nearest {
-                nearest.
+        if let Some((dist, inside, region)) = nearest {
+            if inside
+                && dist
+                    <= dom
+                        .dist(&ray)
+                        .expect("Failed to determine internal dom distance.")
+            {
+                return (region.concs().clone(), region.sources().clone());
             }
         }
     }
 
-    (concs, sources)
+    (Array1::zeros(mol_map.len()), Array1::zeros(mol_map.len()))
 }

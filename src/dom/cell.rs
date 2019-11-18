@@ -28,9 +28,9 @@ pub struct Cell<'a> {
     /// Record.
     rec: Record,
     /// Molecule concentrations.
-    mol_concs: Array1<f64>,
+    concs: Array1<f64>,
     /// Molecule sources.
-    mol_sources: Array1<f64>,
+    sources: Array1<f64>,
 }
 
 impl<'a> Cell<'a> {
@@ -70,17 +70,13 @@ impl<'a> Cell<'a> {
 
         let (concs, sources) = concs_sources_from_map(aabb.centre(), &dom, mol_map, region_map);
 
-        let mut mol_concs = Array1::zeros(mol_map.len());
-        let mut mol_sources = Array1::zeros(mol_map.len());
-        for (id, region) in region_map.iter() {}
-
         Self {
             aabb,
             inter_tris,
             mat,
             rec: Record::new(),
-            mol_concs,
-            mol_sources,
+            concs,
+            sources,
         }
     }
 }
