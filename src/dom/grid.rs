@@ -1,7 +1,13 @@
 //! Grid structure.
 
 use super::Cell;
-use crate::{base::Resolution, geom::shape::Aabb, json, util::progress::bar, world::InterMap};
+use crate::{
+    base::Resolution,
+    geom::shape::Aabb,
+    json,
+    util::progress::bar,
+    world::{InterMap, MolMap, RegionMap},
+};
 use contracts::pre;
 use log::info;
 use nalgebra::{Point3, Vector3};
@@ -22,7 +28,16 @@ pub struct Grid<'a> {
 
 impl<'a> Grid<'a> {
     /// Construct a new instance.
-    pub fn new(inter_map: &'a InterMap, dom: Aabb, res: Resolution) -> Self {
+    #[pre(!inter_map.is_empty())]
+    #[pre(!mol_map.is_empty())]
+    #[pre(!region_map.is_empty())]
+    pub fn new(
+        inter_map: &'a InterMap,
+        mol_map: &'a MolMap,
+        region_map: &RegionMap,
+        dom: Aabb,
+        res: Resolution,
+    ) -> Self {
         info!("Constructing the grid...");
 
         let mut cell_size = dom.widths();
@@ -43,7 +58,13 @@ impl<'a> Grid<'a> {
                 );
             let maxs = mins + cell_size;
 
-            cells.push(Cell::new(&dom, inter_map, Aabb::new(mins, maxs)));
+            cells.push(Cell::new(
+                &dom,
+                inter_map,
+                mol_map,
+                region_map,
+                Aabb::new(mins, maxs),
+            ));
         }
         bar.finish_with_message(&format!("{} cells constructed.", res.total()));
 
@@ -58,9 +79,17 @@ impl<'a> Grid<'a> {
     }
 
     /// Build a new instance.
-    pub fn build(proto_grid: &ProtoGrid, inter_map: &'a InterMap) -> Self {
+    #[pre(!inter_map.is_empty())]
+    pub fn build(
+        proto_grid: &ProtoGrid,
+        inter_map: &'a InterMap,
+        mol_map: &'a MolMap,
+        region_map: &RegionMap,
+    ) -> Self {
         Self::new(
             inter_map,
+            mol_map,
+            region_map,
             Aabb::new_centred(&Point3::origin(), proto_grid.half_extents()),
             proto_grid.res().clone(),
         )

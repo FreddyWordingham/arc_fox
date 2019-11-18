@@ -35,7 +35,7 @@ impl Region {
     }
 
     /// Build an instance from a proto-region.
-    pub fn build(mesh_dir: &Path, mol_map: &MolMap, proto_region: ProtoRegion) -> Self {
+    pub fn build(mesh_dir: &Path, mol_map: &MolMap, proto_region: &ProtoRegion) -> Self {
         let mut init_concs = Array1::zeros(mol_map.len());
         let mut sources = Array1::zeros(mol_map.len());
         for (id, (init_conc, source)) in proto_region.init_conc_sources().iter() {

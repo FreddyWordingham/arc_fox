@@ -3,7 +3,8 @@
 #![allow(unused_variables)]
 
 use super::{
-    new_inter_map, new_mat_map, new_mol_map, new_react_map, InterMap, MatMap, MolMap, ReactMap,
+    new_inter_map, new_mat_map, new_mol_map, new_react_map, new_region_map, InterMap, MatMap,
+    MolMap, ReactMap,
 };
 use crate::{
     chem::ProtoReaction,
@@ -42,7 +43,12 @@ impl<'a> Universe<'a> {
             react_map = new_react_map(&proto_uni.react_map, &mol_map);
             mat_map = new_mat_map(&input_dir.join("mats"), proto_uni.mat_list());
             inter_map = new_inter_map(&input_dir.join("meshes"), &proto_uni.inter_map, &mat_map);
-            grid = Grid::build(&proto_uni.grid, &inter_map);
+            grid = Grid::build(
+                &proto_uni.grid,
+                &inter_map,
+                &mol_map,
+                &new_region_map(&input_dir.join("meshes"), &proto_uni.region_map, &mol_map),
+            );
         }))
         .expect("Could not create universe instance.");
 
