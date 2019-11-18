@@ -66,6 +66,11 @@ impl Mesh {
 
         Aabb::new(mins, maxs)
     }
+
+    /// Reference the list of component triangles.
+    pub fn tris(&self) -> &Vec<Triangle> {
+        &self.tris
+    }
 }
 
 impl Transform for Mesh {
@@ -129,6 +134,19 @@ impl Trace for Mesh {
             .iter()
             .map(|tri| tri.dist_norm(ray))
             .filter(|dist_norm| dist_norm.is_some())
+            .map(|o| o.unwrap())
+            .min_by(|a, b| a.0.partial_cmp(&b.0).unwrap())
+    }
+
+    fn dist_inside(&self, ray: &Ray) -> Option<(f64, bool)> {
+        if !self.aabb.hit(ray) {
+            return None;
+        }
+
+        self.tris
+            .iter()
+            .map(|tri| tri.dist_inside(ray))
+            .filter(|dist_inside| dist_inside.is_some())
             .map(|o| o.unwrap())
             .min_by(|a, b| a.0.partial_cmp(&b.0).unwrap())
     }

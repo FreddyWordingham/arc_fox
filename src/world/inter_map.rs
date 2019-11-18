@@ -1,9 +1,15 @@
 //! Interface-map alias.
 
 use super::MatMap;
-use crate::mat::{Interface, ProtoInterface};
+use crate::{
+    geom::shape::{Aabb, Triangle},
+    mat::{Interface, Material, ProtoInterface},
+    rt::{Ray, Trace},
+};
 use contracts::pre;
 use log::info;
+use log::warn;
+use nalgebra::Point3;
 use std::{collections::HashMap, path::Path};
 
 /// Interface-map alias.
@@ -32,4 +38,112 @@ pub fn new_inter_map<'a>(
     info!("Loaded {} total interfaces.\n", inter_map.len());
 
     inter_map
+}
+
+#[pre(dom.contains(&p))]
+#[pre(!inter_map.is_empty())]
+pub fn mat_at_pos_from_map<'a>(
+    p: Point3<f64>,
+    dom: &Aabb,
+    inter_map: &'a InterMap,
+) -> &'a Material {
+    let n: i32 = 7;
+    let mut power = 2;
+    loop {
+        for i in -n.pow(power)..=n.pow(power) {
+            let ray = Ray::new_fibonacci_spiral(p, i, n.pow(power));
+
+            let mut nearest: Option<(f64, bool, &Interface)> = None;
+            for (_id, inter) in inter_map.iter() {
+                if let Some((dist, inside)) = inter.mesh().dist_inside(&ray) {
+                    if nearest.is_none() || dist < nearest.unwrap().0 {
+                        nearest = Some((dist, inside, inter));
+                    }
+                }
+            }
+
+            if let Some((dist, inside, inter)) = nearest {
+                if dist
+                    <= dom
+                        .dist(&ray)
+                        .expect("Failed to determine internal dom distance.")
+                {
+                    return if inside {
+                        inter.in_mat()
+                    } else {
+                        inter.out_mat()
+                    };
+                }
+            }
+        }
+
+        if power > 5 {
+            break;
+        } else if power > 3 {
+            warn!(
+                "Increasing world-casting power to {} ({} rays)",
+                power,
+                (2 * n.pow(power)) + 1
+            );
+        }
+        power += 1;
+    }
+
+    panic!(
+        "Unable to observe a material from given point after {} samples.",
+        (2 * n.pow(power)) + 1
+    );
+}
+
+#[pre(dom.contains(&p))]
+#[pre(!inter_map.is_empty())]
+#[pre(cell.contains(&p))]
+#[pre(!inter_tris.is_empty())]
+pub fn mat_at_pos_from_sublist<'a>(
+    p: Point3<f64>,
+    dom: &Aabb,
+    inter_map: &'a InterMap,
+    cell: &Aabb,
+    inter_tris: &Vec<(&'a Interface, Vec<&Triangle>)>,
+) -> &'a Material {
+    let n: i32 = 7;
+    let mut power = 2;
+    loop {
+        for i in -n.pow(power)..=n.pow(power) {
+            let ray = Ray::new_fibonacci_spiral(p, i, n.pow(power));
+
+            let mut nearest: Option<(f64, bool, &Interface)> = None;
+            for (inter, tris) in inter_tris.iter() {
+                for tri in tris.iter() {
+                    if let Some((dist, inside)) = tri.dist_inside(&ray) {
+                        if nearest.is_none() || dist < nearest.unwrap().0 {
+                            nearest = Some((dist, inside, inter));
+                        }
+                    }
+                }
+            }
+
+            if let Some((dist, inside, inter)) = nearest {
+                if dist
+                    <= cell
+                        .dist(&ray)
+                        .expect("Failed to determine internal cell distance.")
+                {
+                    return if inside {
+                        inter.in_mat()
+                    } else {
+                        inter.out_mat()
+                    };
+                }
+            }
+        }
+
+        if power > 4 {
+            break;
+        }
+        power += 1;
+    }
+
+    warn!("Falling back on world-cast.");
+    mat_at_pos_from_map(p, dom, inter_map)
 }

@@ -16,6 +16,9 @@ pub trait Trace: Debug {
     /// Distance to the surface along the ray's line of travel and normal unit vector at the point of collision.
     fn dist_norm(&self, ray: &Ray) -> Option<(f64, Unit<Vector3<f64>>)>;
 
+    /// Distance to the surface along the ray's line of travel and side of collision.
+    fn dist_inside(&self, ray: &Ray) -> Option<(f64, bool)>;
+
     /// Calculate the hit point of a ray.
     fn hit_point(&self, ray: &Ray) -> Option<Point3<f64>> {
         return if let Some(dist) = self.dist(ray) {

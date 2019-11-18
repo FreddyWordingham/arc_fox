@@ -66,6 +66,21 @@ impl Aabb {
         ws.x * ws.y * ws.z
     }
 
+    /// Create a tightened axis-aligned box.
+    #[pre(f > 0.0)]
+    #[pre(f < 1.0)]
+    pub fn tighten(&self, f: f64) -> Self {
+        let delta = self.half_widths() * f;
+        Self::new(self.mins + delta, self.maxs - delta)
+    }
+
+    /// Create a loosened axis-aligned box.
+    #[pre(f > 0.0)]
+    pub fn loosen(&self, f: f64) -> Self {
+        let delta = self.half_widths() * f;
+        Self::new(self.mins - delta, self.maxs + delta)
+    }
+
     /// Determine if the given point if contained.
     pub fn contains(&self, p: &Point3<f64>) -> bool {
         (p.x >= self.mins.x)
@@ -166,5 +181,13 @@ impl Trace for Aabb {
         }
 
         Some(t_max.components())
+    }
+
+    fn dist_inside(&self, ray: &Ray) -> Option<(f64, bool)> {
+        if let Some(dist) = self.dist(ray) {
+            return Some((dist, self.contains(&ray.pos())));
+        }
+
+        None
     }
 }

@@ -29,7 +29,7 @@ pub struct Universe<'a> {
     /// Interface-map.
     inter_map: InterMap<'a>,
     /// Grid of cells.
-    grid: Grid,
+    grid: Grid<'a>,
 }
 
 impl<'a> Universe<'a> {
@@ -42,7 +42,7 @@ impl<'a> Universe<'a> {
             react_map = new_react_map(&proto_uni.react_map, &mol_map);
             mat_map = new_mat_map(&input_dir.join("mats"), proto_uni.mat_list());
             inter_map = new_inter_map(&input_dir.join("meshes"), &proto_uni.inter_map, &mat_map);
-            grid = Grid::build(&proto_uni.grid);
+            grid = Grid::build(&proto_uni.grid, &inter_map);
         }))
         .expect("Could not create universe instance.");
 

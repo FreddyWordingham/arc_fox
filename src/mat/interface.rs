@@ -41,6 +41,21 @@ impl<'a> Interface<'a> {
             &mat_map[proto_inter.out_mat()],
         )
     }
+
+    /// Reference the surface mesh.
+    pub fn mesh(&self) -> &Mesh {
+        &self.mesh
+    }
+
+    /// Reference the inside material.
+    pub fn in_mat(&self) -> &Material {
+        &self.in_mat
+    }
+
+    /// Reference the outside material.
+    pub fn out_mat(&self) -> &Material {
+        &self.out_mat
+    }
 }
 
 /// Proto-Interface structure implementation.

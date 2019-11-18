@@ -305,6 +305,14 @@ impl Trace for Triangle {
             ),
         ))
     }
+
+    fn dist_inside(&self, ray: &Ray) -> Option<(f64, bool)> {
+        return if let Some(dist) = self.dist(ray) {
+            Some((dist, self.plane_norm.dot(&ray.dir()) > 0.0))
+        } else {
+            None
+        };
+    }
 }
 
 impl Load for Vec<Triangle> {
