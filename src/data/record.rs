@@ -30,6 +30,31 @@ impl Record {
         }
     }
 
+    /// Get the total weight of photon emissions.
+    pub fn emissions(&self) -> f64 {
+        self.emissions
+    }
+
+    /// Get the total weight of scattering events.
+    pub fn scatters(&self) -> f64 {
+        self.scatters
+    }
+
+    /// Get the total weight of absorption events.
+    pub fn absorptions(&self) -> f64 {
+        self.absorptions
+    }
+
+    /// Get the total weight of shift events.
+    pub fn shifts(&self) -> f64 {
+        self.shifts
+    }
+
+    /// Get the total distance travelled by photons.
+    pub fn dist_travelled(&self) -> f64 {
+        self.dist_travelled
+    }
+
     #[pre(x > 0.0)]
     pub fn increase_emissions(&mut self, x: f64) {
         self.emissions += x;

@@ -61,10 +61,25 @@ fn main() {
     }
     let concs = Array3::from_shape_vec(res.arr().clone(), concs).unwrap();
 
+    info!("Creating scattering data cube.");
+    let vol = uni.grid().cells()[[0, 0, 0]].aabb().vol();
+    let mut scats = Vec::with_capacity(res.total());
+    let mut total_scats = 0.0;
+    for rec in mcrt_data.recs.iter() {
+        let x = rec.scatters();
+        total_scats += x;
+        scats.push(x / vol);
+    }
+    let scats = Array3::from_shape_vec(res.arr().clone(), scats).unwrap();
+    report!("Total scatterings: {}", total_scats);
+
     section("Output");
     report!("Output dir", out_dir.display());
     info!("Saving concentration datacube.");
     concs.save(&out_dir.join("ala.nc"));
+
+    info!("Saving scattering datacube.");
+    scats.save(&out_dir.join("scat.nc"));
 }
 
 fn load_form(path: Option<&Path>) -> Setup {

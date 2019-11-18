@@ -233,7 +233,7 @@ fn cell_and_record<'a>(
         .clone();
 
     let cell = &uni.grid().cells()[index];
-    let rec = &mut archive.recs()[index];
+    let rec = &mut archive.recs[index];
 
     if !cell.aabb().contains(&phot.ray().pos()) {
         panic!("Not inside that cell!");

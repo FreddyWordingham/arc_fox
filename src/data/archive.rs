@@ -10,7 +10,7 @@ use std::ops::AddAssign;
 #[derive(Debug)]
 pub struct Archive {
     /// Record array.
-    recs: Array3<Record>,
+    pub recs: Array3<Record>,
 }
 
 impl Archive {
@@ -19,11 +19,6 @@ impl Archive {
         Self {
             recs: Array3::from_elem(*res.arr(), Record::new()),
         }
-    }
-
-    /// Reference the record array.
-    pub fn recs(&mut self) -> &mut Array3<Record> {
-        &mut self.recs
     }
 }
 
