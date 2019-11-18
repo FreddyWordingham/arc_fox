@@ -78,7 +78,7 @@ impl<'a> Universe<'a> {
     }
 
     /// Reference the grid of cells.
-    pub fn grid(&self) -> &'a Grid {
+    pub fn grid(&self) -> &Grid<'a> {
         &self.grid
     }
 }

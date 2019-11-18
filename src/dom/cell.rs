@@ -14,6 +14,7 @@ use crate::{
     },
 };
 use contracts::pre;
+use nalgebra::Point3;
 use ndarray::Array1;
 
 /// Cell structure implementation.
@@ -103,5 +104,22 @@ impl<'a> Cell<'a> {
     /// Reference the Molecule sources.
     pub fn sources(&self) -> &Array1<f64> {
         &self.sources
+    }
+
+    /// Check if the cell contains intersecting triangles.
+    pub fn is_empty(&self) -> bool {
+        self.inter_tris.is_empty()
+    }
+
+    /// Determine the material at the given position within the cell.
+    #[pre(dom.contains(&p))]
+    #[pre(self.aabb.contains(&p))]
+    #[pre(!inter_map.is_empty())]
+    pub fn mat_at_pos(&self, p: &Point3<f64>, dom: &Aabb, inter_map: &'a InterMap) -> &'a Material {
+        if self.is_empty() {
+            return self.mat;
+        }
+
+        mat_at_pos_from_sublist(p.clone(), dom, inter_map, &self.aabb, &self.inter_tris)
     }
 }

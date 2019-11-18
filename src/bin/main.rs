@@ -4,13 +4,18 @@ use arc::{
     args,
     file::{Load, Save},
     form::Setup,
+    geom::shape::Aperture,
     init::io_dirs,
+    opt::{Light, Spectrum},
     print::term::{section, title},
     report,
+    rt::Ray,
+    sim::mcrt,
     util::exec,
     world::{map::index_of_key, Universe},
 };
 use log::info;
+use nalgebra::{Point3, Vector3};
 use ndarray::Array3;
 use std::path::Path;
 
@@ -35,6 +40,18 @@ fn main() {
     section("Setup");
     let res = form.uni().grid().res();
     let uni = Universe::build(&in_dir, form.uni());
+
+    let light = Light::new(
+        Box::new(Aperture::new(
+            Ray::new(Point3::new(0.0, 0.0, 0.0), Vector3::x_axis()),
+            45.0f64.to_radians(),
+        )),
+        Spectrum::new_laser(630.0e-9),
+        1.0,
+    );
+
+    section("Simulation");
+    let mcrt_data = mcrt::run(form.num_threads(), form.total_phot(), &light, &uni);
 
     section("Post-Processing");
     info!("Creating concentration data cube.");

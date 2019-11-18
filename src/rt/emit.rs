@@ -8,7 +8,7 @@ use std::{f64::consts::PI, fmt::Debug};
 
 /// Emit trait implementation.
 /// Type implementing this trait can be randomly sampled for rays.
-pub trait Emit: Debug {
+pub trait Emit: Debug + Sync {
     /// Emit a new ray.
     fn emit(&self, rng: &mut ThreadRng) -> Ray;
 }

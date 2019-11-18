@@ -1,5 +1,6 @@
 //! Record structure.
 
+use contracts::pre;
 use std::ops::{Add, AddAssign};
 
 /// Record structure implementation.
@@ -24,6 +25,26 @@ impl Record {
             absorptions: 0.0,
             dist_travelled: 0.0,
         }
+    }
+
+    #[pre(x > 0.0)]
+    pub fn increase_emissions(&mut self, x: f64) {
+        self.emissions += x;
+    }
+
+    #[pre(x > 0.0)]
+    pub fn increase_scatters(&mut self, x: f64) {
+        self.scatters += x;
+    }
+
+    #[pre(x > 0.0)]
+    pub fn increase_absorptions(&mut self, x: f64) {
+        self.absorptions += x;
+    }
+
+    #[pre(x > 0.0)]
+    pub fn increase_dist_travelled(&mut self, x: f64) {
+        self.dist_travelled += x;
     }
 }
 

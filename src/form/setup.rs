@@ -17,7 +17,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Setup {
     /// Number of threads to run.
-    num_threads: u64,
+    num_threads: usize,
     /// Universe information.
     uni: ProtoUniverse,
     /// Total number of photons to run.
@@ -103,7 +103,7 @@ impl Setup {
     }
 
     /// Get the number of threads.
-    pub fn num_threads(&self) -> u64 {
+    pub fn num_threads(&self) -> usize {
         self.num_threads
     }
 

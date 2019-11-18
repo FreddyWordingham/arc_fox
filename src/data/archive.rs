@@ -20,6 +20,11 @@ impl Archive {
             recs: Array3::from_elem(*res.arr(), Record::new()),
         }
     }
+
+    /// Reference the record array.
+    pub fn recs(&mut self) -> &Array3<Record> {
+        &mut self.recs
+    }
 }
 
 impl AddAssign<&Archive> for Archive {
