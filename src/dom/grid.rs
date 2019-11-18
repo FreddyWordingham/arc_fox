@@ -106,7 +106,7 @@ impl<'a> Grid<'a> {
     }
 
     /// Reference the cells.
-    pub fn cells(&self) -> &'a Array3<Cell> {
+    pub fn cells(&self) -> &Array3<Cell<'a>> {
         &self.cells
     }
 }

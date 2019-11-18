@@ -104,7 +104,7 @@ fn run_photon(
     uni: &Universe,
 ) {
     let mut phot = light.emit(&mut rng, total_phot);
-    let mut cell_rec = cell_and_record(&phot, uni, &mut archive);
+    let mut cell_rec = cell_and_record(&phot, &uni, &mut archive);
     cell_rec.1.increase_emissions(phot.weight());
     let mut env = cell_rec
         .0
@@ -114,19 +114,24 @@ fn run_photon(
 }
 
 /// Retrieve a reference for the cell corresponding record a photon is located within.
-#[post(ret.0.aabb().contains(phot.ray().pos()))]
 fn cell_and_record<'a>(
     phot: &Photon,
-    uni: &Universe,
+    uni: &'a Universe,
     archive: &'a mut Archive,
 ) -> (&'a Cell<'a>, &'a mut Record) {
     let index = uni
         .grid()
         .dom()
-        .find_index(phot.ray().pos(), uni.grid().res());
+        .find_index(phot.ray().pos(), uni.grid().res())
+        .arr()
+        .clone();
 
-    (
-        &uni.grid().cells()[*index.arr()],
-        &mut archive.recs()[*index.arr()],
-    )
+    let cell = &uni.grid().cells()[index];
+    let rec = &mut archive.recs()[index];
+
+    if !cell.aabb().contains(&phot.ray().pos()) {
+        panic!("Not inside that cell!");
+    }
+
+    (cell, rec)
 }

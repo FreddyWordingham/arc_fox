@@ -22,7 +22,7 @@ impl Archive {
     }
 
     /// Reference the record array.
-    pub fn recs(&mut self) -> &Array3<Record> {
+    pub fn recs(&mut self) -> &mut Array3<Record> {
         &mut self.recs
     }
 }
