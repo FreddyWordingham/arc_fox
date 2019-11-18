@@ -4,9 +4,9 @@
         "grid": {
             "res": {
                 "arr": [
-                    101,
-                    101,
-                    101
+                    31,
+                    31,
+                    31
                 ]
             },
             "half_extents": [
@@ -98,7 +98,9 @@
             "torus": {
                 "mesh": {
                     "name": "torus",
-                    "trans": null
+                    "trans": {
+                        "scale": 0.5
+                    }
                 },
                 "in_mat": "fog",
                 "out_mat": "air"
