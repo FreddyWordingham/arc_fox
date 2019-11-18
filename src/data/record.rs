@@ -16,6 +16,10 @@ pub struct Record {
     shifts: f64,
     /// Total distance travelled by photons.
     dist_travelled: f64,
+    /// Number of Raman photons created
+    tot_raman: f64,
+    /// Number of Raman photons detected
+    det_raman: f64
 }
 
 impl Record {
@@ -27,6 +31,8 @@ impl Record {
             absorptions: 0.0,
             shifts: 0.0,
             dist_travelled: 0.0,
+            tot_raman: 0.0,
+            det_raman: 0.0
         }
     }
 
@@ -79,6 +85,18 @@ impl Record {
     pub fn increase_dist_travelled(&mut self, x: f64) {
         self.dist_travelled += x;
     }
+
+    /// Increase the number of Raman photons created.
+    #[pre(x > 0.0)]
+    pub fn increase_tot_raman(&mut self, x: f64) {
+        self.tot_raman += x;
+    }
+
+    /// Increase the number of Raman photons created.
+    #[pre(x > 0.0)]
+    pub fn increase_det_raman(&mut self, x: f64) {
+        self.det_raman += x;
+    }
 }
 
 impl Add<&Self> for Record {
@@ -91,6 +109,8 @@ impl Add<&Self> for Record {
             absorptions: self.absorptions + rhs.absorptions,
             shifts: self.shifts + rhs.shifts,
             dist_travelled: self.dist_travelled + rhs.dist_travelled,
+            tot_raman: self.tot_raman + rhs.tot_raman,
+            det_raman: self.det_raman + rhs.det_raman
         }
     }
 }
@@ -102,6 +122,8 @@ impl AddAssign for Record {
         self.absorptions += rhs.absorptions;
         self.shifts += rhs.shifts;
         self.dist_travelled += rhs.dist_travelled;
+        self.tot_raman += rhs.tot_raman;
+        self.det_raman += rhs.det_raman
     }
 }
 
@@ -112,5 +134,7 @@ impl AddAssign<&Self> for Record {
         self.absorptions += rhs.absorptions;
         self.shifts += rhs.shifts;
         self.dist_travelled += rhs.dist_travelled;
+        self.tot_raman += rhs.tot_raman;
+        self.det_raman += rhs.det_raman
     }
 }
