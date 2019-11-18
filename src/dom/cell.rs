@@ -79,4 +79,29 @@ impl<'a> Cell<'a> {
             sources,
         }
     }
+
+    /// Reference the Boundary.
+    pub fn aabb(&self) -> &Aabb {
+        &self.aabb
+    }
+
+    /// Reference the Central material.
+    pub fn mat(&self) -> &Material {
+        &self.mat
+    }
+
+    /// Reference the Record.
+    pub fn rec(&self) -> &Record {
+        &self.rec
+    }
+
+    /// Reference the Molecule concentrations.
+    pub fn concs(&self) -> &Array1<f64> {
+        &self.concs
+    }
+
+    /// Reference the Molecule sources.
+    pub fn sources(&self) -> &Array1<f64> {
+        &self.sources
+    }
 }

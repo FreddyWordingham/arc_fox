@@ -104,6 +104,11 @@ impl<'a> Grid<'a> {
     pub fn res(&self) -> &Resolution {
         &self.res
     }
+
+    /// Reference the cells.
+    pub fn cells(&self) -> &'a Array3<Cell> {
+        &self.cells
+    }
 }
 
 /// Proto-Grid structure implementation.

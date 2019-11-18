@@ -56,6 +56,31 @@ impl<'a> Universe<'a> {
 
         uni
     }
+
+    /// Reference the molecule-map.
+    pub fn mol_map(&self) -> &MolMap {
+        &self.mol_map
+    }
+
+    /// Reference the reaction-map.
+    pub fn react_map(&self) -> &ReactMap {
+        &self.react_map
+    }
+
+    /// Reference the material-map.
+    pub fn mat_map(&self) -> &MatMap {
+        &self.mat_map
+    }
+
+    /// Reference the interface-map.
+    pub fn inter_map(&self) -> &InterMap {
+        &self.inter_map
+    }
+
+    /// Reference the grid of cells.
+    pub fn grid(&self) -> &'a Grid {
+        &self.grid
+    }
 }
 
 /// Proto-Universe structure implementation.
@@ -88,6 +113,11 @@ impl ProtoUniverse {
             inter_map,
             region_map,
         }
+    }
+
+    /// Reference the proto-grid.
+    pub fn grid(&self) -> &ProtoGrid {
+        &self.grid
     }
 
     /// Construct a list of molecule names.
