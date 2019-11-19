@@ -54,7 +54,7 @@ fn main() {
     );
 
     section("Simulation");
-    // let pre_state_ = evolve::run(form.num_threads(), 60.0, 15.0, &uni);
+    let pre_state_ = evolve::run(form.num_threads(), 60.0, 15.0, &uni);
     let mcrt_data = mcrt::run(form.num_threads(), form.total_phot(), &light, &uni);
 
     section("Post-Processing");
@@ -82,7 +82,7 @@ fn main() {
     let mut dist_travelled = Vec::with_capacity(res.total());
     let mut total_dist_travelled = 0.0;
     for rec in mcrt_data.recs.iter() {
-        let x = rec.scatters();
+        let x = rec.dist_travelled();
         total_dist_travelled += x;
         dist_travelled.push(x / vol);
     }

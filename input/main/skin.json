@@ -142,6 +142,22 @@
                 },
                 "in_mat": "reticular_dermis",
                 "out_mat": "upper_blood_net_dermis"
+            },
+            "tumour": {
+                "mesh": {
+                    "name": "sphere",
+                    "trans": {
+                        "trans": [
+                            0.0,
+                            0.0,
+                            -0.8e-3
+                        ],
+                        "rot": null,
+                        "scale": 0.5e-3
+                    }
+                },
+                "in_mat": "tumour",
+                "out_mat": "reticular_dermis"
             }
         },
         "region_map": {

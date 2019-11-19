@@ -1,6 +1,10 @@
 //! Evolve functions.
 
-use crate::{report, world::Universe};
+use crate::{
+    base::{Index, Resolution},
+    report,
+    world::Universe,
+};
 use contracts::pre;
 use log::info;
 use ndarray::{Array1, Array3};
@@ -35,7 +39,13 @@ pub fn run(
     while curr_time < end_time {
         let dt = (end_time - curr_time) / 100.0;
 
-        diffuse(&mut concs, &sources, &diffusion_coeffs, dt);
+        diffuse(
+            uni.grid().res(),
+            &mut concs,
+            &sources,
+            &diffusion_coeffs,
+            dt,
+        );
 
         curr_time += dt;
 
@@ -98,9 +108,17 @@ fn find_max_coeff(coeffs: &Array3<Option<Array1<Option<f64>>>>) -> Option<f64> {
 /// Perform a diffusion step.
 #[pre(dt > 0.0)]
 fn diffuse(
+    res: &Resolution,
     concs: &mut Array3<Array1<f64>>,
     sources: &Array3<Array1<f64>>,
     diffusion_coeffs: &Array3<Option<Array1<Option<f64>>>>,
     dt: f64,
 ) {
+    for xi in 0..res.x() {
+        for yi in 0..res.y() {
+            for zi in 0..res.z() {
+                let index = Index::new(xi, yi, zi);
+            }
+        }
+    }
 }
