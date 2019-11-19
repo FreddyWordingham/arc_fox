@@ -4,15 +4,15 @@
         "grid": {
             "res": {
                 "arr": [
-                    11,
-                    11,
-                    11
+                    21,
+                    21,
+                    21
                 ]
             },
             "half_extents": [
-                1.0,
-                1.0,
-                1.0
+                10.0e-3,
+                10.0e-3,
+                10.0e-3
             ]
         },
         "react_map": {
@@ -70,39 +70,13 @@
                         "trans": [
                             0.0,
                             0.0,
-                            0.75
+                            -0.01e-3
                         ],
                         "rot": null,
-                        "scale": 1.05
+                        "scale": 10.0e-3
                     }
                 },
-                "in_mat": "fog",
-                "out_mat": "air"
-            },
-            "bottom_plane": {
-                "mesh": {
-                    "name": "plane",
-                    "trans": {
-                        "trans": [
-                            0.0,
-                            0.0,
-                            -0.75
-                        ],
-                        "rot": null,
-                        "scale": 1.05
-                    }
-                },
-                "in_mat": "air",
-                "out_mat": "fog"
-            },
-            "torus": {
-                "mesh": {
-                    "name": "torus",
-                    "trans": {
-                        "scale": 0.5
-                    }
-                },
-                "in_mat": "fog",
+                "in_mat": "stratum_corneum",
                 "out_mat": "air"
             }
         },
@@ -114,10 +88,10 @@
                         "trans": [
                             0.0,
                             0.0,
-                            0.5
+                            0.25e-3
                         ],
                         "rot": null,
-                        "scale": 0.1
+                        "scale": 1.0e-3
                     }
                 },
                 "init_conc_sources": {

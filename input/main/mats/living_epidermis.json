@@ -4,19 +4,19 @@
         "max": 7e-7
     },
     "ref_index": {
-        "Const": 1.0
+        "Const": 1.34
     },
     "scat_coeff": {
-        "Const": 1.0e-6
+        "Const": 45.0e-3
     },
     "abs_coeff": {
-        "Const": 0.0
+        "Const": 0.872e-3
     },
     "shift_coeff": {
         "Const": 0.0
     },
     "asym": {
-        "Const": 0.0
+        "Const": 0.8
     },
     "visc": null
 }

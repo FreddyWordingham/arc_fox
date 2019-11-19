@@ -15,7 +15,7 @@ use arc::{
     world::{map::index_of_key, Universe},
 };
 use log::info;
-use nalgebra::{Point3, Vector3};
+use nalgebra::{Point3, Unit, Vector3};
 use ndarray::Array3;
 use std::path::Path;
 
@@ -43,8 +43,11 @@ fn main() {
 
     let light = Light::new(
         Box::new(Aperture::new(
-            Ray::new(Point3::new(0.0, 0.0, 0.0), Vector3::x_axis()),
-            45.0f64.to_radians(),
+            Ray::new(
+                Point3::new(0.0, 0.0, 7.5e-3),
+                Unit::new_normalize(Vector3::new(0.01, 0.01, -1.0)),
+            ),
+            20.0f64.to_radians(),
         )),
         Spectrum::new_laser(630.0e-9),
         1.0,
