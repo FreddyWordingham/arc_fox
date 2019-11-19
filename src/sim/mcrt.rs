@@ -119,7 +119,12 @@ fn run_photon(
         .env(phot.wavelength());
     let mut shifted = false;
 
+    let mut loops = 0;
     loop {
+        loops += 1;
+        if loops > 1000 {
+            break;
+        }
         let scat_dist = -(rng.gen_range(0.0f64, 1.0)).ln() / env.inter_coeff();
         let cell_dist = cell_rec.0.aabb().dist(phot.ray()).unwrap();
         let inter_dist = cell_rec.0.inter_dist(phot.ray());

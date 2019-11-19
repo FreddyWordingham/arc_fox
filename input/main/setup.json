@@ -73,7 +73,7 @@
                             -0.01e-3
                         ],
                         "rot": null,
-                        "scale": 10.0e-3
+                        "scale": 100.0e-3
                     }
                 },
                 "in_mat": "stratum_corneum",

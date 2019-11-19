@@ -7,10 +7,10 @@
         "Const": 1.38
     },
     "scat_coeff": {
-        "Const": 30.0e-3
+        "Const": 30.0e3
     },
     "abs_coeff": {
-        "Const": 0.164e-3
+        "Const": 0.164e3
     },
     "shift_coeff": {
         "Const": 0.0
