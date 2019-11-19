@@ -25,6 +25,8 @@ pub const BUMP_DIST: f64 = 1.0e-9;
 /// Run a MCRT simulation.
 #[pre(num_threads > 0)]
 pub fn run(num_threads: usize, total_phot: u64, light: &Light, uni: &Universe) -> Archive {
+    info!("Running MCRT simulation.");
+
     let num_phots = Arc::new(Mutex::new(vec![0; num_threads]));
     let bar = Arc::new(bar("photon loop", total_phot));
 

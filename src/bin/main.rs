@@ -10,7 +10,7 @@ use arc::{
     print::term::{section, title},
     report,
     rt::Ray,
-    sim::mcrt,
+    sim::{evolve, mcrt},
     util::exec,
     world::{map::index_of_key, Universe},
 };
@@ -51,6 +51,7 @@ fn main() {
     );
 
     section("Simulation");
+    // let pre_state_ = evolve::run(form.num_threads(), 60.0, 15.0, &uni);
     let mcrt_data = mcrt::run(form.num_threads(), form.total_phot(), &light, &uni);
 
     section("Post-Processing");

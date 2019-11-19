@@ -59,6 +59,11 @@ impl Material {
             self.asym.res(w),
         )
     }
+
+    /// Optional viscosity. [kg m s^-1]
+    pub fn visc(&self) -> Option<f64> {
+        self.visc
+    }
 }
 
 json!(Material);

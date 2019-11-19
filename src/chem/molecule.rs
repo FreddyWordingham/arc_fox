@@ -17,6 +17,11 @@ impl Molecule {
     pub fn new(rad: Option<f64>) -> Self {
         Self { rad }
     }
+
+    /// Get the radius of the molecule.
+    pub fn rad(&self) -> Option<f64> {
+        self.rad
+    }
 }
 
 json!(Molecule);

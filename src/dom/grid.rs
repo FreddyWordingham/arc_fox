@@ -11,7 +11,7 @@ use crate::{
 use contracts::pre;
 use log::info;
 use nalgebra::{Point3, Vector3};
-use ndarray::Array3;
+use ndarray::{Array1, Array3};
 use serde::{Deserialize, Serialize};
 
 /// Grid structure implementation.
@@ -108,6 +108,30 @@ impl<'a> Grid<'a> {
     /// Reference the cells.
     pub fn cells(&self) -> &Array3<Cell<'a>> {
         &self.cells
+    }
+
+    /// Create a data-cube of concentration references.
+    pub fn concs(&self) -> Array3<&Array1<f64>> {
+        let mut concs = Vec::with_capacity(self.res.total());
+
+        for cell in self.cells().iter() {
+            concs.push(cell.concs());
+        }
+
+        Array3::from_shape_vec(*self.res.arr(), concs)
+            .expect("Could not form concentration reference cube.")
+    }
+
+    /// Create a data-cube of source term references.
+    pub fn sources(&self) -> Array3<&Array1<f64>> {
+        let mut sources = Vec::with_capacity(self.res.total());
+
+        for cell in self.cells().iter() {
+            sources.push(cell.sources());
+        }
+
+        Array3::from_shape_vec(*self.res.arr(), sources)
+            .expect("Could not form source term reference cube.")
     }
 }
 
