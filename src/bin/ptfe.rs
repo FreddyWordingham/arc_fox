@@ -44,7 +44,7 @@ fn main() {
     let light = Light::new(
         Box::new(Aperture::new(
             Ray::new(Point3::new(-0.013, 0.0, 0.0), Vector3::x_axis()),
-            45.0f64.to_radians(),
+            0.01f64.to_radians(),
         )),
         Spectrum::new_laser(830.0e-9),
         1.0,
@@ -83,7 +83,7 @@ fn main() {
         shifts.push(x / vol);
     }
     let shifts = Array3::from_shape_vec(res.arr().clone(), shifts).unwrap();
-    report!("Total Raman shifts: {}", total_shifts);
+    report!("Total detected Raman photons: {}", total_shifts);
 
     section("Output");
     report!("Output dir", out_dir.display());
@@ -92,6 +92,9 @@ fn main() {
 
     info!("Saving scattering datacube.");
     scats.save(&out_dir.join("scat.nc"));
+
+    info!("Saving Raman datacube.");
+    shifts.save(&out_dir.join("shifts.nc"));
 }
 
 fn load_form(path: Option<&Path>) -> Setup {

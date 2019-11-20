@@ -72,11 +72,20 @@
         },
         "inter_map":
         {
-            "top-plane":
+            "slab":
             {
                 "mesh":
                 {
-                    "name": "ptfe_slab"
+                    "name": "ptfe_slab",
+                    "trans":
+                    {
+                        "trans": [0.01,
+                            0.0,
+                            0.0
+                        ],
+                        "rot": null,
+                        "scale": 1.0
+                    }
 
                 },
                 "in_mat": "ptfe",
@@ -111,5 +120,5 @@
             }
         }
     },
-    "total_phot": 10000
+    "total_phot": 10000000
 }

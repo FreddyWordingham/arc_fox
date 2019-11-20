@@ -2,7 +2,7 @@
     "range":
     {
         "min": 5e-7,
-        "max": 9e-7
+        "max": 10e-7
     },
     "ref_index":
     {
@@ -22,7 +22,7 @@
     },
     "asym":
     {
-        "Const": 0.95
+        "Const": 0.8
     },
     "visc": null
 }
