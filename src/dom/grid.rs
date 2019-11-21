@@ -50,7 +50,7 @@ impl<'a> Grid<'a> {
         }
 
         let num_cells = Arc::new(Mutex::new(vec![0; num_threads]));
-        let bar = Arc::new(bar("generating cells", res.total() as u64));
+        let pb = Arc::new(bar("generating cells", res.total() as u64));
 
         info!("Running multi-thread ({}).", num_threads);
         let thread_ids: Vec<usize> = (0..num_threads).collect();
@@ -60,7 +60,7 @@ impl<'a> Grid<'a> {
                 Self::build_cells(
                     *id,
                     &res,
-                    bar.clone(),
+                    pb.clone(),
                     num_cells.clone(),
                     &dom,
                     &cell_size,
@@ -70,7 +70,7 @@ impl<'a> Grid<'a> {
                 )
             })
             .collect();
-        bar.finish_with_message(&format!("{} cells constructed.", res.total()));
+        pb.finish_with_message(&format!("{} cells constructed.", res.total()));
 
         info!("Thread reports:");
         for (id, num_cells) in num_cells.lock().unwrap().iter().enumerate() {
@@ -84,14 +84,20 @@ impl<'a> Grid<'a> {
 
         info!("Sorting cells");
         let mut cells = Vec::with_capacity(res.total());
+        let pb = bar("generating cells", res.total() as u64);
         for n in 0..res.total() {
+            pb.inc(1);
+
             for list in cell_lists.iter_mut() {
                 if !list.is_empty() && list[0].0 == n {
                     cells.push(list.remove(0).1);
                     break;
                 }
+
+                panic!("Cell index {} is missing.", n);
             }
         }
+        pb.finish_with_message(&format!("{} cells sorted.", res.total()));
 
         let cells = Array3::from_shape_vec(res.arr().clone(), cells)
             .expect("Unable to construct grid cells.");
