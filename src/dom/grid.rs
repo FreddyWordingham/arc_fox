@@ -2,6 +2,7 @@
 
 use super::Cell;
 use crate::{
+    report,
     base::Resolution,
     geom::shape::Aabb,
     json,
@@ -85,17 +86,17 @@ impl<'a> Grid<'a> {
         info!("Sorting cells");
         let mut cells = Vec::with_capacity(res.total());
         let pb = bar("generating cells", res.total() as u64);
-        for n in 0..res.total() {
+        'outer: for n in 0..res.total() {
             pb.inc(1);
 
             for list in cell_lists.iter_mut() {
                 if !list.is_empty() && list[0].0 == n {
                     cells.push(list.remove(0).1);
-                    break;
+                    continue 'outer;
                 }
-
-                panic!("Cell index {} is missing.", n);
             }
+
+            panic!("Cell index {} is missing.", n);
         }
         pb.finish_with_message(&format!("{} cells sorted.", res.total()));
 
