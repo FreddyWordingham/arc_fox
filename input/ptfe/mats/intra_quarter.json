@@ -14,7 +14,7 @@
     },
     "abs_coeff":
     {
-        "Const": 2.0
+        "WaterAbs": [2.0, 10.0]
     },
     "shift_coeff":
     {
