@@ -54,7 +54,7 @@ fn main() {
     );
 
     section("Simulation");
-    let _pre_state = evolve::run(form.num_threads(), 60.0, 15.0, &uni);
+    // let _pre_state = evolve::run(form.num_threads(), 60.0, 15.0, &uni);
     let mcrt_data = mcrt::run(form.num_threads(), form.total_phot(), &light, &uni);
 
     section("Post-Processing");

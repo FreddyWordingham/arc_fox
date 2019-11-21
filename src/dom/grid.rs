@@ -49,8 +49,6 @@ impl<'a> Grid<'a> {
             *w /= *n as f64;
         }
 
-        let mut cells = Vec::with_capacity(res.total());
-
         let num_cells = Arc::new(Mutex::new(vec![0; num_threads]));
         let bar = Arc::new(bar("generating cells", res.total() as u64));
 
@@ -82,6 +80,17 @@ impl<'a> Grid<'a> {
                 num_cells,
                 *num_cells as f64 / res.total() as f64 * 100.0
             );
+        }
+
+        info!("Sorting cells");
+        let mut cells = Vec::with_capacity(res.total());
+        for n in 0..res.total() {
+            for list in cell_lists.iter_mut() {
+                if !list.is_empty() && list[0].0 == n {
+                    cells.push(list.remove(0).1);
+                    break;
+                }
+            }
         }
 
         let cells = Array3::from_shape_vec(res.arr().clone(), cells)
