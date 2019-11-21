@@ -89,8 +89,8 @@ impl<'a> Grid<'a> {
             pb.inc(1);
 
             for list in cell_lists.iter_mut() {
-                if !list.is_empty() && list[0].0 == n {
-                    cells.push(list.remove(0).1);
+                if !list.is_empty() && list.last().unwrap().0 == n {
+                    cells.push(list.pop().unwrap().1);
                     continue 'outer;
                 }
             }
@@ -156,7 +156,7 @@ impl<'a> Grid<'a> {
         if sum_cells < total_cells {
             bar.inc(1);
             num_cells[id] += 1;
-            return Some(sum_cells);
+            return Some(total_cells - sum_cells - 1);
         }
 
         None
