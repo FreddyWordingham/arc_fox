@@ -39,7 +39,7 @@ fn main() {
 
     section("Setup");
     let res = form.uni().grid().res();
-    let uni = Universe::build(&in_dir, form.uni());
+    let uni = Universe::build(&in_dir, form.uni(), form.num_threads());
 
     let light = Light::new(
         Box::new(Aperture::new(
@@ -92,6 +92,9 @@ fn main() {
 
     info!("Saving scattering datacube.");
     scats.save(&out_dir.join("scat.nc"));
+
+    info!("Saving shifting datacube.");
+    shifts.save(&out_dir.join("shift.nc"));
 }
 
 fn load_form(path: Option<&Path>) -> Setup {

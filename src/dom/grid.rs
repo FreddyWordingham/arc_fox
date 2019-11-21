@@ -37,6 +37,7 @@ impl<'a> Grid<'a> {
         region_map: &RegionMap,
         dom: Aabb,
         res: Resolution,
+        num_threads: usize,
     ) -> Self {
         info!("Constructing the grid...");
 
@@ -46,27 +47,35 @@ impl<'a> Grid<'a> {
         }
 
         let mut cells = Vec::with_capacity(res.total());
-        let bar = bar("Constructing cells", res.total() as u64);
-        for index in res.iter() {
-            bar.inc(1);
+        // let bar = bar("Constructing cells", res.total() as u64);
+        // for index in res.iter() {
+        //     bar.inc(1);
 
-            let mins = dom.mins()
-                + Vector3::new(
-                    cell_size.x * index.x() as f64,
-                    cell_size.y * index.y() as f64,
-                    cell_size.z * index.z() as f64,
-                );
-            let maxs = mins + cell_size;
+        //     let mins = dom.mins()
+        //         + Vector3::new(
+        //             cell_size.x * index.x() as f64,
+        //             cell_size.y * index.y() as f64,
+        //             cell_size.z * index.z() as f64,
+        //         );
+        //     let maxs = mins + cell_size;
 
-            cells.push(Cell::new(
-                &dom,
-                inter_map,
-                mol_map,
-                region_map,
-                Aabb::new(mins, maxs),
-            ));
-        }
-        bar.finish_with_message(&format!("{} cells constructed.", res.total()));
+        //     cells.push(Cell::new(
+        //         &dom,
+        //         inter_map,
+        //         mol_map,
+        //         region_map,
+        //         Aabb::new(mins, maxs),
+        //     ));
+        // }
+        // bar.finish_with_message(&format!("{} cells constructed.", res.total()));
+
+        info!("Running multi-thread ({}).", num_threads);
+        // let thread_ids: Vec<usize> = (0..num_threads).collect();
+        // let mut archives: Vec<Archive> = thread_ids
+        //     .par_iter()
+        //     .map(|id| run_thread(*id, total_phot, num_phots.clone(), bar.clone(), light, uni))
+        //     .collect();
+        // bar.finish_with_message("Photon loop complete.");
 
         let cells = Array3::from_shape_vec(res.arr().clone(), cells)
             .expect("Unable to construct grid cells.");
@@ -80,11 +89,13 @@ impl<'a> Grid<'a> {
 
     /// Build a new instance.
     #[pre(!inter_map.is_empty())]
+    #[pre(num_threads > 0)]
     pub fn build(
         proto_grid: &ProtoGrid,
         inter_map: &'a InterMap,
         mol_map: &'a MolMap,
         region_map: &RegionMap,
+        num_threads: usize,
     ) -> Self {
         Self::new(
             inter_map,
@@ -92,6 +103,7 @@ impl<'a> Grid<'a> {
             region_map,
             Aabb::new_centred(&Point3::origin(), proto_grid.half_extents()),
             proto_grid.res().clone(),
+            num_threads,
         )
     }
 

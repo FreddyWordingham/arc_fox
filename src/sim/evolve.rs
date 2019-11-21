@@ -109,15 +109,15 @@ fn find_max_coeff(coeffs: &Array3<Option<Array1<Option<f64>>>>) -> Option<f64> {
 #[pre(dt > 0.0)]
 fn diffuse(
     res: &Resolution,
-    concs: &mut Array3<Array1<f64>>,
-    sources: &Array3<Array1<f64>>,
-    diffusion_coeffs: &Array3<Option<Array1<Option<f64>>>>,
+    _concs: &mut Array3<Array1<f64>>,
+    _sources: &Array3<Array1<f64>>,
+    _diffusion_coeffs: &Array3<Option<Array1<Option<f64>>>>,
     dt: f64,
 ) {
     for xi in 0..res.x() {
         for yi in 0..res.y() {
             for zi in 0..res.z() {
-                let index = Index::new(xi, yi, zi);
+                let _index = Index::new(xi, yi, zi);
             }
         }
     }

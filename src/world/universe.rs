@@ -35,7 +35,7 @@ pub struct Universe<'a> {
 
 impl<'a> Universe<'a> {
     /// Build a new instance.
-    pub fn build(input_dir: &Path, proto_uni: &ProtoUniverse) -> Self {
+    pub fn build(input_dir: &Path, proto_uni: &ProtoUniverse, num_threads: usize) -> Self {
         info!("Building universe...\n");
 
         let uni = Arc::try_unwrap(self_referencing!(Universe, {
@@ -48,6 +48,7 @@ impl<'a> Universe<'a> {
                 &inter_map,
                 &mol_map,
                 &new_region_map(&input_dir.join("meshes"), &proto_uni.region_map, &mol_map),
+                num_threads,
             );
         }))
         .expect("Could not create universe instance.");

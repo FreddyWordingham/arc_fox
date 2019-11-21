@@ -39,7 +39,7 @@ fn main() {
 
     section("Setup");
     let res = form.uni().grid().res();
-    let uni = Universe::build(&in_dir, form.uni());
+    let uni = Universe::build(&in_dir, form.uni(), form.num_threads());
 
     let light = Light::new(
         Box::new(Aperture::new(
@@ -54,7 +54,7 @@ fn main() {
     );
 
     section("Simulation");
-    let pre_state_ = evolve::run(form.num_threads(), 60.0, 15.0, &uni);
+    let _pre_state = evolve::run(form.num_threads(), 60.0, 15.0, &uni);
     let mcrt_data = mcrt::run(form.num_threads(), form.total_phot(), &light, &uni);
 
     section("Post-Processing");
