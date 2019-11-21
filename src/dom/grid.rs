@@ -2,7 +2,6 @@
 
 use super::Cell;
 use crate::{
-    report,
     base::Resolution,
     geom::shape::Aabb,
     json,
@@ -85,7 +84,7 @@ impl<'a> Grid<'a> {
 
         info!("Sorting cells");
         let mut cells = Vec::with_capacity(res.total());
-        let pb = bar("generating cells", res.total() as u64);
+        let pb = bar("sorting cells", res.total() as u64);
         'outer: for n in 0..res.total() {
             pb.inc(1);
 
