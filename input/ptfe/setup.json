@@ -89,7 +89,7 @@
 
                 },
                 "in_mat": "ptfe",
-                "out_mat": "intra_quarter"
+                "out_mat": "raman_intra_quarter"
             }
         },
         "region_map":
@@ -120,5 +120,5 @@
             }
         }
     },
-    "total_phot": 10000000
+    "total_phot": 10000
 }

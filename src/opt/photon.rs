@@ -81,4 +81,11 @@ impl Photon {
     pub fn set_dir(&mut self, dir: Unit<Vector3<f64>>) {
         self.ray.set_dir(dir);
     }
+
+    ///Shift the wavelength.
+    //#[pre(x > 0.0)]
+    //#[post(ret > 0.0)]
+    pub fn wavelength_shift(&mut self){
+        self.wavelength = 920e-9;
+    }
 }

@@ -140,6 +140,7 @@ fn run_photon(
 
                 if !shifted && rng.gen_range(0.0, 1.0) <= env.shift_prob() {
                     shifted = true;
+                    phot.wavelength_shift();
                     //cell_rec.1.increase_shifts(phot.weight());
                 }
             }

@@ -8,26 +8,26 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Serialize, Deserialize)]
 pub enum Formula {
     /// Constant value. f(x) = C
-    Const(f64),
+    Const(f64)
 }
 
 impl Formula {
     /// Construct a new constant formula.
     pub fn new_const(c: f64) -> Self {
-        Formula::Const(c)
+        Formula::Const(c),
     }
 
     /// Calculate the result of the formula.
     pub fn res(&self, _x: f64) -> f64 {
         match self {
-            Formula::Const(c) => *c,
+            Formula::Const(c) => *c
         }
     }
 
     /// Determine the minimum result value within the given range.
     pub fn min(&self, _range: Range) -> f64 {
         match self {
-            Formula::Const(c) => *c,
+            Formula::Const(c) => *c
         }
     }
 
