@@ -46,7 +46,7 @@ pub fn run(num_threads: usize, total_phot: u64, light: &Light, uni: &Universe) -
     info!("Thread reports:");
     for (thread_id, num_phot) in num_phots.lock().unwrap().iter().enumerate() {
         println!(
-            "\tThread {}: {} phots ({}%)",
+            "\tThread {}: {} phots ({:.2}%)",
             thread_id,
             num_phot,
             *num_phot as f64 / total_phot as f64 * 100.0
