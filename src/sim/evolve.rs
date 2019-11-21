@@ -60,7 +60,7 @@ pub fn run(
 
 /// Initialise the diffusion coefficients.
 fn diffusion_coeffs(uni: &Universe) -> Array3<Option<Array1<Option<f64>>>> {
-    info!("Constructing diffusion coefficent map.");
+    info!("Constructing diffusion coefficient map.");
     let mol_map = uni.mol_map();
 
     let mut coeffs = Vec::with_capacity(uni.grid().res().total());
