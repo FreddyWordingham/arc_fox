@@ -1,12 +1,12 @@
 {
-    "num_threads": 4,
+    "num_threads": 32,
     "uni": {
         "grid": {
             "res": {
                 "arr": [
-                    21,
-                    21,
-                    21
+                    101,
+                    101,
+                    101
                 ]
             },
             "half_extents": [
@@ -103,5 +103,5 @@
             }
         }
     },
-    "total_phot": 10000
+    "total_phot": 1000000
 }
