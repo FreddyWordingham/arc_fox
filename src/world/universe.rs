@@ -139,7 +139,10 @@ impl ProtoUniverse {
         }
 
         for (_id, region) in self.region_map.iter() {
-            for (mol_id, (_init_conc, _source)) in region.init_conc_sources().iter() {
+            for (mol_id, _conc) in region.state().concs().iter() {
+                mol_list.push(mol_id.to_string());
+            }
+            for (mol_id, _source) in region.state().sources().iter() {
                 mol_list.push(mol_id.to_string());
             }
         }

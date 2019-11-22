@@ -9,13 +9,12 @@ use crate::{
     mat::{Interface, Material},
     rt::{Ray, Trace},
     world::{
-        concs_sources_from_map, mat_at_pos_from_map, mat_at_pos_from_sublist, InterMap, MolMap,
+        mat_at_pos_from_map, mat_at_pos_from_sublist, state_at_pos_from_map, InterMap, MolMap,
         RegionMap,
     },
 };
 use contracts::pre;
 use nalgebra::{Point3, Unit, Vector3};
-use ndarray::Array1;
 
 /// Cell structure implementation.
 #[derive(Debug)]
@@ -65,14 +64,13 @@ impl<'a> Cell<'a> {
             mat_at_pos_from_sublist(aabb.centre(), &dom, inter_map, &det_box, &inter_tris)
         };
 
-        let (concs, sources) = concs_sources_from_map(aabb.centre(), &dom, mol_map, region_map);
+        let state = state_at_pos_from_map(aabb.centre(), &dom, mol_map, region_map);
 
         Self {
             aabb,
             inter_tris,
             mat,
-            concs,
-            sources,
+            state,
         }
     }
 
@@ -86,14 +84,9 @@ impl<'a> Cell<'a> {
         &self.mat
     }
 
-    /// Reference the Molecule concentrations.
-    pub fn concs(&self) -> &Array1<f64> {
-        &self.concs
-    }
-
-    /// Reference the Molecule sources.
-    pub fn sources(&self) -> &Array1<f64> {
-        &self.sources
+    /// Reference the state.
+    pub fn state(&self) -> &State {
+        &self.state
     }
 
     /// Check if the cell contains intersecting triangles.

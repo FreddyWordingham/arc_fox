@@ -3,6 +3,7 @@
 use super::Cell;
 use crate::{
     base::Resolution,
+    dom::State,
     geom::shape::Aabb,
     json,
     util::progress::bar,
@@ -12,7 +13,7 @@ use contracts::pre;
 use indicatif::ProgressBar;
 use log::info;
 use nalgebra::{Point3, Vector3};
-use ndarray::{Array1, Array3};
+use ndarray::Array3;
 use rayon::prelude::*;
 use serde::{Deserialize, Serialize};
 use std::sync::{Arc, Mutex};
@@ -197,28 +198,16 @@ impl<'a> Grid<'a> {
         &self.cells
     }
 
-    /// Create a data-cube of concentration references.
-    pub fn concs(&self) -> Array3<&Array1<f64>> {
-        let mut concs = Vec::with_capacity(self.res.total());
+    /// Create a state-cube of references.
+    pub fn states(&self) -> Array3<&State> {
+        let mut states = Vec::with_capacity(self.res.total());
 
         for cell in self.cells().iter() {
-            concs.push(cell.concs());
+            states.push(cell.state());
         }
 
-        Array3::from_shape_vec(*self.res.arr(), concs)
-            .expect("Could not form concentration reference cube.")
-    }
-
-    /// Create a data-cube of source term references.
-    pub fn sources(&self) -> Array3<&Array1<f64>> {
-        let mut sources = Vec::with_capacity(self.res.total());
-
-        for cell in self.cells().iter() {
-            sources.push(cell.sources());
-        }
-
-        Array3::from_shape_vec(*self.res.arr(), sources)
-            .expect("Could not form source term reference cube.")
+        Array3::from_shape_vec(*self.res.arr(), states)
+            .expect("Could not form state reference cube.")
     }
 }
 

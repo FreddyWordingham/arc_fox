@@ -58,47 +58,8 @@ fn main() {
     let mcrt_data = mcrt::run(form.num_threads(), form.total_phot(), &light, &uni);
 
     section("Post-Processing");
-    info!("Creating concentration data cube.");
-    let mut concs = Vec::with_capacity(res.total());
-    for cell in uni.grid().cells().iter() {
-        concs.push(cell.concs()[index_of_key(uni.mol_map(), &"ala".to_string())]);
-    }
-    let concs = Array3::from_shape_vec(res.arr().clone(), concs).unwrap();
-
-    info!("Creating scattering data cube.");
-    let vol = uni.grid().cells()[[0, 0, 0]].aabb().vol();
-    let mut scats = Vec::with_capacity(res.total());
-    let mut total_scats = 0.0;
-    for rec in mcrt_data.recs.iter() {
-        let x = rec.scatters();
-        total_scats += x;
-        scats.push(x / vol);
-    }
-    let scats = Array3::from_shape_vec(res.arr().clone(), scats).unwrap();
-    report!("Total scatterings: {}", total_scats);
-
-    info!("Creating travel distance data cube.");
-    let vol = uni.grid().cells()[[0, 0, 0]].aabb().vol();
-    let mut dist_travelled = Vec::with_capacity(res.total());
-    let mut total_dist_travelled = 0.0;
-    for rec in mcrt_data.recs.iter() {
-        let x = rec.dist_travelled();
-        total_dist_travelled += x;
-        dist_travelled.push(x / vol);
-    }
-    let dist_travelled = Array3::from_shape_vec(res.arr().clone(), dist_travelled).unwrap();
-    report!("Total distance travelled: {}m", total_dist_travelled);
 
     section("Output");
-    report!("Output dir", out_dir.display());
-    info!("Saving concentration datacube.");
-    concs.save(&out_dir.join("ala.nc"));
-
-    info!("Saving scattering datacube.");
-    scats.save(&out_dir.join("scat.nc"));
-
-    info!("Saving distance travelled datacube.");
-    dist_travelled.save(&out_dir.join("dist_travelled.nc"));
 }
 
 fn load_form(path: Option<&Path>) -> Setup {

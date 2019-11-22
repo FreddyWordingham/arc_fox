@@ -2,14 +2,13 @@
 
 use super::MolMap;
 use crate::{
-    dom::{ProtoRegion, Region},
+    dom::{ProtoRegion, Region, State},
     geom::shape::Aabb,
     rt::{Ray, Trace},
 };
 use contracts::pre;
 use log::info;
 use nalgebra::Point3;
-use ndarray::Array1;
 use std::{collections::HashMap, path::Path};
 
 /// Region-map alias.
@@ -40,14 +39,15 @@ pub fn new_region_map(
 }
 
 /// Determine the initial concentrations and source terms for a given position.
+#[pre(dom.contains(&p))]
 #[pre(!mol_map.is_empty())]
 #[pre(!region_map.is_empty())]
-pub fn concs_sources_from_map(
+pub fn state_at_pos_from_map(
     p: Point3<f64>,
     dom: &Aabb,
     mol_map: &MolMap,
     region_map: &RegionMap,
-) -> (Array1<f64>, Array1<f64>) {
+) -> State {
     let n: i32 = 7;
     let mut power = 3;
     for i in -n.pow(power)..=n.pow(power) {
@@ -69,10 +69,10 @@ pub fn concs_sources_from_map(
                         .dist(&ray)
                         .expect("Failed to determine internal dom distance.")
             {
-                return (region.concs().clone(), region.sources().clone());
+                return region.state().clone();
             }
         }
     }
 
-    (Array1::zeros(mol_map.len()), Array1::zeros(mol_map.len()))
+    State::new_empty(mol_map.len())
 }

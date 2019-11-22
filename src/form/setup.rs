@@ -3,6 +3,7 @@
 use crate::{
     base::Resolution,
     chem::{ProtoRate, ProtoReaction},
+    dom::ProtoState,
     dom::{ProtoGrid, ProtoRegion},
     geom::{shape::ProtoMesh, ProtoTransform},
     json, map,
@@ -87,7 +88,10 @@ impl Setup {
                     Some(0.1),
                 )),
             ),
-            map!("ala".to_string() => (1.0, 0.0)),
+            ProtoState::new(
+                map!("ala".to_string() => 1.0),
+                map!("ala".to_string() => 0.01),
+            )
         ));
 
         Self {

@@ -1,14 +1,12 @@
 //! Region structure.
 
+use super::{ProtoState, State};
 use crate::{
     geom::shape::{Mesh, ProtoMesh},
     json,
-    world::{map::index_of_key, MolMap},
+    world::MolMap,
 };
-use contracts::pre;
-use ndarray::Array1;
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
 
 /// Region structure implementation.
 /// Used to initialise the initial state of cells.
@@ -16,35 +14,22 @@ use std::collections::HashMap;
 pub struct Region {
     /// Surface mesh.
     mesh: Mesh,
-    /// Initial concentrations.
-    concs: Array1<f64>,
-    /// Source terms.
-    sources: Array1<f64>,
+    /// Initial state.
+    state: State,
 }
 
 impl Region {
     /// Construct a new instance.
-    #[pre(sources.iter().all(|x| *x >= 0.0))]
-    #[pre(concs.len() == sources.len())]
-    pub fn new(mesh: Mesh, concs: Array1<f64>, sources: Array1<f64>) -> Self {
-        Self {
-            mesh,
-            concs,
-            sources,
-        }
+    pub fn new(mesh: Mesh, state: State) -> Self {
+        Self { mesh, state }
     }
 
     /// Build an instance from a proto-region.
     pub fn build(mesh_dir: &Path, mol_map: &MolMap, proto_region: &ProtoRegion) -> Self {
-        let mut concs = Array1::zeros(mol_map.len());
-        let mut sources = Array1::zeros(mol_map.len());
-        for (id, (init_conc, source)) in proto_region.init_conc_sources().iter() {
-            let index = index_of_key(mol_map, id);
-            concs[index] = *init_conc;
-            sources[index] = *source;
-        }
-
-        Self::new(Mesh::build(mesh_dir, proto_region.mesh()), concs, sources)
+        Self::new(
+            Mesh::build(mesh_dir, proto_region.mesh()),
+            State::build(mol_map, proto_region.state()),
+        )
     }
 
     /// Reference the surface mesh.
@@ -52,14 +37,9 @@ impl Region {
         &self.mesh
     }
 
-    /// Reference the initial concentrations.
-    pub fn concs(&self) -> &Array1<f64> {
-        &self.concs
-    }
-
-    /// Reference the source terms.
-    pub fn sources(&self) -> &Array1<f64> {
-        &self.sources
+    /// Reference the state.
+    pub fn state(&self) -> &State {
+        &self.state
     }
 }
 
@@ -69,17 +49,14 @@ impl Region {
 pub struct ProtoRegion {
     /// Proto-mesh.
     mesh: ProtoMesh,
-    /// Map of initial concentrations and sources.
-    init_conc_sources: HashMap<String, (f64, f64)>,
+    /// Proto-state.
+    state: ProtoState,
 }
 
 impl ProtoRegion {
     /// Construct a new instance.
-    pub fn new(mesh: ProtoMesh, init_conc_sources: HashMap<String, (f64, f64)>) -> Self {
-        Self {
-            mesh,
-            init_conc_sources,
-        }
+    pub fn new(mesh: ProtoMesh, state: ProtoState) -> Self {
+        Self { mesh, state }
     }
 
     /// Reference the proto-mesh.
@@ -87,9 +64,9 @@ impl ProtoRegion {
         &self.mesh
     }
 
-    /// Reference the map of initial concentrations and sources.
-    pub fn init_conc_sources(&self) -> &HashMap<String, (f64, f64)> {
-        &self.init_conc_sources
+    /// Reference the proto-state.
+    pub fn state(&self) -> &ProtoState {
+        &self.state
     }
 }
 
