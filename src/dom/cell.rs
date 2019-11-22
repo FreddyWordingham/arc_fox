@@ -1,6 +1,6 @@
 //! Cell structure.
 
-use super::SIGMA;
+use super::{State, SIGMA};
 use crate::{
     geom::{
         shape::{Aabb, Triangle},
@@ -26,10 +26,8 @@ pub struct Cell<'a> {
     inter_tris: Vec<(&'a Interface<'a>, Vec<&'a Triangle>)>,
     /// Central material.
     mat: &'a Material,
-    /// Molecule concentrations.
-    concs: Array1<f64>,
-    /// Molecule sources.
-    sources: Array1<f64>,
+    /// Current physical state.
+    state: State,
 }
 
 impl<'a> Cell<'a> {
