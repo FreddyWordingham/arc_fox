@@ -2,7 +2,6 @@
 
 use super::SIGMA;
 use crate::{
-    data::Record,
     geom::{
         shape::{Aabb, Triangle},
         Collide,
@@ -27,8 +26,6 @@ pub struct Cell<'a> {
     inter_tris: Vec<(&'a Interface<'a>, Vec<&'a Triangle>)>,
     /// Central material.
     mat: &'a Material,
-    /// Record.
-    rec: Record,
     /// Molecule concentrations.
     concs: Array1<f64>,
     /// Molecule sources.
@@ -76,7 +73,6 @@ impl<'a> Cell<'a> {
             aabb,
             inter_tris,
             mat,
-            rec: Record::new(),
             concs,
             sources,
         }
@@ -90,11 +86,6 @@ impl<'a> Cell<'a> {
     /// Reference the Central material.
     pub fn mat(&self) -> &Material {
         &self.mat
-    }
-
-    /// Reference the Record.
-    pub fn rec(&self) -> &Record {
-        &self.rec
     }
 
     /// Reference the Molecule concentrations.
