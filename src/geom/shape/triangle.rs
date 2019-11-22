@@ -8,6 +8,7 @@ use crate::{
     file::Load,
     list::alphabet::Greek::{Alpha, Beta, Gamma},
     rt::{Ray, Trace},
+    util::progress::bar,
 };
 use contracts::pre;
 use nalgebra::{Point3, Similarity3, Unit, Vector3};
@@ -333,7 +334,10 @@ impl Load for Vec<Triangle> {
             .collect();
 
         let mut verts = Vec::with_capacity(vertex_lines.len());
+        let pb = bar("Loading vertices", vertex_lines.len() as u64);
         for line in vertex_lines {
+            pb.inc(1);
+
             let mut words = line.split_whitespace();
             words.next();
 
@@ -343,6 +347,7 @@ impl Load for Vec<Triangle> {
 
             verts.push(Point3::new(px, py, pz));
         }
+        pb.finish_and_clear();
 
         let normal_lines: Vec<_> = BufReader::new(File::open(path).expect("Unable to open file!"))
             .lines()
@@ -351,7 +356,10 @@ impl Load for Vec<Triangle> {
             .collect();
 
         let mut norms = Vec::with_capacity(normal_lines.len());
+        let pb = bar("Loading normals", normal_lines.len() as u64);
         for line in normal_lines {
+            pb.inc(1);
+
             let mut words = line.split_whitespace();
             words.next();
 
@@ -361,6 +369,7 @@ impl Load for Vec<Triangle> {
 
             norms.push(Unit::new_normalize(Vector3::new(nx, ny, nz)));
         }
+        pb.finish_and_clear();
 
         let face_lines: Vec<_> = BufReader::new(File::open(path).expect("Unable to open file!"))
             .lines()
@@ -369,7 +378,10 @@ impl Load for Vec<Triangle> {
             .collect();
 
         let mut faces = Vec::with_capacity(face_lines.len());
+        let pb = bar("Loading faces", face_lines.len() as u64);
         for line in face_lines {
+            pb.inc(1);
+
             let line = line.replace("//", " ");
             let mut words = line.split_whitespace();
             words.next();
@@ -383,6 +395,7 @@ impl Load for Vec<Triangle> {
 
             faces.push(((fx, fy, fz), (fnx, fny, fnz)));
         }
+        pb.finish_and_clear();
 
         let mut tris = Vec::with_capacity(faces.len());
         for face in faces {
