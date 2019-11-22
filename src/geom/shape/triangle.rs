@@ -326,12 +326,13 @@ impl Trace for Triangle {
 
 impl Load for Vec<Triangle> {
     fn load(path: &Path) -> Self {
-        let vertex_lines = BufReader::new(File::open(path).expect("Unable to open file!"))
+        let vertex_lines: Vec<_> = BufReader::new(File::open(path).expect("Unable to open file!"))
             .lines()
             .map(|line| line.unwrap())
-            .filter(|line| line.starts_with("v "));
+            .filter(|line| line.starts_with("v "))
+            .collect();
 
-        let mut verts = Vec::new(); // TODO Initialise to capacity.
+        let mut verts = Vec::with_capacity(vertex_lines.len());
         for line in vertex_lines {
             let mut words = line.split_whitespace();
             words.next();
@@ -343,12 +344,13 @@ impl Load for Vec<Triangle> {
             verts.push(Point3::new(px, py, pz));
         }
 
-        let normal_lines = BufReader::new(File::open(path).expect("Unable to open file!"))
+        let normal_lines: Vec<_> = BufReader::new(File::open(path).expect("Unable to open file!"))
             .lines()
             .map(|line| line.unwrap())
-            .filter(|line| line.starts_with("vn "));
+            .filter(|line| line.starts_with("vn "))
+            .collect();
 
-        let mut norms = Vec::new(); // TODO Initialise to capacity.
+        let mut norms = Vec::with_capacity(normal_lines.len());
         for line in normal_lines {
             let mut words = line.split_whitespace();
             words.next();
@@ -360,12 +362,13 @@ impl Load for Vec<Triangle> {
             norms.push(Unit::new_normalize(Vector3::new(nx, ny, nz)));
         }
 
-        let face_lines = BufReader::new(File::open(path).expect("Unable to open file!"))
+        let face_lines: Vec<_> = BufReader::new(File::open(path).expect("Unable to open file!"))
             .lines()
             .map(|line| line.unwrap())
-            .filter(|line| line.starts_with("f "));
+            .filter(|line| line.starts_with("f "))
+            .collect();
 
-        let mut faces = Vec::new(); // TODO Initialise to capacity.
+        let mut faces = Vec::with_capacity(face_lines.len());
         for line in face_lines {
             let line = line.replace("//", " ");
             let mut words = line.split_whitespace();
