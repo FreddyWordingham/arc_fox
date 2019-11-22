@@ -1,1 +1,1 @@
-//! Evolve funtions.
+//! Evolve functions.

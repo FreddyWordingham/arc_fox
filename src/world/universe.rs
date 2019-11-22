@@ -23,7 +23,7 @@ use std::{collections::HashMap, sync::Arc};
 pub struct Universe<'a> {
     /// Molecule-map.
     mol_map: MolMap,
-    // Reaction-map.
+    /// Reaction-map.
     react_map: ReactMap,
     /// Material-map.
     mat_map: MatMap,
