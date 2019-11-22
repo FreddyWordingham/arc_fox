@@ -4,15 +4,15 @@
         "grid": {
             "res": {
                 "arr": [
-                    7,
-                    7,
-                    7
+                    9,
+                    9,
+                    9
                 ]
             },
             "half_extents": [
-                10.0e-3,
-                10.0e-3,
-                10.0e-3
+                1.0,
+                1.0,
+                1.0
             ]
         },
         "react_map": {
@@ -63,6 +63,14 @@
             }
         },
         "inter_map": {
+            "torus": {
+                "mesh": {
+                    "name": "torus",
+                    "trans": null
+                },
+                "in_mat": "fog",
+                "out_mat": "air"
+            },
             "top_plane": {
                 "mesh": {
                     "name": "plane",
@@ -70,14 +78,30 @@
                         "trans": [
                             0.0,
                             0.0,
-                            -0.01e-3
+                            0.75
                         ],
                         "rot": null,
-                        "scale": 10.0e-3
+                        "scale": 1.05
                     }
                 },
-                "in_mat": "stratum_corneum",
+                "in_mat": "fog",
                 "out_mat": "air"
+            },
+            "bottom_plane": {
+                "mesh": {
+                    "name": "plane",
+                    "trans": {
+                        "trans": [
+                            0.0,
+                            0.0,
+                            -0.75
+                        ],
+                        "rot": null,
+                        "scale": 1.05
+                    }
+                },
+                "in_mat": "air",
+                "out_mat": "fog"
             }
         },
         "region_map": {
@@ -88,17 +112,19 @@
                         "trans": [
                             0.0,
                             0.0,
-                            0.25e-3
+                            0.5
                         ],
                         "rot": null,
-                        "scale": 1.0e-3
+                        "scale": 0.1
                     }
                 },
-                "init_conc_sources": {
-                    "ala": [
-                        1.0,
-                        0.0
-                    ]
+                "state": {
+                    "concs": {
+                        "ala": 1.0
+                    },
+                    "sources": {
+                        "ala": 0.01
+                    }
                 }
             }
         }

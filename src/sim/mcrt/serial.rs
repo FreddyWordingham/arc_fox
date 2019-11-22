@@ -2,11 +2,13 @@
 
 use super::sample;
 use crate::{data::Archive, opt::Light, world::Universe};
+use contracts::pre;
 use indicatif::ProgressBar;
 use rand::thread_rng;
 use std::sync::{Arc, Mutex};
 
 /// Run a mcrt simulation in serial.
+#[pre(total_phot > 0)]
 pub fn run(
     thread_id: usize,
     total_phot: u64,
@@ -28,6 +30,7 @@ pub fn run(
 }
 
 /// Iterate the progress one increment if possible.
+#[pre(total_phot > 0)]
 fn iterate(
     bar: &mut Arc<ProgressBar>,
     thread_id: usize,

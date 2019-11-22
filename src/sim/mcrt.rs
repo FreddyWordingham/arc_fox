@@ -10,7 +10,7 @@ use log::info;
 use std::sync::{Arc, Mutex};
 
 /// Run a MCRT simulation.
-#[pre(num_threads > 1)]
+#[pre(num_threads > 0)]
 pub fn run(num_threads: usize, total_phot: u64, light: &Light, uni: &Universe) -> Archive {
     info!("Running MCRT simulation.");
 
@@ -22,7 +22,14 @@ pub fn run(num_threads: usize, total_phot: u64, light: &Light, uni: &Universe) -
         serial::run(0, total_phot, num_phots.clone(), bar.clone(), light, uni)
     } else {
         info!("Running multi-threaded ({}).", num_threads);
-        parallel::run(0, total_phot, num_phots.clone(), bar.clone(), light, uni)
+        parallel::run(
+            num_threads,
+            total_phot,
+            num_phots.clone(),
+            bar.clone(),
+            light,
+            uni,
+        )
     };
 
     bar.finish_with_message("Photon loop complete.");
