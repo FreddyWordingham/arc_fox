@@ -54,7 +54,7 @@ impl<T: Debug + Numeric> Save for Array3<T> {
     }
 }
 
-impl<T: Debug + Numeric> Save for Vec<(String, Array3<T>)> {
+impl<T: Debug + Numeric> Save for Vec<(&str, Array3<T>)> {
     #[pre(self.len() > 0)]
     #[pre(self.iter().all(|(name, arr)| !name.is_empty() && arr.len() > 0))]
     fn save(&self, path: &Path) {

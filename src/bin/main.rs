@@ -2,7 +2,7 @@
 
 use arc::{
     args,
-    file::Load,
+    file::{Load, Save},
     form::Setup,
     geom::shape::Aperture,
     init::io_dirs,
@@ -28,7 +28,7 @@ fn main() {
         form_path: String
     );
     let _form_path = Path::new(&form_path);
-    let (in_dir, _out_dir) = io_dirs(None, None);
+    let (in_dir, out_dir) = io_dirs(None, None);
 
     section("Input");
     report!("Input dir", in_dir.display());
@@ -54,11 +54,11 @@ fn main() {
 
     section("Simulation");
     // let _pre_state = evolve::run(form.num_threads(), 60.0, 15.0, &uni);
-    let _archive = mcrt::run(form.num_threads(), form.total_phot(), &light, &uni);
-
-    section("Post-Processing");
+    let lightmap = mcrt::run(form.num_threads(), form.total_phot(), &light, &uni);
 
     section("Output");
+    info!("Saving lightmap.");
+    lightmap.save(&out_dir.join("lightmap.nc"));
 }
 
 fn load_form(path: Option<&Path>) -> Setup {

@@ -16,7 +16,7 @@ pub fn run(
     uni: &Universe,
 ) -> Lightmap {
     let res = uni.grid().res().clone();
-    let mut lightmap = Lightmap::new(res);
+    let mut lightmap = Lightmap::new(uni.grid().dom().vol() / res.total() as f64, res);
 
     let mut rng = thread_rng();
 
