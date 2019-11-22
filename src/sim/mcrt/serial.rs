@@ -1,7 +1,7 @@
 //! Run in serial functions.
 
-use super::sample;
-use crate::{data::Archive, opt::Light, util::Monitor, world::Universe};
+use super::{sample, Archive};
+use crate::{opt::Light, util::Monitor, world::Universe};
 use contracts::pre;
 use rand::thread_rng;
 use std::sync::{Arc, Mutex};

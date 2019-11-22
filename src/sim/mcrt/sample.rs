@@ -1,7 +1,7 @@
 //! Sampling functions.
 
+use super::{Archive, Record};
 use crate::{
-    data::{Archive, Record},
     dom::Cell,
     opt::{Light, Photon},
     rng::sample::henyey_greenstein,

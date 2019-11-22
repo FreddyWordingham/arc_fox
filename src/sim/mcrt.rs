@@ -1,10 +1,15 @@
 //! MCRT sub-module.
 
+pub mod archive;
 pub mod parallel;
+pub mod record;
 pub mod sample;
 pub mod serial;
 
-use crate::{data::Archive, opt::Light, util::Monitor, world::Universe};
+pub use self::archive::*;
+pub use self::record::*;
+
+use crate::{opt::Light, util::Monitor, world::Universe};
 use contracts::pre;
 use log::info;
 use std::sync::{Arc, Mutex};

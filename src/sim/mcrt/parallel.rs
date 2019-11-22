@@ -1,7 +1,7 @@
 //! Run in parallel functions.
 
-use super::serial;
-use crate::{data::Archive, opt::Light, util::Monitor, world::Universe};
+use super::{serial, Archive};
+use crate::{opt::Light, util::Monitor, world::Universe};
 use contracts::pre;
 use rayon::prelude::*;
 use std::sync::{Arc, Mutex};
