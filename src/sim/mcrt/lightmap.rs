@@ -1,19 +1,19 @@
-//! Archive structure.
+//! Lightmap structure.
 
 use super::Record;
 use crate::base::Resolution;
 use ndarray::Array3;
 use std::ops::AddAssign;
 
-/// Archive structure implementation.
-/// Record archive.
+/// Lightmap structure implementation.
+/// Record Lightmap.
 #[derive(Debug)]
-pub struct Archive {
+pub struct Lightmap {
     /// Record array.
     pub recs: Array3<Record>,
 }
 
-impl Archive {
+impl Lightmap {
     /// Construct a new instance.
     pub fn new(res: Resolution) -> Self {
         Self {
@@ -22,7 +22,7 @@ impl Archive {
     }
 }
 
-impl AddAssign<&Archive> for Archive {
+impl AddAssign<&Lightmap> for Lightmap {
     fn add_assign(&mut self, rhs: &Self) {
         self.recs += &rhs.recs;
     }

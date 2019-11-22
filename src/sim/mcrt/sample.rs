@@ -1,6 +1,6 @@
 //! Sampling functions.
 
-use super::{Archive, Record};
+use super::{Lightmap, Record};
 use crate::{
     dom::Cell,
     opt::{Light, Photon},
@@ -16,14 +16,14 @@ pub const BUMP_DIST: f64 = 1.0e-9; // [m].
 
 /// Simulate the life of a single photon.
 pub fn photon_life(
-    mut archive: &mut Archive,
+    mut lightmap: &mut Lightmap,
     mut rng: &mut ThreadRng,
     total_phot: u64,
     light: &Light,
     uni: &Universe,
 ) {
     let mut phot = light.emit(&mut rng, total_phot);
-    let mut cell_rec = cell_and_record(&phot, &uni, &mut archive);
+    let mut cell_rec = cell_and_record(&phot, &uni, &mut lightmap);
     cell_rec.1.increase_emissions(phot.weight());
     let mut env = cell_rec
         .0
@@ -70,7 +70,7 @@ pub fn photon_life(
                     break;
                 }
 
-                cell_rec = cell_and_record(&phot, &uni, &mut archive);
+                cell_rec = cell_and_record(&phot, &uni, &mut lightmap);
             }
             Hit::Interface(_dist) => {
                 let (dist, inside, norm, inter) =
@@ -132,7 +132,7 @@ pub fn photon_life(
                     break;
                 }
 
-                cell_rec = cell_and_record(&phot, uni, &mut archive);
+                cell_rec = cell_and_record(&phot, uni, &mut lightmap);
             }
         }
     }
@@ -142,7 +142,7 @@ pub fn photon_life(
 fn cell_and_record<'a>(
     phot: &Photon,
     uni: &'a Universe,
-    archive: &'a mut Archive,
+    lightmap: &'a mut Lightmap,
 ) -> (&'a Cell<'a>, &'a mut Record) {
     let index = uni
         .grid()
@@ -152,7 +152,7 @@ fn cell_and_record<'a>(
         .clone();
 
     let cell = &uni.grid().cells()[index];
-    let rec = &mut archive.recs[index];
+    let rec = &mut lightmap.recs[index];
 
     if !cell.aabb().contains(&phot.ray().pos()) {
         panic!("Not inside that cell!");

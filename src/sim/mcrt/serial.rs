@@ -1,6 +1,6 @@
 //! Run in serial functions.
 
-use super::{sample, Archive};
+use super::{sample, Lightmap};
 use crate::{opt::Light, util::Monitor, world::Universe};
 use contracts::pre;
 use rand::thread_rng;
@@ -14,15 +14,15 @@ pub fn run(
     monitor: Arc<Mutex<Monitor>>,
     light: &Light,
     uni: &Universe,
-) -> Archive {
+) -> Lightmap {
     let res = uni.grid().res().clone();
-    let mut archive = Archive::new(res);
+    let mut lightmap = Lightmap::new(res);
 
     let mut rng = thread_rng();
 
     while monitor.lock().unwrap().inc(thread_id).is_some() {
-        sample::photon_life(&mut archive, &mut rng, total_phot, light, uni);
+        sample::photon_life(&mut lightmap, &mut rng, total_phot, light, uni);
     }
 
-    archive
+    lightmap
 }
