@@ -1,6 +1,6 @@
 //! Hit enumeration.
 
-use crate::sim::mcrt::BUMP_DIST;
+use crate::sim::mcrt::sample::BUMP_DIST;
 use contracts::pre;
 
 /// Hit enumeration implementation.

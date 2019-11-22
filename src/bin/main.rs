@@ -2,7 +2,7 @@
 
 use arc::{
     args,
-    file::{Load, Save},
+    file::Load,
     form::Setup,
     geom::shape::Aperture,
     init::io_dirs,
@@ -10,13 +10,12 @@ use arc::{
     print::term::{section, title},
     report,
     rt::Ray,
-    sim::{evolve, mcrt},
+    sim::mcrt,
     util::exec,
-    world::{map::index_of_key, Universe},
+    world::Universe,
 };
 use log::info;
 use nalgebra::{Point3, Unit, Vector3};
-use ndarray::Array3;
 use std::path::Path;
 
 fn main() {
@@ -29,7 +28,7 @@ fn main() {
         form_path: String
     );
     let _form_path = Path::new(&form_path);
-    let (in_dir, out_dir) = io_dirs(None, None);
+    let (in_dir, _out_dir) = io_dirs(None, None);
 
     section("Input");
     report!("Input dir", in_dir.display());
@@ -38,7 +37,7 @@ fn main() {
     // form.save(&in_dir.join(form_path));
 
     section("Setup");
-    let res = form.uni().grid().res();
+    let _res = form.uni().grid().res();
     let uni = Universe::build(&in_dir, form.uni(), form.num_threads());
 
     let light = Light::new(
@@ -55,7 +54,7 @@ fn main() {
 
     section("Simulation");
     // let _pre_state = evolve::run(form.num_threads(), 60.0, 15.0, &uni);
-    let mcrt_data = mcrt::run(form.num_threads(), form.total_phot(), &light, &uni);
+    let _archive = mcrt::run(form.num_threads(), form.total_phot(), &light, &uni);
 
     section("Post-Processing");
 
