@@ -8,9 +8,9 @@ pub fn bar(msg: &'static str, ticks: u64) -> ProgressBar {
     bar.set_style(
             ProgressStyle::default_bar()
                 .template(
-                    "{spinner:.green} [{elapsed_precise}] [{bar:40.cyan/blue}] [{pos}/{len}] {percent}% ({eta}) {msg}",
+                    "{spinner:.cyan} [{elapsed_precise}] [{bar:40.green/red}] [{pos}/{len}] {percent}% ({eta}) {msg}",
                 )
-                .progress_chars("#>-"),
+                .progress_chars("\\/"),
         );
     bar.set_message(msg);
 

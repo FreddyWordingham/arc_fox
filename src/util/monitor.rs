@@ -28,15 +28,15 @@ impl Monitor {
     }
 
     /// Determine if another increment is possible.
-    pub fn inc(&mut self, thread_id: usize) -> bool {
+    pub fn inc(&mut self, thread_id: usize) -> Option<u64> {
         let sum: u64 = self.counts.iter().sum();
         if sum < self.total {
             self.pb.inc(1);
             self.counts[thread_id] += 1;
-            return true;
+            return Some(sum);
         }
 
-        false
+        None
     }
 
     /// Finish with a message.

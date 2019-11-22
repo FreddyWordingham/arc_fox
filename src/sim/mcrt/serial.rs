@@ -20,7 +20,7 @@ pub fn run(
 
     let mut rng = thread_rng();
 
-    while monitor.lock().unwrap().inc(thread_id) {
+    while monitor.lock().unwrap().inc(thread_id).is_some() {
         sample::photon_life(&mut archive, &mut rng, total_phot, light, uni);
     }
 

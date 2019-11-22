@@ -6,11 +6,10 @@ use crate::{
     dom::State,
     geom::shape::Aabb,
     json,
-    util::progress::bar,
+    util::{progress::bar, Monitor},
     world::{InterMap, MolMap, RegionMap},
 };
 use contracts::pre;
-use indicatif::ProgressBar;
 use log::info;
 use nalgebra::{Point3, Vector3};
 use ndarray::Array3;
@@ -43,17 +42,19 @@ impl<'a> Grid<'a> {
         res: Resolution,
         num_threads: usize,
     ) -> Self {
-        info!("Constructing the grid...");
+        info!("Constructing grid...");
 
         let mut cell_size = dom.widths();
         for (w, n) in cell_size.iter_mut().zip(res.arr().iter()) {
             *w /= *n as f64;
         }
 
-        let num_cells = Arc::new(Mutex::new(vec![0; num_threads]));
-        let pb = Arc::new(bar("generating cells", res.total() as u64));
+        let monitor = Arc::new(Mutex::new(Monitor::new(
+            "Constructing cells",
+            res.total() as u64,
+            num_threads,
+        )));
 
-        info!("Running multi-thread ({}).", num_threads);
         let thread_ids: Vec<usize> = (0..num_threads).collect();
         let mut cell_lists: Vec<Vec<(usize, Cell<'a>)>> = thread_ids
             .par_iter()
@@ -61,8 +62,7 @@ impl<'a> Grid<'a> {
                 Self::build_cells(
                     *id,
                     &res,
-                    pb.clone(),
-                    num_cells.clone(),
+                    Arc::clone(&monitor),
                     &dom,
                     &cell_size,
                     inter_map,
@@ -71,21 +71,13 @@ impl<'a> Grid<'a> {
                 )
             })
             .collect();
-        pb.finish_with_message(&format!("{} cells constructed.", res.total()));
+        monitor
+            .lock()
+            .unwrap()
+            .finish_with_message("Cells constructed.");
 
-        info!("Thread reports:");
-        for (id, num_cells) in num_cells.lock().unwrap().iter().enumerate() {
-            println!(
-                "\tThread {}: {} cells ({:.2}%)",
-                id,
-                num_cells,
-                *num_cells as f64 / res.total() as f64 * 100.0
-            );
-        }
-
-        info!("Sorting cells");
         let mut cells = Vec::with_capacity(res.total());
-        let pb = bar("sorting cells", res.total() as u64);
+        let pb = bar("Sorting cells", res.total() as u64);
         'outer: for n in 0..res.total() {
             pb.inc(1);
 
@@ -98,7 +90,7 @@ impl<'a> Grid<'a> {
 
             panic!("Cell index {} is missing.", n);
         }
-        pb.finish_with_message(&format!("{} cells sorted.", res.total()));
+        pb.finish_with_message("Cells sorted.");
 
         let cells = Array3::from_shape_vec(res.arr().clone(), cells)
             .expect("Unable to construct grid cells.");
@@ -112,10 +104,9 @@ impl<'a> Grid<'a> {
 
     /// Construct cells for the grid.
     fn build_cells(
-        id: usize,
+        thread_id: usize,
         res: &Resolution,
-        mut bar: Arc<ProgressBar>,
-        mut num_cells: Arc<Mutex<Vec<u64>>>,
+        monitor: Arc<Mutex<Monitor>>,
         dom: &Aabb,
         cell_size: &Vector3<f64>,
         inter_map: &'a InterMap,
@@ -124,7 +115,9 @@ impl<'a> Grid<'a> {
     ) -> Vec<(usize, Cell<'a>)> {
         let mut cells = Vec::new();
 
-        while let Some(n) = Self::iterate(id, res.total() as u64, &mut bar, &mut num_cells) {
+        while let Some(n) = monitor.lock().unwrap().inc(thread_id) {
+            let n = res.total() - 1 - (n as usize);
+
             let index = res.nth_index(n as usize);
 
             let mins = dom.mins()
@@ -136,31 +129,12 @@ impl<'a> Grid<'a> {
             let maxs = mins + cell_size;
 
             cells.push((
-                n as usize,
+                n,
                 Cell::new(&dom, inter_map, mol_map, region_map, Aabb::new(mins, maxs)),
             ));
         }
 
         cells
-    }
-
-    /// Iterate the progress one increment if possible.
-    fn iterate(
-        id: usize,
-        total_cells: u64,
-        bar: &mut Arc<ProgressBar>,
-        num_cells: &mut Arc<Mutex<Vec<u64>>>,
-    ) -> Option<u64> {
-        let mut num_cells = num_cells.lock().unwrap();
-
-        let sum_cells: u64 = num_cells.iter().sum();
-        if sum_cells < total_cells {
-            bar.inc(1);
-            num_cells[id] += 1;
-            return Some(total_cells - sum_cells - 1);
-        }
-
-        None
     }
 
     /// Build a new instance.

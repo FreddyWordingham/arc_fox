@@ -21,10 +21,8 @@ pub fn run(num_threads: usize, total_phot: u64, light: &Light, uni: &Universe) -
     )));
 
     let archive = if num_threads == 1 {
-        info!("Running as single thread.");
         serial::run(0, total_phot, Arc::clone(&monitor), light, uni)
     } else {
-        info!("Running multi-threaded ({}).", num_threads);
         parallel::run(num_threads, total_phot, Arc::clone(&monitor), light, uni)
     };
 
