@@ -7,6 +7,7 @@ use crate::{
     world::MolMap,
 };
 use serde::{Deserialize, Serialize};
+use std::path::Path;
 
 /// Region structure implementation.
 /// Used to initialise the initial state of cells.

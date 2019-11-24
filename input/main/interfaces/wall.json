@@ -1,0 +1,20 @@
+{
+    "mesh": {
+        "name": "plane",
+        "trans": {
+            "trans": [
+                0.8,
+                0.0,
+                0.0
+            ],
+            "rot": [
+                0.0,
+                90.0,
+                0.0
+            ],
+            "scale": 1.0
+        }
+    },
+    "in_mat": "fog",
+    "out_mat": "air"
+}

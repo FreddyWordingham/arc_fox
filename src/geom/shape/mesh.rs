@@ -5,6 +5,7 @@ use super::{
     Aabb, Triangle,
 };
 use crate::{
+    file::Load,
     json,
     list::alphabet::Greek::Alpha,
     rt::{Ray, Trace},
@@ -12,6 +13,7 @@ use crate::{
 use contracts::pre;
 use nalgebra::{Similarity3, Unit, Vector3};
 use serde::{Deserialize, Serialize};
+use std::path::Path;
 
 /// Mesh structure implementation.
 /// Forms the surface of the majority of complex components.

@@ -1,0 +1,25 @@
+{
+    "reactants": [
+        [
+            1,
+            "ppix"
+        ],
+        [
+            1,
+            "udens"
+        ]
+    ],
+    "products": [
+        [
+            1,
+            "death"
+        ]
+    ],
+    "rate": {
+        "SecondOrder": [
+            0.75,
+            "ppix",
+            "udens"
+        ]
+    }
+}

@@ -1,0 +1,12 @@
+{
+    "mesh": {
+        "name": "cube",
+        "trans": {
+            "trans": null,
+            "rot": null,
+            "scale": 0.5
+        }
+    },
+    "in_mat": "fog",
+    "out_mat": "air"
+}

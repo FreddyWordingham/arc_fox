@@ -8,6 +8,7 @@ use crate::{
 };
 use contracts::pre;
 use serde::{Deserialize, Serialize};
+use std::path::Path;
 
 /// Interface structure implementation.
 /// Forms the boundary between two regions of material.

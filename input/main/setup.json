@@ -4,15 +4,15 @@
         "grid": {
             "res": {
                 "arr": [
-                    9,
-                    9,
-                    9
+                    151,
+                    151,
+                    151
                 ]
             },
             "half_extents": [
-                1.0,
-                1.0,
-                1.0
+                1.5,
+                1.5,
+                1.5
             ]
         },
         "react_map": {
@@ -63,10 +63,14 @@
             }
         },
         "inter_map": {
-            "torus": {
+            "focus": {
                 "mesh": {
                     "name": "torus",
-                    "trans": null
+                    "trans": {
+                        "trans": null,
+                        "rot": null,
+                        "scale": 0.5
+                    }
                 },
                 "in_mat": "fog",
                 "out_mat": "air"
@@ -84,8 +88,8 @@
                         "scale": 1.05
                     }
                 },
-                "in_mat": "fog",
-                "out_mat": "air"
+                "in_mat": "air",
+                "out_mat": "fog"
             },
             "bottom_plane": {
                 "mesh": {
@@ -100,8 +104,8 @@
                         "scale": 1.05
                     }
                 },
-                "in_mat": "air",
-                "out_mat": "fog"
+                "in_mat": "fog",
+                "out_mat": "air"
             }
         },
         "region_map": {
@@ -129,5 +133,5 @@
             }
         }
     },
-    "total_phot": 1000
+    "total_phot": 1000000
 }

@@ -3,19 +3,13 @@
 use arc::{
     args,
     file::{Load, Save},
-    form::Setup,
-    geom::shape::Aperture,
+    form::Parameters,
     init::io_dirs,
-    opt::{Light, Spectrum},
     print::term::{section, title},
     report,
-    rt::Ray,
-    sim::mcrt,
     util::exec,
-    world::Universe,
 };
 use log::info;
-use nalgebra::{Point3, Unit, Vector3};
 use std::path::Path;
 
 fn main() {
@@ -28,45 +22,45 @@ fn main() {
         form_path: String
     );
     let _form_path = Path::new(&form_path);
-    let (in_dir, out_dir) = io_dirs(None, None);
+    let (in_dir, _out_dir) = io_dirs(None, None);
 
     section("Input");
     report!("Input dir", in_dir.display());
-    let form = load_form(Some(&in_dir.join(form_path)));
-    // let form = load_form(None);
-    // form.save(&in_dir.join(form_path));
+    // let _form = load_form(Some(&in_dir.join(form_path)));
+    let form = load_form(None);
+    form.save(&in_dir.join(form_path));
 
-    section("Setup");
-    let _res = form.uni().grid().res();
-    let uni = Universe::build(&in_dir, form.uni(), form.num_threads());
+    // section("Setup");
+    // let _res = form.uni().grid().res();
+    // let uni = Universe::build(&in_dir, form.uni(), form.num_threads());
 
-    let light = Light::new(
-        Box::new(Aperture::new(
-            Ray::new(
-                Point3::new(0.0, 0.0, 7.5e-3),
-                Unit::new_normalize(Vector3::new(0.01, 0.01, -1.0)),
-            ),
-            20.0f64.to_radians(),
-        )),
-        Spectrum::new_laser(630.0e-9),
-        1.0,
-    );
+    // let light = Light::new(
+    //     Box::new(Aperture::new(
+    //         Ray::new(
+    //             Point3::new(0.0, 0.0, 7.5e-3),
+    //             Unit::new_normalize(Vector3::new(1.0, 0.01, 0.01)),
+    //         ),
+    //         20.0f64.to_radians(),
+    //     )),
+    //     Spectrum::new_laser(630.0e-9),
+    //     1.0,
+    // );
 
-    section("Simulation");
-    // let _pre_state = evolve::run(form.num_threads(), 60.0, 15.0, &uni);
-    let lightmap = mcrt::run(form.num_threads(), form.total_phot(), &light, &uni);
+    // section("Simulation");
+    // // let _pre_state = evolve::run(form.num_threads(), 60.0, 15.0, &uni);
+    // let lightmap = mcrt::run(form.num_threads(), form.total_phot(), &light, &uni);
 
-    section("Output");
-    info!("Saving lightmap.");
-    lightmap.save(&out_dir.join("lightmap.nc"));
+    // section("Output");
+    // info!("Saving lightmap.");
+    // lightmap.save(&out_dir.join("lightmap.nc"));
 }
 
-fn load_form(path: Option<&Path>) -> Setup {
+fn load_form(path: Option<&Path>) -> Parameters {
     if let Some(path) = path {
         report!("Loading setup from file", path.display());
-        Setup::load(path)
+        Parameters::load(path)
     } else {
         info!("Using example setup.");
-        Setup::example()
+        Parameters::new(1, vec!["chunk", "wall"], None, None)
     }
 }
