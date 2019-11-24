@@ -3,7 +3,7 @@
 use crate::{
     chem::{Rate, Reaction},
     dom::Grid,
-    world::{MolMap, ReactMap, Universe},
+    world::{InterMap, MatMap, MolMap, ReactMap, Universe},
 };
 use std::fmt::Write;
 
@@ -11,47 +11,51 @@ use std::fmt::Write;
 pub fn universe(uni: &Universe) -> String {
     let mut fmt = String::new();
 
-    writeln!(fmt, "Grid:\n{}", grid(uni.grid())).unwrap();
-    writeln!(fmt, "Molecules:\n{}", mol_map(uni.mol_map())).unwrap();
-    writeln!(
+    write!(fmt, "Grid:\n{}", grid(uni.grid())).unwrap();
+    write!(fmt, "Molecules:\n{}", mol_map(uni.mol_map())).unwrap();
+    write!(
         fmt,
         "Reactions:\n{}",
         react_map(uni.react_map(), uni.mol_map())
     )
     .unwrap();
+    write!(fmt, "Materials:\n{}", mat_map(uni.mat_map())).unwrap();
+    write!(fmt, "Interfaces:\n{}", inter_map(uni.inter_map())).unwrap();
+
+    write!(fmt, "{:<32}: {}s", "Age", uni.age()).unwrap();
 
     fmt
 }
 
 /// Print a formatted overview of a given grid.
-pub fn grid(grid: &Grid) -> String {
+fn grid(grid: &Grid) -> String {
     let mut fmt = String::new();
 
     writeln!(
         fmt,
-        "{:<32}: {}m x {}m x {}m",
+        "\t{:<28}: {}m x {}m x {}m",
         "Dimensions",
         grid.dom().widths().x,
         grid.dom().widths().y,
         grid.dom().widths().z
     )
     .unwrap();
-    writeln!(fmt, "{:<32}: {}m^3", "Total volume", grid.dom().vol()).unwrap();
+    writeln!(fmt, "\t{:<28}: {}m^3", "Total volume", grid.dom().vol()).unwrap();
 
     let res = grid.res();
     writeln!(
         fmt,
-        "{:<32}: {} x {} x {}",
+        "\t{:<28}: {} x {} x {}",
         "Resolution",
         res.x(),
         res.y(),
         res.z()
     )
     .unwrap();
-    writeln!(fmt, "{:<32}: {}", "Total cells", res.total()).unwrap();
+    writeln!(fmt, "\t{:<28}: {}", "Total cells", res.total()).unwrap();
     writeln!(
         fmt,
-        "{:<32}: {}m^3",
+        "\t{:<28}: {}m^3",
         "Cell volume",
         grid.dom().vol() / res.total() as f64
     )
@@ -61,14 +65,14 @@ pub fn grid(grid: &Grid) -> String {
 }
 
 /// Print a formatted overview of a given molecule-map.
-pub fn mol_map(mol_map: &MolMap) -> String {
+fn mol_map(mol_map: &MolMap) -> String {
     let mut fmt = String::new();
 
     for (name, mol) in mol_map.iter() {
         if let Some(rad) = mol.rad() {
-            writeln!(fmt, "{:<32}: {}nm", name, rad * 1.0e9).unwrap();
+            writeln!(fmt, "\t{:<28}: {}nm", name, rad * 1.0e9).unwrap();
         } else {
-            writeln!(fmt, "{:<32}: unsized", name).unwrap();
+            writeln!(fmt, "\t{:<28}: unsized", name).unwrap();
         }
     }
 
@@ -76,20 +80,20 @@ pub fn mol_map(mol_map: &MolMap) -> String {
 }
 
 /// Print a formatted overview of a given reaction-map.
-pub fn react_map(react_map: &ReactMap, mol_map: &MolMap) -> String {
+fn react_map(react_map: &ReactMap, mol_map: &MolMap) -> String {
     let mut fmt = String::new();
 
     let mol_names: Vec<&str> = mol_map.iter().map(|(n, _m)| n.as_str()).collect();
 
     for (name, react) in react_map.iter() {
-        writeln!(fmt, "{:<32}: {}", name, reaction(react, &mol_names)).unwrap();
+        writeln!(fmt, "\t{:<28}: {}", name, reaction(react, &mol_names)).unwrap();
     }
 
     fmt
 }
 
 /// Print a formatted overview of a given reaction.
-pub fn reaction(reaction: &Reaction, mol_names: &Vec<&str>) -> String {
+fn reaction(reaction: &Reaction, mol_names: &Vec<&str>) -> String {
     let mut fmt = String::new();
 
     let (i, s) = reaction.reactants()[0];
@@ -117,6 +121,38 @@ pub fn reaction(reaction: &Reaction, mol_names: &Vec<&str>) -> String {
     }
 
     write!(fmt, " mol/(m^3 s)").unwrap();
+
+    fmt
+}
+
+/// Print a formatted overview of a given material-map.
+fn mat_map(mat_map: &MatMap) -> String {
+    let mut fmt = String::new();
+
+    for (name, mat) in mat_map.iter() {
+        if let Some(visc) = mat.visc() {
+            writeln!(fmt, "\t{:<28}: {}Pa s", name, visc).unwrap();
+        } else {
+            writeln!(fmt, "\t{:<28}: Non-diffusive", name).unwrap();
+        }
+    }
+
+    fmt
+}
+
+/// Print a formatted overview of a given interface-map.
+fn inter_map(inter_map: &InterMap) -> String {
+    let mut fmt = String::new();
+
+    for (name, inter) in inter_map.iter() {
+        writeln!(
+            fmt,
+            "\t{:<28}: {} triangles",
+            name,
+            inter.mesh().tris().len()
+        )
+        .unwrap();
+    }
 
     fmt
 }

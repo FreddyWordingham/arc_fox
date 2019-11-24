@@ -31,6 +31,8 @@ pub struct Universe<'a> {
     inter_map: InterMap<'a>,
     /// Grid of cells.
     grid: Grid<'a>,
+    /// Age.
+    age: f64,
 }
 
 impl<'a> Universe<'a> {
@@ -52,6 +54,7 @@ impl<'a> Universe<'a> {
                 &new_region_map(&input_dir.join("meshes"), &proto_uni.region_map, &mol_map),
                 num_threads,
             );
+            age = 0.0;
         }))
         .expect("Could not create universe instance.");
 
@@ -86,6 +89,11 @@ impl<'a> Universe<'a> {
     /// Reference the grid of cells.
     pub fn grid(&self) -> &Grid<'a> {
         &self.grid
+    }
+
+    /// Get the age.
+    pub fn age(&self) -> f64 {
+        self.age
     }
 }
 

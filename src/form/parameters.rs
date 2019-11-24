@@ -58,6 +58,11 @@ impl Parameters {
         }
     }
 
+    /// Get the number of threads.
+    pub fn num_threads(&self) -> usize {
+        self.num_threads
+    }
+
     /// Reference the proto-grid.
     pub fn grid(&self) -> &ProtoGrid {
         &self.grid

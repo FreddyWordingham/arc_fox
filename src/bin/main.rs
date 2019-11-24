@@ -6,16 +6,20 @@ use arc::{
     dom::ProtoGrid,
     file::{Load, Save},
     form::Parameters,
+    geom::shape::Aperture,
     init::io_dirs,
+    opt::{Light, Spectrum},
     print::{
         format,
         term::{section, title},
     },
     report,
+    rt::Ray,
+    sim::mcrt,
     util::exec,
 };
 use log::info;
-use nalgebra::Vector3;
+use nalgebra::{Point3, Unit, Vector3};
 use std::path::Path;
 
 fn main() {
@@ -28,7 +32,7 @@ fn main() {
         form_path: String
     );
     let _form_path = Path::new(&form_path);
-    let (in_dir, _out_dir) = io_dirs(None, None);
+    let (in_dir, out_dir) = io_dirs(None, None);
 
     section("Input");
     report!("Input dir", in_dir.display());
@@ -43,25 +47,27 @@ fn main() {
     section("Pre-Flight");
     info!("{}", format::universe(&uni));
 
-    // let light = Light::new(
-    //     Box::new(Aperture::new(
-    //         Ray::new(
-    //             Point3::new(0.0, 0.0, 7.5e-3),
-    //             Unit::new_normalize(Vector3::new(1.0, 0.01, 0.01)),
-    //         ),
-    //         20.0f64.to_radians(),
-    //     )),
-    //     Spectrum::new_laser(630.0e-9),
-    //     1.0,
-    // );
+    let light = Light::new(
+        Box::new(Aperture::new(
+            Ray::new(
+                Point3::new(0.0, 0.0, 7.5e-3),
+                Unit::new_normalize(Vector3::new(1.0, 0.01, 0.01)),
+            ),
+            20.0f64.to_radians(),
+        )),
+        Spectrum::new_laser(630.0e-9),
+        1.0,
+    );
 
-    // section("Simulation");
-    // // let _pre_state = evolve::run(form.num_threads(), 60.0, 15.0, &uni);
-    // let lightmap = mcrt::run(form.num_threads(), form.total_phot(), &light, &uni);
+    section("Simulation");
+    // let _pre_state = evolve::run(form.num_threads(), 60.0, 15.0, &uni);
+    let lightmap = mcrt::run(form.num_threads(), 1_000, &light, &uni);
 
-    // section("Output");
-    // info!("Saving lightmap.");
-    // lightmap.save(&out_dir.join("lightmap.nc"));
+    section("Output");
+    info!("Saving lightmap.");
+    lightmap.save(&out_dir.join("lightmap.nc"));
+
+    section("Finished");
 }
 
 fn load_form(path: Option<&Path>) -> Parameters {
