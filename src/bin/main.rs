@@ -7,7 +7,10 @@ use arc::{
     file::{Load, Save},
     form::Parameters,
     init::io_dirs,
-    print::term::{section, title},
+    print::{
+        format,
+        term::{section, title},
+    },
     report,
     util::exec,
 };
@@ -36,6 +39,9 @@ fn main() {
     section("Setup");
     let _res = form.grid().res();
     let uni = form.manifest(&in_dir);
+
+    section("Pre-Flight");
+    info!("{}", format::universe(&uni));
 
     // let light = Light::new(
     //     Box::new(Aperture::new(
@@ -68,7 +74,7 @@ fn load_form(path: Option<&Path>) -> Parameters {
             1,
             ProtoGrid::new(Resolution::new(11, 11, 11), Vector3::new(1.0, 1.0, 1.0)),
             vec!["chunk", "wall"],
-            None,
+            Some(vec!["cell_death_mechanism", "ppix_formation"]),
             None,
         )
     }
