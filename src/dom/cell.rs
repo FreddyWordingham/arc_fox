@@ -1,6 +1,6 @@
 //! Cell structure.
 
-use super::{State, SIGMA};
+use super::SIGMA;
 use crate::{
     geom::{
         shape::{Aabb, Triangle},
@@ -8,6 +8,7 @@ use crate::{
     },
     mat::{Interface, Material},
     rt::{Ray, Trace},
+    sim::evolve::State,
     world::{
         mat_at_pos_from_map, mat_at_pos_from_sublist, state_at_pos_from_map, InterMap, MolMap,
         RegionMap,

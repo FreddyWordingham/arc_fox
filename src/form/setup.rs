@@ -3,11 +3,11 @@
 use crate::{
     base::Resolution,
     chem::{ProtoRate, ProtoReaction},
-    dom::ProtoState,
     dom::{ProtoGrid, ProtoRegion},
     geom::{shape::ProtoMesh, ProtoTransform},
     json, map,
     mat::ProtoInterface,
+    sim::evolve::ProtoState,
     world::ProtoUniverse,
 };
 use nalgebra::{Translation3, Vector3};

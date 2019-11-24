@@ -15,7 +15,7 @@ use arc::{
     },
     report,
     rt::Ray,
-    sim::mcrt,
+    sim::{evolve::Statemap, mcrt},
     util::exec,
 };
 use log::info;
@@ -62,10 +62,16 @@ fn main() {
     section("Simulation");
     // let _pre_state = evolve::run(form.num_threads(), 60.0, 15.0, &uni);
     let lightmap = mcrt::run(form.num_threads(), 1_000, &light, &uni);
+    let states = Statemap::new(uni.grid());
 
     section("Output");
     info!("Saving lightmap.");
     lightmap.save(&out_dir.join("lightmap.nc"));
+
+    info!("Saving initial states.");
+    states
+        .mol_concs(uni.mol_map())
+        .save(&out_dir.join("concs.nc"));
 
     section("Finished");
 }

@@ -1,9 +1,9 @@
 //! Region structure.
 
-use super::{ProtoState, State};
 use crate::{
     geom::shape::{Mesh, ProtoMesh},
     json,
+    sim::evolve::{ProtoState, State},
     world::MolMap,
 };
 use serde::{Deserialize, Serialize};

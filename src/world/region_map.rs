@@ -2,9 +2,10 @@
 
 use super::MolMap;
 use crate::{
-    dom::{ProtoRegion, Region, State},
+    dom::{ProtoRegion, Region},
     geom::shape::Aabb,
     rt::{Ray, Trace},
+    sim::evolve::State,
     util::progress::bar,
 };
 use contracts::pre;

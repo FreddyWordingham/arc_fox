@@ -3,9 +3,9 @@
 use super::Cell;
 use crate::{
     base::Resolution,
-    dom::State,
     geom::shape::Aabb,
     json,
+    sim::evolve::State,
     util::{progress::bar, Monitor},
     world::{InterMap, MolMap, RegionMap},
 };
