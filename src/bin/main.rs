@@ -87,7 +87,7 @@ fn load_form(path: Option<&Path>) -> Parameters {
             ProtoGrid::new(Resolution::new(11, 11, 11), Vector3::new(1.0, 1.0, 1.0)),
             vec!["chunk", "wall"],
             Some(vec!["cell_death_mechanism", "ppix_formation"]),
-            None,
+            Some(vec!["application_cream"]),
         )
     }
 }
