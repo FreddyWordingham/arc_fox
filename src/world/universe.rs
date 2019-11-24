@@ -16,7 +16,7 @@ use contracts::{post, pre};
 use log::info;
 use self_ref::self_referencing;
 use serde::{Deserialize, Serialize};
-use std::{collections::HashMap, path::Path, sync::Arc};
+use std::{collections::HashMap, path::Path, sync::Arc, time::Instant};
 
 /// Universe structure implementation.
 #[derive(Debug)]
@@ -36,7 +36,9 @@ pub struct Universe<'a> {
 impl<'a> Universe<'a> {
     /// Build a new instance.
     pub fn build(input_dir: &Path, proto_uni: &ProtoUniverse, num_threads: usize) -> Self {
-        info!("Building universe...\n");
+        info!("Building universe");
+
+        let now = Instant::now();
 
         let uni = Arc::try_unwrap(self_referencing!(Universe, {
             mol_map = new_mol_map(&input_dir.join("mols"), proto_uni.mol_list());
@@ -53,7 +55,10 @@ impl<'a> Universe<'a> {
         }))
         .expect("Could not create universe instance.");
 
-        info!("Universe constructed.");
+        info!(
+            "Universe constructed, the big bang took about: {}s.",
+            now.elapsed().as_secs()
+        );
 
         uni
     }

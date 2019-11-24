@@ -5,9 +5,9 @@ use crate::{
     geom::shape::{Aabb, Triangle},
     mat::{Interface, Material, ProtoInterface},
     rt::{Ray, Trace},
+    util::progress::bar,
 };
 use contracts::pre;
-use log::info;
 use log::warn;
 use nalgebra::Point3;
 use std::{collections::HashMap, path::Path};
@@ -24,18 +24,19 @@ pub fn new_inter_map<'a>(
     proto_inter_map: &HashMap<String, ProtoInterface>,
     mat_map: &'a MatMap,
 ) -> InterMap<'a> {
-    info!("Constructing the interface map...");
+    let pb = bar("Constructing interfaces", proto_inter_map.len() as u64);
 
     let mut inter_map = InterMap::with_capacity(proto_inter_map.len());
     for (id, proto_inter) in proto_inter_map.iter() {
-        info!("\tLoading interface: {}", id);
+        pb.inc(1);
+
         inter_map.insert(
             id.to_string(),
             Interface::build(mesh_dir, proto_inter, mat_map),
         );
     }
 
-    info!("Loaded {} total interfaces.\n", inter_map.len());
+    pb.finish_with_message("Interfaces constructed.");
 
     inter_map
 }

@@ -35,7 +35,7 @@ fn main() {
 
     section("Setup");
     let _res = form.grid().res();
-    let _uni = form.manifest(&in_dir);
+    let uni = form.manifest(&in_dir);
 
     // let light = Light::new(
     //     Box::new(Aperture::new(

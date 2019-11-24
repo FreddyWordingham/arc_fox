@@ -1,8 +1,7 @@
 //! Material-map alias.
 
-use crate::{file::Load, mat::Material};
+use crate::{file::Load, mat::Material, util::progress::bar};
 use contracts::pre;
-use log::info;
 use std::{collections::HashMap, path::Path};
 
 /// Material-map alias.
@@ -13,21 +12,22 @@ pub type MatMap = HashMap<String, Material>;
 #[pre(!ids.is_empty())]
 #[post(!ret.is_empty())]
 pub fn new_mat_map(mat_dir: &Path, mut ids: Vec<String>) -> MatMap {
-    info!("Constructing the material map...");
+    let pb = bar("Constructing materials", ids.len() as u64);
 
     ids.sort();
     ids.dedup();
 
     let mut mat_map = MatMap::with_capacity(ids.len());
     for id in ids.iter() {
-        info!("\tLoading material: {}", id);
+        pb.inc(1);
+
         mat_map.insert(
             id.to_string(),
             Material::load(&mat_dir.join(format!("{}.json", id))),
         );
     }
 
-    info!("Loaded {} total materials.\n", mat_map.len());
+    pb.finish_with_message("Materials constructed.");
 
     mat_map
 }

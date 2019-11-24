@@ -5,9 +5,9 @@ use crate::{
     dom::{ProtoRegion, Region, State},
     geom::shape::Aabb,
     rt::{Ray, Trace},
+    util::progress::bar,
 };
 use contracts::pre;
-use log::info;
 use nalgebra::Point3;
 use std::{collections::HashMap, path::Path};
 
@@ -20,18 +20,19 @@ pub fn new_region_map(
     proto_region_map: &HashMap<String, ProtoRegion>,
     mol_map: &MolMap,
 ) -> RegionMap {
-    info!("Constructing the region map...");
+    let pb = bar("Constructing regions", proto_region_map.len() as u64);
 
     let mut region_map = RegionMap::with_capacity(proto_region_map.len());
     for (id, proto_react) in proto_region_map.iter() {
-        info!("\tLoading region: {}", id);
+        pb.inc(1);
+
         region_map.insert(
             id.to_string(),
             Region::build(mesh_dir, mol_map, &proto_react),
         );
     }
 
-    info!("Loaded {} total regions.\n", region_map.len());
+    pb.finish_with_message("Regions constructed.");
 
     region_map
 }

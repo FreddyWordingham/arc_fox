@@ -10,7 +10,6 @@ use crate::{
     world::{InterMap, MolMap, RegionMap},
 };
 use contracts::pre;
-use log::info;
 use nalgebra::{Point3, Vector3};
 use ndarray::Array3;
 use rayon::prelude::*;
@@ -40,8 +39,6 @@ impl<'a> Grid<'a> {
         res: Resolution,
         num_threads: usize,
     ) -> Self {
-        info!("Constructing grid...");
-
         let mut cell_size = dom.widths();
         for (w, n) in cell_size.iter_mut().zip(res.arr().iter()) {
             *w /= *n as f64;
@@ -94,8 +91,6 @@ impl<'a> Grid<'a> {
             .expect("Unable to construct grid cells.");
 
         let grid = Self { dom, res, cells };
-
-        info!("Grid construction complete.\n");
 
         grid
     }
