@@ -100,7 +100,6 @@ pub struct ProtoUniverse {
 
 impl ProtoUniverse {
     /// Construct a new instance.
-    #[pre(!react_map.is_empty())]
     #[pre(!inter_map.is_empty())]
     pub fn new(
         grid: ProtoGrid,
@@ -122,7 +121,6 @@ impl ProtoUniverse {
     }
 
     /// Construct a list of molecule names.
-    #[post(!ret.is_empty())]
     pub fn mol_list(&self) -> Vec<String> {
         let mut mol_list = Vec::new();
 

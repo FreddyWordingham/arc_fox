@@ -16,6 +16,9 @@ pub fn from_json<T>(path: &Path) -> T
 where
     for<'de> T: Deserialize<'de>,
 {
-    let file = File::open(path).expect("Unable to open file.");
-    from_reader(BufReader::new(file)).expect("Unable to parse object from json file.")
+    let file = File::open(path).expect(&format!("Unable to open file: {}.", path.display()));
+    from_reader(BufReader::new(file)).expect(&format!(
+        "Unable to parse object from json file: {}.",
+        path.display()
+    ))
 }

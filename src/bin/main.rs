@@ -2,6 +2,8 @@
 
 use arc::{
     args,
+    base::Resolution,
+    dom::ProtoGrid,
     file::{Load, Save},
     form::Parameters,
     init::io_dirs,
@@ -10,6 +12,7 @@ use arc::{
     util::exec,
 };
 use log::info;
+use nalgebra::Vector3;
 use std::path::Path;
 
 fn main() {
@@ -30,9 +33,9 @@ fn main() {
     let form = load_form(None);
     form.save(&in_dir.join(form_path));
 
-    // section("Setup");
-    // let _res = form.uni().grid().res();
-    // let uni = Universe::build(&in_dir, form.uni(), form.num_threads());
+    section("Setup");
+    let _res = form.grid().res();
+    let _uni = form.manifest(&in_dir);
 
     // let light = Light::new(
     //     Box::new(Aperture::new(
@@ -61,6 +64,12 @@ fn load_form(path: Option<&Path>) -> Parameters {
         Parameters::load(path)
     } else {
         info!("Using example setup.");
-        Parameters::new(1, vec!["chunk", "wall"], None, None)
+        Parameters::new(
+            1,
+            ProtoGrid::new(Resolution::new(11, 11, 11), Vector3::new(1.0, 1.0, 1.0)),
+            vec!["chunk", "wall"],
+            None,
+            None,
+        )
     }
 }

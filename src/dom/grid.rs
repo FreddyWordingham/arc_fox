@@ -32,8 +32,6 @@ pub struct Grid<'a> {
 impl<'a> Grid<'a> {
     /// Construct a new instance.
     #[pre(!inter_map.is_empty())]
-    #[pre(!mol_map.is_empty())]
-    #[pre(!region_map.is_empty())]
     pub fn new(
         inter_map: &'a InterMap,
         mol_map: &'a MolMap,
@@ -187,7 +185,7 @@ impl<'a> Grid<'a> {
 
 /// Proto-Grid structure implementation.
 /// Stores information required to build a grid.
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct ProtoGrid {
     /// Grid resolution.
     res: Resolution,

@@ -2,7 +2,6 @@
 
 use super::MolMap;
 use crate::chem::{ProtoReaction, Reaction};
-use contracts::pre;
 use log::info;
 use std::collections::HashMap;
 
@@ -10,8 +9,6 @@ use std::collections::HashMap;
 pub type ReactMap = HashMap<String, Reaction>;
 
 /// Construct a reaction-map from a hashmap of proto-reactions.
-#[pre(!proto_react_map.is_empty())]
-#[post(!ret.is_empty())]
 pub fn new_react_map(
     proto_react_map: &HashMap<String, ProtoReaction>,
     mol_map: &MolMap,

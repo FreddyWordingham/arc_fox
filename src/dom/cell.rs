@@ -32,8 +32,6 @@ pub struct Cell<'a> {
 impl<'a> Cell<'a> {
     /// Construct a new instance.
     #[pre(!inter_map.is_empty())]
-    #[pre(!mol_map.is_empty())]
-    #[pre(!region_map.is_empty())]
     pub fn new(
         dom: &Aabb,
         inter_map: &'a InterMap,

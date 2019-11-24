@@ -25,7 +25,6 @@ impl State {
     }
 
     /// Construct a new empty state.
-    #[pre(len > 0)]
     pub fn new_empty(len: usize) -> Self {
         Self {
             concs: Array1::zeros(len),

@@ -15,8 +15,6 @@ use std::{collections::HashMap, path::Path};
 pub type RegionMap = HashMap<String, Region>;
 
 /// Construct a region-map from a hashmap of proto-regions.
-#[pre(!proto_region_map.is_empty())]
-#[post(!ret.is_empty())]
 pub fn new_region_map(
     mesh_dir: &Path,
     proto_region_map: &HashMap<String, ProtoRegion>,
@@ -40,14 +38,16 @@ pub fn new_region_map(
 
 /// Determine the initial concentrations and source terms for a given position.
 #[pre(dom.contains(&p))]
-#[pre(!mol_map.is_empty())]
-#[pre(!region_map.is_empty())]
 pub fn state_at_pos_from_map(
     p: Point3<f64>,
     dom: &Aabb,
     mol_map: &MolMap,
     region_map: &RegionMap,
 ) -> State {
+    if region_map.is_empty() {
+        return State::new_empty(mol_map.len());
+    }
+
     let n: i32 = 7;
     let mut power = 3;
     for i in -n.pow(power)..=n.pow(power) {

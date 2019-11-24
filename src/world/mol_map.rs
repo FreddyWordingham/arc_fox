@@ -10,8 +10,6 @@ pub type MolMap = HashMap<String, Molecule>;
 
 /// Construct a molecule-map from a list of molecule ids.
 #[pre(mol_dir.is_dir())]
-#[pre(!ids.is_empty())]
-#[post(!ret.is_empty())]
 pub fn new_mol_map(mol_dir: &Path, mut ids: Vec<String>) -> MolMap {
     info!("Constructing the molecule map...");
 
