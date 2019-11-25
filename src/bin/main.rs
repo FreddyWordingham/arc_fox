@@ -15,7 +15,10 @@ use arc::{
     },
     report,
     rt::Ray,
-    sim::{evolve::Statemap, mcrt},
+    sim::{
+        mcrt,
+        {evolve, evolve::Statemap},
+    },
     util::exec,
 };
 use log::info;
@@ -50,8 +53,8 @@ fn main() {
     let light = Light::new(
         Box::new(Aperture::new(
             Ray::new(
-                Point3::new(0.0, 0.0, 7.5e-3),
-                Unit::new_normalize(Vector3::new(1.0, 0.01, 0.01)),
+                Point3::new(0.0, 0.0, 4.0e-3),
+                Unit::new_normalize(Vector3::new(0.001, 0.0, -1.0)),
             ),
             20.0f64.to_radians(),
         )),
@@ -60,7 +63,7 @@ fn main() {
     );
 
     section("Simulation");
-    // let _pre_state = evolve::run(form.num_threads(), 60.0, 15.0, &uni);
+    let _pre_state = evolve::run(form.num_threads(), 60.0, 15.0, &uni);
     let lightmap = mcrt::run(form.num_threads(), 1_000, &light, &uni);
     let states = Statemap::new(uni.grid());
 
@@ -84,8 +87,11 @@ fn load_form(path: Option<&Path>) -> Parameters {
         info!("Using example setup.");
         Parameters::new(
             1,
-            ProtoGrid::new(Resolution::new(11, 11, 11), Vector3::new(1.0, 1.0, 1.0)),
-            vec!["chunk", "wall"],
+            ProtoGrid::new(
+                Resolution::new(11, 11, 11),
+                Vector3::new(5.0e-3, 5.0e-3, 5.0e-3),
+            ),
+            vec!["stratum_corneum", "living_epidermis"],
             Some(vec!["cell_death_mechanism", "ppix_formation"]),
             Some(vec!["application_cream"]),
         )

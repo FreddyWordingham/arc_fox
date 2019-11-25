@@ -176,6 +176,16 @@ impl<'a> Grid<'a> {
         Array3::from_shape_vec(*self.res.arr(), states)
             .expect("Could not form state reference cube.")
     }
+
+    /// Get the cell size.
+    pub fn cell_size(&self) -> Vector3<f64> {
+        let mut size = self.dom.widths();
+        for (s, i) in size.iter_mut().zip(self.res.arr().iter()) {
+            *s /= *i as f64;
+        }
+
+        size
+    }
 }
 
 /// Proto-Grid structure implementation.

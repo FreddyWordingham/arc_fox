@@ -1,1 +1,1 @@
-{"num_threads":1,"grid":{"res":{"arr":[11,11,11]},"half_extents":[1.0,1.0,1.0]},"interfaces":["chunk","wall"],"reactions":["cell_death_mechanism","ppix_formation"],"regions":["application_cream"]}
+{"num_threads":1,"grid":{"res":{"arr":[11,11,11]},"half_extents":[0.005,0.005,0.005]},"interfaces":["stratum_corneum","living_epidermis"],"reactions":["cell_death_mechanism","ppix_formation"],"regions":["application_cream"]}

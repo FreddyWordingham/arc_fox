@@ -18,5 +18,5 @@
     "asym": {
         "Const": 0.7
     },
-    "visc": null
+    "visc": 8.90e-4
 }
