@@ -2,7 +2,7 @@
 
 use crate::{
     chem::ProtoReaction,
-    dom::{ProtoGrid, ProtoRegion},
+    dom::ProtoGrid,
     file::Load,
     json,
     mat::ProtoInterface,
@@ -24,8 +24,6 @@ pub struct Parameters {
     interfaces: Vec<String>,
     /// Optional list of reactions to simulate.
     reactions: Option<Vec<String>>,
-    /// Optional list of regions to initialise state.
-    regions: Option<Vec<String>>,
 }
 
 impl Parameters {
@@ -36,7 +34,6 @@ impl Parameters {
         grid: ProtoGrid,
         interfaces: Vec<&str>,
         reactions: Option<Vec<&str>>,
-        regions: Option<Vec<&str>>,
     ) -> Self {
         let str_to_string = |list: Option<Vec<&str>>| -> Option<Vec<String>> {
             if let Some(rs) = list {
@@ -47,14 +44,12 @@ impl Parameters {
         };
 
         let reactions = str_to_string(reactions);
-        let regions = str_to_string(regions);
 
         Self {
             num_threads,
             grid,
             interfaces: interfaces.iter().map(|s| s.to_string()).collect(),
             reactions,
-            regions,
         }
     }
 
@@ -83,15 +78,6 @@ impl Parameters {
         )
     }
 
-    /// Create the proto-region-map.
-    #[pre(dir.is_dir())]
-    fn regions(&self, dir: &Path) -> HashMap<String, ProtoRegion> {
-        Self::load_list::<ProtoRegion>(
-            &dir.join("regions"),
-            &self.regions.as_ref().unwrap_or(&vec![]),
-        )
-    }
-
     /// Load a list of a given type using json files.
     fn load_list<T: Load>(dir: &Path, list: &Vec<String>) -> HashMap<String, T> {
         let mut map = HashMap::with_capacity(list.len());
@@ -107,12 +93,7 @@ impl Parameters {
     pub fn manifest(&self, dir: &Path) -> Universe {
         Universe::build(
             dir,
-            &ProtoUniverse::new(
-                self.grid.clone(),
-                self.reactions(dir),
-                self.interfaces(dir),
-                self.regions(dir),
-            ),
+            &ProtoUniverse::new(self.grid.clone(), self.reactions(dir), self.interfaces(dir)),
             self.num_threads,
         )
     }

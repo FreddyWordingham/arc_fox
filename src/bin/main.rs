@@ -91,7 +91,6 @@ fn load_form(path: Option<&Path>) -> Parameters {
             ),
             vec!["stratum_corneum", "living_epidermis"],
             Some(vec!["cell_death_mechanism", "ppix_formation"]),
-            Some(vec!["application_cream"]),
         )
     }
 }

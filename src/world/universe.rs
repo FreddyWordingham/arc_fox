@@ -3,12 +3,11 @@
 #![allow(unused_variables)]
 
 use super::{
-    new_inter_map, new_mat_map, new_mol_map, new_react_map, new_region_map, InterMap, MatMap,
-    MolMap, ReactMap,
+    new_inter_map, new_mat_map, new_mol_map, new_react_map, InterMap, MatMap, MolMap, ReactMap,
 };
 use crate::{
     chem::ProtoReaction,
-    dom::{Grid, ProtoGrid, ProtoRegion},
+    dom::{Grid, ProtoGrid},
     json,
     mat::ProtoInterface,
 };
@@ -47,13 +46,7 @@ impl<'a> Universe<'a> {
             react_map = new_react_map(&proto_uni.react_map, &mol_map);
             mat_map = new_mat_map(&input_dir.join("mats"), proto_uni.mat_list());
             inter_map = new_inter_map(&input_dir.join("meshes"), &proto_uni.inter_map, &mat_map);
-            grid = Grid::build(
-                &proto_uni.grid,
-                &inter_map,
-                &mol_map,
-                &new_region_map(&input_dir.join("meshes"), &proto_uni.region_map, &mol_map),
-                num_threads,
-            );
+            grid = Grid::build(&proto_uni.grid, &inter_map, &mol_map, num_threads);
             age = 0.0;
         }))
         .expect("Could not create universe instance.");
@@ -107,8 +100,6 @@ pub struct ProtoUniverse {
     react_map: HashMap<String, ProtoReaction>,
     /// Interfaces.
     inter_map: HashMap<String, ProtoInterface>,
-    /// Regions to initialise.
-    region_map: HashMap<String, ProtoRegion>,
 }
 
 impl ProtoUniverse {
@@ -118,13 +109,11 @@ impl ProtoUniverse {
         grid: ProtoGrid,
         react_map: HashMap<String, ProtoReaction>,
         inter_map: HashMap<String, ProtoInterface>,
-        region_map: HashMap<String, ProtoRegion>,
     ) -> Self {
         Self {
             grid,
             react_map,
             inter_map,
-            region_map,
         }
     }
 
@@ -146,15 +135,6 @@ impl ProtoUniverse {
             }
             for depend in react.rate().dependants().iter() {
                 mol_list.push(depend.to_string());
-            }
-        }
-
-        for (_id, region) in self.region_map.iter() {
-            for (mol_id, _conc) in region.state().concs().iter() {
-                mol_list.push(mol_id.to_string());
-            }
-            for (mol_id, _source) in region.state().sources().iter() {
-                mol_list.push(mol_id.to_string());
             }
         }
 

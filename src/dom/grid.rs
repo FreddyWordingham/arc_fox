@@ -7,7 +7,7 @@ use crate::{
     json,
     sim::evolve::State,
     util::{progress::bar, Monitor},
-    world::{InterMap, MolMap, RegionMap},
+    world::{InterMap, MolMap},
 };
 use contracts::pre;
 use nalgebra::{Point3, Vector3};
@@ -34,7 +34,6 @@ impl<'a> Grid<'a> {
     pub fn new(
         inter_map: &'a InterMap,
         mol_map: &'a MolMap,
-        region_map: &RegionMap,
         dom: Aabb,
         res: Resolution,
         num_threads: usize,
@@ -62,7 +61,6 @@ impl<'a> Grid<'a> {
                     &cell_size,
                     inter_map,
                     mol_map,
-                    region_map,
                 )
             })
             .collect();
@@ -104,7 +102,6 @@ impl<'a> Grid<'a> {
         cell_size: &Vector3<f64>,
         inter_map: &'a InterMap,
         mol_map: &'a MolMap,
-        region_map: &RegionMap,
     ) -> Vec<(usize, Cell<'a>)> {
         let mut cells = Vec::new();
 
@@ -123,7 +120,7 @@ impl<'a> Grid<'a> {
 
             cells.push((
                 n,
-                Cell::new(&dom, inter_map, mol_map, region_map, Aabb::new(mins, maxs)),
+                Cell::new(&dom, inter_map, mol_map, Aabb::new(mins, maxs)),
             ));
         }
 
@@ -137,13 +134,11 @@ impl<'a> Grid<'a> {
         proto_grid: &ProtoGrid,
         inter_map: &'a InterMap,
         mol_map: &'a MolMap,
-        region_map: &RegionMap,
         num_threads: usize,
     ) -> Self {
         Self::new(
             inter_map,
             mol_map,
-            region_map,
             Aabb::new_centred(&Point3::origin(), proto_grid.half_extents()),
             proto_grid.res().clone(),
             num_threads,

@@ -3,11 +3,10 @@
 use crate::{
     base::Resolution,
     chem::{ProtoRate, ProtoReaction},
-    dom::{ProtoGrid, ProtoRegion},
+    dom::ProtoGrid,
     geom::{shape::ProtoMesh, ProtoTransform},
     json, map,
     mat::ProtoInterface,
-    sim::evolve::ProtoState,
     world::ProtoUniverse,
 };
 use nalgebra::{Translation3, Vector3};
@@ -77,30 +76,12 @@ impl Setup {
             "fog".to_string(),
         ));
 
-        let region_map = map!(
-        "application_cream".to_string() =>
-        ProtoRegion::new(
-            ProtoMesh::new(
-                "cube".to_string(),
-                Some(ProtoTransform::new(
-                    Some(Translation3::new(0.0, 0.0, 0.5)),
-                    None,
-                    Some(0.1),
-                )),
-            ),
-            ProtoState::new(
-                map!("ala".to_string() => 1.0),
-                map!("ala".to_string() => 0.01),
-            )
-        ));
-
         Self {
             num_threads: 4,
             uni: ProtoUniverse::new(
                 ProtoGrid::new(Resolution::new(9, 9, 9), Vector3::new(1.0, 1.0, 1.0)),
                 react_map,
                 inter_map,
-                region_map,
             ),
             total_phot: 1_000,
         }
