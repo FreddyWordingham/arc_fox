@@ -70,6 +70,47 @@ impl Resolution {
     pub fn iter(&self) -> ResolutionIter {
         (&self).into_iter()
     }
+
+    /// Attempt to form an adjacent index.
+    pub fn adjacent(&self, index: &Index, trans: [isize; 3]) -> Option<Index> {
+        let ni = |i, t: isize, r| {
+            if t < 0 {
+                if t.abs() > i {
+                    None
+                } else {
+                    Some((i + t) as usize)
+                }
+            } else {
+                if (i + t) >= r {
+                    None
+                } else {
+                    Some((i + t) as usize)
+                }
+            }
+        };
+
+        let xi = ni(
+            index.x() as isize,
+            trans[X as usize],
+            self.arr[X as usize] as isize,
+        );
+        let yi = ni(
+            index.y() as isize,
+            trans[Y as usize],
+            self.arr[Y as usize] as isize,
+        );
+        let zi = ni(
+            index.z() as isize,
+            trans[Z as usize],
+            self.arr[Z as usize] as isize,
+        );
+
+        if xi.is_none() || yi.is_none() || zi.is_none() {
+            return None;
+        }
+
+        Some(Index::new(xi.unwrap(), yi.unwrap(), zi.unwrap()))
+    }
 }
 
 impl IntoIterator for &Resolution {

@@ -54,6 +54,11 @@ impl State {
         &self.concs
     }
 
+    /// Mutably reference the molecule concentrations.
+    pub fn mut_concs(&mut self) -> &mut Array1<f64> {
+        &mut self.concs
+    }
+
     /// Reference the molecule sources.
     pub fn sources(&self) -> &Array1<f64> {
         &self.sources

@@ -39,9 +39,9 @@ fn main() {
 
     section("Input");
     report!("Input dir", in_dir.display());
-    // let _form = load_form(Some(&in_dir.join(form_path)));
-    let form = load_form(None);
-    form.save(&in_dir.join(form_path));
+    let form = load_form(Some(&in_dir.join(form_path)));
+    // let form = load_form(None);
+    // form.save(&in_dir.join(form_path));
 
     section("Setup");
     let _res = form.grid().res();
@@ -63,18 +63,16 @@ fn main() {
     );
 
     section("Simulation");
-    let _pre_state = evolve::run(form.num_threads(), 60.0, 15.0, &uni);
-    let lightmap = mcrt::run(form.num_threads(), 1_000, &light, &uni);
     let states = Statemap::new(uni.grid());
+    let _pre_state = evolve::run(&out_dir, form.num_threads(), 600.0, 15.0, &uni);
+    let lightmap = mcrt::run(form.num_threads(), 1_000, &light, &uni);
 
     section("Output");
     info!("Saving lightmap.");
     lightmap.save(&out_dir.join("lightmap.nc"));
 
     info!("Saving initial states.");
-    states
-        .mol_concs(uni.mol_map())
-        .save(&out_dir.join("concs.nc"));
+    states.mol_concs(uni.mol_map()).save(&out_dir.join("0.nc"));
 
     section("Finished");
 }

@@ -12,16 +12,23 @@ use contracts::pre;
 use log::info;
 use ndarray::{Array1, Array3};
 use physical_constants::BOLTZMANN_CONSTANT;
-use std::f64::consts::PI;
+use std::{f64::consts::PI, path::Path};
 
 /// Human body temperature.
 const TEMPERATURE: f64 = 310.15;
 
 /// Run an Evolution simulation.
+#[pre(out_dir.is_dir())]
 #[pre(num_threads > 0)]
 #[pre(sim_time > 0.0)]
 #[pre(dump_time > 0.0)]
-pub fn run(num_threads: usize, sim_time: f64, dump_time: f64, uni: &Universe) -> Statemap {
+pub fn run(
+    out_dir: &Path,
+    num_threads: usize,
+    sim_time: f64,
+    dump_time: f64,
+    uni: &Universe,
+) -> Statemap {
     info!("Running Evolution simulation.");
 
     let mut statemap = Statemap::new(uni.grid());
@@ -42,11 +49,22 @@ pub fn run(num_threads: usize, sim_time: f64, dump_time: f64, uni: &Universe) ->
     let cell_size = uni.grid().cell_size();
     let dx = cell_size.x.min(cell_size.y.min(cell_size.z));
     info!("Min dx: {}", dx);
-    let min_diff_dt = dx.powi(2) / (4.0 * max_d.unwrap().powi(2));
-    info!("Min dt: {}s", min_diff_dt);
+    let max_dt = dx.powi(2) / (4.0 * max_d.unwrap());
+    let max_dt = max_dt / 2.0;
+    info!("Max dt: {}s", max_dt);
 
     if num_threads == 1 {
-        serial::run(sim_time, dump_time, &mut statemap);
+        serial::run(
+            out_dir,
+            sim_time,
+            dump_time,
+            max_dt,
+            uni.grid().res(),
+            &cell_size,
+            &ds,
+            uni.mol_map(),
+            &mut statemap,
+        );
     } else {
         unimplemented!("Coming soon!");
     }
@@ -56,7 +74,7 @@ pub fn run(num_threads: usize, sim_time: f64, dump_time: f64, uni: &Universe) ->
     statemap
 }
 
-/// Determine the diffusion coefficents for the given universe.
+/// Determine the diffusion coefficients for the given universe.
 fn diff_concs(uni: &Universe) -> Array3<Option<Array1<Option<f64>>>> {
     let diff_concs = uni.grid().cells().map(|cell| {
         let mat = cell.mat();
