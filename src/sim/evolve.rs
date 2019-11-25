@@ -1,5 +1,6 @@
 //! Evolve sub-module.
 
+pub mod parallel;
 pub mod serial;
 pub mod state;
 pub mod statemap;
@@ -50,7 +51,7 @@ pub fn run(
     let dx = cell_size.x.min(cell_size.y.min(cell_size.z));
     info!("Min dx: {}", dx);
     let max_dt = dx.powi(2) / (4.0 * max_d.unwrap());
-    let max_dt = max_dt / 2.0;
+    let max_dt = max_dt / 10.0;
     info!("Max dt: {}s", max_dt);
 
     if num_threads == 1 {
@@ -63,10 +64,23 @@ pub fn run(
             &cell_size,
             &ds,
             uni.mol_map(),
+            uni.react_map(),
             &mut statemap,
         );
     } else {
-        unimplemented!("Coming soon!");
+        parallel::run(
+            num_threads,
+            out_dir,
+            sim_time,
+            dump_time,
+            max_dt,
+            uni.grid().res(),
+            &cell_size,
+            &ds,
+            uni.mol_map(),
+            uni.react_map(),
+            &mut statemap,
+        );
     }
 
     info!("Evolution complete.");

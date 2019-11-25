@@ -3,9 +3,9 @@
     "grid": {
         "res": {
             "arr": [
-                101,
-                101,
-                101
+                31,
+                31,
+                31
             ]
         },
         "half_extents": [
@@ -19,7 +19,6 @@
         "living_epidermis"
     ],
     "reactions": [
-        "cell_death_mechanism",
         "ppix_formation"
     ],
     "regions": [

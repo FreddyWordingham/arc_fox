@@ -5,7 +5,7 @@
             "trans": [
                 0.0,
                 0.0,
-                -1.0e-3
+                -0.5e-3
             ],
             "rot": null,
             "scale": 0.5e-3
@@ -13,10 +13,8 @@
     },
     "state": {
         "concs": {
-            "ala": 0.0
-        },
-        "sources": {
             "ala": 1.0
-        }
+        },
+        "sources": {}
     }
 }

@@ -1,0 +1,16 @@
+{
+    "mesh": {
+        "name": "plane",
+        "trans": {
+            "trans": [
+                0.0,
+                0.0,
+                4.9e-3
+            ],
+            "rot": null,
+            "scale": 5.0e-3
+        }
+    },
+    "in_mat": "living_epidermis",
+    "out_mat": "air"
+}

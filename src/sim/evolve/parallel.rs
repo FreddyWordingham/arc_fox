@@ -1,4 +1,4 @@
-//! Run in serial functions.
+//! Run in parallel functions.
 
 use super::Statemap;
 use crate::{
@@ -11,12 +11,14 @@ use nalgebra::Vector3;
 use ndarray::{Array1, Array3};
 use std::path::Path;
 
-/// Run an evolution simulation in serial.
+/// Run an evolution simulation in parallel.
+#[pre(num_threads > 1)]
 #[pre(out_dir.is_dir())]
 #[pre(sim_time > 0.0)]
 #[pre(dump_time > 0.0)]
 #[pre(max_dt > 0.0)]
 pub fn run(
+    num_threads: usize,
     out_dir: &Path,
     sim_time: f64,
     dump_time: f64,
@@ -138,10 +140,10 @@ fn react_deltas(
             let rate = reaction.rate().res(&concs);
 
             for (i, s) in reaction.reactants().iter() {
-                ds[*i] += rate * *s as f64;
+                ds[*i] -= rate * *s as f64;
             }
             for (i, s) in reaction.products().iter() {
-                ds[*i] += -rate * *s as f64;
+                ds[*i] += rate * *s as f64;
             }
         }
     }
