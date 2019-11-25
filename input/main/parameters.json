@@ -1,11 +1,11 @@
 {
-    "num_threads": 1,
+    "num_threads": 4,
     "grid": {
         "res": {
             "arr": [
-                31,
-                31,
-                31
+                101,
+                101,
+                101
             ]
         },
         "half_extents": [
@@ -19,7 +19,8 @@
         "living_epidermis"
     ],
     "reactions": [
-        "ppix_formation"
+        "ppix_formation",
+        "cell_death_mechanism"
     ],
     "regions": [
         "application_cream"

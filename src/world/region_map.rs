@@ -65,7 +65,7 @@ pub fn state_at_pos_from_map(
         }
 
         if let Some((dist, inside, region)) = nearest {
-            if inside
+            if !inside // TODO: Figure this out.
                 && dist
                     <= dom
                         .dist(&ray)
