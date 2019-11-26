@@ -61,6 +61,12 @@ impl Material {
 
     /// Build an instance from a proto-material.
     pub fn build(proto_mat: &ProtoMaterial, mol_map: &MolMap) -> Self {
+        let state = if let Some(proto_state) = &proto_mat.state {
+            State::build(&mol_map, &proto_state)
+        } else {
+            State::new_empty(mol_map.len())
+        };
+
         Self::new(
             proto_mat.range.clone(),
             proto_mat.ref_index.clone(),
@@ -69,7 +75,7 @@ impl Material {
             proto_mat.shift_coeff.clone(),
             proto_mat.asym.clone(),
             proto_mat.visc,
-            State::build(&mol_map, &proto_mat.state),
+            state,
         )
     }
 
@@ -85,7 +91,12 @@ impl Material {
         )
     }
 
-    /// Optional viscosity. [kg m s^-1]
+    /// Reference the initial state.
+    pub fn state(&self) -> &State {
+        &self.state
+    }
+
+    /// Get the optional viscosity. [kg m s^-1]
     pub fn visc(&self) -> Option<f64> {
         self.visc
     }
@@ -110,7 +121,7 @@ pub struct ProtoMaterial {
     /// Optional viscosity. [kg m s^-1]
     visc: Option<f64>,
     /// Initial state.
-    state: ProtoState,
+    state: Option<ProtoState>,
 }
 
 impl ProtoMaterial {
@@ -125,7 +136,7 @@ impl ProtoMaterial {
         shift_coeff: Formula,
         asym: Formula,
         visc: Option<f64>,
-        state: ProtoState,
+        state: Option<ProtoState>,
     ) -> Self {
         Self {
             range,
