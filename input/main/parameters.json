@@ -3,9 +3,9 @@
     "grid": {
         "res": {
             "arr": [
-                101,
-                101,
-                101
+                31,
+                31,
+                31
             ]
         },
         "half_extents": [
@@ -15,14 +15,17 @@
         ]
     },
     "interfaces": [
+        "deep_blood_net_dermis",
+        "reticular_dermis",
+        "living_epidermis",
+        "papillary_dermis",
         "stratum_corneum",
-        "living_epidermis"
+        "subcutaneous_fat",
+        "tissue",
+        "upper_blood_net_dermis"
     ],
     "reactions": [
         "ppix_formation",
         "cell_death_mechanism"
-    ],
-    "regions": [
-        "application_cream"
     ]
 }

@@ -18,5 +18,11 @@
     "asym": {
         "Const": 0.75
     },
-    "visc": 8.90e-4
+    "visc": 8.90e-4,
+    "state": {
+        "concs": {
+            "ala": 1.0
+        },
+        "sources": {}
+    }
 }

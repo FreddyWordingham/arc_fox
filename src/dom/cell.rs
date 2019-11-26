@@ -9,7 +9,7 @@ use crate::{
     mat::{Interface, Material},
     rt::{Ray, Trace},
     sim::evolve::State,
-    world::{mat_at_pos_from_map, mat_at_pos_from_sublist, InterMap, MolMap},
+    world::{mat_at_pos_from_map, mat_at_pos_from_sublist, InterMap},
 };
 use contracts::pre;
 use nalgebra::{Point3, Unit, Vector3};
@@ -30,7 +30,7 @@ pub struct Cell<'a> {
 impl<'a> Cell<'a> {
     /// Construct a new instance.
     #[pre(!inter_map.is_empty())]
-    pub fn new(dom: &Aabb, inter_map: &'a InterMap, mol_map: &'a MolMap, aabb: Aabb) -> Self {
+    pub fn new(dom: &Aabb, inter_map: &'a InterMap, aabb: Aabb) -> Self {
         let mut inter_tris = Vec::new();
         let det_box = aabb.loosen(SIGMA);
         for (_id, inter) in inter_map.iter() {
@@ -54,7 +54,7 @@ impl<'a> Cell<'a> {
             mat_at_pos_from_sublist(aabb.centre(), &dom, inter_map, &det_box, &inter_tris)
         };
 
-        let state = State::new_empty(mol_map.len()); // TODO: State initialisation.
+        let state = mat.state().clone();
 
         Self {
             aabb,

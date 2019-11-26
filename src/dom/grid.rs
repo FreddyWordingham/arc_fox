@@ -7,7 +7,7 @@ use crate::{
     json,
     sim::evolve::State,
     util::{progress::bar, Monitor},
-    world::{InterMap, MolMap},
+    world::InterMap,
 };
 use contracts::pre;
 use nalgebra::{Point3, Vector3};
@@ -31,13 +31,7 @@ pub struct Grid<'a> {
 impl<'a> Grid<'a> {
     /// Construct a new instance.
     #[pre(!inter_map.is_empty())]
-    pub fn new(
-        inter_map: &'a InterMap,
-        mol_map: &'a MolMap,
-        dom: Aabb,
-        res: Resolution,
-        num_threads: usize,
-    ) -> Self {
+    pub fn new(inter_map: &'a InterMap, dom: Aabb, res: Resolution, num_threads: usize) -> Self {
         let mut cell_size = dom.widths();
         for (w, n) in cell_size.iter_mut().zip(res.arr().iter()) {
             *w /= *n as f64;
@@ -53,15 +47,7 @@ impl<'a> Grid<'a> {
         let mut cell_lists: Vec<Vec<(usize, Cell<'a>)>> = thread_ids
             .par_iter()
             .map(|id| {
-                Self::build_cells(
-                    *id,
-                    &res,
-                    Arc::clone(&monitor),
-                    &dom,
-                    &cell_size,
-                    inter_map,
-                    mol_map,
-                )
+                Self::build_cells(*id, &res, Arc::clone(&monitor), &dom, &cell_size, inter_map)
             })
             .collect();
         monitor
@@ -101,7 +87,6 @@ impl<'a> Grid<'a> {
         dom: &Aabb,
         cell_size: &Vector3<f64>,
         inter_map: &'a InterMap,
-        mol_map: &'a MolMap,
     ) -> Vec<(usize, Cell<'a>)> {
         let mut cells = Vec::new();
 
@@ -118,10 +103,7 @@ impl<'a> Grid<'a> {
                 );
             let maxs = mins + cell_size;
 
-            cells.push((
-                n,
-                Cell::new(&dom, inter_map, mol_map, Aabb::new(mins, maxs)),
-            ));
+            cells.push((n, Cell::new(&dom, inter_map, Aabb::new(mins, maxs))));
         }
 
         cells
@@ -130,15 +112,9 @@ impl<'a> Grid<'a> {
     /// Build a new instance.
     #[pre(!inter_map.is_empty())]
     #[pre(num_threads > 0)]
-    pub fn build(
-        proto_grid: &ProtoGrid,
-        inter_map: &'a InterMap,
-        mol_map: &'a MolMap,
-        num_threads: usize,
-    ) -> Self {
+    pub fn build(proto_grid: &ProtoGrid, inter_map: &'a InterMap, num_threads: usize) -> Self {
         Self::new(
             inter_map,
-            mol_map,
             Aabb::new_centred(&Point3::origin(), proto_grid.half_extents()),
             proto_grid.res().clone(),
             num_threads,

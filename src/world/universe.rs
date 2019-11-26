@@ -46,7 +46,7 @@ impl<'a> Universe<'a> {
             react_map = new_react_map(&proto_uni.react_map, &mol_map);
             mat_map = new_mat_map(&input_dir.join("mats"), proto_uni.mat_list(), &mol_map);
             inter_map = new_inter_map(&input_dir.join("meshes"), &proto_uni.inter_map, &mat_map);
-            grid = Grid::build(&proto_uni.grid, &inter_map, &mol_map, num_threads);
+            grid = Grid::build(&proto_uni.grid, &inter_map, num_threads);
             age = 0.0;
         }))
         .expect("Could not create universe instance.");
