@@ -1,6 +1,11 @@
 //! Material-map alias.
 
-use crate::{file::Load, mat::Material, util::progress::bar};
+use crate::{
+    file::Load,
+    mat::{Material, ProtoMaterial},
+    util::progress::bar,
+    world::MolMap,
+};
 use contracts::pre;
 use std::{collections::HashMap, path::Path};
 
@@ -11,7 +16,7 @@ pub type MatMap = HashMap<String, Material>;
 #[pre(mat_dir.is_dir())]
 #[pre(!ids.is_empty())]
 #[post(!ret.is_empty())]
-pub fn new_mat_map(mat_dir: &Path, mut ids: Vec<String>) -> MatMap {
+pub fn new_mat_map(mat_dir: &Path, mut ids: Vec<String>, mol_map: &MolMap) -> MatMap {
     let pb = bar("Constructing materials", ids.len() as u64);
 
     ids.sort();
@@ -23,7 +28,10 @@ pub fn new_mat_map(mat_dir: &Path, mut ids: Vec<String>) -> MatMap {
 
         mat_map.insert(
             id.to_string(),
-            Material::load(&mat_dir.join(format!("{}.json", id))),
+            Material::build(
+                &ProtoMaterial::load(&mat_dir.join(format!("{}.json", id))),
+                mol_map,
+            ),
         );
     }
 

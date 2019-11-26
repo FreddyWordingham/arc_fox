@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 
 /// Formula enumeration implementation.
 /// Formulae that accept a single scalar value, and return a single scalar value.
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum Formula {
     /// Constant value. f(x) = C
     Const(f64),

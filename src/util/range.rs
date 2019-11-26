@@ -7,7 +7,7 @@ use std::f64::{INFINITY, MIN_POSITIVE, NEG_INFINITY};
 
 /// Range structure implementation.
 /// One-dimensional inclusive Range.
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Range {
     /// Minimum bound.
     min: f64,
