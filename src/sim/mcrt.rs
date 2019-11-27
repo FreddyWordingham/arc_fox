@@ -22,7 +22,7 @@ use std::{
 };
 
 /// Distance to bump over boundaries to prevent getting stuck.
-pub const BUMP_DIST: f64 = 1.0e-9;
+pub const BUMP_DIST: f64 = 1.0e-6;
 
 /// Run a MCRT simulation.
 #[pre(num_threads > 0)]
@@ -147,11 +147,32 @@ fn run_photon(
                     .acos();
                     let g = env.asym();
                     let ang_prob = (1.0 / (4.0 * PI))
-                        * ((1.0 - g.powi(2)) / (1.0 + g.powi(2) - (2.0 * g * ang.cos())).powf(1.5));
-                    let dist = nalgebra::distance(&Point3::new(0.0129, 0.0, 0.0), phot.ray().pos());
-                    let dist_prob = (-60.0 * dist).exp();
-                    let prob = ang_prob * dist_prob;
-                    cell_rec.1.increase_shifts(phot.weight() * prob);
+                    * ((1.0 - g.powi(2)) / (1.0 + g.powi(2) - (2.0 * g * ang.cos())).powf(1.5));
+                    if (g < 0.5){
+                        let dist = nalgebra::distance(&Point3::new(0.0129, 0.0, 0.0), phot.ray().pos());
+                        report!(dist);
+                        let dist_prob = (-env.inter_coeff() * dist).exp();
+                        let prob = (ang_prob * dist_prob);
+                        report!(prob);
+                        cell_rec.1.increase_shifts(phot.weight() * prob);
+                    }
+                    else{
+                        let ang_prob = (1.0 / (4.0 * PI))
+                            * ((1.0 - g.powi(2)) / (1.0 + g.powi(2) - (2.0 * g * ang.cos())).powf(1.5));
+                        let ptfe_dist = 0.002 - phot.ray().pos().x;
+                        let dist = nalgebra::distance(&Point3::new(0.0129, 0.0, 0.0), phot.ray().pos())-ptfe_dist;
+                        if ptfe_dist < 0.0 || dist < 0.0{
+                            info!("Regular scatter:{} ",ptfe_dist);
+                            info!("Pos:{:?} ",phot.ray().pos());
+                            report!(dist);
+                        }
+                        let ptfe_dist_prob = (-env.inter_coeff()*ptfe_dist).exp();
+                        let dist_prob = (-60.0 * dist).exp();
+                        if ptfe_dist_prob >0.0{
+                            let prob = (ang_prob * dist_prob*ptfe_dist_prob);
+                            cell_rec.1.increase_shifts(phot.weight() * prob);
+                        }
+                    }
                 }
 
                 if !shifted && rng.gen_range(0.0, 1.0) <= env.shift_prob() {
@@ -164,10 +185,18 @@ fn run_photon(
                     let g = env.asym();
                     let ang_prob = (1.0 / (4.0 * PI))
                         * ((1.0 - g.powi(2)) / (1.0 + g.powi(2) - (2.0 * g * ang.cos())).powf(1.5));
-                    let dist = nalgebra::distance(&Point3::new(0.0129, 0.0, 0.0), phot.ray().pos());
+                    let ptfe_dist = 0.002 - phot.ray().pos().x;
+                    let dist = nalgebra::distance(&Point3::new(0.0129, 0.0, 0.0), phot.ray().pos())-ptfe_dist;
+                    if ptfe_dist < 0.0 || dist < 0.0{
+                        info!("Ramanised: {}",ptfe_dist);
+                        report!(dist);
+                    }
+                    let ptfe_dist_prob = (-167000.0*ptfe_dist).exp();
                     let dist_prob = (-60.0 * dist).exp();
-                    let prob = ang_prob * dist_prob;
-                    cell_rec.1.increase_shifts(phot.weight() * prob);
+                    if ptfe_dist_prob >0.0{
+                        let prob = (ang_prob * dist_prob*ptfe_dist_prob);
+                        cell_rec.1.increase_shifts(phot.weight() * prob);
+                    }
                 }
             }
             Hit::Cell(dist) => {
