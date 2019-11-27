@@ -54,34 +54,40 @@ pub fn run(
     let max_dt = max_dt / 10.0;
     info!("Max dt: {}s", max_dt);
 
-    if num_threads == 1 {
-        serial::run(
-            out_dir,
-            sim_time,
-            dump_time,
-            max_dt,
-            uni.grid().res(),
-            &cell_size,
-            &ds,
-            uni.mol_map(),
-            uni.react_map(),
-            &mut statemap,
-        );
-    } else {
-        parallel::run(
-            num_threads,
-            out_dir,
-            sim_time,
-            dump_time,
-            max_dt,
-            uni.grid().res(),
-            &cell_size,
-            &ds,
-            uni.mol_map(),
-            uni.react_map(),
-            &mut statemap,
-        );
-    }
+    let multipliers = uni
+        .grid()
+        .cells()
+        .map(|cell| cell.mat().reaction_multiplier());
+
+    // if num_threads == 1 {
+    serial::run(
+        out_dir,
+        sim_time,
+        dump_time,
+        max_dt,
+        uni.grid().res(),
+        &cell_size,
+        &ds,
+        uni.mol_map(),
+        uni.react_map(),
+        &mut statemap,
+        &multipliers,
+    );
+    // } else {
+    //     parallel::run(
+    //         num_threads,
+    //         out_dir,
+    //         sim_time,
+    //         dump_time,
+    //         max_dt,
+    //         uni.grid().res(),
+    //         &cell_size,
+    //         &ds,
+    //         uni.mol_map(),
+    //         uni.react_map(),
+    //         &mut statemap,
+    //     );
+    // }
 
     info!("Evolution complete.");
 

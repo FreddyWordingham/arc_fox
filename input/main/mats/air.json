@@ -18,5 +18,6 @@
     "asym": {
         "Const": 0.0
     },
-    "visc": null
+    "visc": null,
+    "reaction_multiplier": 0.1
 }

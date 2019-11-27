@@ -27,6 +27,7 @@ pub fn run(
     mol_map: &MolMap,
     react_map: &ReactMap,
     statemap: &mut Statemap,
+    reaction_multipliers: &Array3<f64>,
 ) {
     let mut time = 0.0;
     let mut time_since_dump = 0.0;
@@ -42,17 +43,44 @@ pub fn run(
         };
         let dt = max_dt.min(time_to_dump);
 
-        println!("Time is {}", time);
+        // println!("Time is {}", time);
 
         let diff_deltas = diff_deltas(res, cell_size, diff_coeffs, mol_map, statemap);
-        let react_deltas = react_deltas(res, mol_map, react_map, statemap);
-        let deltas = diff_deltas + react_deltas;
 
+        let react_deltas = react_deltas(res, mol_map, react_map, statemap, reaction_multipliers);
+
+        let mut min_react_delta_time = None;
+        for (ds, state) in react_deltas.iter().zip(statemap.states.iter()) {
+            for (d, c) in ds.iter().zip(state.concs().iter()) {
+                if *c > 0.0 {
+                    let min_dt = -c / (d * 10.0);
+                    // if (-min_dt * d) >= (c / 2.0) {
+                    //     panic!("Going to fail...");
+                    // }
+                    if min_dt > 0.0 {
+                        if min_react_delta_time.is_none() || min_dt < min_react_delta_time.unwrap()
+                        {
+                            min_react_delta_time = Some(min_dt);
+                        }
+                    }
+                }
+            }
+        }
+        let min_react_delta_time = min_react_delta_time.unwrap();
+
+        // let dt = (dt.min(min_react_delta_time)).max(0.001);
+        let dt = dt.min(min_react_delta_time);
+        if dt < 0.0 {
+            panic!("Negative time delta.");
+        }
+        println!("Time is {} -> {}", time, dt);
+
+        let deltas = diff_deltas + react_deltas;
         for (state, delta) in statemap.states.iter_mut().zip(deltas.iter()) {
-            for (conc, d) in state.mut_concs().iter_mut().zip(delta.iter()) {
+            for (e, (conc, d)) in state.mut_concs().iter_mut().zip(delta.iter()).enumerate() {
                 *conc += d * dt;
                 if *conc < 0.0 {
-                    panic!("Negative concentration!");
+                    panic!("Negative concentration > ! {}", e);
                 }
             }
         }
@@ -126,6 +154,7 @@ fn react_deltas(
     mol_map: &MolMap,
     react_map: &ReactMap,
     statemap: &Statemap,
+    reaction_multipliers: &Array3<f64>,
 ) -> Array3<Array1<f64>> {
     let mut deltas: Array3<Array1<f64>> =
         Array3::from_elem(*res.arr(), Array1::zeros(mol_map.len()));
@@ -133,15 +162,16 @@ fn react_deltas(
     for index in res {
         let concs = statemap.states[*index.arr()].concs();
         let ds = &mut deltas[*index.arr()];
+        let m = reaction_multipliers[*index.arr()];
 
         for (_name, reaction) in react_map.iter() {
             let rate = reaction.rate().res(&concs);
 
             for (i, s) in reaction.reactants().iter() {
-                ds[*i] += rate * *s as f64;
+                ds[*i] += rate * m * *s as f64;
             }
             for (i, s) in reaction.products().iter() {
-                ds[*i] += -rate * *s as f64;
+                ds[*i] += -rate * m * *s as f64;
             }
         }
     }

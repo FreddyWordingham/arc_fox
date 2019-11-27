@@ -64,7 +64,7 @@ fn main() {
 
     section("Simulation");
     let states = Statemap::new(uni.grid());
-    let _pre_state = evolve::run(&out_dir, form.num_threads(), 30.0, 15.0, &uni);
+    let _pre_state = evolve::run(&out_dir, form.num_threads(), 600.0, 15.0, &uni);
     let lightmap = mcrt::run(form.num_threads(), 1_000, &light, &uni);
 
     section("Output");

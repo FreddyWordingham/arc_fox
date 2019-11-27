@@ -31,12 +31,15 @@ pub struct Material {
     visc: Option<f64>,
     /// Initial state.
     state: State,
+    /// Reaction rate multiplier.
+    reaction_multiplier: f64,
 }
 
 impl Material {
     /// Construct a new instance.
     #[pre(range.min() > 0.0)]
     #[pre(visc.is_none() || visc.unwrap() > 0.0)]
+    #[pre(reaction_multiplier > 0.0)]
     pub fn new(
         range: Range,
         ref_index: Formula,
@@ -46,6 +49,7 @@ impl Material {
         asym: Formula,
         visc: Option<f64>,
         state: State,
+        reaction_multiplier: f64,
     ) -> Self {
         Self {
             range,
@@ -56,6 +60,7 @@ impl Material {
             asym,
             visc,
             state,
+            reaction_multiplier,
         }
     }
 
@@ -76,6 +81,7 @@ impl Material {
             proto_mat.asym.clone(),
             proto_mat.visc,
             state,
+            proto_mat.reaction_multiplier,
         )
     }
 
@@ -100,6 +106,11 @@ impl Material {
     pub fn visc(&self) -> Option<f64> {
         self.visc
     }
+
+    /// Get the reaction rate multiplier.
+    pub fn reaction_multiplier(&self) -> f64 {
+        self.reaction_multiplier
+    }
 }
 
 /// Proto-Material structure implementation.
@@ -122,6 +133,8 @@ pub struct ProtoMaterial {
     visc: Option<f64>,
     /// Initial state.
     state: Option<ProtoState>,
+    /// Reaction rate multiplier.
+    reaction_multiplier: f64,
 }
 
 impl ProtoMaterial {
@@ -137,6 +150,7 @@ impl ProtoMaterial {
         asym: Formula,
         visc: Option<f64>,
         state: Option<ProtoState>,
+        reaction_multiplier: f64,
     ) -> Self {
         Self {
             range,
@@ -147,6 +161,7 @@ impl ProtoMaterial {
             asym,
             visc,
             state,
+            reaction_multiplier,
         }
     }
 }
