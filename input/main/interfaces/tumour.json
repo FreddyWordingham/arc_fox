@@ -1,0 +1,16 @@
+{
+    "mesh": {
+        "name": "sphere",
+        "trans": {
+            "trans": [
+                0.0,
+                0.0,
+                -1080.0e-6
+            ],
+            "rot": null,
+            "scale": 2.0e-3
+        }
+    },
+    "in_mat": "tumour",
+    "out_mat": "reticular_dermis"
+}

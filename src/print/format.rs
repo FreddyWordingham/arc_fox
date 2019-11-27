@@ -118,6 +118,12 @@ fn reaction(reaction: &Reaction, mol_names: &Vec<&str>) -> String {
         Rate::SecondOrder(k, c_id_0, c_id_1) => {
             write!(fmt, "{}[{}][{}]", k, mol_names[*c_id_0], mol_names[*c_id_1]).unwrap()
         }
+        Rate::ThirdOrder(k, c_id_0, c_id_1, c_id_2) => write!(
+            fmt,
+            "{}[{}][{}][{}]",
+            k, mol_names[*c_id_0], mol_names[*c_id_1], mol_names[*c_id_2]
+        )
+        .unwrap(),
     }
 
     write!(fmt, " mol/(m^3 s)").unwrap();

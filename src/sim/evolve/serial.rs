@@ -9,7 +9,7 @@ use crate::{
 use contracts::pre;
 use nalgebra::Vector3;
 use ndarray::{Array1, Array3};
-use std::path::Path;
+use std::{f64::INFINITY, path::Path};
 
 /// Run an evolution simulation in serial.
 #[pre(out_dir.is_dir())]
@@ -30,7 +30,7 @@ pub fn run(
     reaction_multipliers: &Array3<f64>,
 ) {
     let mut time = 0.0;
-    let mut time_since_dump = 0.0;
+    let mut time_since_dump = INFINITY;
     while time < sim_time {
         let time_to_dump = {
             let t = dump_time - time_since_dump;

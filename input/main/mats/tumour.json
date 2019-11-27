@@ -7,17 +7,23 @@
         "Const": 1.4
     },
     "scat_coeff": {
-        "Const": 5.0e3
+        "Const": 25.0e3
     },
     "abs_coeff": {
-        "Const": 1.0e3
+        "Const": 1.06e3
     },
     "shift_coeff": {
         "Const": 0.0
     },
     "asym": {
-        "Const": 0.7
+        "Const": 0.8
     },
     "visc": 8.90e-4,
-    "reaction_multiplier": 2.0
+    "reaction_multiplier": 2.0,
+    "state": {
+        "concs": {
+            "tumour": 1.0
+        },
+        "sources": {}
+    }
 }

@@ -18,6 +18,8 @@ pub enum Rate {
     FirstOrder(f64, usize),
     /// Proportional to two reactant concentrations.
     SecondOrder(f64, usize, usize),
+    /// Proportional to three reactant concentrations.
+    ThirdOrder(f64, usize, usize, usize),
 }
 
 impl Rate {
@@ -39,6 +41,12 @@ impl Rate {
         Rate::SecondOrder(k, mol_ind_0, mol_ind_1)
     }
 
+    /// Construct a new third order instance.
+    #[pre(k > 0.0)]
+    pub fn new_third_order(k: f64, mol_ind_0: usize, mol_ind_1: usize, mol_ind_2: usize) -> Self {
+        Rate::ThirdOrder(k, mol_ind_0, mol_ind_1, mol_ind_2)
+    }
+
     /// Build an instance from a proto-reaction.
     #[pre(!mol_map.is_empty())]
     pub fn build(mol_map: &MolMap, proto_rate: &ProtoRate) -> Self {
@@ -52,6 +60,12 @@ impl Rate {
                 index_of_key(mol_map, c_id_0),
                 index_of_key(mol_map, c_id_1),
             ),
+            ProtoRate::ThirdOrder(k, c_id_0, c_id_1, c_id_2) => Self::new_third_order(
+                *k,
+                index_of_key(mol_map, c_id_0),
+                index_of_key(mol_map, c_id_1),
+                index_of_key(mol_map, c_id_2),
+            ),
         }
     }
 
@@ -62,6 +76,9 @@ impl Rate {
             Rate::FirstOrder(k, mol_ind) => -*k * concs[*mol_ind],
             Rate::SecondOrder(k, mol_ind_0, mol_ind_1) => {
                 -*k * concs[*mol_ind_0] * concs[*mol_ind_1]
+            }
+            Rate::ThirdOrder(k, mol_ind_0, mol_ind_1, mol_ind_2) => {
+                -*k * concs[*mol_ind_0] * concs[*mol_ind_1] * concs[*mol_ind_2]
             }
         }
     }
@@ -77,6 +94,8 @@ pub enum ProtoRate {
     FirstOrder(f64, String),
     /// Proportional to two reactant concentrations.
     SecondOrder(f64, String, String),
+    /// Proportional to three reactant concentrations.
+    ThirdOrder(f64, String, String, String),
 }
 
 impl ProtoRate {
@@ -101,12 +120,24 @@ impl ProtoRate {
         ProtoRate::SecondOrder(k, mol_id_0, mol_id_1)
     }
 
+    /// Construct a new proto-third order instance.
+    #[pre(k > 0.0)]
+    #[pre(!mol_id_0.is_empty())]
+    #[pre(!mol_id_1.is_empty())]
+    #[pre(!mol_id_2.is_empty())]
+    pub fn new_third_order(k: f64, mol_id_0: String, mol_id_1: String, mol_id_2: String) -> Self {
+        ProtoRate::ThirdOrder(k, mol_id_0, mol_id_1, mol_id_2)
+    }
+
     /// Retrieve a list of all rate dependencies.
     pub fn dependants(&self) -> Vec<&str> {
         match self {
             ProtoRate::ZerothOrder(_k) => vec![],
             ProtoRate::FirstOrder(_k, mol_id) => vec![mol_id],
             ProtoRate::SecondOrder(_k, mol_id_0, mol_id_1) => vec![mol_id_0, mol_id_1],
+            ProtoRate::ThirdOrder(_k, mol_id_0, mol_id_1, mol_id_2) => {
+                vec![mol_id_0, mol_id_1, mol_id_2]
+            }
         }
     }
 }

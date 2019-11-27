@@ -6,7 +6,7 @@
         ],
         [
             1,
-            "udens"
+            "tumour"
         ]
     ],
     "products": [
@@ -19,7 +19,7 @@
         "SecondOrder": [
             0.75,
             "ppix",
-            "udens"
+            "tumour"
         ]
     }
 }

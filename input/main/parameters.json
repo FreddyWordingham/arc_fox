@@ -3,9 +3,9 @@
     "grid": {
         "res": {
             "arr": [
-                31,
-                31,
-                31
+                51,
+                51,
+                51
             ]
         },
         "half_extents": [
@@ -22,7 +22,8 @@
         "stratum_corneum",
         "subcutaneous_fat",
         "tissue",
-        "upper_blood_net_dermis"
+        "upper_blood_net_dermis",
+        "tumour"
     ],
     "reactions": [
         "ppix_formation",
