@@ -1,27 +1,21 @@
 {
-    "range":
-    {
+    "range": {
         "min": 5e-7,
         "max": 10e-7
     },
-    "ref_index":
-    {
+    "ref_index": {
         "Const": 1.0
     },
-    "scat_coeff":
-    {
-        "Const": 12000.0
+    "scat_coeff": {
+        "Const": 167000.0
     },
-    "abs_coeff":
-    {
+    "abs_coeff": {
         "Const": 0.0
     },
-    "shift_coeff":
-    {
-        "Const": 0.12
+    "shift_coeff": {
+        "Const": 0.167
     },
-    "asym":
-    {
+    "asym": {
         "Const": 0.9
     },
     "visc": null

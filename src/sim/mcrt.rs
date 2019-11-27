@@ -4,6 +4,7 @@ use crate::{
     data::{Archive, Record},
     dom::Cell,
     opt::{Light, Photon},
+    report,
     rng::sample::henyey_greenstein,
     rt::{Gate, Hit, Trace},
     util::progress::bar,
@@ -12,6 +13,7 @@ use crate::{
 use contracts::pre;
 use indicatif::ProgressBar;
 use log::info;
+use nalgebra::{Point3, Unit, Vector3};
 use rand::{rngs::ThreadRng, thread_rng, Rng};
 use rayon::prelude::*;
 use std::{
@@ -137,11 +139,35 @@ fn run_photon(
                     .1
                     .increase_absorptions(env.albedo() * phot.weight());
                 phot.multiply_weight(env.albedo());
+                if shifted {
+                    phot.wavelength_shift();
+                    let ang = (phot.ray().dir().dot(&Unit::new_normalize(
+                        &Point3::new(0.0129, 0.0, 0.0) - phot.ray().pos(),
+                    )))
+                    .acos();
+                    let g = env.asym();
+                    let ang_prob = (1.0 / (4.0 * PI))
+                        * ((1.0 - g.powi(2)) / (1.0 + g.powi(2) - (2.0 * g * ang.cos())).powf(1.5));
+                    let dist = nalgebra::distance(&Point3::new(0.0129, 0.0, 0.0), phot.ray().pos());
+                    let dist_prob = (-60.0 * dist).exp();
+                    let prob = ang_prob * dist_prob;
+                    cell_rec.1.increase_shifts(phot.weight() * prob);
+                }
 
                 if !shifted && rng.gen_range(0.0, 1.0) <= env.shift_prob() {
                     shifted = true;
                     phot.wavelength_shift();
-                    //cell_rec.1.increase_shifts(phot.weight());
+                    let ang = (phot.ray().dir().dot(&Unit::new_normalize(
+                        &Point3::new(0.0129, 0.0, 0.0) - phot.ray().pos(),
+                    )))
+                    .acos();
+                    let g = env.asym();
+                    let ang_prob = (1.0 / (4.0 * PI))
+                        * ((1.0 - g.powi(2)) / (1.0 + g.powi(2) - (2.0 * g * ang.cos())).powf(1.5));
+                    let dist = nalgebra::distance(&Point3::new(0.0129, 0.0, 0.0), phot.ray().pos());
+                    let dist_prob = (-60.0 * dist).exp();
+                    let prob = ang_prob * dist_prob;
+                    cell_rec.1.increase_shifts(phot.weight() * prob);
                 }
             }
             Hit::Cell(dist) => {
@@ -149,12 +175,13 @@ fn run_photon(
                 cell_rec.1.increase_dist_travelled(dist + BUMP_DIST);
 
                 if !uni.grid().dom().contains(phot.ray().pos()) {
-                    if shifted == true{
-                        let check = (phot.ray().pos().y*phot.ray().pos().y) + (phot.ray().pos().z*phot.ray().pos().z);
-                        if (phot.ray().pos().x >= 0.0129) && check <= 0.000001{
-                            cell_rec.1.increase_shifts(phot.weight());
-                        }
-                    }
+                    // if shifted == true {
+                    //    let check = (phot.ray().pos().y * phot.ray().pos().y)
+                    //         + (phot.ray().pos().z * phot.ray().pos().z);
+                    //     if (phot.ray().pos().x >= 0.0129) && check <= 0.000001 {
+                    // cell_rec.1.increase_shifts(phot.weight());
+                    //    }
+                    // }
                     break;
                 }
 
@@ -217,12 +244,13 @@ fn run_photon(
                 }
 
                 if !uni.grid().dom().contains(&phot.ray().pos()) {
-                    if shifted == true{
-                        let check = (phot.ray().pos().y*phot.ray().pos().y) + (phot.ray().pos().z*phot.ray().pos().z);
-                        if (phot.ray().pos().x >= 0.0129) && check <= 0.000001{
-                            cell_rec.1.increase_shifts(phot.weight());
-                        }
-                    }
+                    //if shifted == true {
+                    //    let check = (phot.ray().pos().y * phot.ray().pos().y)
+                    //        + (phot.ray().pos().z * phot.ray().pos().z);
+                    //    if (phot.ray().pos().x >= 0.0129) && check <= 0.000001 {
+                    // cell_rec.1.increase_shifts(phot.weight());
+                    // }
+                    //}
                     break;
                 }
 

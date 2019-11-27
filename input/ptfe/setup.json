@@ -1,11 +1,8 @@
 {
-    "num_threads": 2,
-    "uni":
-    {
-        "grid":
-        {
-            "res":
-            {
+    "num_threads": 16,
+    "uni": {
+        "grid": {
+            "res": {
                 "arr": [
                     21,
                     21,
@@ -18,10 +15,8 @@
                 0.0205
             ]
         },
-        "react_map":
-        {
-            "ppix_formation":
-            {
+        "react_map": {
+            "ppix_formation": {
                 "reactants": [
                     [
                         8,
@@ -34,16 +29,14 @@
                         "ppix"
                     ]
                 ],
-                "rate":
-                {
+                "rate": {
                     "FirstOrder": [
                         0.05,
                         "ala"
                     ]
                 }
             },
-            "cell_death_mechanism":
-            {
+            "cell_death_mechanism": {
                 "reactants": [
                     [
                         1,
@@ -60,8 +53,7 @@
                         "death"
                     ]
                 ],
-                "rate":
-                {
+                "rate": {
                     "SecondOrder": [
                         0.75,
                         "ppix",
@@ -70,37 +62,29 @@
                 }
             }
         },
-        "inter_map":
-        {
-            "slab":
-            {
-                "mesh":
-                {
+        "inter_map": {
+            "slab": {
+                "mesh": {
                     "name": "ptfe_slab",
-                    "trans":
-                    {
-                        "trans": [-0.01,
+                    "trans": {
+                        "trans": [
+                            -0.01,
                             0.0,
                             0.0
                         ],
                         "rot": null,
                         "scale": 1.0
                     }
-
                 },
                 "in_mat": "ptfe",
                 "out_mat": "intra_quarter"
             }
         },
-        "region_map":
-        {
-            "application_cream":
-            {
-                "mesh":
-                {
+        "region_map": {
+            "application_cream": {
+                "mesh": {
                     "name": "cube",
-                    "trans":
-                    {
+                    "trans": {
                         "trans": [
                             0.0,
                             0.0,
@@ -110,8 +94,7 @@
                         "scale": 0.1
                     }
                 },
-                "init_conc_sources":
-                {
+                "init_conc_sources": {
                     "ala": [
                         1.0,
                         0.0
@@ -120,5 +103,5 @@
             }
         }
     },
-    "total_phot": 1000
+    "total_phot": 100000
 }
