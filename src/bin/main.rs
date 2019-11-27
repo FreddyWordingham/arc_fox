@@ -20,6 +20,7 @@ use arc::{
         {evolve, evolve::Statemap},
     },
     util::exec,
+    world::map::index_of_key,
 };
 use log::info;
 use nalgebra::{Point3, Unit, Vector3};
@@ -45,7 +46,7 @@ fn main() {
 
     section("Setup");
     let _res = form.grid().res();
-    let uni = form.manifest(&in_dir);
+    let mut uni = form.manifest(&in_dir);
 
     section("Pre-Flight");
     info!("{}", format::universe(&uni));
@@ -64,8 +65,19 @@ fn main() {
 
     section("Simulation");
     let states = Statemap::new(uni.grid());
-    let _pre_state = evolve::run(&out_dir, form.num_threads(), 600.0, 15.0, &uni);
-    let lightmap = mcrt::run(form.num_threads(), 1_000, &light, &uni);
+    let _pre_state = evolve::run(&out_dir, form.num_threads(), 600.0, 10.0, &uni);
+    let lightmap = mcrt::run(form.num_threads(), 1_000_000, &light, &uni);
+    let udens_index = index_of_key(uni.mol_map(), &"udens".to_string());
+    let cell_vol = uni.grid().dom().vol() / uni.grid().res().total() as f64;
+    for (cell, rec) in uni
+        .mut_grid()
+        .mut_cells()
+        .iter_mut()
+        .zip(lightmap.recs.iter())
+    {
+        cell.mut_state().mut_concs()[udens_index] = rec.dist_travelled() / cell_vol;
+    }
+    let _pre_state = evolve::run(&out_dir, form.num_threads(), 600.0, 10.0, &uni);
 
     section("Output");
     info!("Saving lightmap.");

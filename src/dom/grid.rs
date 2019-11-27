@@ -136,6 +136,11 @@ impl<'a> Grid<'a> {
         &self.cells
     }
 
+    /// Mutably reference the cells.
+    pub fn mut_cells(&mut self) -> &mut Array3<Cell<'a>> {
+        &mut self.cells
+    }
+
     /// Create a state-cube of references.
     pub fn states(&self) -> Array3<&State> {
         let mut states = Vec::with_capacity(self.res.total());

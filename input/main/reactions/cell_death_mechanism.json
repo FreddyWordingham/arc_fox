@@ -6,20 +6,25 @@
         ],
         [
             1,
-            "tumour"
+            "o2"
+        ],
+        [
+            1,
+            "udens"
         ]
     ],
     "products": [
         [
             1,
-            "death"
+            "tumour"
         ]
     ],
     "rate": {
-        "SecondOrder": [
-            0.75,
+        "ThirdOrder": [
+            1.05e-3,
             "ppix",
-            "tumour"
+            "o2",
+            "udens"
         ]
     }
 }

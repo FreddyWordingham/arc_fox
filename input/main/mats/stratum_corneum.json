@@ -19,5 +19,11 @@
         "Const": 0.86
     },
     "visc": 8.90e-4,
-    "reaction_multiplier": 1.0
+    "reaction_multiplier": 1.0,
+    "state": {
+        "concs": {
+            "ala": 1.0
+        },
+        "sources": {}
+    }
 }

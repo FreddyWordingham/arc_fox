@@ -19,5 +19,11 @@
         "Const": 0.95
     },
     "visc": 8.90e-4,
-    "reaction_multiplier": 1.0
+    "reaction_multiplier": 1.0,
+    "state": {
+        "concs": {},
+        "sources": {
+            "o2": 1.0
+        }
+    }
 }

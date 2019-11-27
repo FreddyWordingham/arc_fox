@@ -79,6 +79,11 @@ impl<'a> Cell<'a> {
         &self.state
     }
 
+    /// Mutably reference the state.
+    pub fn mut_state(&mut self) -> &mut State {
+        &mut self.state
+    }
+
     /// Check if the cell contains intersecting triangles.
     pub fn is_empty(&self) -> bool {
         self.inter_tris.is_empty()

@@ -84,6 +84,11 @@ impl<'a> Universe<'a> {
         &self.grid
     }
 
+    /// Mutably reference the grid of cells.
+    pub fn mut_grid(&mut self) -> &mut Grid<'a> {
+        &mut self.grid
+    }
+
     /// Get the age.
     pub fn age(&self) -> f64 {
         self.age

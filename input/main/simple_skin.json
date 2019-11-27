@@ -1,0 +1,25 @@
+{
+    "num_threads": 4,
+    "grid": {
+        "res": {
+            "arr": [
+                51,
+                51,
+                51
+            ]
+        },
+        "half_extents": [
+            0.005,
+            0.005,
+            0.005
+        ]
+    },
+    "interfaces": [
+        "simple_stratum_corneum",
+        "tumour"
+    ],
+    "reactions": [
+        "ppix_formation",
+        "cell_death_mechanism"
+    ]
+}

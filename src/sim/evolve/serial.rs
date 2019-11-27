@@ -9,7 +9,7 @@ use crate::{
 use contracts::pre;
 use nalgebra::Vector3;
 use ndarray::{Array1, Array3};
-use std::{f64::INFINITY, path::Path};
+use std::path::Path;
 
 /// Run an evolution simulation in serial.
 #[pre(out_dir.is_dir())]
@@ -29,8 +29,13 @@ pub fn run(
     statemap: &mut Statemap,
     reaction_multipliers: &Array3<f64>,
 ) {
+    println!("Initial dumping.");
+    statemap
+        .mol_concs(mol_map)
+        .save(&out_dir.join(format!("0.nc")));
+
     let mut time = 0.0;
-    let mut time_since_dump = INFINITY;
+    let mut time_since_dump = 0.0;
     while time < sim_time {
         let time_to_dump = {
             let t = dump_time - time_since_dump;
@@ -53,7 +58,7 @@ pub fn run(
         for (ds, state) in react_deltas.iter().zip(statemap.states.iter()) {
             for (d, c) in ds.iter().zip(state.concs().iter()) {
                 if *c > 0.0 {
-                    let min_dt = -c / (d * 10.0);
+                    let min_dt = -c / (d * 3.0);
                     // if (-min_dt * d) >= (c / 2.0) {
                     //     panic!("Going to fail...");
                     // }
