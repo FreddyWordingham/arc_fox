@@ -1,0 +1,1 @@
+//! Cartesian dimension enumeration.

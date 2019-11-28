@@ -6,3 +6,10 @@
 #![allow(unknown_lints)]
 #![warn(missing_docs)]
 #![warn(clippy::missing_docs_in_private_items)]
+
+pub mod data;
+pub mod file;
+pub mod sci;
+pub mod sim;
+pub mod util;
+pub mod world;

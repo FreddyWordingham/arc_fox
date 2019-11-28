@@ -1,0 +1,1 @@
+//! Optical crossing structure.

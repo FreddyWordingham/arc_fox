@@ -1,0 +1,1 @@
+//! Parallel progress bar structure.

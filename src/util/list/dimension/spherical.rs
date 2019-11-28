@@ -1,0 +1,1 @@
+//! Spherical-polar dimension enumeration.
