@@ -26,20 +26,20 @@ pub const BUMP_DIST: f64 = 1.0e-6;
 
 /// Run a MCRT simulation.
 #[pre(num_threads > 0)]
-pub fn run(num_threads: usize, total_phot: u64, light: &Light, uni: &Universe) -> Archive {
+pub fn run(num_threads: usize, total_phot: u64, light: &Light, uni: &Universe, slab_pos: f64) -> Archive {
     let num_phots = Arc::new(Mutex::new(vec![0; num_threads]));
     let bar = Arc::new(bar("photon loop", total_phot));
 
     if num_threads == 1 {
         info!("Running as single thread.");
-        return run_thread(0, total_phot, num_phots, bar, light, uni);
+        return run_thread(0, total_phot, num_phots, bar, light, uni, slab_pos);
     }
 
     info!("Running multi-thread ({}).", num_threads);
     let thread_ids: Vec<usize> = (0..num_threads).collect();
     let mut archives: Vec<Archive> = thread_ids
         .par_iter()
-        .map(|id| run_thread(*id, total_phot, num_phots.clone(), bar.clone(), light, uni))
+        .map(|id| run_thread(*id, total_phot, num_phots.clone(), bar.clone(), light, uni, slab_pos))
         .collect();
     bar.finish_with_message("Photon loop complete.");
 
@@ -70,6 +70,7 @@ fn run_thread(
     mut bar: Arc<ProgressBar>,
     light: &Light,
     uni: &Universe,
+    slab_pos: f64,
 ) -> Archive {
     let res = uni.grid().res().clone();
     let mut archive = Archive::new(res);
@@ -77,7 +78,7 @@ fn run_thread(
     let mut rng = thread_rng();
 
     while iterate(&mut bar, thread_id, total_phot, &mut num_phots) {
-        run_photon(&mut archive, &mut rng, total_phot, light, uni);
+        run_photon(&mut archive, &mut rng, total_phot, light, uni, slab_pos);
     }
 
     archive
@@ -109,6 +110,7 @@ fn run_photon(
     total_phot: u64,
     light: &Light,
     uni: &Universe,
+    slab_pos: f64,
 ) {
     let mut phot = light.emit(&mut rng, total_phot);
     let mut cell_rec = cell_and_record(&phot, &uni, &mut archive);
@@ -150,21 +152,17 @@ fn run_photon(
                     * ((1.0 - g.powi(2)) / (1.0 + g.powi(2) - (2.0 * g * ang.cos())).powf(1.5));
                     if (g < 0.5){
                         let dist = nalgebra::distance(&Point3::new(0.0129, 0.0, 0.0), phot.ray().pos());
-                        report!(dist);
                         let dist_prob = (-env.inter_coeff() * dist).exp();
                         let prob = (ang_prob * dist_prob);
-                        report!(prob);
                         cell_rec.1.increase_shifts(phot.weight() * prob);
                     }
                     else{
                         let ang_prob = (1.0 / (4.0 * PI))
                             * ((1.0 - g.powi(2)) / (1.0 + g.powi(2) - (2.0 * g * ang.cos())).powf(1.5));
-                        let ptfe_dist = 0.002 - phot.ray().pos().x;
+                        let ptfe_dist = slab_pos+0.001 - phot.ray().pos().x;
                         let dist = nalgebra::distance(&Point3::new(0.0129, 0.0, 0.0), phot.ray().pos())-ptfe_dist;
                         if ptfe_dist < 0.0 || dist < 0.0{
-                            info!("Regular scatter:{} ",ptfe_dist);
-                            info!("Pos:{:?} ",phot.ray().pos());
-                            report!(dist);
+                                info!("Negative distance!");
                         }
                         let ptfe_dist_prob = (-env.inter_coeff()*ptfe_dist).exp();
                         let dist_prob = (-60.0 * dist).exp();
@@ -185,11 +183,10 @@ fn run_photon(
                     let g = env.asym();
                     let ang_prob = (1.0 / (4.0 * PI))
                         * ((1.0 - g.powi(2)) / (1.0 + g.powi(2) - (2.0 * g * ang.cos())).powf(1.5));
-                    let ptfe_dist = 0.002 - phot.ray().pos().x;
+                    let ptfe_dist = slab_pos + 0.001 - phot.ray().pos().x;
                     let dist = nalgebra::distance(&Point3::new(0.0129, 0.0, 0.0), phot.ray().pos())-ptfe_dist;
                     if ptfe_dist < 0.0 || dist < 0.0{
-                        info!("Ramanised: {}",ptfe_dist);
-                        report!(dist);
+                        info!("Negative distance!");
                     }
                     let ptfe_dist_prob = (-167000.0*ptfe_dist).exp();
                     let dist_prob = (-60.0 * dist).exp();

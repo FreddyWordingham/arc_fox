@@ -26,7 +26,8 @@ fn main() {
     section("Initialisation");
     args!(
         _bin_path: String;
-        form_path: String
+        form_path: String;
+        slab_pos: f64
     );
     let _form_path = Path::new(&form_path);
     let (in_dir, out_dir) = io_dirs(None, None);
@@ -51,7 +52,7 @@ fn main() {
     );
 
     section("Simulation");
-    let mcrt_data = mcrt::run(form.num_threads(), form.total_phot(), &light, &uni);
+    let mcrt_data = mcrt::run(form.num_threads(), form.total_phot(), &light, &uni, slab_pos);
 
     section("Post-Processing");
     info!("Creating concentration data cube.");

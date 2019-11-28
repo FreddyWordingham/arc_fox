@@ -51,7 +51,7 @@ fn main() {
     );
 
     section("Simulation");
-    let mcrt_data = mcrt::run(form.num_threads(), form.total_phot(), &light, &uni);
+    let mcrt_data = mcrt::run(form.num_threads(), form.total_phot(), &light, &uni, 0.0);
 
     section("Post-Processing");
     info!("Creating concentration data cube.");
