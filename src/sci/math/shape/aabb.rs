@@ -4,7 +4,6 @@ use super::super::{
     geom::Collide,
     rt::{Ray, Trace},
 };
-use crate::util::list::dimension::Cartesian::{X, Y, Z};
 use contracts::{post, pre};
 use nalgebra::{Point3, Unit, Vector3};
 use std::cmp::Ordering;
@@ -85,24 +84,9 @@ impl Aabb {
     pub fn contains(&self, p: &Point3<f64>) -> bool {
         p >= &self.mins && p <= &self.maxs
     }
-}
 
-impl Collide for Aabb {
-    fn bounding_box(&self) -> Aabb {
-        self.clone()
-    }
-
-    fn overlap(&self, aabb: &Aabb) -> bool {
-        self.mins <= aabb.maxs && self.maxs >= aabb.mins
-    }
-}
-
-impl Trace for Aabb {
-    fn hit(&self, ray: &Ray) -> bool {
-        false
-    }
-
-    fn dist(&self, ray: &Ray) -> Option<f64> {
+    /// Determine the intersection distances along a ray's direction.
+    fn intersections(&self, ray: &Ray) -> (f64, f64) {
         let t_0: Vec<_> = self
             .mins
             .iter()
@@ -143,7 +127,32 @@ impl Trace for Aabb {
             })
             .unwrap();
 
-        if t_max <= t_min || t_max <= 0.0 {
+        (t_min, t_max)
+    }
+}
+
+impl Collide for Aabb {
+    fn bounding_box(&self) -> Aabb {
+        self.clone()
+    }
+
+    fn overlap(&self, aabb: &Aabb) -> bool {
+        self.mins <= aabb.maxs && self.maxs >= aabb.mins
+    }
+}
+
+impl Trace for Aabb {
+    fn hit(&self, ray: &Ray) -> bool {
+        let (t_min, t_max) = self.intersections(&ray);
+
+        !(t_max <= 0.0 || t_min > t_max)
+    }
+
+    #[post(ret.is_none() || ret.unwrap() > 0.0)]
+    fn dist(&self, ray: &Ray) -> Option<f64> {
+        let (t_min, t_max) = self.intersections(&ray);
+
+        if t_max <= 0.0 || t_min > t_max {
             return None;
         }
 
@@ -155,28 +164,7 @@ impl Trace for Aabb {
     }
 
     fn dist_norm(&self, _ray: &Ray) -> Option<(f64, Unit<Vector3<f64>>)> {
-        // let dir_frac = ray.dir().map(|x| 1.0 / x);
-
-        // let t1 = Tag::new((self.mins.x - ray.pos().x) * dir_frac.x, -Vector3::x_axis());
-        // let t2 = Tag::new((self.maxs.x - ray.pos().x) * dir_frac.x, Vector3::x_axis());
-        // let t3 = Tag::new((self.mins.y - ray.pos().y) * dir_frac.y, -Vector3::y_axis());
-        // let t4 = Tag::new((self.maxs.y - ray.pos().y) * dir_frac.y, Vector3::y_axis());
-        // let t5 = Tag::new((self.mins.z - ray.pos().z) * dir_frac.z, -Vector3::z_axis());
-        // let t6 = Tag::new((self.maxs.z - ray.pos().z) * dir_frac.z, Vector3::z_axis());
-
-        // let t_min = (&t1.min(&t2)).max(&t3.min(&t4)).max(&t5.min(&t6));
-        // let t_max = (&t1.max(&t2)).min(&t3.max(&t4)).min(&t5.max(&t6));
-
-        // if (t_max < 0.0) || (t_min > t_max) {
-        //     return None;
-        // }
-
-        // if t_min > 0.0 {
-        //     return Some(t_min.components());
-        // }
-
-        // Some(t_max.components())
-        None // TODO
+        unimplemented!("Tell me if you need this.");
     }
 
     fn dist_inside(&self, ray: &Ray) -> Option<(f64, bool)> {
