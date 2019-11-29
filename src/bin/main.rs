@@ -9,5 +9,5 @@ fn main() {
 
     let _arr = Array3::from_shape_vec(id, vec![0; 100]);
 }
-
+//
 type Index = [usize; 3];

@@ -7,22 +7,22 @@ default-run = "main"
 documention = "https://freddywordingham.github.io/arc"
 
 [dependencies]
-# colog = "0.2.1"
-# colored = "1.8.0"
+colog = "0.2.1"
+colored = "1.8.0"
 contracts = "0.3.0"
-# indicatif = "0.13.0"
-# log = "0.4.8"
-# nalgebra = { version = "0.19.0", features = ["serde-serialize"] }
-ndarray = "0.13.0"
-# ndarray-stats = "0.3.0"
-# netcdf = "0.3.1"
-# physical_constants = "0.3.0"
-# rand = "0.7.2"
-# rayon = "1.2.0"
-# self-ref = "0.1.2"
-# serde = { version = "1.0.102", features = ["derive"] }
-# serde_json = "1.0.41"
-# terminal_size = "0.1.8"
+indicatif = "0.13.0"
+log = "0.4.8"
+nalgebra = { version = "0.19.0", features = ["serde-serialize"] }
+ndarray = { version = "0.13.0", features = ["rayon"] }
+ndarray-stats = "0.3.0"
+netcdf = "0.3.1"
+physical_constants = "0.3.0"
+rand = "0.7.2"
+rayon = "1.2.0"
+self-ref = "0.1.2"
+serde = { version = "1.0.102", features = ["derive"] }
+serde_json = "1.0.41"
+terminal_size = "0.1.8"
 
 # Development profile: "cargo build".
 [profile.dev]

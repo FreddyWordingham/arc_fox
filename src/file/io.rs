@@ -5,3 +5,21 @@ pub mod save;
 
 pub use self::load::*;
 pub use self::save::*;
+
+/// Enable a given type to be serialised and de-serialised from a json file.
+#[macro_export]
+macro_rules! json {
+    ($type:ident) => {
+        impl crate::file::io::Save for $type {
+            fn save(&self, path: &std::path::Path) {
+                crate::file::io::as_json(self, path);
+            }
+        }
+
+        impl crate::file::io::Load for $type {
+            fn load(path: &std::path::Path) -> Self {
+                crate::file::io::from_json(path)
+            }
+        }
+    };
+}

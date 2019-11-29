@@ -9,6 +9,7 @@
 
 pub mod data;
 pub mod file;
+pub mod proto;
 pub mod sci;
 pub mod sim;
 pub mod util;
