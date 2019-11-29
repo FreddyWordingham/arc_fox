@@ -7,6 +7,7 @@ use super::super::{
 use crate::util::list::dimension::Cartesian::{X, Y, Z};
 use contracts::{post, pre};
 use nalgebra::{Point3, Unit, Vector3};
+use std::cmp::Ordering;
 
 /// Aabb structure implementation.
 /// Quick first pass bounding volume.
@@ -98,55 +99,51 @@ impl Collide for Aabb {
 
 impl Trace for Aabb {
     fn hit(&self, ray: &Ray) -> bool {
-        let dir_frac = ray.dir().map(|x| 1.0 / x);
-
-        let t0: Vec<_> = self
-            .mins
-            .iter()
-            .zip(ray.pos().iter().zip(dir_frac.iter()))
-            .map(|(d, (m, p))| (m - p) * d)
-            .collect();
-        let t1: Vec<_> = self
-            .maxs
-            .iter()
-            .zip(ray.pos().iter().zip(dir_frac.iter()))
-            .map(|(d, (m, p))| (m - p) * d)
-            .collect();
-
-        let t_min = (t0[X as usize].min(t1[X as usize]))
-            .max(t0[Y as usize].min(t1[Y as usize]))
-            .max(t0[Z as usize].min(t1[Z as usize]));
-        let t_max = (t0[X as usize].max(t1[X as usize]))
-            .min(t0[Y as usize].max(t1[Y as usize]))
-            .min(t0[Z as usize].max(t1[Z as usize]));
-
-        !(t_max <= 0.0 || t_min > t_max)
+        false
     }
 
     fn dist(&self, ray: &Ray) -> Option<f64> {
-        let dir_frac = ray.dir().map(|x| 1.0 / x);
-
-        let t0: Vec<_> = self
+        let t_0: Vec<_> = self
             .mins
             .iter()
-            .zip(ray.pos().iter().zip(dir_frac.iter()))
-            .map(|(d, (m, p))| (m - p) * d)
+            .zip(ray.pos().iter().zip(ray.dir().iter()))
+            .map(|(m, (p, d))| (m - p) / d)
             .collect();
-        let t1: Vec<_> = self
+
+        let t_1: Vec<_> = self
             .maxs
             .iter()
-            .zip(ray.pos().iter().zip(dir_frac.iter()))
-            .map(|(d, (m, p))| (m - p) * d)
+            .zip(ray.pos().iter().zip(ray.dir().iter()))
+            .map(|(m, (p, d))| (m - p) / d)
             .collect();
 
-        let t_min = (t0[X as usize].min(t1[X as usize]))
-            .max(t0[Y as usize].min(t1[Y as usize]))
-            .max(t0[Z as usize].min(t1[Z as usize]));
-        let t_max = (t0[X as usize].max(t1[X as usize]))
-            .min(t0[Y as usize].max(t1[Y as usize]))
-            .min(t0[Z as usize].max(t1[Z as usize]));
+        let t_min = t_0
+            .iter()
+            .zip(t_1.iter())
+            .map(|(a, b)| a.min(*b))
+            .max_by(|a, b| {
+                if a < b {
+                    Ordering::Less
+                } else {
+                    Ordering::Greater
+                }
+            })
+            .unwrap();
 
-        if t_max <= 0.0 || t_min > t_max {
+        let t_max = t_0
+            .iter()
+            .zip(t_1.iter())
+            .map(|(a, b)| a.max(*b))
+            .min_by(|a, b| {
+                if a < b {
+                    Ordering::Less
+                } else {
+                    Ordering::Greater
+                }
+            })
+            .unwrap();
+
+        if t_max <= t_min || t_max <= 0.0 {
             return None;
         }
 
