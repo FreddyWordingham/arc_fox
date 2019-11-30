@@ -1,4 +1,4 @@
-//! Directory functions.
+//! Initialisation functions.
 
 use contracts::post;
 use std::{

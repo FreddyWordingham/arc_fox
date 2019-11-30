@@ -1,13 +1,33 @@
 //! Main example function demonstrating core capabilities.
 
-use ndarray::Array3;
+use arc::{
+    args, report,
+    util::{
+        dirs::init::io_dirs,
+        info::exec,
+        print::term::{section, title},
+    },
+};
+use log::info;
+use std::path::Path;
 
 fn main() {
-    println!("Hello World!");
+    title(&exec::name());
+    colog::init();
 
-    let id: Index = [10, 10, 10];
+    section("Initialisation");
+    args!(
+        _bin_path: String;
+        form_path: String
+    );
+    let _form_path = Path::new(&form_path);
+    let (in_dir, out_dir) = io_dirs(None, None);
 
-    let _arr = Array3::from_shape_vec(id, vec![0; 100]);
+    section("Input");
+    report!("Input dir", in_dir.display());
+
+    section("Output");
+    report!("Output dir", out_dir.display());
+
+    section("Finished");
 }
-//
-type Index = [usize; 3];
