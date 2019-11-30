@@ -1,0 +1,7 @@
+{
+    "mesh": {
+        "name": "cube"
+    },
+    "in_mat": "fog",
+    "out_mat": "air"
+}

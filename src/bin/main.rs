@@ -10,11 +10,15 @@ use arc::{
         info::exec,
         print::term::{section, title},
     },
+    world::mat::InterfaceBuilder,
 };
 use log::info;
 use std::path::Path;
 
-form!(Parameters, reactions: Vec<String>);
+form!(Parameters,
+    reactions: Vec<String>;
+    interfaces: Vec<String>
+);
 
 fn main() {
     title(&exec::name());
@@ -42,6 +46,15 @@ fn main() {
             let path = in_dir.join(format!("reactions/{}.json", name));
             info!("Loading reaction: {}", name);
             ReactionBuilder::load(&path)
+        })
+        .collect();
+    let _interfaces: Vec<_> = form
+        .interfaces
+        .iter()
+        .map(|name| {
+            let path = in_dir.join(format!("interfaces/{}.json", name));
+            info!("Loading interface: {}", name);
+            InterfaceBuilder::load(&path)
         })
         .collect();
 
