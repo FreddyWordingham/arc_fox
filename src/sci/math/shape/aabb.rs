@@ -1,6 +1,6 @@
 //! Axis-aligned bounding box structure.
 
-use super::super::{
+use crate::sci::math::{
     geom::Collide,
     rt::{Ray, Trace},
     Normal,

@@ -1,14 +1,16 @@
 //! Triangular-mesh structure.
 
-use super::{
-    super::{
-        geom::{Collide, Transform},
-        rt::{Ray, Trace},
-        Normal,
+use crate::{
+    sci::{
+        math::{
+            geom::{Collide, Transform},
+            rt::{Ray, Trace},
+            Normal,
+        },
+        Aabb, Triangle,
     },
-    Aabb, Triangle,
+    util::list::alphabet::Greek::Alpha,
 };
-use crate::util::list::alphabet::Greek::Alpha;
 use contracts::{post, pre};
 use nalgebra::{Similarity3, Unit, Vector3};
 

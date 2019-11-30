@@ -1,6 +1,6 @@
 //! Emit trait.
 
-use super::{super::Normal, Ray};
+use crate::sci::math::{rt::Ray, Normal};
 use contracts::post;
 use nalgebra::{Point3, Unit, Vector3};
 use rand::{rngs::ThreadRng, Rng};

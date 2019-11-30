@@ -1,15 +1,13 @@
 //! Smooth-triangle structure.
 
-use super::{
-    super::{
-        geom::{Collide, Transform},
-        rt::{Ray, Trace},
-        Normal,
-    },
-    Aabb, EPSILON,
-};
 use crate::{
     file::io::Load,
+    sci::math::{
+        geom::{Collide, Transform},
+        rt::{Ray, Trace},
+        shape::{Aabb, EPSILON},
+        Normal,
+    },
     util::list::alphabet::Greek::{Alpha, Beta, Gamma},
 };
 use contracts::{post, pre};

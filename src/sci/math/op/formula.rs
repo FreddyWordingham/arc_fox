@@ -1,6 +1,6 @@
 //! Formula enumeration.
 
-use super::super::Range;
+use crate::sci::math::Range;
 use serde::{Deserialize, Serialize};
 
 /// Formula enumeration implementation.

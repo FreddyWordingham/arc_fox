@@ -1,6 +1,6 @@
 //! Reaction structure.
 
-use super::Rate;
+use crate::sci::chem::Rate;
 use contracts::pre;
 
 /// Reaction structure implementation.

@@ -1,6 +1,6 @@
 //! Trace trait.
 
-use super::Ray;
+use crate::sci::math::rt::Ray;
 use nalgebra::{Point3, Unit, Vector3};
 use std::fmt::Debug;
 

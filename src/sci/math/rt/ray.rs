@@ -1,6 +1,6 @@
 //! Ray structure.
 
-use super::super::Normal;
+use crate::sci::math::Normal;
 use contracts::{post, pre};
 use nalgebra::{Point3, Unit, Vector3};
 

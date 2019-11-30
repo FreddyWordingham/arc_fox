@@ -1,6 +1,6 @@
 //! Collide trait.
 
-use super::super::shape::Aabb;
+use crate::sci::math::shape::Aabb;
 use std::fmt::Debug;
 
 /// Collide trait implementation.
