@@ -26,12 +26,12 @@ impl Range {
     }
 
     /// Get the minimum bound.
-    pub fn min(&self) -> f64 {
+    pub const fn min(&self) -> f64 {
         self.min
     }
 
     /// Get the maximum bound.
-    pub fn max(&self) -> f64 {
+    pub const fn max(&self) -> f64 {
         self.max
     }
 

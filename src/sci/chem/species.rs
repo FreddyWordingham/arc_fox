@@ -22,7 +22,7 @@ impl Species {
     }
 
     /// Get the radius.
-    pub fn rad(&self) -> Option<f64> {
+    pub const fn rad(&self) -> Option<f64> {
         self.rad
     }
 }

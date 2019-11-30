@@ -21,7 +21,7 @@ impl Ray {
     }
 
     /// Reference the origin position.
-    pub fn pos(&self) -> &Point3<f64> {
+    pub const fn pos(&self) -> &Point3<f64> {
         &self.pos
     }
 

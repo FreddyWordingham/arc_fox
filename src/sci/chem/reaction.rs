@@ -27,17 +27,17 @@ impl Reaction {
     }
 
     /// Reference the reactants.
-    pub fn reactants(&self) -> &Vec<(usize, i32)> {
+    pub const fn reactants(&self) -> &Vec<(usize, i32)> {
         &self.reactants
     }
 
     /// Reference the products.
-    pub fn products(&self) -> &Vec<(usize, i32)> {
+    pub const fn products(&self) -> &Vec<(usize, i32)> {
         &self.products
     }
 
     /// Reference the rate.
-    pub fn rate(&self) -> &Rate {
+    pub const fn rate(&self) -> &Rate {
         &self.rate
     }
 }

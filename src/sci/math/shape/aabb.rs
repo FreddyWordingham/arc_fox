@@ -33,12 +33,12 @@ impl Aabb {
     }
 
     /// Reference the minimum bound.
-    pub fn mins(&self) -> &Point3<f64> {
+    pub const fn mins(&self) -> &Point3<f64> {
         &self.mins
     }
 
     /// Reference the maximum bound.
-    pub fn maxs(&self) -> &Point3<f64> {
+    pub const fn maxs(&self) -> &Point3<f64> {
         &self.maxs
     }
 
@@ -144,14 +144,14 @@ impl Collide for Aabb {
 
 impl Trace for Aabb {
     fn hit(&self, ray: &Ray) -> bool {
-        let (t_min, t_max) = self.intersections(&ray);
+        let (t_min, t_max) = self.intersections(ray);
 
         !(t_max <= 0.0 || t_min > t_max)
     }
 
     #[post(ret.is_none() || ret.unwrap() > 0.0)]
     fn dist(&self, ray: &Ray) -> Option<f64> {
-        let (t_min, t_max) = self.intersections(&ray);
+        let (t_min, t_max) = self.intersections(ray);
 
         if t_max <= 0.0 || t_min > t_max {
             return None;
@@ -172,7 +172,7 @@ impl Trace for Aabb {
     #[post(ret.is_none() || ret.unwrap().0 > 0.0)]
     fn dist_inside(&self, ray: &Ray) -> Option<(f64, bool)> {
         if let Some(dist) = self.dist(ray) {
-            return Some((dist, self.contains(&ray.pos())));
+            return Some((dist, self.contains(ray.pos())));
         }
 
         None
@@ -180,11 +180,11 @@ impl Trace for Aabb {
 
     #[post(ret.is_none() || (ret.unwrap().0 > 0.0 && (ret.unwrap().2.is_normal())))]
     fn dist_inside_norm(&self, ray: &Ray) -> Option<(f64, bool, Unit<Vector3<f64>>)> {
-        return if let Some((dist, norm)) = self.dist_norm(ray) {
-            let inside = self.contains(&ray.pos());
+        if let Some((dist, norm)) = self.dist_norm(ray) {
+            let inside = self.contains(ray.pos());
             Some((dist, inside, norm))
         } else {
             None
-        };
+        }
     }
 }

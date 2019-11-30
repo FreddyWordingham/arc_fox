@@ -31,7 +31,7 @@ impl Crossing {
         let norm = if inc.dot(face_norm) > 0.0 {
             Unit::new_normalize(face_norm.as_ref() * -1.0)
         } else {
-            face_norm.clone()
+            *face_norm
         };
 
         let ci = -inc.dot(&norm);
@@ -43,18 +43,17 @@ impl Crossing {
             Some((n_next / n_curr).asin())
         };
 
-        let ref_prob;
-        let trans_dir;
-        if crit_ang.is_some() && (ci.acos() >= crit_ang.unwrap()) {
-            ref_prob = 1.0;
-            trans_dir = None;
+        let (ref_prob, trans_dir) = if crit_ang.is_some() && (ci.acos() >= crit_ang.unwrap()) {
+            (1.0, None)
         } else {
             let s2t = n.powi(2) * (1.0 - ci.powi(2));
             let ct = (1.0 - s2t).sqrt();
 
-            ref_prob = Self::init_ref_prob(n_curr, n_next, ci, ct);
-            trans_dir = Some(Self::init_trans_dir(inc, &norm, n, ci, ct));
-        }
+            (
+                Self::init_ref_prob(n_curr, n_next, ci, ct),
+                Some(Self::init_trans_dir(inc, &norm, n, ci, ct)),
+            )
+        };
 
         Self {
             ref_prob,
@@ -66,13 +65,13 @@ impl Crossing {
     /// Calculate the reflection probability.
     #[post(0.0 <= ret && ret <= 1.0)]
     fn init_ref_prob(n1: f64, n2: f64, ci: f64, ct: f64) -> f64 {
-        let n1ci = n1 * ci;
-        let n2ct = n2 * ct;
-        let rn = ((n1ci - n2ct) / (n1ci + n2ct)).powi(2);
+        let n1_ci = n1 * ci;
+        let n2_ct = n2 * ct;
+        let rn = ((n1_ci - n2_ct) / (n1_ci + n2_ct)).powi(2);
 
-        let n2ci = n2 * ci;
-        let n1ct = n1 * ct;
-        let rt = ((n2ci - n1ct) / (n2ci + n1ct)).powi(2);
+        let n2_ci = n2 * ci;
+        let n1_ct = n1 * ct;
+        let rt = ((n2_ci - n1_ct) / (n2_ci + n1_ct)).powi(2);
 
         (rn + rt) / 2.0
     }
@@ -112,12 +111,12 @@ impl Crossing {
     }
 
     /// Retrieve the reflection direction.
-    pub fn ref_dir(&self) -> &Unit<Vector3<f64>> {
+    pub const fn ref_dir(&self) -> &Unit<Vector3<f64>> {
         &self.ref_dir
     }
 
     /// Retrieve the transmission direction.
-    pub fn trans_dir(&self) -> &Option<Unit<Vector3<f64>>> {
+    pub const fn trans_dir(&self) -> &Option<Unit<Vector3<f64>>> {
         &self.trans_dir
     }
 }

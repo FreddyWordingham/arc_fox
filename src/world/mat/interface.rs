@@ -16,7 +16,7 @@ pub struct Interface<'a> {
 
 impl<'a> Interface<'a> {
     /// Construct a new instance.
-    pub fn new(mesh: Mesh, in_mat: &'a Material, out_mat: &'a Material) -> Self {
+    pub const fn new(mesh: Mesh, in_mat: &'a Material, out_mat: &'a Material) -> Self {
         Self {
             mesh,
             in_mat,
@@ -25,17 +25,17 @@ impl<'a> Interface<'a> {
     }
 
     /// Reference the surface mesh.
-    pub fn mesh(&self) -> &Mesh {
+    pub const fn mesh(&self) -> &Mesh {
         &self.mesh
     }
 
     /// Reference the inside material.
-    pub fn in_mat(&self) -> &Material {
-        &self.in_mat
+    pub const fn in_mat(&self) -> &Material {
+        self.in_mat
     }
 
     /// Reference the outside material.
-    pub fn out_mat(&self) -> &Material {
-        &self.out_mat
+    pub const fn out_mat(&self) -> &Material {
+        self.out_mat
     }
 }

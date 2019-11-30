@@ -14,21 +14,16 @@ pub fn title(title: &str) {
         .0)
         .0 as usize;
 
-    let left_bar;
-    let right_bar;
-
-    if term_width < ((title.len() * 2) + 11) {
-        left_bar = 4;
-        right_bar = 4;
+    let (left_bar, right_bar) = if term_width < ((title.len() * 2) + 11) {
+        (4, 4)
     } else {
-        left_bar = (term_width - (title.len() * 2) - 3) / 2;
-        right_bar = term_width - (title.len() * 2) - 3 - left_bar;
-    }
+        let left_bar = (term_width - (title.len() * 2) - 3) / 2;
+        (left_bar, term_width - (title.len() * 2) - 3 - left_bar)
+    };
 
-    print!("{} ", "█".repeat(left_bar));
+    print!("{} ", "\u{2588}".repeat(left_bar));
 
-    let mut pos = 0;
-    for ch in title.chars() {
+    for (pos, ch) in title.chars().enumerate() {
         match pos % 6 {
             0 => print!(" {}", format!("{}", ch).bright_red().bold()),
             1 => print!(" {}", format!("{}", ch).bright_yellow().bold()),
@@ -38,11 +33,9 @@ pub fn title(title: &str) {
             5 => print!(" {}", format!("{}", ch).bright_magenta().bold()),
             _ => unreachable!(),
         }
-
-        pos += 1;
     }
 
-    println!("  {}", "█".repeat(right_bar));
+    println!("  {}", "\u{2588}".repeat(right_bar));
 }
 
 /// Print a section bar.
@@ -72,7 +65,7 @@ pub fn section(title: &str) {
     let mut cur_len = 5 + title.len();
 
     if cur_len >= term_width {
-        println!("");
+        println!();
         return;
     }
 
@@ -83,5 +76,5 @@ pub fn section(title: &str) {
         cur_len += 1;
     }
 
-    println!("");
+    println!();
 }

@@ -1,5 +1,7 @@
 //! Smooth-triangle structure.
 
+#![allow(clippy::use_self)]
+
 use crate::{
     file::io::Load,
     sci::math::{
@@ -16,6 +18,7 @@ use std::{
     fs::File,
     io::{BufRead, BufReader},
     path::Path,
+    result::Result,
 };
 
 /// Triangle structure implementation.
@@ -56,12 +59,12 @@ impl Triangle {
     }
 
     /// Reference the vertices.
-    pub fn verts(&self) -> &[Point3<f64>; 3] {
+    pub const fn verts(&self) -> &[Point3<f64>; 3] {
         &self.verts
     }
 
     /// Reference the normal vectors.
-    pub fn norms(&self) -> &[Unit<Vector3<f64>>; 3] {
+    pub const fn norms(&self) -> &[Unit<Vector3<f64>>; 3] {
         &self.norms
     }
 
@@ -75,12 +78,12 @@ impl Triangle {
         let sv = self.verts[Gamma as usize] - self.verts[Alpha as usize];
 
         for power in 1..5 {
-            let n = 2i32.pow(power);
-            let df = 1.0 / n as f64;
+            let n = 2_i32.pow(power);
+            let df = 1.0 / f64::from(n);
             for ui in 1..n {
-                let mut u = df * ui as f64;
+                let mut u = df * f64::from(ui);
                 for vi in 1..n {
-                    let mut v = df * vi as f64;
+                    let mut v = df * f64::from(vi);
 
                     if (u + v) > 1.0 {
                         u = 1.0 - u;
@@ -108,29 +111,29 @@ impl Triangle {
         let e1 = verts[Beta as usize] - verts[Alpha as usize];
         let e2 = verts[Gamma as usize] - verts[Alpha as usize];
 
-        let h = ray.dir().cross(&e2);
-        let a = e1.dot(&h);
+        let d_cross_e2 = ray.dir().cross(&e2);
+        let e1_dot_d_cross_e2 = e1.dot(&d_cross_e2);
 
-        if a.abs() < EPSILON {
+        if e1_dot_d_cross_e2.abs() < EPSILON {
             return None;
         }
 
-        let f = 1.0 / a;
-        let s = ray.pos() - verts[Alpha as usize];
-        let u = f * s.dot(&h);
+        let inv_e1_dot_d_cross_e2 = 1.0 / e1_dot_d_cross_e2;
+        let rel_pos = ray.pos() - verts[Alpha as usize];
+        let u = inv_e1_dot_d_cross_e2 * rel_pos.dot(&d_cross_e2);
 
         if (u < 0.0) || (u > 1.0) {
             return None;
         }
 
-        let q = s.cross(&e1);
-        let v = f * ray.dir().dot(&q);
+        let q = rel_pos.cross(&e1);
+        let v = inv_e1_dot_d_cross_e2 * ray.dir().dot(&q);
 
         if (v < 0.0) || ((u + v) > 1.0) {
             return None;
         }
 
-        let dist = f * e2.dot(&q);
+        let dist = inv_e1_dot_d_cross_e2 * e2.dot(&q);
 
         if dist < EPSILON {
             return None;
@@ -144,11 +147,11 @@ impl Triangle {
 
 impl Transform for Triangle {
     fn transform(&mut self, trans: &Similarity3<f64>) {
-        for v in self.verts.iter_mut() {
+        for v in &mut self.verts {
             *v = trans.transform_point(v);
         }
 
-        for n in self.norms.iter_mut() {
+        for n in &mut self.norms {
             *n = Unit::new_normalize(trans.transform_vector(n.as_ref()));
         }
 
@@ -165,8 +168,9 @@ impl Collide for Triangle {
             for (v, (min, max)) in v.iter().zip(mins.iter_mut().zip(maxs.iter_mut())) {
                 if *min > *v {
                     *min = *v;
-                } else if { *max < *v } {
+                } else if *max < *v {
                     *max = *v;
+                } else {
                 }
             }
         }
@@ -273,7 +277,7 @@ impl Trace for Triangle {
 
     #[post(ret.is_none() || ret.unwrap() > 0.0)]
     fn dist(&self, ray: &Ray) -> Option<f64> {
-        if let Some((dist, _coors)) = self.dist_coors(&ray) {
+        if let Some((dist, _coors)) = self.dist_coors(ray) {
             return Some(dist);
         }
 
@@ -282,7 +286,7 @@ impl Trace for Triangle {
 
     #[post(ret.is_none() || (ret.unwrap().0 > 0.0 && (ret.unwrap().1.is_normal())))]
     fn dist_norm(&self, ray: &Ray) -> Option<(f64, Unit<Vector3<f64>>)> {
-        if let Some((dist, [u, v, w])) = self.dist_coors(&ray) {
+        if let Some((dist, [u, v, w])) = self.dist_coors(ray) {
             return Some((
                 dist,
                 Unit::new_normalize(
@@ -298,21 +302,21 @@ impl Trace for Triangle {
 
     #[post(ret.is_none() || ret.unwrap().0 > 0.0)]
     fn dist_inside(&self, ray: &Ray) -> Option<(f64, bool)> {
-        return if let Some(dist) = self.dist(ray) {
-            Some((dist, self.plane_norm.dot(&ray.dir()) > 0.0))
+        if let Some(dist) = self.dist(ray) {
+            Some((dist, self.plane_norm.dot(ray.dir()) > 0.0))
         } else {
             None
-        };
+        }
     }
 
     #[post(ret.is_none() || (ret.unwrap().0 > 0.0 && (ret.unwrap().2.is_normal())))]
     fn dist_inside_norm(&self, ray: &Ray) -> Option<(f64, bool, Unit<Vector3<f64>>)> {
-        return if let Some((dist, norm)) = self.dist_norm(ray) {
+        if let Some((dist, norm)) = self.dist_norm(ray) {
             let inside = ray.dir().dot(&self.plane_norm) > 0.0;
             Some((dist, inside, norm))
         } else {
             None
-        };
+        }
     }
 }
 
@@ -320,7 +324,7 @@ impl Load for Vec<Triangle> {
     fn load(path: &Path) -> Self {
         let vertex_lines: Vec<_> = BufReader::new(File::open(path).expect("Unable to open file!"))
             .lines()
-            .map(|line| line.unwrap())
+            .map(Result::unwrap)
             .filter(|line| line.starts_with("v "))
             .collect();
 
@@ -332,9 +336,21 @@ impl Load for Vec<Triangle> {
             let mut words = line.split_whitespace();
             words.next();
 
-            let px = words.next().unwrap().parse::<f64>().unwrap();
-            let py = words.next().unwrap().parse::<f64>().unwrap();
-            let pz = words.next().unwrap().parse::<f64>().unwrap();
+            let px = words
+                .next()
+                .expect("Could not get the next word.")
+                .parse::<f64>()
+                .expect("Could not parse px value.");
+            let py = words
+                .next()
+                .expect("Could not get the next word.")
+                .parse::<f64>()
+                .expect("Could not parse py value.");
+            let pz = words
+                .next()
+                .expect("Could not get the next word.")
+                .parse::<f64>()
+                .expect("Could not parse pz value.");
 
             verts.push(Point3::new(px, py, pz));
         }
@@ -342,7 +358,7 @@ impl Load for Vec<Triangle> {
 
         let normal_lines: Vec<_> = BufReader::new(File::open(path).expect("Unable to open file!"))
             .lines()
-            .map(|line| line.unwrap())
+            .map(Result::unwrap)
             .filter(|line| line.starts_with("vn "))
             .collect();
 
@@ -364,7 +380,7 @@ impl Load for Vec<Triangle> {
 
         let face_lines: Vec<_> = BufReader::new(File::open(path).expect("Unable to open file!"))
             .lines()
-            .map(|line| line.unwrap())
+            .map(Result::unwrap)
             .filter(|line| line.starts_with("f "))
             .collect();
 

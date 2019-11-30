@@ -24,12 +24,12 @@ pub trait Trace: Debug {
 
     /// Calculate the hit point of a ray.
     fn hit_point(&self, ray: &Ray) -> Option<Point3<f64>> {
-        return if let Some(dist) = self.dist(ray) {
+        if let Some(dist) = self.dist(ray) {
             let mut scan = ray.clone();
             scan.travel(dist);
             Some(*scan.pos())
         } else {
             None
-        };
+        }
     }
 }

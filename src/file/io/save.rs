@@ -24,7 +24,7 @@ pub fn as_json<T: Serialize>(obj: &T, path: &Path) {
 impl<T: Debug + Numeric> Save for Array3<T> {
     #[pre(!self.is_empty())]
     fn save(&self, path: &Path) {
-        let mut file = File::create(&path).expect("Unable to create file.");
+        let mut file = File::create(path).expect("Unable to create file.");
 
         let shape = self.shape();
 
@@ -41,7 +41,7 @@ impl<T: Debug + Numeric> Save for Array3<T> {
             .add_dimension(dim3_name, shape[Z as usize])
             .expect("Unable to add Z dimension.");
 
-        let var = &mut file
+        let var = file
             .root_mut()
             .add_variable::<T>("data", &[dim1_name, dim2_name, dim3_name])
             .expect("Unable to add datacube entry.");
@@ -58,7 +58,7 @@ impl<T: Debug + Numeric> Save for Vec<(&str, Array3<T>)> {
     #[pre(!self.is_empty())]
     #[pre(self.iter().all(|(name, arr)| !name.is_empty() && !arr.is_empty()))]
     fn save(&self, path: &Path) {
-        let mut file = File::create(&path).expect("Unable to create file.");
+        let mut file = File::create(path).expect("Unable to create file.");
 
         let shape = self[0].1.shape();
 
@@ -80,7 +80,7 @@ impl<T: Debug + Numeric> Save for Vec<(&str, Array3<T>)> {
                 panic!("Unable to save datacube pack, shapes do not match.");
             }
 
-            let var = &mut file
+            let var = file
                 .root_mut()
                 .add_variable::<T>(name, &[dim1_name, dim2_name, dim3_name])
                 .expect("Unable to add datacube entry.");

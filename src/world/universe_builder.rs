@@ -13,7 +13,8 @@ pub struct UniverseBuilder {
 
 impl UniverseBuilder {
     /// Construct a new instance.
-    pub fn new(reactions: Vec<ReactionBuilder>) -> Self {
+    #[inline]
+    pub const fn new(reactions: Vec<ReactionBuilder>) -> Self {
         Self { reactions }
     }
 }

@@ -16,19 +16,19 @@ pub enum Formula {
 impl Formula {
     /// Construct a new constant formula.
     pub fn new_const(c: f64) -> Self {
-        Formula::Const(c)
+        Self::Const(c)
     }
 
     /// Construct a new constant formula.
     pub fn new_bifur(s: f64, a: f64, b: f64) -> Self {
-        Formula::Bifur(s, a, b)
+        Self::Bifur(s, a, b)
     }
 
     /// Calculate the result of the formula.
     pub fn res(&self, x: f64) -> f64 {
         match self {
-            Formula::Const(c) => *c,
-            Formula::Bifur(s, a, b) => {
+            Self::Const(c) => *c,
+            Self::Bifur(s, a, b) => {
                 if x <= *s {
                     *a
                 } else {
@@ -39,25 +39,26 @@ impl Formula {
     }
 
     /// Determine the minimum result value within the given range.
-    pub fn min(&self, range: Range) -> f64 {
+    pub fn min(&self, range: &Range) -> f64 {
         match self {
-            Formula::Const(c) => *c,
-            Formula::Bifur(s, a, b) => {
+            Self::Const(c) => *c,
+            Self::Bifur(s, a, b) => {
                 if range.max() <= *s {
-                    return *a;
+                    *a
                 } else if range.min() > *s {
-                    return *b;
+                    *b
+                } else {
+                    a.min(*b)
                 }
-                a.min(*b)
             }
         }
     }
 
     /// Determine the maximum result value within the given range.
-    pub fn max(&self, range: Range) -> f64 {
+    pub fn max(&self, range: &Range) -> f64 {
         match self {
-            Formula::Const(c) => *c,
-            Formula::Bifur(s, a, b) => {
+            Self::Const(c) => *c,
+            Self::Bifur(s, a, b) => {
                 if range.max() <= *s {
                     return *a;
                 } else if range.min() > *s {

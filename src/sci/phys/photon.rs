@@ -49,7 +49,7 @@ impl Photon {
     }
 
     /// Reference the ray.
-    pub fn ray(&self) -> &Ray {
+    pub const fn ray(&self) -> &Ray {
         &self.ray
     }
 }

@@ -8,26 +8,26 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Deserialize, Serialize)]
 pub enum Rate {
     /// Niladic function. f(cs) = k;
-    ZerothOrder(f64),
+    Zeroth(f64),
     /// Monadic. f(cs) = k[A];
-    FirstOrder(f64, usize),
+    First(f64, usize),
     /// Dyadic. f(cs) = k[A][B];
-    SecondOrder(f64, usize, usize),
+    Second(f64, usize, usize),
     /// Triadic. f(cs) = k[A][B][C];
-    ThirdOrder(f64, usize, usize, usize),
+    Third(f64, usize, usize, usize),
     /// Polyadic. f(cs) = prod(k[n]);
-    PolyOrder(f64, Array1<usize>),
+    Poly(f64, Array1<usize>),
 }
 
 impl Rate {
     /// Calculate the current rate.
     pub fn res(&self, concs: &Array1<f64>) -> f64 {
         match self {
-            Rate::ZerothOrder(k) => -k,
-            Rate::FirstOrder(k, a) => -k * concs[*a],
-            Rate::SecondOrder(k, a, b) => -k * concs[*a] * concs[*b],
-            Rate::ThirdOrder(k, a, b, c) => -k * concs[*a] * concs[*b] * concs[*c],
-            Rate::PolyOrder(k, ss) => {
+            Self::Zeroth(k) => -k,
+            Self::First(k, a) => -k * concs[*a],
+            Self::Second(k, a, b) => -k * concs[*a] * concs[*b],
+            Self::Third(k, a, b, c) => -k * concs[*a] * concs[*b] * concs[*c],
+            Self::Poly(k, ss) => {
                 let p: f64 = ss.iter().map(|a| concs[*a]).product();
                 -k * p
             }

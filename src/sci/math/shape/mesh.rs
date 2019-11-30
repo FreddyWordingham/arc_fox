@@ -36,7 +36,7 @@ impl Mesh {
 
     /// Initialise the axis-aligned bounding box for the given list of triangles.
     #[pre(!tris.is_empty())]
-    fn init_aabb(tris: &Vec<Triangle>) -> Aabb {
+    fn init_aabb(tris: &[Triangle]) -> Aabb {
         let mut mins = tris[0].verts()[Alpha as usize];
         let mut maxs = mins;
 
@@ -56,14 +56,14 @@ impl Mesh {
     }
 
     /// Reference the list of component triangles.
-    pub fn tris(&self) -> &Vec<Triangle> {
+    pub const fn tris(&self) -> &Vec<Triangle> {
         &self.tris
     }
 }
 
 impl Transform for Mesh {
     fn transform(&mut self, trans: &Similarity3<f64>) {
-        for tri in self.tris.iter_mut() {
+        for tri in &mut self.tris {
             tri.transform(trans);
         }
 
@@ -81,7 +81,7 @@ impl Collide for Mesh {
             return false;
         }
 
-        for tri in self.tris.iter() {
+        for tri in &self.tris {
             if tri.overlap(aabb) {
                 return true;
             }
@@ -108,9 +108,7 @@ impl Trace for Mesh {
 
         self.tris
             .iter()
-            .map(|tri| tri.dist(ray))
-            .filter(|dist| dist.is_some())
-            .map(|o| o.unwrap())
+            .filter_map(|tri| tri.dist(ray))
             .min_by(|a, b| a.partial_cmp(b).unwrap())
     }
 
@@ -122,9 +120,7 @@ impl Trace for Mesh {
 
         self.tris
             .iter()
-            .map(|tri| tri.dist_norm(ray))
-            .filter(|dist_norm| dist_norm.is_some())
-            .map(|o| o.unwrap())
+            .filter_map(|tri| tri.dist_norm(ray))
             .min_by(|a, b| a.0.partial_cmp(&b.0).unwrap())
     }
 
@@ -136,9 +132,7 @@ impl Trace for Mesh {
 
         self.tris
             .iter()
-            .map(|tri| tri.dist_inside(ray))
-            .filter(|dist_inside| dist_inside.is_some())
-            .map(|o| o.unwrap())
+            .filter_map(|tri| tri.dist_inside(ray))
             .min_by(|a, b| a.0.partial_cmp(&b.0).unwrap())
     }
 
@@ -150,9 +144,7 @@ impl Trace for Mesh {
 
         self.tris
             .iter()
-            .map(|tri| tri.dist_inside_norm(ray))
-            .filter(|dist_inside_norm| dist_inside_norm.is_some())
-            .map(|o| o.unwrap())
+            .filter_map(|tri| tri.dist_inside_norm(ray))
             .min_by(|a, b| a.0.partial_cmp(&b.0).unwrap())
     }
 }
