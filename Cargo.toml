@@ -13,7 +13,7 @@ contracts = "0.3.0"
 indicatif = "0.13.0"
 log = "0.4.8"
 nalgebra = { version = "0.19.0", features = ["serde-serialize"] }
-ndarray = { version = "0.13.0", features = ["rayon"] }
+ndarray = { version = "0.13.0", features = ["rayon", "serde-1"] }
 ndarray-stats = "0.3.0"
 netcdf = "0.3.1"
 physical_constants = "0.3.0"

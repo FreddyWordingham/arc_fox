@@ -1,11 +1,11 @@
 //! Rate enumeration.
 
-// use contracts::pre;
 use ndarray::Array1;
+use serde::{Deserialize, Serialize};
 
 /// Univariate enumeration implementation.
 /// Formulae that accept a single scalar value, and return a single scalar value.
-#[derive(Debug)]
+#[derive(Debug, Deserialize, Serialize)]
 pub enum Rate {
     /// Niladic function. f(cs) = k;
     ZerothOrder(f64),

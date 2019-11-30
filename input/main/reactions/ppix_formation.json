@@ -1,0 +1,20 @@
+{
+    "reactants": [
+        [
+            "ala",
+            8
+        ]
+    ],
+    "products": [
+        [
+            "ppix",
+            1
+        ]
+    ],
+    "rate": {
+        "FirstOrder": [
+            0.1,
+            "ala"
+        ]
+    }
+}

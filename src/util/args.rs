@@ -3,7 +3,7 @@
 /// Import command line arguments as a requested type.
 #[macro_export]
 macro_rules! args {
-    ($($name:ident : $type:ty); +) => {
+    ($( $name:ident : $type:ty ); +) => {
         $(let $name;)*
         {
             info!("Command line arguments:");
