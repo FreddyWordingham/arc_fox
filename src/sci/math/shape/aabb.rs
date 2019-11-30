@@ -163,10 +163,12 @@ impl Trace for Aabb {
         Some(t_max)
     }
 
+    #[post(ret.is_none() || (ret.unwrap().0 > 0.0 && (ret.unwrap().1.magnitude_squared() - 1.0).abs() < 1.0e-6))]
     fn dist_norm(&self, _ray: &Ray) -> Option<(f64, Unit<Vector3<f64>>)> {
         unimplemented!("Tell me if you need this.");
     }
 
+    #[post(ret.is_none() || ret.unwrap().0 > 0.0)]
     fn dist_inside(&self, ray: &Ray) -> Option<(f64, bool)> {
         if let Some(dist) = self.dist(ray) {
             return Some((dist, self.contains(&ray.pos())));
@@ -175,6 +177,7 @@ impl Trace for Aabb {
         None
     }
 
+    #[post(ret.is_none() || (ret.unwrap().0 > 0.0 && (ret.unwrap().2.magnitude_squared() - 1.0).abs() < 1.0e-6))]
     fn dist_inside_norm(&self, ray: &Ray) -> Option<(f64, bool, Unit<Vector3<f64>>)> {
         return if let Some((dist, norm)) = self.dist_norm(ray) {
             let inside = self.contains(&ray.pos());

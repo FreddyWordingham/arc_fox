@@ -1,8 +1,15 @@
 //! Smooth-triangle structure.
 
-use super::super::{geom::Collide, shape::Aabb};
+use super::{
+    super::{
+        geom::Collide,
+        rt::{Ray, Trace},
+        shape::Aabb,
+    },
+    EPSILON,
+};
 use crate::util::list::alphabet::Greek::{Alpha, Beta, Gamma};
-use contracts::pre;
+use contracts::{post, pre};
 use nalgebra::{Point3, Unit, Vector3};
 
 /// Triangle structure implementation.
@@ -86,6 +93,46 @@ impl Triangle {
         }
 
         None
+    }
+
+    #[post(ret.is_none() || (ret.unwrap().0 > 0.0 && ret.unwrap().1.iter().all(|x| *x >= 0.0 && *x <= 1.0)))]
+    fn dist_coors(&self, ray: &Ray) -> Option<(f64, [f64; 3])> {
+        let verts = self.verts;
+
+        let e1 = verts[Beta as usize] - verts[Alpha as usize];
+        let e2 = verts[Gamma as usize] - verts[Alpha as usize];
+
+        let h = ray.dir().cross(&e2);
+        let a = e1.dot(&h);
+
+        if a.abs() < EPSILON {
+            return None;
+        }
+
+        let f = 1.0 / a;
+        let s = ray.pos() - verts[Alpha as usize];
+        let u = f * s.dot(&h);
+
+        if (u < 0.0) || (u > 1.0) {
+            return None;
+        }
+
+        let q = s.cross(&e1);
+        let v = f * ray.dir().dot(&q);
+
+        if (v < 0.0) || ((u + v) > 1.0) {
+            return None;
+        }
+
+        let dist = f * e2.dot(&q);
+
+        if dist < EPSILON {
+            return None;
+        }
+
+        let w = 1.0 - u - v;
+
+        Some((dist, [u, v, w]))
     }
 }
 
@@ -196,5 +243,55 @@ impl Collide for Triangle {
         }
 
         true
+    }
+}
+
+impl Trace for Triangle {
+    fn hit(&self, ray: &Ray) -> bool {
+        self.dist(ray).is_some()
+    }
+
+    #[post(ret.is_none() || ret.unwrap() > 0.0)]
+    fn dist(&self, ray: &Ray) -> Option<f64> {
+        if let Some((dist, _coors)) = self.dist_coors(&ray) {
+            return Some(dist);
+        }
+
+        None
+    }
+
+    #[post(ret.is_none() || (ret.unwrap().0 > 0.0 && (ret.unwrap().1.magnitude_squared() - 1.0).abs() < 1.0e-6))]
+    fn dist_norm(&self, ray: &Ray) -> Option<(f64, Unit<Vector3<f64>>)> {
+        if let Some((dist, [u, v, w])) = self.dist_coors(&ray) {
+            return Some((
+                dist,
+                Unit::new_normalize(
+                    (self.norms[Beta as usize].into_inner() * u)
+                        + (self.norms[Gamma as usize].into_inner() * v)
+                        + (self.norms[Alpha as usize].into_inner() * w),
+                ),
+            ));
+        }
+
+        None
+    }
+
+    #[post(ret.is_none() || ret.unwrap().0 > 0.0)]
+    fn dist_inside(&self, ray: &Ray) -> Option<(f64, bool)> {
+        return if let Some(dist) = self.dist(ray) {
+            Some((dist, self.plane_norm.dot(&ray.dir()) > 0.0))
+        } else {
+            None
+        };
+    }
+
+    #[post(ret.is_none() || (ret.unwrap().0 > 0.0 && (ret.unwrap().2.magnitude_squared() - 1.0).abs() < 1.0e-6))]
+    fn dist_inside_norm(&self, ray: &Ray) -> Option<(f64, bool, Unit<Vector3<f64>>)> {
+        return if let Some((dist, norm)) = self.dist_norm(ray) {
+            let inside = ray.dir().dot(&self.plane_norm) > 0.0;
+            Some((dist, inside, norm))
+        } else {
+            None
+        };
     }
 }
