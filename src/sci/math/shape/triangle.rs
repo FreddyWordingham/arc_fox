@@ -5,6 +5,7 @@ use super::{
         geom::Collide,
         rt::{Ray, Trace},
         shape::Aabb,
+        Normal,
     },
     EPSILON,
 };
@@ -26,7 +27,7 @@ pub struct Triangle {
 
 impl Triangle {
     /// Construct a new instance.
-    #[pre(norms.iter().all(|n| (n.magnitude_squared() - 1.0).abs() < 1.0e-6))]
+    #[pre(norms.iter().all(|n| n.is_normal()))]
     pub fn new(verts: [Point3<f64>; 3], norms: [Unit<Vector3<f64>>; 3]) -> Self {
         let plane_norm = Self::init_plane_norm(&verts);
 
@@ -95,7 +96,7 @@ impl Triangle {
         None
     }
 
-    #[post(ret.is_none() || (ret.unwrap().0 > 0.0 && ret.unwrap().1.iter().all(|x| *x >= 0.0 && *x <= 1.0)))]
+    #[post(ret.is_none() || (ret.unwrap().0 > 0.0 && ret.unwrap().1.iter().all(|x| x.is_normal())))]
     fn dist_coors(&self, ray: &Ray) -> Option<(f64, [f64; 3])> {
         let verts = self.verts;
 
@@ -260,7 +261,7 @@ impl Trace for Triangle {
         None
     }
 
-    #[post(ret.is_none() || (ret.unwrap().0 > 0.0 && (ret.unwrap().1.magnitude_squared() - 1.0).abs() < 1.0e-6))]
+    #[post(ret.is_none() || (ret.unwrap().0 > 0.0 && (ret.unwrap().1.is_normal())))]
     fn dist_norm(&self, ray: &Ray) -> Option<(f64, Unit<Vector3<f64>>)> {
         if let Some((dist, [u, v, w])) = self.dist_coors(&ray) {
             return Some((
@@ -285,7 +286,7 @@ impl Trace for Triangle {
         };
     }
 
-    #[post(ret.is_none() || (ret.unwrap().0 > 0.0 && (ret.unwrap().2.magnitude_squared() - 1.0).abs() < 1.0e-6))]
+    #[post(ret.is_none() || (ret.unwrap().0 > 0.0 && (ret.unwrap().2.is_normal())))]
     fn dist_inside_norm(&self, ray: &Ray) -> Option<(f64, bool, Unit<Vector3<f64>>)> {
         return if let Some((dist, norm)) = self.dist_norm(ray) {
             let inside = ray.dir().dot(&self.plane_norm) > 0.0;

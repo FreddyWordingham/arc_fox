@@ -1,6 +1,6 @@
 //! Emit trait.
 
-use super::Ray;
+use super::{super::Normal, Ray};
 use contracts::post;
 use nalgebra::{Point3, Unit, Vector3};
 use rand::{rngs::ThreadRng, Rng};
@@ -14,7 +14,7 @@ pub trait Emit: Debug + Sync {
 }
 
 impl Emit for Point3<f64> {
-    #[post((ret.dir().magnitude_squared() - 1.0).abs() < 1.0e-6)]
+    #[post(ret.dir().is_normal())]
     fn emit(&self, rng: &mut ThreadRng) -> Ray {
         let theta = rng.gen_range(0.0, 2.0 * PI);
         let z = rng.gen_range(-1.0, 1.0);

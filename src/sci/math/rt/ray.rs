@@ -1,5 +1,6 @@
 //! Ray structure.
 
+use super::super::Normal;
 use contracts::{post, pre};
 use nalgebra::{Point3, Unit, Vector3};
 
@@ -14,7 +15,7 @@ pub struct Ray {
 
 impl Ray {
     /// Construct a new instance.
-    #[pre((dir.magnitude_squared() - 1.0).abs() < 1.0e-6)]
+    #[pre((dir.is_normal()))]
     pub fn new(pos: Point3<f64>, dir: Unit<Vector3<f64>>) -> Self {
         Self { pos, dir }
     }
@@ -25,7 +26,7 @@ impl Ray {
     }
 
     /// Reference the facing direction.
-    #[post((ret.magnitude_squared() - 1.0).abs() < 1.0e-6)]
+    #[post((ret.is_normal()))]
     pub fn dir(&self) -> &Unit<Vector3<f64>> {
         &self.dir
     }

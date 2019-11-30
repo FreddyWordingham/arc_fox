@@ -3,6 +3,7 @@
 use super::super::{
     geom::Collide,
     rt::{Ray, Trace},
+    Normal,
 };
 use contracts::{post, pre};
 use nalgebra::{Point3, Unit, Vector3};
@@ -163,7 +164,7 @@ impl Trace for Aabb {
         Some(t_max)
     }
 
-    #[post(ret.is_none() || (ret.unwrap().0 > 0.0 && (ret.unwrap().1.magnitude_squared() - 1.0).abs() < 1.0e-6))]
+    #[post(ret.is_none() || (ret.unwrap().0 > 0.0 && (ret.unwrap().1.is_normal())))]
     fn dist_norm(&self, _ray: &Ray) -> Option<(f64, Unit<Vector3<f64>>)> {
         unimplemented!("Tell me if you need this.");
     }
@@ -177,7 +178,7 @@ impl Trace for Aabb {
         None
     }
 
-    #[post(ret.is_none() || (ret.unwrap().0 > 0.0 && (ret.unwrap().2.magnitude_squared() - 1.0).abs() < 1.0e-6))]
+    #[post(ret.is_none() || (ret.unwrap().0 > 0.0 && (ret.unwrap().2.is_normal())))]
     fn dist_inside_norm(&self, ray: &Ray) -> Option<(f64, bool, Unit<Vector3<f64>>)> {
         return if let Some((dist, norm)) = self.dist_norm(ray) {
             let inside = self.contains(&ray.pos());
