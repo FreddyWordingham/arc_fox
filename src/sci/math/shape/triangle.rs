@@ -2,16 +2,23 @@
 
 use super::{
     super::{
-        geom::Collide,
+        geom::{Collide, Transform},
         rt::{Ray, Trace},
-        shape::Aabb,
         Normal,
     },
-    EPSILON,
+    Aabb, EPSILON,
 };
-use crate::util::list::alphabet::Greek::{Alpha, Beta, Gamma};
+use crate::{
+    file::io::Load,
+    util::list::alphabet::Greek::{Alpha, Beta, Gamma},
+};
 use contracts::{post, pre};
-use nalgebra::{Point3, Unit, Vector3};
+use nalgebra::{Point3, Similarity3, Unit, Vector3};
+use std::{
+    fs::File,
+    io::{BufRead, BufReader},
+    path::Path,
+};
 
 /// Triangle structure implementation.
 /// Forms meshes.
@@ -134,6 +141,20 @@ impl Triangle {
         let w = 1.0 - u - v;
 
         Some((dist, [u, v, w]))
+    }
+}
+
+impl Transform for Triangle {
+    fn transform(&mut self, trans: &Similarity3<f64>) {
+        for v in self.verts.iter_mut() {
+            *v = trans.transform_point(v);
+        }
+
+        for n in self.norms.iter_mut() {
+            *n = Unit::new_normalize(trans.transform_vector(n.as_ref()));
+        }
+
+        self.plane_norm = Self::init_plane_norm(&self.verts);
     }
 }
 
@@ -294,5 +315,89 @@ impl Trace for Triangle {
         } else {
             None
         };
+    }
+}
+
+impl Load for Vec<Triangle> {
+    fn load(path: &Path) -> Self {
+        let vertex_lines: Vec<_> = BufReader::new(File::open(path).expect("Unable to open file!"))
+            .lines()
+            .map(|line| line.unwrap())
+            .filter(|line| line.starts_with("v "))
+            .collect();
+
+        let mut verts = Vec::with_capacity(vertex_lines.len());
+        // let pb = bar("Loading vertices", vertex_lines.len() as u64); TODO: Consider removing these.
+        for line in vertex_lines {
+            // pb.inc(1);
+
+            let mut words = line.split_whitespace();
+            words.next();
+
+            let px = words.next().unwrap().parse::<f64>().unwrap();
+            let py = words.next().unwrap().parse::<f64>().unwrap();
+            let pz = words.next().unwrap().parse::<f64>().unwrap();
+
+            verts.push(Point3::new(px, py, pz));
+        }
+        // pb.finish_and_clear();
+
+        let normal_lines: Vec<_> = BufReader::new(File::open(path).expect("Unable to open file!"))
+            .lines()
+            .map(|line| line.unwrap())
+            .filter(|line| line.starts_with("vn "))
+            .collect();
+
+        let mut norms = Vec::with_capacity(normal_lines.len());
+        // let pb = bar("Loading normals", normal_lines.len() as u64);
+        for line in normal_lines {
+            // pb.inc(1);
+
+            let mut words = line.split_whitespace();
+            words.next();
+
+            let nx = words.next().unwrap().parse::<f64>().unwrap();
+            let ny = words.next().unwrap().parse::<f64>().unwrap();
+            let nz = words.next().unwrap().parse::<f64>().unwrap();
+
+            norms.push(Unit::new_normalize(Vector3::new(nx, ny, nz)));
+        }
+        // pb.finish_and_clear();
+
+        let face_lines: Vec<_> = BufReader::new(File::open(path).expect("Unable to open file!"))
+            .lines()
+            .map(|line| line.unwrap())
+            .filter(|line| line.starts_with("f "))
+            .collect();
+
+        let mut faces = Vec::with_capacity(face_lines.len());
+        // let pb = bar("Loading faces", face_lines.len() as u64);
+        for line in face_lines {
+            // pb.inc(1);
+
+            let line = line.replace("//", " ");
+            let mut words = line.split_whitespace();
+            words.next();
+
+            let fx = words.next().unwrap().parse::<usize>().unwrap() - 1;
+            let fnx = words.next().unwrap().parse::<usize>().unwrap() - 1;
+            let fy = words.next().unwrap().parse::<usize>().unwrap() - 1;
+            let fny = words.next().unwrap().parse::<usize>().unwrap() - 1;
+            let fz = words.next().unwrap().parse::<usize>().unwrap() - 1;
+            let fnz = words.next().unwrap().parse::<usize>().unwrap() - 1;
+
+            faces.push(((fx, fy, fz), (fnx, fny, fnz)));
+        }
+        // pb.finish_and_clear();
+
+        let mut tris = Vec::with_capacity(faces.len());
+        for face in faces {
+            tris.push(Triangle::new(
+                [verts[(face.0).0], verts[(face.0).1], verts[(face.0).2]],
+                [norms[(face.1).0], norms[(face.1).1], norms[(face.1).2]],
+            ));
+        }
+
+        tris
     }
 }
