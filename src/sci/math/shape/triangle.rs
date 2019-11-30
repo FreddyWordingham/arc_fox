@@ -51,6 +51,42 @@ impl Triangle {
     pub fn norms(&self) -> &[Unit<Vector3<f64>>; 3] {
         &self.norms
     }
+
+    /// Point on the surface which is also within the given aabb.
+    pub fn union_point(&self, aabb: &Aabb) -> Option<Point3<f64>> {
+        if !self.overlap(aabb) {
+            return None;
+        }
+
+        let su = self.verts[Beta as usize] - self.verts[Alpha as usize];
+        let sv = self.verts[Gamma as usize] - self.verts[Alpha as usize];
+
+        for power in 1..5 {
+            let n = 2i32.pow(power);
+            let df = 1.0 / n as f64;
+            for ui in 1..n {
+                let mut u = df * ui as f64;
+                for vi in 1..n {
+                    let mut v = df * vi as f64;
+
+                    if (u + v) > 1.0 {
+                        u = 1.0 - u;
+                        v = 1.0 - v;
+                    }
+                    if (u + v) > 1.0 {
+                        panic!("Didn't work!"); // TODO: Remove.
+                    }
+                    let p: Point3<f64> = self.verts[Alpha as usize] + (su * u) + (sv * v);
+
+                    if aabb.contains(&p) {
+                        return Some(p);
+                    }
+                }
+            }
+        }
+
+        None
+    }
 }
 
 impl Collide for Triangle {
