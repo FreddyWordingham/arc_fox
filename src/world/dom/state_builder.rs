@@ -9,9 +9,9 @@ use std::collections::HashMap;
 #[derive(Debug, Deserialize, Serialize)]
 pub struct StateBuilder {
     /// Species concentration-map.
-    concs: HashMap<String, f64>,
+    pub concs: HashMap<String, f64>,
     /// Species source-map.
-    sources: HashMap<String, f64>,
+    pub sources: HashMap<String, f64>,
 }
 
 json!(StateBuilder);

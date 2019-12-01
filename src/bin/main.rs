@@ -4,7 +4,7 @@ use arc::{
     args,
     file::io::Load,
     form, report,
-    sci::chem::ReactionBuilder,
+    sci::chem::{ReactionBuilder, SpeciesBuilder},
     util::{
         dirs::init::io_dirs,
         info::exec,
@@ -42,8 +42,8 @@ fn main() {
     let form = Parameters::load(&in_dir.join(form_path));
     let reactions = load_reactions(&in_dir.join("reactions"), &form);
     let interfaces = load_interfaces(&in_dir.join("interfaces"), &form);
-    let _materials = load_materials(&in_dir.join("materials"), &interfaces);
-    let _species = load_species(&in_dir.join("species"), &reactions, &interfaces);
+    let materials = load_materials(&in_dir.join("materials"), &interfaces);
+    let _species = load_species(&in_dir.join("species"), &reactions, &materials);
 
     section("Output");
     report!("Output dir", out_dir.display());
@@ -98,7 +98,11 @@ fn load_materials(dir: &Path, interfaces: &[InterfaceBuilder]) -> Vec<MaterialBu
 }
 
 #[pre(dir.is_dir())]
-fn load_species(dir: &Path, reactions: &[ReactionBuilder], interfaces: &[InterfaceBuilder]) {
+fn load_species(
+    dir: &Path,
+    reactions: &[ReactionBuilder],
+    materials: &[MaterialBuilder],
+) -> Vec<SpeciesBuilder> {
     let mut names = Vec::new();
 
     for reaction in reactions {
@@ -110,8 +114,26 @@ fn load_species(dir: &Path, reactions: &[ReactionBuilder], interfaces: &[Interfa
         }
     }
 
-    for interface in interfaces {}
+    for material in materials {
+        if let Some(state) = &material.state {
+            for (name, _conc) in &state.concs {
+                names.push(name);
+            }
+            for (name, _source) in &state.sources {
+                names.push(name);
+            }
+        }
+    }
 
     names.sort();
     names.dedup();
+
+    names
+        .iter()
+        .map(|name| {
+            let path = dir.join(format!("{}.json", name));
+            info!("Loading species: {}", name);
+            SpeciesBuilder::load(&path)
+        })
+        .collect()
 }

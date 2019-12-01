@@ -1,11 +1,10 @@
 //! Species structure.
 
-use crate::{json, world::parts::Named};
+use crate::world::parts::Named;
 use contracts::pre;
-use serde::{Deserialize, Serialize};
 
 /// Reactive species structure implementation.
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug)]
 pub struct Species {
     /// Name of the species.
     name: String,
@@ -33,5 +32,3 @@ impl Named for Species {
         &self.name
     }
 }
-
-json!(Species);
