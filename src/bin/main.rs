@@ -9,10 +9,7 @@ use arc::{
         info::exec,
         print::term::{section, title},
     },
-    world::parts::{
-        interfaces, interfaces_builder, materials, materials_builder, meshes_builder, reactions,
-        reactions_builder, species, species_builder,
-    },
+    world::{Universe, UniverseBuilder},
 };
 use log::info;
 use std::path::Path;
@@ -41,17 +38,10 @@ fn main() {
         in_dir.join(form_path).display()
     );
     let form = Parameters::load(&in_dir.join(form_path));
-    let reactions = reactions_builder::load(&in_dir.join("reactions"), &form.reactions);
-    let interfaces = interfaces_builder::load(&in_dir.join("interfaces"), &form.interfaces);
-    let meshes = meshes_builder::load(&in_dir.join("meshes"), &interfaces);
-    let materials = materials_builder::load(&in_dir.join("materials"), &interfaces);
-    let species = species_builder::load(&in_dir.join("species"), &reactions, &materials);
+    let builder = UniverseBuilder::new(&in_dir, &form.reactions, &form.interfaces);
 
     section("Building");
-    let species = species::build(species);
-    let materials = materials::build(materials);
-    let _interfaces = interfaces::build(interfaces, &meshes, &materials);
-    let _reactions = reactions::build(reactions, &species);
+    let _universe = Universe::build(builder);
 
     section("Output");
     report!("Output dir", out_dir.display());
