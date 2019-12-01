@@ -14,17 +14,32 @@ use std::fmt::Write;
 /// Print a universe.
 pub fn universe(universe: &Universe) {
     info!(
-        "{:<16}{:<16}\n{}",
+        "\n{:<16}{:<16}\n{}",
         "Species",
         "Radius",
         species(universe.species())
     );
     info!(
-        "Reactions\n{}",
+        "\n{:<16}{:<32}{:<16}\n{}",
+        "Reaction",
+        "Formula",
+        "Rate",
         reactions(universe.reactions(), universe.species())
     );
-    info!("Materials\n{}", materials(universe.materials()));
-    info!("Interfaces\n{}", interfaces(universe.interfaces()));
+    info!(
+        "\n{:<16}{:<16}{:<16}\n{}",
+        "Materials",
+        "Viscosity",
+        "Multiplier",
+        materials(universe.materials())
+    );
+    info!(
+        "\n{:<16}{:<16}{:<16}\n{}",
+        "Interfaces",
+        "Inside",
+        "Outside",
+        interfaces(universe.interfaces())
+    );
 }
 
 /// Print a list of reactions.
@@ -41,6 +56,7 @@ pub fn species(species: &[Species]) -> String {
 
         writeln!(fmt, "{:<16}{:<16}", name, size).unwrap();
     }
+    fmt.pop();
 
     fmt
 }
@@ -70,11 +86,14 @@ pub fn reactions(reactions: &[Reaction], species: &[Species]) -> String {
 
         writeln!(
             fmt,
-            "{:<16}:{:>16} -> {:<16}:{:<16}",
-            name, reactants, products, rate,
+            "{:<16}{:<32}{:<16}",
+            name,
+            format!("{} -> {}", reactants, products),
+            rate,
         )
         .unwrap();
     }
+    fmt.pop();
 
     fmt
 }
@@ -115,9 +134,16 @@ pub fn materials(materials: &[Material]) -> String {
 
     for material in materials {
         let name = material.name();
+        let visc = if let Some(visc) = material.visc() {
+            format!("{}PaS", visc)
+        } else {
+            "impermeable".to_string()
+        };
+        let mult = material.reaction_multiplier();
 
-        writeln!(fmt, "{}", name).unwrap();
+        writeln!(fmt, "{:<16}{:<16}{:<16}", name, visc, mult).unwrap();
     }
+    fmt.pop();
 
     fmt
 }
@@ -128,9 +154,12 @@ pub fn interfaces(interfaces: &[Interface]) -> String {
 
     for interface in interfaces {
         let name = interface.name();
+        let in_mat = interface.in_mat().name();
+        let out_mat = interface.out_mat().name();
 
-        writeln!(fmt, "{}", name).unwrap();
+        writeln!(fmt, "{:<16}{:<16}{:<16}", name, in_mat, out_mat,).unwrap();
     }
+    fmt.pop();
 
     fmt
 }
