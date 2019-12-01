@@ -41,7 +41,10 @@ fn main() {
     let builder = UniverseBuilder::new(&in_dir, &form.reactions, &form.interfaces);
 
     section("Building");
-    let _universe = Universe::build(builder);
+    let universe = Universe::build(builder);
+
+    section("Setup");
+    arc::util::format::universe(&universe);
 
     section("Output");
     report!("Output dir", out_dir.display());

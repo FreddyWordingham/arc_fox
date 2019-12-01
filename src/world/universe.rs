@@ -1,5 +1,7 @@
 //! Universe structure.
 
+#![allow(unused_variables)]
+
 use crate::{
     sci::chem::{Reaction, Species},
     world::{
@@ -34,5 +36,25 @@ impl<'a> Universe<'a> {
             reactions = reactions::build(builder.reactions, &species);
         }))
         .expect("Could not create universe instance.")
+    }
+
+    /// Reference the species.
+    pub fn species(&self) -> &Vec<Species> {
+        &self.species
+    }
+
+    /// Reference the materials.
+    pub fn materials(&self) -> &Vec<Material> {
+        &self.materials
+    }
+
+    /// Reference the interfaces.
+    pub fn interfaces(&self) -> &Vec<Interface<'a>> {
+        &self.interfaces
+    }
+
+    /// Reference the reactions.
+    pub fn reactions(&self) -> &Vec<Reaction> {
+        &self.reactions
     }
 }
