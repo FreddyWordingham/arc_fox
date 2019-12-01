@@ -1,15 +1,18 @@
 //! Universe structure.
 
 #![allow(unused_variables)]
+#![allow(clippy::mem_forget)]
 
 use crate::{
     sci::chem::{Reaction, Species},
     world::{
+        dom::Grid,
         mat::{Interface, Material},
         parts::{interfaces, materials, reactions, species},
         UniverseBuilder,
     },
 };
+use contracts::pre;
 use self_ref::self_referencing;
 use std::sync::Arc;
 
@@ -24,16 +27,20 @@ pub struct Universe<'a> {
     interfaces: Vec<Interface<'a>>,
     /// Reactions happening.
     reactions: Vec<Reaction>,
+    /// Grid.
+    grid: Grid,
 }
 
 impl<'a> Universe<'a> {
     /// Build a new instance.
-    pub fn build(builder: UniverseBuilder) -> Self {
+    #[pre(num_threads > 0)]
+    pub fn build(num_threads: usize, builder: UniverseBuilder) -> Self {
         Arc::try_unwrap(self_referencing!(Universe, {
             species = species::build(builder.species);
-            materials = materials::build(builder.materials);
-            interfaces = interfaces::build(builder.interfaces, &builder.meshes, &materials);
-            reactions = reactions::build(builder.reactions, &species);
+            materials = materials::build(builder.materials, species);
+            interfaces = interfaces::build(builder.interfaces, &builder.meshes, materials);
+            reactions = reactions::build(builder.reactions, species);
+            grid = Grid::new(num_threads, builder.res, builder.dom);
         }))
         .expect("Could not create universe instance.")
     }

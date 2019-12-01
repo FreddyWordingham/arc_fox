@@ -10,7 +10,7 @@ pub fn build(build_map: HashMap<String, SpeciesBuilder>) -> Vec<Species> {
 
     for (name, builder) in build_map {
         info!("Building species: {}", name);
-        list.push(Species::build(name, builder));
+        list.push(Species::build(name, &builder));
     }
 
     list

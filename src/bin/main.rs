@@ -4,6 +4,7 @@ use arc::{
     args,
     file::io::Load,
     form, report,
+    sci::math::shape::Aabb,
     util::{
         dirs::init::io_dirs,
         info::exec,
@@ -12,9 +13,13 @@ use arc::{
     world::{Universe, UniverseBuilder},
 };
 use log::info;
+use nalgebra::{Point3, Vector3};
 use std::path::Path;
 
 form!(Parameters,
+    num_threads: usize;
+    half_widths: Vector3<f64>;
+    res: [usize; 3];
     reactions: Vec<String>;
     interfaces: Vec<String>
 );
@@ -38,10 +43,16 @@ fn main() {
         in_dir.join(form_path).display()
     );
     let form = Parameters::load(&in_dir.join(form_path));
-    let builder = UniverseBuilder::new(&in_dir, &form.reactions, &form.interfaces);
+    let builder = UniverseBuilder::new(
+        Aabb::new_centred(&Point3::origin(), &form.half_widths),
+        form.res,
+        &in_dir,
+        &form.reactions,
+        &form.interfaces,
+    );
 
     section("Building");
-    let universe = Universe::build(builder);
+    let universe = Universe::build(form.num_threads, builder);
 
     section("Setup");
     arc::util::format::universe(&universe);

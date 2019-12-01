@@ -15,6 +15,7 @@
 #![allow(clippy::else_if_without_else)]
 #![allow(clippy::float_arithmetic)]
 #![allow(clippy::implicit_return)]
+#![allow(clippy::missing_const_for_fn)]
 #![allow(clippy::indexing_slicing)]
 #![allow(clippy::implicit_hasher)]
 #![allow(clippy::integer_arithmetic)]

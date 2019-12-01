@@ -21,7 +21,7 @@ impl Species {
     }
 
     /// Build a new instance.
-    pub fn build(name: String, builder: SpeciesBuilder) -> Self {
+    pub fn build(name: String, builder: &SpeciesBuilder) -> Self {
         Self::new(name, builder.rad)
     }
 

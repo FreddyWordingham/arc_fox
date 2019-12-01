@@ -3,7 +3,7 @@
 use crate::{
     sci::{
         chem::{ReactionBuilder, SpeciesBuilder},
-        math::shape::Mesh,
+        math::shape::{Aabb, Mesh},
     },
     world::{
         mat::{InterfaceBuilder, MaterialBuilder},
@@ -20,6 +20,10 @@ use std::{collections::HashMap, path::Path};
 /// Used to build universes.
 #[derive(Debug)]
 pub struct UniverseBuilder {
+    /// Domain boundary.
+    pub dom: Aabb,
+    /// Grid resolution.
+    pub res: [usize; 3],
     /// Reaction-builder map.
     pub reactions: HashMap<String, ReactionBuilder>,
     /// Interface-builder map.
@@ -34,9 +38,16 @@ pub struct UniverseBuilder {
 
 impl UniverseBuilder {
     /// Construct a new instance.
+    #[pre(res.iter().all(|x| *x > 0))]
     #[pre(dir.is_dir())]
     #[pre(!interfaces.is_empty())]
-    pub fn new(dir: &Path, reactions: &[String], interfaces: &[String]) -> Self {
+    pub fn new(
+        dom: Aabb,
+        res: [usize; 3],
+        dir: &Path,
+        reactions: &[String],
+        interfaces: &[String],
+    ) -> Self {
         let reactions = reactions_builder::load(&dir.join("reactions"), reactions);
         let interfaces = interfaces_builder::load(&dir.join("interfaces"), interfaces);
         let meshes = meshes_builder::load(&dir.join("meshes"), &interfaces);
@@ -44,6 +55,8 @@ impl UniverseBuilder {
         let species = species_builder::load(&dir.join("species"), &reactions, &materials);
 
         Self {
+            dom,
+            res,
             reactions,
             interfaces,
             meshes,

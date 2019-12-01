@@ -1,5 +1,15 @@
 {
     "num_threads": 1,
+    "half_widths": [
+        1.0,
+        1.0,
+        1.0
+    ],
+    "res": [
+        17,
+        17,
+        17
+    ],
     "reactions": [
         "ppix_formation"
     ],
