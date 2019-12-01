@@ -23,7 +23,7 @@ use std::{
 
 /// Triangle structure implementation.
 /// Forms meshes.
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Triangle {
     /// Vertex points.
     verts: [Point3<f64>; 3],

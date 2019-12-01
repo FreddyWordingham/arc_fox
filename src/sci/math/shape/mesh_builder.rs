@@ -8,9 +8,9 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Deserialize, Serialize)]
 pub struct MeshBuilder {
     /// Mesh name.
-    name: String,
+    pub name: String,
     /// Optional transform.
-    trans: Option<TransformBuilder>,
+    pub trans: Option<TransformBuilder>,
 }
 
 json!(MeshBuilder);

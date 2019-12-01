@@ -2,9 +2,13 @@
 
 use crate::{
     sci::math::shape::Mesh,
-    world::{mat::Material, parts::Named},
+    world::{
+        mat::{InterfaceBuilder, Material},
+        parts::{ref_of_name, Named},
+    },
 };
 use contracts::pre;
+use std::collections::HashMap;
 
 /// Interface structure implementation.
 /// Forms the boundary between two regions of material.
@@ -30,6 +34,22 @@ impl<'a> Interface<'a> {
             in_mat,
             out_mat,
         }
+    }
+
+    /// Build a new instance.
+    #[pre(!name.is_empty())]
+    pub fn build(
+        name: String,
+        builder: InterfaceBuilder,
+        meshes: &HashMap<String, Mesh>,
+        materials: &'a [Material],
+    ) -> Self {
+        Self::new(
+            name,
+            Mesh::build(builder.mesh, &meshes),
+            ref_of_name(materials, &builder.in_mat),
+            ref_of_name(materials, &builder.out_mat),
+        )
     }
 
     /// Reference the surface mesh.

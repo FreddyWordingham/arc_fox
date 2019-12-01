@@ -7,16 +7,17 @@ use crate::{
             rt::{Ray, Trace},
             Normal,
         },
-        Aabb, Triangle,
+        Aabb, MeshBuilder, Triangle,
     },
     util::list::alphabet::Greek::Alpha,
 };
 use contracts::{post, pre};
 use nalgebra::{Similarity3, Unit, Vector3};
+use std::collections::HashMap;
 
 /// Mesh structure implementation.
 /// Forms the surface of the majority of complex components.
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Mesh {
     /// Bounding box.
     aabb: Aabb,
@@ -32,6 +33,23 @@ impl Mesh {
             aabb: Self::init_aabb(&tris),
             tris,
         }
+    }
+
+    /// Build a new instance.
+    pub fn build(builder: MeshBuilder, meshes: &HashMap<String, Self>) -> Self {
+        for (name, mesh) in meshes.iter() {
+            if name == &builder.name {
+                let mut base = mesh.clone();
+
+                if let Some(transform_builder) = builder.trans {
+                    base.transform(&transform_builder.build());
+                }
+
+                return base;
+            }
+        }
+
+        panic!("Could not find required mesh.");
     }
 
     /// Initialise the axis-aligned bounding box for the given list of triangles.

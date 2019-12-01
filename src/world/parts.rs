@@ -4,6 +4,7 @@ pub mod interfaces;
 pub mod interfaces_builder;
 pub mod materials;
 pub mod materials_builder;
+pub mod meshes_builder;
 pub mod named;
 pub mod reactions;
 pub mod reactions_builder;

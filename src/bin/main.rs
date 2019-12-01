@@ -10,8 +10,8 @@ use arc::{
         print::term::{section, title},
     },
     world::parts::{
-        interfaces_builder, materials, materials_builder, reactions_builder, species,
-        species_builder,
+        interfaces, interfaces_builder, materials, materials_builder, meshes_builder,
+        reactions_builder, species, species_builder,
     },
 };
 use log::info;
@@ -43,12 +43,14 @@ fn main() {
     let form = Parameters::load(&in_dir.join(form_path));
     let reactions = reactions_builder::load(&in_dir.join("reactions"), &form.reactions);
     let interfaces = interfaces_builder::load(&in_dir.join("interfaces"), &form.interfaces);
+    let meshes = meshes_builder::load(&in_dir.join("meshes"), &interfaces);
     let materials = materials_builder::load(&in_dir.join("materials"), &interfaces);
     let species = species_builder::load(&in_dir.join("species"), &reactions, &materials);
 
     section("Building");
     let _species = species::build(species);
-    let _materials = materials::build(materials);
+    let materials = materials::build(materials);
+    let _interfaces = interfaces::build(interfaces, &meshes, &materials);
 
     section("Output");
     report!("Output dir", out_dir.display());
