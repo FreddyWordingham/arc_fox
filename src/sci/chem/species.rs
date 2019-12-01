@@ -1,6 +1,6 @@
 //! Species structure.
 
-use crate::world::parts::Named;
+use crate::{sci::chem::SpeciesBuilder, world::parts::Named};
 use contracts::pre;
 
 /// Reactive species structure implementation.
@@ -18,6 +18,11 @@ impl Species {
     #[pre(rad.is_none() || rad.unwrap() > 0.0)]
     pub fn new(name: String, rad: Option<f64>) -> Self {
         Self { name, rad }
+    }
+
+    /// Build a new instance.
+    pub fn build(name: String, builder: SpeciesBuilder) -> Self {
+        Self::new(name, builder.rad)
     }
 
     /// Get the radius.

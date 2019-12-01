@@ -1,11 +1,17 @@
 //! Interface structure.
 
-use crate::{sci::math::shape::Mesh, world::mat::Material};
+use crate::{
+    sci::math::shape::Mesh,
+    world::{mat::Material, parts::Named},
+};
+use contracts::pre;
 
 /// Interface structure implementation.
 /// Forms the boundary between two regions of material.
 #[derive(Debug)]
 pub struct Interface<'a> {
+    /// Name of the interface.
+    name: String,
     /// Surface mesh.
     mesh: Mesh,
     /// Inside material.
@@ -16,8 +22,10 @@ pub struct Interface<'a> {
 
 impl<'a> Interface<'a> {
     /// Construct a new instance.
-    pub const fn new(mesh: Mesh, in_mat: &'a Material, out_mat: &'a Material) -> Self {
+    #[pre(!name.is_empty())]
+    pub fn new(name: String, mesh: Mesh, in_mat: &'a Material, out_mat: &'a Material) -> Self {
         Self {
+            name,
             mesh,
             in_mat,
             out_mat,
@@ -37,5 +45,12 @@ impl<'a> Interface<'a> {
     /// Reference the outside material.
     pub const fn out_mat(&self) -> &Material {
         self.out_mat
+    }
+}
+
+impl<'a> Named for Interface<'a> {
+    /// Reference the name.
+    fn name(&self) -> &str {
+        &self.name
     }
 }
