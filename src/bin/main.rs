@@ -10,7 +10,7 @@ use arc::{
         print::term::{section, title},
     },
     world::parts::{
-        interfaces, interfaces_builder, materials, materials_builder, meshes_builder,
+        interfaces, interfaces_builder, materials, materials_builder, meshes_builder, reactions,
         reactions_builder, species, species_builder,
     },
 };
@@ -48,9 +48,10 @@ fn main() {
     let species = species_builder::load(&in_dir.join("species"), &reactions, &materials);
 
     section("Building");
-    let _species = species::build(species);
+    let species = species::build(species);
     let materials = materials::build(materials);
     let _interfaces = interfaces::build(interfaces, &meshes, &materials);
+    let _reactions = reactions::build(reactions, &species);
 
     section("Output");
     report!("Output dir", out_dir.display());

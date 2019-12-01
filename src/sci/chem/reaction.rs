@@ -1,6 +1,9 @@
 //! Reaction structure.
 
-use crate::{sci::chem::Rate, world::parts::Named};
+use crate::{
+    sci::chem::{Rate, ReactionBuilder, Species},
+    world::parts::{index_of_name, Named},
+};
 use contracts::pre;
 
 /// Reaction structure implementation.
@@ -33,6 +36,25 @@ impl Reaction {
             products,
             rate,
         }
+    }
+
+    /// Build a new instance.
+    #[pre(!name.is_empty())]
+    pub fn build(name: String, builder: ReactionBuilder, species: &[Species]) -> Self {
+        Self::new(
+            name,
+            builder
+                .reactants
+                .iter()
+                .map(|(n, s)| (index_of_name(species, n), *s))
+                .collect(),
+            builder
+                .products
+                .iter()
+                .map(|(n, s)| (index_of_name(species, n), *s))
+                .collect(),
+            Rate::build(builder.rate, &species),
+        )
     }
 
     /// Reference the reactants.
