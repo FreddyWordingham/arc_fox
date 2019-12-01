@@ -8,11 +8,11 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Deserialize, Serialize)]
 pub struct ReactionBuilder {
     /// List of reactant molecule indices and their associated stoichiometric coefficient of the reaction.
-    reactants: Vec<(String, i32)>,
+    pub reactants: Vec<(String, i32)>,
     /// List of product molecule indices and their associated stoichiometric coefficient of the reaction.
-    products: Vec<(String, i32)>,
+    pub products: Vec<(String, i32)>,
     /// Rate of reaction.
-    rate: RateBuilder,
+    pub rate: RateBuilder,
 }
 
 json!(ReactionBuilder);

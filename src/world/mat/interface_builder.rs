@@ -8,11 +8,11 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Deserialize, Serialize)]
 pub struct InterfaceBuilder {
     /// Mesh.
-    mesh: MeshBuilder,
+    pub mesh: MeshBuilder,
     /// Inside material name.
-    in_mat: String,
+    pub in_mat: String,
     /// Outside material name.
-    out_mat: String,
+    pub out_mat: String,
 }
 
 json!(InterfaceBuilder);

@@ -1,6 +1,6 @@
 //! Material-Builder structure.
 
-use crate::json;
+use crate::{json, world::dom::StateBuilder};
 use serde::{Deserialize, Serialize};
 
 /// Material-Builder structure implementation.
@@ -11,6 +11,8 @@ pub struct MaterialBuilder {
     visc: Option<f64>,
     /// Reaction rate multiplier.
     reaction_multiplier: f64,
+    /// Optional initial state.
+    state: Option<StateBuilder>,
 }
 
 json!(MaterialBuilder);
