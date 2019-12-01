@@ -4,15 +4,13 @@ use arc::{
     args,
     file::io::Load,
     form, report,
-    sci::chem::{ReactionBuilder, SpeciesBuilder},
     util::{
         dirs::init::io_dirs,
         info::exec,
         print::term::{section, title},
     },
-    world::mat::{InterfaceBuilder, MaterialBuilder},
+    world::parts::{interfaces_builder, materials_builder, reactions_builder, species_builder},
 };
-use contracts::pre;
 use log::info;
 use std::path::Path;
 
@@ -33,107 +31,22 @@ fn main() {
     let form_path = Path::new(&form_path);
     let (in_dir, out_dir) = io_dirs(None, None);
 
-    section("Input");
+    section("Loading");
     report!("Input dir", in_dir.display());
     report!(
         "Loading parameters from file",
         in_dir.join(form_path).display()
     );
     let form = Parameters::load(&in_dir.join(form_path));
-    let reactions = load_reactions(&in_dir.join("reactions"), &form);
-    let interfaces = load_interfaces(&in_dir.join("interfaces"), &form);
-    let materials = load_materials(&in_dir.join("materials"), &interfaces);
-    let _species = load_species(&in_dir.join("species"), &reactions, &materials);
+    let reactions = reactions_builder::load(&in_dir.join("reactions"), &form.reactions);
+    let interfaces = interfaces_builder::load(&in_dir.join("interfaces"), &form.interfaces);
+    let materials = materials_builder::load(&in_dir.join("materials"), &interfaces);
+    let _species = species_builder::load(&in_dir.join("species"), &reactions, &materials);
+
+    section("Building");
 
     section("Output");
     report!("Output dir", out_dir.display());
 
     section("Finished");
-}
-
-#[pre(dir.is_dir())]
-fn load_reactions(dir: &Path, form: &Parameters) -> Vec<ReactionBuilder> {
-    form.reactions
-        .iter()
-        .map(|name| {
-            let path = dir.join(format!("{}.json", name));
-            info!("Loading reaction: {}", name);
-            ReactionBuilder::load(&path)
-        })
-        .collect()
-}
-
-#[pre(dir.is_dir())]
-fn load_interfaces(dir: &Path, form: &Parameters) -> Vec<InterfaceBuilder> {
-    form.interfaces
-        .iter()
-        .map(|name| {
-            let path = dir.join(format!("{}.json", name));
-            info!("Loading interface: {}", name);
-            InterfaceBuilder::load(&path)
-        })
-        .collect()
-}
-
-#[pre(dir.is_dir())]
-fn load_materials(dir: &Path, interfaces: &[InterfaceBuilder]) -> Vec<MaterialBuilder> {
-    let mut names = Vec::new();
-
-    for interface in interfaces {
-        names.push(interface.in_mat.clone());
-        names.push(interface.out_mat.clone());
-    }
-
-    names.sort();
-    names.dedup();
-
-    names
-        .iter()
-        .map(|name| {
-            let path = dir.join(format!("{}.json", name));
-            info!("Loading material: {}", name);
-            MaterialBuilder::load(&path)
-        })
-        .collect()
-}
-
-#[pre(dir.is_dir())]
-fn load_species(
-    dir: &Path,
-    reactions: &[ReactionBuilder],
-    materials: &[MaterialBuilder],
-) -> Vec<SpeciesBuilder> {
-    let mut names = Vec::new();
-
-    for reaction in reactions {
-        for (reactant, _s) in &reaction.reactants {
-            names.push(reactant);
-        }
-        for (product, _s) in &reaction.products {
-            names.push(product);
-        }
-    }
-
-    for material in materials {
-        if let Some(state) = &material.state {
-            for (name, _conc) in &state.concs {
-                names.push(name);
-            }
-            for (name, _source) in &state.sources {
-                names.push(name);
-            }
-        }
-    }
-
-    names.sort();
-    names.dedup();
-
-    names
-        .iter()
-        .map(|name| {
-            let path = dir.join(format!("{}.json", name));
-            info!("Loading species: {}", name);
-            SpeciesBuilder::load(&path)
-        })
-        .collect()
 }
