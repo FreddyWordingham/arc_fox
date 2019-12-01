@@ -16,7 +16,7 @@ pub fn load(
 ) -> HashMap<String, SpeciesBuilder> {
     let mut names = Vec::new();
 
-    for (_name, reaction) in reactions {
+    for reaction in reactions.values() {
         for (reactant, _s) in &reaction.reactants {
             names.push(reactant.clone());
         }
@@ -25,15 +25,15 @@ pub fn load(
         }
     }
 
-    for (_name, material) in materials {
+    for material in materials.values() {
         if let Some(state) = &material.state {
             if let Some(concs) = &state.concs {
-                for (name, _conc) in concs {
+                for name in concs.keys() {
                     names.push(name.clone());
                 }
             }
             if let Some(sources) = &state.sources {
-                for (name, _source) in sources {
+                for name in sources.keys() {
                     names.push(name.clone());
                 }
             }

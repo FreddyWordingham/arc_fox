@@ -46,7 +46,7 @@ impl<'a> Interface<'a> {
     ) -> Self {
         Self::new(
             name,
-            Mesh::build(builder.mesh, &meshes),
+            Mesh::build(builder.mesh, meshes),
             ref_of_name(materials, &builder.in_mat),
             ref_of_name(materials, &builder.out_mat),
         )

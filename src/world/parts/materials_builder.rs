@@ -15,7 +15,7 @@ pub fn load(
 ) -> HashMap<String, MaterialBuilder> {
     let mut names = Vec::new();
 
-    for (_name, interface) in interfaces {
+    for interface in interfaces.values() {
         names.push(interface.in_mat.clone());
         names.push(interface.out_mat.clone());
     }

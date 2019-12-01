@@ -53,7 +53,7 @@ impl Reaction {
                 .iter()
                 .map(|(n, s)| (index_of_name(species, n), *s))
                 .collect(),
-            Rate::build(builder.rate, &species),
+            Rate::build(builder.rate, species),
         )
     }
 

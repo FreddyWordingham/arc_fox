@@ -5,10 +5,7 @@ use log::info;
 use std::collections::HashMap;
 
 /// Build the reaction list.
-pub fn build<'a>(
-    build_map: HashMap<String, ReactionBuilder>,
-    species: &[Species],
-) -> Vec<Reaction> {
+pub fn build(build_map: HashMap<String, ReactionBuilder>, species: &[Species]) -> Vec<Reaction> {
     let mut list = Vec::with_capacity(build_map.len());
 
     for (name, builder) in build_map {

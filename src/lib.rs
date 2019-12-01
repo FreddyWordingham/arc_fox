@@ -7,7 +7,7 @@
     clippy::restriction,
     clippy::pedantic,
     clippy::nursery,
-    clippy::cargo
+    // clippy::cargo
 )]
 #![allow(clippy::cast_possible_truncation)]
 #![allow(clippy::cast_precision_loss)]
@@ -16,6 +16,7 @@
 #![allow(clippy::float_arithmetic)]
 #![allow(clippy::implicit_return)]
 #![allow(clippy::indexing_slicing)]
+#![allow(clippy::implicit_hasher)]
 #![allow(clippy::integer_arithmetic)]
 #![allow(clippy::integer_division)]
 #![allow(clippy::missing_inline_in_public_items)]

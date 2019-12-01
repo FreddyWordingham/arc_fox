@@ -14,7 +14,7 @@ pub fn index_of_name<T: Named>(parts: &[T], name: &str) -> usize {
         }
     }
 
-    panic!("Name {} was not found in the given list of parts.");
+    panic!("Name {} was not found in the given list of parts.", name);
 }
 
 /// Retrieve a reference to the element with a matching name.
@@ -25,5 +25,5 @@ pub fn ref_of_name<'a, T: Named>(parts: &'a [T], name: &str) -> &'a T {
         }
     }
 
-    panic!("Name {} was not found in the given list of parts.");
+    panic!("Name {} was not found in the given list of parts.", name);
 }

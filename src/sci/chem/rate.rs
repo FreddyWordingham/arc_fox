@@ -59,18 +59,18 @@ impl Rate {
     pub fn build(builder: RateBuilder, species: &[Species]) -> Self {
         match builder {
             RateBuilder::Zeroth(k) => Self::new_zeroth(k),
-            RateBuilder::First(k, a) => Self::new_first(k, index_of_name(&species, &a)),
+            RateBuilder::First(k, a) => Self::new_first(k, index_of_name(species, &a)),
             RateBuilder::Second(k, a, b) => {
-                Self::new_second(k, index_of_name(&species, &a), index_of_name(&species, &b))
+                Self::new_second(k, index_of_name(species, &a), index_of_name(species, &b))
             }
             RateBuilder::Third(k, a, b, c) => Self::new_third(
                 k,
-                index_of_name(&species, &a),
-                index_of_name(&species, &b),
-                index_of_name(&species, &c),
+                index_of_name(species, &a),
+                index_of_name(species, &b),
+                index_of_name(species, &c),
             ),
             RateBuilder::Poly(k, is) => {
-                Self::new_poly(k, is.iter().map(|a| index_of_name(&species, &a)).collect())
+                Self::new_poly(k, is.iter().map(|a| index_of_name(species, a)).collect())
             }
         }
     }

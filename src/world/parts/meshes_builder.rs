@@ -10,7 +10,7 @@ use std::{collections::HashMap, path::Path};
 pub fn load(dir: &Path, interfaces: &HashMap<String, InterfaceBuilder>) -> HashMap<String, Mesh> {
     let mut names = Vec::new();
 
-    for (_name, interface) in interfaces {
+    for interface in interfaces.values() {
         names.push(interface.mesh.name.clone());
     }
 

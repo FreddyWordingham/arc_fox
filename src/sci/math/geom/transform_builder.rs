@@ -19,8 +19,10 @@ pub struct TransformBuilder {
 impl TransformBuilder {
     /// Build a transformation.
     pub fn build(self) -> Similarity3<f64> {
-        let trans = self.trans.unwrap_or(Translation3::new(0.0, 0.0, 0.0));
-        let rot = self.rot.unwrap_or(Vector3::new(0.0, 0.0, 0.0));
+        let trans = self
+            .trans
+            .unwrap_or_else(|| Translation3::new(0.0, 0.0, 0.0));
+        let rot = self.rot.unwrap_or_else(|| Vector3::new(0.0, 0.0, 0.0));
         let rot = UnitQuaternion::from_euler_angles(
             rot.x.to_radians(),
             rot.y.to_radians(),
