@@ -201,13 +201,13 @@ fn run_photon(
                 cell_rec.1.increase_dist_travelled(dist + BUMP_DIST);
 
                 if !uni.grid().dom().contains(phot.ray().pos()) {
-                    // if shifted == true {
-                    //    let check = (phot.ray().pos().y * phot.ray().pos().y)
-                    //         + (phot.ray().pos().z * phot.ray().pos().z);
-                    //     if (phot.ray().pos().x >= 0.0129) && check <= 0.000001 {
-                    // cell_rec.1.increase_shifts(phot.weight());
-                    //    }
-                    // }
+                    if shifted == true {
+                        let check = (phot.ray().pos().y * phot.ray().pos().y)
+                             + (phot.ray().pos().z * phot.ray().pos().z);
+                         if (phot.ray().pos().x >= 0.0129) && check <= 0.000001 {
+                     cell_rec.1.increase_shifts(phot.weight());
+                        }
+                     }
                     break;
                 }
 
@@ -270,13 +270,13 @@ fn run_photon(
                 }
 
                 if !uni.grid().dom().contains(&phot.ray().pos()) {
-                    //if shifted == true {
-                    //    let check = (phot.ray().pos().y * phot.ray().pos().y)
-                    //        + (phot.ray().pos().z * phot.ray().pos().z);
-                    //    if (phot.ray().pos().x >= 0.0129) && check <= 0.000001 {
-                    // cell_rec.1.increase_shifts(phot.weight());
-                    // }
-                    //}
+                    if shifted == true {
+                        let check = (phot.ray().pos().y * phot.ray().pos().y)
+                            + (phot.ray().pos().z * phot.ray().pos().z);
+                        if (phot.ray().pos().x >= 0.0129) && check <= 0.000001 {
+                            cell_rec.1.increase_shifts(phot.weight());
+                        }
+                    }
                     break;
                 }
 

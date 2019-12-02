@@ -79,7 +79,7 @@
                     "name": "ptfe_slab",
                     "trans":
                     {
-                        "trans": [-0.01,
+                        "trans": [0.0,
                             0.0,
                             0.0
                         ],
