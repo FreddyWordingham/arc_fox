@@ -154,7 +154,9 @@ fn run_photon(
                         let dist = nalgebra::distance(&Point3::new(0.0129, 0.0, 0.0), phot.ray().pos());
                         let dist_prob = (-env.inter_coeff() * dist).exp();
                         let prob = (ang_prob * dist_prob);
-                        cell_rec.1.increase_shifts(phot.weight() * prob);
+                        if phot.weight()*prob > 0.0{
+                            cell_rec.1.increase_shifts(phot.weight() * prob);
+                        }
                     }
                     else{
                         let ang_prob = (1.0 / (4.0 * PI))
@@ -168,7 +170,9 @@ fn run_photon(
                         let dist_prob = (-60.0 * dist).exp();
                         if ptfe_dist_prob >0.0{
                             let prob = (ang_prob * dist_prob*ptfe_dist_prob);
-                            cell_rec.1.increase_shifts(phot.weight() * prob);
+                            if phot.weight()*prob{
+                                cell_rec.1.increase_shifts(phot.weight() * prob);
+                            }
                         }
                     }
                 }
@@ -192,7 +196,9 @@ fn run_photon(
                     let dist_prob = (-60.0 * dist).exp();
                     if ptfe_dist_prob >0.0{
                         let prob = (ang_prob * dist_prob*ptfe_dist_prob);
-                        cell_rec.1.increase_shifts(phot.weight() * prob);
+                        if phot.weight()*prob > 0.0{
+                            cell_rec.1.increase_shifts(phot.weight() * prob);
+                        }
                     }
                 }
             }
@@ -205,7 +211,9 @@ fn run_photon(
                         let check = (phot.ray().pos().y * phot.ray().pos().y)
                              + (phot.ray().pos().z * phot.ray().pos().z);
                          if (phot.ray().pos().x >= 0.0129) && check <= 0.000001 {
-                     cell_rec.1.increase_shifts(phot.weight());
+                             if phot.weight() > 0.0{
+                                 cell_rec.1.increase_shifts(phot.weight());
+                             }
                         }
                      }
                     break;
@@ -274,7 +282,9 @@ fn run_photon(
                         let check = (phot.ray().pos().y * phot.ray().pos().y)
                             + (phot.ray().pos().z * phot.ray().pos().z);
                         if (phot.ray().pos().x >= 0.0129) && check <= 0.000001 {
-                            cell_rec.1.increase_shifts(phot.weight());
+                            if phot.weight() > 0.0{
+                                cell_rec.1.increase_shifts(phot.weight());
+                            }
                         }
                     }
                     break;
