@@ -26,7 +26,13 @@ pub const BUMP_DIST: f64 = 1.0e-6;
 
 /// Run a MCRT simulation.
 #[pre(num_threads > 0)]
-pub fn run(num_threads: usize, total_phot: u64, light: &Light, uni: &Universe, slab_pos: f64) -> Archive {
+pub fn run(
+    num_threads: usize,
+    total_phot: u64,
+    light: &Light,
+    uni: &Universe,
+    slab_pos: f64,
+) -> Archive {
     let num_phots = Arc::new(Mutex::new(vec![0; num_threads]));
     let bar = Arc::new(bar("photon loop", total_phot));
 
@@ -39,7 +45,17 @@ pub fn run(num_threads: usize, total_phot: u64, light: &Light, uni: &Universe, s
     let thread_ids: Vec<usize> = (0..num_threads).collect();
     let mut archives: Vec<Archive> = thread_ids
         .par_iter()
-        .map(|id| run_thread(*id, total_phot, num_phots.clone(), bar.clone(), light, uni, slab_pos))
+        .map(|id| {
+            run_thread(
+                *id,
+                total_phot,
+                num_phots.clone(),
+                bar.clone(),
+                light,
+                uni,
+                slab_pos,
+            )
+        })
         .collect();
     bar.finish_with_message("Photon loop complete.");
 
@@ -123,8 +139,12 @@ fn run_photon(
 
     loop {
         let scat_dist = -(rng.gen_range(0.0f64, 1.0)).ln() / env.inter_coeff();
-        let cell_dist = cell_rec.0.aabb().dist(phot.ray()).unwrap();
+        let cell_dist = cell_rec.0.aabb().dist(phot.ray()).unwrap_or(250.0);
         let inter_dist = cell_rec.0.inter_dist(phot.ray());
+
+        if cell_dist == 250.0 {
+            break;
+        }
 
         match Hit::new(scat_dist, cell_dist, inter_dist) {
             Hit::Scattering(dist) => {
@@ -149,28 +169,32 @@ fn run_photon(
                     .acos();
                     let g = env.asym();
                     let ang_prob = (1.0 / (4.0 * PI))
-                    * ((1.0 - g.powi(2)) / (1.0 + g.powi(2) - (2.0 * g * ang.cos())).powf(1.5));
-                    if (g < 0.5){
-                        let dist = nalgebra::distance(&Point3::new(0.0129, 0.0, 0.0), phot.ray().pos());
+                        * ((1.0 - g.powi(2)) / (1.0 + g.powi(2) - (2.0 * g * ang.cos())).powf(1.5));
+                    if (g < 0.5) {
+                        let dist =
+                            nalgebra::distance(&Point3::new(0.0129, 0.0, 0.0), phot.ray().pos());
                         let dist_prob = (-env.inter_coeff() * dist).exp();
                         let prob = (ang_prob * dist_prob);
-                        if phot.weight()*prob > 0.0{
+                        if phot.weight() * prob > 0.0 {
                             cell_rec.1.increase_shifts(phot.weight() * prob);
                         }
-                    }
-                    else{
+                    } else {
                         let ang_prob = (1.0 / (4.0 * PI))
-                            * ((1.0 - g.powi(2)) / (1.0 + g.powi(2) - (2.0 * g * ang.cos())).powf(1.5));
-                        let ptfe_dist = slab_pos+0.001 - phot.ray().pos().x;
-                        let dist = nalgebra::distance(&Point3::new(0.0129, 0.0, 0.0), phot.ray().pos())-ptfe_dist;
-                        if ptfe_dist < 0.0 || dist < 0.0{
-                                info!("Negative distance!");
+                            * ((1.0 - g.powi(2))
+                                / (1.0 + g.powi(2) - (2.0 * g * ang.cos())).powf(1.5));
+                        let ptfe_dist = slab_pos + 0.001 - phot.ray().pos().x;
+                        let dist =
+                            nalgebra::distance(&Point3::new(0.0129, 0.0, 0.0), phot.ray().pos())
+                                - ptfe_dist;
+                        if ptfe_dist < 0.0 || dist < 0.0 {
+                            info!("Negative distance!");
+                            break;
                         }
-                        let ptfe_dist_prob = (-env.inter_coeff()*ptfe_dist).exp();
+                        let ptfe_dist_prob = (-env.inter_coeff() * ptfe_dist).exp();
                         let dist_prob = (-60.0 * dist).exp();
-                        if ptfe_dist_prob >0.0{
-                            let prob = (ang_prob * dist_prob*ptfe_dist_prob);
-                            if phot.weight()*prob{
+                        if ptfe_dist_prob > 0.0 {
+                            let prob = (ang_prob * dist_prob * ptfe_dist_prob);
+                            if phot.weight() * prob > 0.0 {
                                 cell_rec.1.increase_shifts(phot.weight() * prob);
                             }
                         }
@@ -188,15 +212,17 @@ fn run_photon(
                     let ang_prob = (1.0 / (4.0 * PI))
                         * ((1.0 - g.powi(2)) / (1.0 + g.powi(2) - (2.0 * g * ang.cos())).powf(1.5));
                     let ptfe_dist = slab_pos + 0.001 - phot.ray().pos().x;
-                    let dist = nalgebra::distance(&Point3::new(0.0129, 0.0, 0.0), phot.ray().pos())-ptfe_dist;
-                    if ptfe_dist < 0.0 || dist < 0.0{
+                    let dist = nalgebra::distance(&Point3::new(0.0129, 0.0, 0.0), phot.ray().pos())
+                        - ptfe_dist;
+                    if ptfe_dist < 0.0 || dist < 0.0 {
                         info!("Negative distance!");
+                        break;
                     }
-                    let ptfe_dist_prob = (-167000.0*ptfe_dist).exp();
+                    let ptfe_dist_prob = (-167000.0 * ptfe_dist).exp();
                     let dist_prob = (-60.0 * dist).exp();
-                    if ptfe_dist_prob >0.0{
-                        let prob = (ang_prob * dist_prob*ptfe_dist_prob);
-                        if phot.weight()*prob > 0.0{
+                    if ptfe_dist_prob > 0.0 {
+                        let prob = (ang_prob * dist_prob * ptfe_dist_prob);
+                        if phot.weight() * prob > 0.0 {
                             cell_rec.1.increase_shifts(phot.weight() * prob);
                         }
                     }
@@ -209,13 +235,13 @@ fn run_photon(
                 if !uni.grid().dom().contains(phot.ray().pos()) {
                     if shifted == true {
                         let check = (phot.ray().pos().y * phot.ray().pos().y)
-                             + (phot.ray().pos().z * phot.ray().pos().z);
-                         if (phot.ray().pos().x >= 0.0129) && check <= 0.000001 {
-                             if phot.weight() > 0.0{
-                                 cell_rec.1.increase_shifts(phot.weight());
-                             }
+                            + (phot.ray().pos().z * phot.ray().pos().z);
+                        if (phot.ray().pos().x >= 0.0129) && check <= 0.000001 {
+                            if phot.weight() > 0.0 {
+                                cell_rec.1.increase_shifts(phot.weight());
+                            }
                         }
-                     }
+                    }
                     break;
                 }
 
@@ -282,7 +308,7 @@ fn run_photon(
                         let check = (phot.ray().pos().y * phot.ray().pos().y)
                             + (phot.ray().pos().z * phot.ray().pos().z);
                         if (phot.ray().pos().x >= 0.0129) && check <= 0.000001 {
-                            if phot.weight() > 0.0{
+                            if phot.weight() > 0.0 {
                                 cell_rec.1.increase_shifts(phot.weight());
                             }
                         }

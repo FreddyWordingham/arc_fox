@@ -4,7 +4,7 @@
         "max": 10e-7
     },
     "ref_index": {
-        "Const": 1.0
+        "Const": 1.47
     },
     "scat_coeff": {
         "Const": 167000.0

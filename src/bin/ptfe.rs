@@ -24,6 +24,12 @@ fn main() {
     colog::init();
 
     section("Initialisation");
+
+    let args: Vec<String> = std::env::args().collect();
+    for arg in args {
+        println!("> {}", arg);
+    }
+
     args!(
         _bin_path: String;
         form_path: String;
@@ -52,7 +58,13 @@ fn main() {
     );
 
     section("Simulation");
-    let mcrt_data = mcrt::run(form.num_threads(), form.total_phot(), &light, &uni, slab_pos);
+    let mcrt_data = mcrt::run(
+        form.num_threads(),
+        form.total_phot(),
+        &light,
+        &uni,
+        slab_pos,
+    );
 
     section("Post-Processing");
     info!("Creating concentration data cube.");
