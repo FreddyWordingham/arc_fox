@@ -3,12 +3,13 @@
 use crate::{
     sci::math::{
         geom::Collide,
+        rt::{Ray, Trace},
         shape::{Aabb, Triangle},
     },
     world::mat::{Interface, Material},
 };
 use contracts::pre;
-use nalgebra::Point3;
+use nalgebra::{Point3, Unit};
 
 /// Cell structure implementation.
 #[derive(Debug)]
@@ -63,7 +64,41 @@ impl<'a> Cell<'a> {
         boundary: &Aabb,
         inter_tris: &[(&'a Interface<'a>, Vec<&'a Triangle>)],
     ) -> &'a Material {
-        inter_tris[0].0.in_mat() // TODO
+        let mut tar = None;
+        for (_inter, tris) in inter_tris {
+            for tri in tris {
+                if let Some(point) = tri.union_point(boundary) {
+                    tar = Some(point);
+                    break;
+                }
+            }
+        }
+        let tar = tar.unwrap();
+
+        let ray = Ray::new(*pos, Unit::new_normalize(tar - pos));
+
+        let mut nearest: Option<(f64, bool, &Interface)> = None;
+        for (inter, tris) in inter_tris {
+            for tri in tris {
+                if let Some((dist, inside)) = tri.dist_inside(&ray) {
+                    if nearest.is_none() || nearest.unwrap().0 > dist {
+                        nearest = Some((dist, inside, inter));
+                    }
+                }
+            }
+        }
+
+        if let Some((dist, inside, inter)) = nearest {
+            if dist <= boundary.dist(&ray).unwrap() {
+                return if inside {
+                    inter.in_mat()
+                } else {
+                    inter.out_mat()
+                };
+            }
+        }
+
+        panic!("Unable to observe material within the cell.");
     }
 
     /// Determine the material from the interfaces.
@@ -73,7 +108,39 @@ impl<'a> Cell<'a> {
         domain: &Aabb,
         interfaces: &'a [Interface],
     ) -> &'a Material {
-        interfaces[0].out_mat() // TODO
+        let mut tar = None;
+        for inter in interfaces {
+            for tri in inter.mesh().tris() {
+                if let Some(point) = tri.union_point(domain) {
+                    tar = Some(point);
+                    break;
+                }
+            }
+        }
+        let tar = tar.unwrap();
+
+        let ray = Ray::new(*pos, Unit::new_normalize(tar - pos));
+
+        let mut nearest: Option<(f64, bool, &Interface)> = None;
+        for inter in interfaces {
+            if let Some((dist, inside)) = inter.mesh().dist_inside(&ray) {
+                if nearest.is_none() || nearest.unwrap().0 > dist {
+                    nearest = Some((dist, inside, inter));
+                }
+            }
+        }
+
+        if let Some((dist, inside, inter)) = nearest {
+            if dist <= domain.dist(&ray).unwrap() {
+                return if inside {
+                    inter.in_mat()
+                } else {
+                    inter.out_mat()
+                };
+            }
+        }
+
+        panic!("Unable to observe material within the domain.");
     }
 
     /// Reference the boundary.

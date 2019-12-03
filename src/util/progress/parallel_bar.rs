@@ -41,7 +41,7 @@ impl ParallelBar {
     pub fn inc(&mut self, thread_id: usize) -> Option<u64> {
         let sum: u64 = self.counts.iter().sum();
         if sum < self.total {
-            // self.pb.inc(1);
+            self.pb.inc(1);
             // println!("{:.2}%", 100.0 * sum as f64 / self.total as f64);
             self.counts[thread_id] += 1;
             return Some(sum);

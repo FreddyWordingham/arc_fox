@@ -77,21 +77,14 @@ impl Triangle {
         let su = self.verts[Beta as usize] - self.verts[Alpha as usize];
         let sv = self.verts[Gamma as usize] - self.verts[Alpha as usize];
 
-        for power in 1..5 {
-            let n = 2_i32.pow(power);
-            let df = 1.0 / f64::from(n);
+        for power in 2..7 {
+            let n = 3i32.pow(power);
+            let df = 1.0 / n as f64;
             for ui in 1..n {
-                let mut u = df * f64::from(ui);
-                for vi in 1..n {
-                    let mut v = df * f64::from(vi);
+                let u = df * ui as f64;
+                for vi in 1..(n - ui) {
+                    let v = df * vi as f64;
 
-                    if (u + v) > 1.0 {
-                        u = 1.0 - u;
-                        v = 1.0 - v;
-                    }
-                    if (u + v) > 1.0 {
-                        panic!("Didn't work!"); // TODO: Remove.
-                    }
                     let p: Point3<f64> = self.verts[Alpha as usize] + (su * u) + (sv * v);
 
                     if aabb.contains(&p) {

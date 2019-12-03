@@ -149,7 +149,7 @@ impl Trace for Aabb {
         !(t_max <= 0.0 || t_min > t_max)
     }
 
-    #[post(ret.is_none() || ret.unwrap() > 0.0)]
+    #[post(ret.is_none() || ret.unwrap() >= 0.0)]
     fn dist(&self, ray: &Ray) -> Option<f64> {
         let (t_min, t_max) = self.intersections(ray);
 
