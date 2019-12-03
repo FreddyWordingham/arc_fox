@@ -28,7 +28,7 @@ pub struct Universe<'a> {
     /// Reactions happening.
     reactions: Vec<Reaction>,
     /// Grid.
-    grid: Grid,
+    grid: Grid<'a>,
 }
 
 impl<'a> Universe<'a> {
@@ -40,7 +40,7 @@ impl<'a> Universe<'a> {
             materials = materials::build(builder.materials, species);
             interfaces = interfaces::build(builder.interfaces, &builder.meshes, materials);
             reactions = reactions::build(builder.reactions, species);
-            grid = Grid::new(num_threads, builder.res, builder.dom);
+            grid = Grid::new(num_threads, builder.res, builder.dom, &interfaces);
         }))
         .expect("Could not create universe instance.")
     }

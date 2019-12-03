@@ -6,7 +6,7 @@ use crate::{
         list::dimension::Cartesian::{X, Y, Z},
         progress::{ParallelBar, SerialBar},
     },
-    world::dom::Cell,
+    world::{dom::Cell, mat::Interface},
 };
 use contracts::pre;
 use nalgebra::Vector3;
@@ -17,22 +17,27 @@ use std::sync::{Arc, Mutex};
 /// Grid structure implementation.
 /// Quantisation of the domain.
 #[derive(Debug)]
-pub struct Grid {
+pub struct Grid<'a> {
     /// Boundary.
     dom: Aabb,
     /// Cells.
-    cells: Array3<Cell>,
+    cells: Array3<Cell<'a>>,
 }
 
-impl Grid {
+impl<'a> Grid<'a> {
     #[pre(num_threads > 0)]
     #[pre(num_cells[X as usize] > 0)]
     #[pre(num_cells[Y as usize] > 0)]
     #[pre(num_cells[Z as usize] > 0)]
-    pub fn new(num_threads: usize, num_cells: [usize; 3], dom: Aabb) -> Self {
+    pub fn new(
+        num_threads: usize,
+        num_cells: [usize; 3],
+        dom: Aabb,
+        interfaces: &'a [Interface],
+    ) -> Self {
         let total_cells = num_cells[X as usize] * num_cells[Y as usize] * num_cells[Z as usize];
 
-        let bar = Arc::new(Mutex::new(ParallelBar::new(
+        let pb = Arc::new(Mutex::new(ParallelBar::new(
             "Building cells",
             total_cells as u64,
             num_threads,
@@ -40,16 +45,16 @@ impl Grid {
         let thread_ids: Vec<usize> = (0..num_threads).collect();
         let mut cell_lists: Vec<Vec<(usize, Cell)>> = thread_ids
             .par_iter()
-            .map(|id| Self::init_cells(*id, Arc::clone(&bar), &num_cells, &dom))
+            .map(|id| Self::init_cells(*id, Arc::clone(&pb), &num_cells, &dom, interfaces))
             .collect();
-        bar.lock().unwrap().finish_with_message("Cells built.");
+        pb.lock().unwrap().finish_with_message("Cells built.");
 
-        let mut bar = SerialBar::new("Sorting cells", total_cells as u64);
+        let mut pb = SerialBar::new("Sorting cells", total_cells as u64);
         let mut cells = Vec::with_capacity(total_cells);
         'outer: for n in 0..total_cells {
-            bar.inc();
+            pb.inc();
 
-            for list in cell_lists.iter_mut() {
+            for list in &mut cell_lists {
                 if !list.is_empty() && list.last().unwrap().0 == n {
                     cells.push(list.pop().unwrap().1);
                     continue 'outer;
@@ -57,7 +62,7 @@ impl Grid {
             }
             panic!("Cell index {} missing.", n);
         }
-        bar.finish_with_message("Cells sorted.");
+        pb.finish_with_message("Cells sorted.");
 
         Self {
             dom,
@@ -71,10 +76,11 @@ impl Grid {
     #[pre(num_cells[Z as usize] > 0)]
     fn init_cells(
         thread_id: usize,
-        bar: Arc<Mutex<ParallelBar>>,
+        pb: Arc<Mutex<ParallelBar>>,
         num_cells: &[usize; 3],
         dom: &Aabb,
-    ) -> Vec<(usize, Cell)> {
+        interfaces: &'a [Interface],
+    ) -> Vec<(usize, Cell<'a>)> {
         let total_cells = num_cells[X as usize] * num_cells[Y as usize] * num_cells[Z as usize];
 
         let mut cell_size = dom.widths();
@@ -83,7 +89,7 @@ impl Grid {
         }
 
         let mut cells = Vec::new();
-        while let Some(n) = bar.lock().unwrap().inc(thread_id) {
+        while let Some(n) = pb.lock().unwrap().inc(thread_id) {
             let n = total_cells - 1 - n as usize;
 
             let zi = n % num_cells[X as usize];
@@ -99,7 +105,7 @@ impl Grid {
                 );
             let maxs = mins + cell_size;
 
-            cells.push((n, Cell::new(Aabb::new(mins, maxs))));
+            cells.push((n, Cell::new(Aabb::new(mins, maxs), interfaces)));
         }
 
         cells
