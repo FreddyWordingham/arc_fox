@@ -110,4 +110,14 @@ impl<'a> Grid<'a> {
 
         cells
     }
+
+    /// Reference the boundary.
+    pub fn dom(&self) -> &Aabb {
+        &self.dom
+    }
+
+    /// Reference the cells.
+    pub fn cells(&self) -> &Array3<Cell<'a>> {
+        &self.cells
+    }
 }

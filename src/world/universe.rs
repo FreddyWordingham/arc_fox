@@ -8,11 +8,12 @@ use crate::{
     world::{
         dom::Grid,
         mat::{Interface, Material},
-        parts::{interfaces, materials, reactions, species},
+        parts::{interfaces, materials, reactions, species, Named},
         UniverseBuilder,
     },
 };
 use contracts::pre;
+use ndarray::Array3;
 use self_ref::self_referencing;
 use std::sync::Arc;
 
@@ -63,5 +64,27 @@ impl<'a> Universe<'a> {
     /// Reference the reactions.
     pub fn reactions(&self) -> &Vec<Reaction> {
         &self.reactions
+    }
+
+    /// Reference the grid.
+    pub fn grid(&self) -> &Grid<'a> {
+        &self.grid
+    }
+
+    /// Generate a list of material mappings.
+    pub fn generate_mat_maps(&self) -> Vec<(&str, Array3<f64>)> {
+        let mut maps = Vec::with_capacity(self.species.len());
+
+        let mats = self.grid.cells().map(|cell| cell.mat().name());
+
+        for mat in &self.materials {
+            let name = mat.name();
+            maps.push((
+                name.clone(),
+                mats.map(|n| if *n == name { 1.0 } else { 0.0 }),
+            ));
+        }
+
+        maps
     }
 }

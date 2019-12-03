@@ -7,8 +7,8 @@ use crate::{
     },
     world::mat::{Interface, Material},
 };
-use nalgebra::{Point3};
 use contracts::pre;
+use nalgebra::Point3;
 
 /// Cell structure implementation.
 #[derive(Debug)]
@@ -74,5 +74,20 @@ impl<'a> Cell<'a> {
         interfaces: &'a [Interface],
     ) -> &'a Material {
         interfaces[0].out_mat() // TODO
+    }
+
+    /// Reference the boundary.
+    pub fn boundary(&self) -> &Aabb {
+        &self.boundary
+    }
+
+    /// Intersecting interface triangles.
+    pub fn inter_tris(&self) -> &Vec<(&'a Interface<'a>, Vec<&'a Triangle>)> {
+        &self.inter_tris
+    }
+
+    /// Central material.
+    pub fn mat(&self) -> &'a Material {
+        &self.mat
     }
 }
