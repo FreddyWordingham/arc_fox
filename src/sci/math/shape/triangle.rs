@@ -104,7 +104,9 @@ impl Triangle {
         None
     }
 
-    #[post(ret.is_none() || (ret.unwrap().0 > 0.0 && ret.unwrap().1.iter().all(|x| x.is_normal())))]
+    // #[post(ret.is_none() || (ret.unwrap().0 > 0.0 && ret.unwrap().1.iter().all(|x| x.is_normal())))]
+    #[post(ret.is_none() || ret.unwrap().0 > 0.0)]
+    #[post(ret.is_none() || ret.unwrap().1.iter().all(|x| x.is_normal()))]
     fn dist_coors(&self, ray: &Ray) -> Option<(f64, [f64; 3])> {
         let verts = self.verts;
 
@@ -139,7 +141,7 @@ impl Triangle {
             return None;
         }
 
-        let w = 1.0 - u - v;
+        let w = 1.0 - (u + v);
 
         Some((dist, [u, v, w]))
     }

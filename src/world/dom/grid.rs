@@ -105,7 +105,7 @@ impl<'a> Grid<'a> {
                 );
             let maxs = mins + cell_size;
 
-            cells.push((n, Cell::new(Aabb::new(mins, maxs), interfaces)));
+            cells.push((n, Cell::new(Aabb::new(mins, maxs), dom, interfaces)));
         }
 
         cells
