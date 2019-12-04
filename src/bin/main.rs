@@ -65,14 +65,16 @@ fn main() {
         Spectrum::new_laser(630.0e-9),
         1.0,
     );
-    let _light_map = mcrt::run(form.num_threads, form.num_phot, &light, &universe);
+    let light_map = mcrt::run(form.num_threads, form.num_phot, &light, &universe);
 
     section("Post-Processing");
     let mat = universe.generate_mat_maps();
+    let mcrt = light_map.generate_density_maps();
 
     section("Output");
     report!("Output dir", out_dir.display());
     mat.save(&out_dir.join("materials.nc"));
+    mcrt.save(&out_dir.join("mcrt.nc"));
 
     section("Finished");
 }

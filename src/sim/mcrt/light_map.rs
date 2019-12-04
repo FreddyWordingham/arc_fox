@@ -24,4 +24,11 @@ impl LightMap {
             cell_vol,
         }
     }
+
+    /// Generate a list of density mappings.
+    pub fn generate_density_maps(&self) -> Vec<(&str, Array3<f64>)> {
+        let maps = Vec::with_capacity(0);
+
+        maps
+    }
 }
