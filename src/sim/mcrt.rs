@@ -191,7 +191,8 @@ fn run_photon(
                             break;
                         }
                         let ptfe_dist_prob = (-env.inter_coeff() * ptfe_dist).exp();
-                        let dist_prob = (-60.0 * dist).exp();
+                        let dist_intercoeff = &uni.mat_map()["intra_quarter"].env(phot.wavelength());
+                        let dist_prob = (-dist_intercoeff.inter_coeff()* dist).exp();
                         if ptfe_dist_prob > 0.0 {
                             let prob = (ang_prob * dist_prob * ptfe_dist_prob);
                             if phot.weight() * prob > 0.0 {
@@ -219,7 +220,8 @@ fn run_photon(
                         break;
                     }
                     let ptfe_dist_prob = (-167000.0 * ptfe_dist).exp();
-                    let dist_prob = (-60.0 * dist).exp();
+                    let dist_intercoeff = &uni.mat_map()["intra_quarter"].env(phot.wavelength());
+                    let dist_prob = (- dist_intercoeff.inter_coeff()* dist).exp();
                     if ptfe_dist_prob > 0.0 {
                         let prob = (ang_prob * dist_prob * ptfe_dist_prob);
                         if phot.weight() * prob > 0.0 {

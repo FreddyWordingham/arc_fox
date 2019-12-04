@@ -17,7 +17,7 @@ use arc::{
 use log::info;
 use nalgebra::{Point3, Vector3};
 use ndarray::Array3;
-use std::path::Path;
+use std::{path::Path, fs::OpenOptions, io::Write};
 
 fn main() {
     title(&exec::name());
@@ -108,6 +108,10 @@ fn main() {
 
     info!("Saving Raman datacube.");
     shifts.save(&out_dir.join("shifts.nc"));
+
+    info!("Saving Raman total.");
+    let mut file = OpenOptions::new().write(true).append(true).open(&out_dir.join("tot_raman.txt")).unwrap();
+    writeln!(file, "{}", total_shifts);
 }
 
 fn load_form(path: Option<&Path>) -> Setup {
