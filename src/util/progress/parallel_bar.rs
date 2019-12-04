@@ -46,7 +46,7 @@ impl ParallelBar {
             return None;
         }
 
-        let allocation = (remaining / (2 * self.counts.len() as u64)).min(inc).max(1);
+        let allocation = (remaining / self.counts.len() as u64).min(inc).max(1);
         self.pb.inc(allocation);
         self.counts[thread_id] += allocation;
 

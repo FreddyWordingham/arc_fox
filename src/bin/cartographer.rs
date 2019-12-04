@@ -1,17 +1,16 @@
-//! Main example function demonstrating core capabilities.
+//! Cartographer function used to map universe's materials.
 
 use arc::{
     args,
     file::io::{Load, Save},
     form, report,
-    sci::{math::shape::Aabb, phys::Spectrum},
-    sim::mcrt,
+    sci::math::shape::Aabb,
     util::{
         dirs::init::io_dirs,
         info::exec,
         print::term::{section, title},
     },
-    world::{parts::Light, Universe, UniverseBuilder},
+    world::{Universe, UniverseBuilder},
 };
 use log::info;
 use nalgebra::{Point3, Vector3};
@@ -19,7 +18,6 @@ use std::path::Path;
 
 form!(Parameters,
     num_threads: usize;
-    num_phot: u64;
     half_widths: Vector3<f64>;
     res: [usize; 3];
     reactions: Vec<String>;
@@ -58,14 +56,6 @@ fn main() {
 
     section("Setup");
     arc::util::format::universe(&universe);
-
-    section("Simulation");
-    let light = Light::new(
-        Box::new(Point3::origin()),
-        Spectrum::new_laser(630.0e-9),
-        1.0,
-    );
-    let _light_map = mcrt::run(form.num_threads, form.num_phot, &light, &universe);
 
     section("Post-Processing");
     let mat = universe.generate_mat_maps();

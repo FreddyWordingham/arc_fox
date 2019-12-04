@@ -2,7 +2,7 @@
 
 use crate::sci::math::Normal;
 use contracts::{post, pre};
-use nalgebra::{Point3, Unit, Vector3};
+use nalgebra::{Point3, Rotation3, Unit, Vector3};
 
 /// Ray structure implementation.
 #[derive(Debug, Clone)]
@@ -35,5 +35,24 @@ impl Ray {
     #[pre(dist > 0.0)]
     pub fn travel(&mut self, dist: f64) {
         self.pos += self.dir.as_ref() * dist;
+    }
+
+    /// Pitch towards the z-axis and then roll around previous direction.
+    #[pre(self.dir.z.abs() != 1.0)]
+    #[post((self.dir.magnitude() - 1.0).abs() < 1.0e-6)]
+    pub fn rotate(&mut self, pitch: f64, roll: f64) {
+        let arbit_axis = if (self.dir.z.abs() - 1.0) >= 1.0e-1 {
+            Vector3::z_axis()
+        } else {
+            Vector3::y_axis()
+        };
+
+        let pitch_axis = Unit::new_normalize(self.dir.cross(&arbit_axis));
+        let pitch_rot = Rotation3::from_axis_angle(&pitch_axis, pitch);
+
+        let roll_rot = Rotation3::from_axis_angle(&self.dir, roll);
+
+        self.dir = roll_rot * pitch_rot * self.dir;
+        self.dir.renormalize(); // TODO: Can we make this cheaper?
     }
 }

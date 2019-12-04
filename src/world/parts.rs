@@ -2,6 +2,7 @@
 
 pub mod interfaces;
 pub mod interfaces_builder;
+pub mod light;
 pub mod materials;
 pub mod materials_builder;
 pub mod meshes_builder;
@@ -12,6 +13,7 @@ pub mod species;
 pub mod species_builder;
 
 pub use self::interfaces::*;
+pub use self::light::*;
 pub use self::materials::*;
 pub use self::named::*;
 pub use self::reactions::*;

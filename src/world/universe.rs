@@ -79,10 +79,7 @@ impl<'a> Universe<'a> {
 
         for mat in &self.materials {
             let name = mat.name();
-            maps.push((
-                name,
-                mats.map(|n| if *n == name { 1.0 } else { 0.0 }),
-            ));
+            maps.push((name, mats.map(|n| if *n == name { 1.0 } else { 0.0 })));
         }
 
         maps

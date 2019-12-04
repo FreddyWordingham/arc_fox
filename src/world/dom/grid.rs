@@ -90,7 +90,7 @@ impl<'a> Grid<'a> {
 
         let mut cells = Vec::new();
         loop {
-            let start_end = { pb.lock().unwrap().inc(thread_id, 1000) };
+            let start_end = { pb.lock().unwrap().inc(thread_id, 100) };
             if start_end.is_none() {
                 break;
             }
@@ -127,5 +127,16 @@ impl<'a> Grid<'a> {
     /// Reference the cells.
     pub fn cells(&self) -> &Array3<Cell<'a>> {
         &self.cells
+    }
+
+    /// Get the number of cells.
+    pub fn num_cells(&self) -> usize {
+        let shape = self.cells.shape();
+        shape[X as usize] * shape[Y as usize] * shape[Z as usize]
+    }
+
+    /// Get the cell volume.
+    pub fn cell_vol(&self) -> f64 {
+        self.dom.vol() / self.num_cells() as f64
     }
 }
