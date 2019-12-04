@@ -3,7 +3,7 @@
 use crate::{
     sci::math::{
         geom::Collide,
-        rt::Ray,
+        rt::{Ray, Trace},
         shape::{Aabb, Triangle},
     },
     world::{
@@ -11,6 +11,8 @@ use crate::{
         parts::interfaces,
     },
 };
+use contracts::pre;
+use nalgebra::Point3;
 use nalgebra::Unit;
 
 /// Cell structure implementation.
@@ -91,5 +93,74 @@ impl<'a> Cell<'a> {
     /// Central material.
     pub fn mat(&self) -> &'a Material {
         self.mat
+    }
+
+    /// Determine the material at a given position within the cell.
+    #[pre(self.boundary.contains(pos))]
+    pub fn mat_at_pos(&self, pos: &Point3<f64>) -> Option<&'a Material> {
+        if self.inter_tris.is_empty() {
+            return Some(self.mat);
+        }
+
+        let tar = self.observation_target(&pos).unwrap();
+        let ray = Ray::new(*pos, Unit::new_normalize(tar - pos));
+        let mut nearest: Option<(f64, &Material)> = None;
+        for (inter, tris) in self.inter_tris() {
+            for tri in tris {
+                if let Some((dist, inside)) = tri.dist_inside(&ray) {
+                    if nearest.is_none() || dist < nearest.unwrap().0 {
+                        nearest = Some((
+                            dist,
+                            if inside {
+                                inter.in_mat()
+                            } else {
+                                inter.out_mat()
+                            },
+                        ));
+                    }
+                }
+            }
+        }
+
+        if let Some((_dist, mat)) = nearest {
+            return Some(mat);
+        }
+
+        None
+    }
+
+    /// Determine the distance to the next interface along a ray's line of sight.
+    #[pre(self.boundary.contains(ray.pos()))]
+    pub fn inter_dist(&self, ray: &Ray) -> Option<f64> {
+        let mut nearest = None;
+        for (_inter, tris) in self.inter_tris() {
+            for tri in tris {
+                if let Some(dist) = tri.dist(&ray) {
+                    if nearest.is_none() || dist < nearest.unwrap() {
+                        nearest = Some(dist);
+                    }
+                }
+            }
+        }
+
+        nearest
+    }
+
+    /// Select an appropriate observation target.
+    #[pre(self.boundary.contains(pos))]
+    fn observation_target(&self, pos: &Point3<f64>) -> Option<Point3<f64>> {
+        for (_inter, tris) in self.inter_tris() {
+            for tri in tris {
+                let tar = tri.centre();
+                if self.boundary().contains(&tar) {
+                    let dir = Unit::new_normalize(tar - pos);
+                    if dir.dot(tri.plane_norm()) > 1e-3 {
+                        return Some(tar);
+                    }
+                }
+            }
+        }
+
+        None
     }
 }

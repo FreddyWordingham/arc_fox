@@ -19,7 +19,7 @@ macro_rules! density_datacube {
 #[derive(Debug)]
 pub struct LightMap {
     /// Record array.
-    recs: Array3<Record>,
+    pub recs: Array3<Record>,
     /// Cell volume [m^2].
     cell_vol: f64,
 }

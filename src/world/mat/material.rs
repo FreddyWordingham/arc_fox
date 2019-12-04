@@ -2,7 +2,11 @@
 
 use crate::{
     sci::chem::Species,
-    world::{dom::State, mat::MaterialBuilder, parts::Named},
+    world::{
+        dom::State,
+        mat::{Environment, MaterialBuilder},
+        parts::Named,
+    },
 };
 use contracts::pre;
 use ndarray::Array1;
@@ -60,6 +64,11 @@ impl Material {
     /// Get the reaction rate multiplier.
     pub fn reaction_multiplier(&self) -> f64 {
         self.reaction_multiplier
+    }
+
+    /// Get the optical environment for a given wavelength.
+    pub fn env(&self, _w: f64) -> Environment {
+        Environment::new()
     }
 }
 

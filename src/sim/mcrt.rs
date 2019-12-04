@@ -12,6 +12,9 @@ pub use self::record::*;
 /// Distance to move past boundaries.
 const BUMP_DIST: f64 = 1e-6;
 
+/// Maximum number of loops a photon will make before being culled prematurely.
+const MAX_LOOPS: u64 = 1_000_000;
+
 use crate::{
     util::progress::ParallelBar,
     world::{parts::Light, Universe},
@@ -33,7 +36,7 @@ pub fn run(num_threads: usize, num_phot: u64, light: &Light, universe: &Universe
     let thread_ids: Vec<usize> = (0..num_threads).collect();
     let mut lightmaps: Vec<LightMap> = thread_ids
         .par_iter()
-        .map(|id| photon_loop::start(*id, light, universe))
+        .map(|id| photon_loop::start(*id, Arc::clone(&pb), num_phot, light, universe))
         .collect();
     pb.lock().unwrap().finish_with_message("MCRT complete.");
 
