@@ -16,9 +16,9 @@ pub struct Record {
     shifts: f64,
     /// Total distance travelled by photons.
     dist_travelled: f64,
-    /// Number of Raman photons created
-    tot_raman: f64,
-    /// Number of Raman photons detected
+    /// Number of photons skipped.
+    tot_skip: f64,
+    /// Number of Raman photons detected.
     det_raman: f64
 }
 
@@ -31,7 +31,7 @@ impl Record {
             absorptions: 0.0,
             shifts: 0.0,
             dist_travelled: 0.0,
-            tot_raman: 0.0,
+            tot_skip: 0.0,
             det_raman: 0.0
         }
     }
@@ -61,6 +61,16 @@ impl Record {
         self.dist_travelled
     }
 
+    ///Get the number of skipped photons.
+    pub fn tot_skip(&self) -> f64{
+        self.tot_skip
+    }
+
+    ///Get the total weight of detected Raman photons.
+    pub fn det_raman(&self) -> f64{
+        self.det_raman
+    }
+
     #[pre(x > 0.0)]
     pub fn increase_emissions(&mut self, x: f64) {
         self.emissions += x;
@@ -86,13 +96,13 @@ impl Record {
         self.dist_travelled += x;
     }
 
-    /// Increase the number of Raman photons created.
+    /// Increase the number of photons skipped.
     #[pre(x > 0.0)]
-    pub fn increase_tot_raman(&mut self, x: f64) {
-        self.tot_raman += x;
+    pub fn increase_tot_skip(&mut self, x: f64) {
+        self.tot_skip += x;
     }
 
-    /// Increase the number of Raman photons created.
+    /// Increase the number of Raman photons detected.
     #[pre(x > 0.0)]
     pub fn increase_det_raman(&mut self, x: f64) {
         self.det_raman += x;
@@ -109,7 +119,7 @@ impl Add<&Self> for Record {
             absorptions: self.absorptions + rhs.absorptions,
             shifts: self.shifts + rhs.shifts,
             dist_travelled: self.dist_travelled + rhs.dist_travelled,
-            tot_raman: self.tot_raman + rhs.tot_raman,
+            tot_skip: self.tot_skip + rhs.tot_skip,
             det_raman: self.det_raman + rhs.det_raman
         }
     }
@@ -122,7 +132,7 @@ impl AddAssign for Record {
         self.absorptions += rhs.absorptions;
         self.shifts += rhs.shifts;
         self.dist_travelled += rhs.dist_travelled;
-        self.tot_raman += rhs.tot_raman;
+        self.tot_skip += rhs.tot_skip;
         self.det_raman += rhs.det_raman
     }
 }
@@ -134,7 +144,7 @@ impl AddAssign<&Self> for Record {
         self.absorptions += rhs.absorptions;
         self.shifts += rhs.shifts;
         self.dist_travelled += rhs.dist_travelled;
-        self.tot_raman += rhs.tot_raman;
+        self.tot_skip += rhs.tot_skip;
         self.det_raman += rhs.det_raman
     }
 }

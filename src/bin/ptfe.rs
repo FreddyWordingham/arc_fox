@@ -88,15 +88,26 @@ fn main() {
 
     info!("Creating Raman data cube.");
     let vol = uni.grid().cells()[[0, 0, 0]].aabb().vol();
-    let mut shifts = Vec::with_capacity(res.total());
-    let mut total_shifts = 0.0;
+    let mut dets = Vec::with_capacity(res.total());
+    let mut total_dets = 0.0;
     for rec in mcrt_data.recs.iter() {
-        let x = rec.shifts();
-        total_shifts += x;
-        shifts.push(x / vol);
+        let x = rec.det_raman();
+        total_dets += x;
+        dets.push(x / vol);
     }
-    let shifts = Array3::from_shape_vec(res.arr().clone(), shifts).unwrap();
-    report!("Total detected Raman photons: {}", total_shifts);
+    let dets = Array3::from_shape_vec(res.arr().clone(), dets).unwrap();
+    report!("Total detected Raman photons: {}", total_dets);
+
+    let vol = uni.grid().cells()[[0, 0, 0]].aabb().vol();
+    let mut skips = Vec::with_capacity(res.total());
+    let mut total_skips = 0.0;
+    for rec in mcrt_data.recs.iter() {
+        let x = rec.tot_skip();
+        total_skips += x;
+        skips.push(x / vol);
+    }
+    let skips = Array3::from_shape_vec(res.arr().clone(), skips).unwrap();
+    report!("Total skipped photons: {}", total_skips);
 
     section("Output");
     report!("Output dir", out_dir.display());
@@ -107,11 +118,11 @@ fn main() {
     scats.save(&out_dir.join("scat.nc"));
 
     info!("Saving Raman datacube.");
-    shifts.save(&out_dir.join("shifts.nc"));
+    dets.save(&out_dir.join("dets.nc"));
 
     info!("Saving Raman total.");
     let mut file = OpenOptions::new().write(true).append(true).open(&out_dir.join("tot_raman.txt")).unwrap();
-    writeln!(file, "{}", total_shifts);
+    writeln!(file, "{}", total_dets);
 }
 
 fn load_form(path: Option<&Path>) -> Setup {

@@ -143,6 +143,7 @@ fn run_photon(
         let inter_dist = cell_rec.0.inter_dist(phot.ray());
 
         if cell_dist == 250.0 {
+            cell_rec.1.increase_tot_skip(1.0);
             break;
         }
 
@@ -176,7 +177,7 @@ fn run_photon(
                         let dist_prob = (-env.inter_coeff() * dist).exp();
                         let prob = (ang_prob * dist_prob);
                         if phot.weight() * prob > 0.0 {
-                            cell_rec.1.increase_shifts(phot.weight() * prob);
+                            cell_rec.1.increase_det_raman(phot.weight() * prob);
                         }
                     } else {
                         let ang_prob = (1.0 / (4.0 * PI))
@@ -188,6 +189,7 @@ fn run_photon(
                                 - ptfe_dist;
                         if ptfe_dist < 0.0 || dist < 0.0 {
                             info!("Negative distance!");
+                            cell_rec.1.increase_tot_skip(1.0);
                             break;
                         }
                         let ptfe_dist_prob = (-env.inter_coeff() * ptfe_dist).exp();
@@ -196,7 +198,7 @@ fn run_photon(
                         if ptfe_dist_prob > 0.0 {
                             let prob = (ang_prob * dist_prob * ptfe_dist_prob);
                             if phot.weight() * prob > 0.0 {
-                                cell_rec.1.increase_shifts(phot.weight() * prob);
+                                cell_rec.1.increase_det_raman(phot.weight() * prob);
                             }
                         }
                     }
@@ -217,6 +219,7 @@ fn run_photon(
                         - ptfe_dist;
                     if ptfe_dist < 0.0 || dist < 0.0 {
                         info!("Negative distance!");
+                        cell_rec.1.increase_tot_skip(1.0);
                         break;
                     }
                     let ptfe_dist_prob = (-167000.0 * ptfe_dist).exp();
@@ -225,7 +228,7 @@ fn run_photon(
                     if ptfe_dist_prob > 0.0 {
                         let prob = (ang_prob * dist_prob * ptfe_dist_prob);
                         if phot.weight() * prob > 0.0 {
-                            cell_rec.1.increase_shifts(phot.weight() * prob);
+                            cell_rec.1.increase_det_raman(phot.weight() * prob);
                         }
                     }
                 }
@@ -240,7 +243,7 @@ fn run_photon(
                             + (phot.ray().pos().z * phot.ray().pos().z);
                         if (phot.ray().pos().x >= 0.0129) && check <= 0.000001 {
                             if phot.weight() > 0.0 {
-                                cell_rec.1.increase_shifts(phot.weight());
+                                cell_rec.1.increase_det_raman(phot.weight());
                             }
                         }
                     }
@@ -311,7 +314,7 @@ fn run_photon(
                             + (phot.ray().pos().z * phot.ray().pos().z);
                         if (phot.ray().pos().x >= 0.0129) && check <= 0.000001 {
                             if phot.weight() > 0.0 {
-                                cell_rec.1.increase_shifts(phot.weight());
+                                cell_rec.1.increase_det_raman(phot.weight());
                             }
                         }
                     }
