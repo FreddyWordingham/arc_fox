@@ -9,6 +9,9 @@ pub use self::hit::*;
 pub use self::light_map::*;
 pub use self::record::*;
 
+/// Distance to move past boundaries.
+const BUMP_DIST: f64 = 1e-6;
+
 use crate::{
     util::progress::ParallelBar,
     world::{parts::Light, Universe},

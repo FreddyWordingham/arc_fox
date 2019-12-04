@@ -5,7 +5,6 @@ use crate::{
     util::list::dimension::Cartesian::{X, Y, Z},
     world::{parts::Light, Universe},
 };
-use std::ops::AddAssign;
 
 /// Start a single-threaded photon loop.
 pub fn start(thread_id: usize, _light: &Light, universe: &Universe) -> LightMap {
@@ -19,10 +18,4 @@ pub fn start(thread_id: usize, _light: &Light, universe: &Universe) -> LightMap 
     println!("Photon loop using thread: {}", thread_id);
 
     lightmap
-}
-
-impl AddAssign<&Self> for LightMap {
-    fn add_assign(&mut self, _rhs: &Self) {
-        // self.recs += &rhs.recs;
-    }
 }
