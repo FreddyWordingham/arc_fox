@@ -3,13 +3,15 @@
 use crate::{
     sci::math::{
         geom::Collide,
-        rt::{Ray, Trace},
+        rt::Ray,
         shape::{Aabb, Triangle},
     },
-    world::mat::{Interface, Material},
+    world::{
+        mat::{Interface, Material},
+        parts::interfaces,
+    },
 };
-use contracts::pre;
-use nalgebra::{Point3, Unit};
+use nalgebra::Unit;
 
 /// Cell structure implementation.
 #[derive(Debug)]
@@ -44,10 +46,29 @@ impl<'a> Cell<'a> {
             }
         }
 
-        let mat = if inter_tris.is_empty() {
-            Self::mat_at_pos_from_interface_list(&boundary.centre(), domain, interfaces)
+        let mut ray = None;
+        let pos = boundary.centre();
+        for inter in interfaces {
+            for tri in inter.mesh().tris() {
+                let tar = tri.centre();
+                if domain.contains(&tar) {
+                    let dir = Unit::new_normalize(tar - pos);
+
+                    if tri.plane_norm().dot(&dir) > 1.0e-3 {
+                        ray = Some(Ray::new(pos, dir));
+                        break;
+                    }
+                }
+            }
+        }
+        let ray = ray.unwrap();
+
+        let (_dist, inside, inter) =
+            interfaces::dist_inside_inter(&ray, &domain, interfaces).unwrap();
+        let mat = if inside {
+            inter.in_mat()
         } else {
-            Self::mat_at_pos_from_sub_tri_list(&boundary.centre(), &boundary, &inter_tris)
+            inter.out_mat()
         };
 
         Self {
@@ -55,92 +76,6 @@ impl<'a> Cell<'a> {
             inter_tris,
             mat,
         }
-    }
-
-    /// Determine the material from the triangle sublist.
-    #[pre(boundary.contains(&pos))]
-    pub fn mat_at_pos_from_sub_tri_list(
-        pos: &Point3<f64>,
-        boundary: &Aabb,
-        inter_tris: &[(&'a Interface<'a>, Vec<&'a Triangle>)],
-    ) -> &'a Material {
-        let mut tar = None;
-        for (_inter, tris) in inter_tris {
-            for tri in tris {
-                if let Some(point) = tri.union_point(boundary) {
-                    tar = Some(point);
-                    break;
-                }
-            }
-        }
-        let tar = tar.unwrap();
-
-        let ray = Ray::new(*pos, Unit::new_normalize(tar - pos));
-
-        let mut nearest: Option<(f64, bool, &Interface)> = None;
-        for (inter, tris) in inter_tris {
-            for tri in tris {
-                if let Some((dist, inside)) = tri.dist_inside(&ray) {
-                    if nearest.is_none() || nearest.unwrap().0 > dist {
-                        nearest = Some((dist, inside, inter));
-                    }
-                }
-            }
-        }
-
-        if let Some((dist, inside, inter)) = nearest {
-            if dist <= boundary.dist(&ray).unwrap() {
-                return if inside {
-                    inter.in_mat()
-                } else {
-                    inter.out_mat()
-                };
-            }
-        }
-
-        panic!("Unable to observe material within the cell.");
-    }
-
-    /// Determine the material from the interfaces.
-    #[pre(domain.contains(&pos))]
-    pub fn mat_at_pos_from_interface_list(
-        pos: &Point3<f64>,
-        domain: &Aabb,
-        interfaces: &'a [Interface],
-    ) -> &'a Material {
-        let mut tar = None;
-        for inter in interfaces {
-            for tri in inter.mesh().tris() {
-                if let Some(point) = tri.union_point(domain) {
-                    tar = Some(point);
-                    break;
-                }
-            }
-        }
-        let tar = tar.unwrap();
-
-        let ray = Ray::new(*pos, Unit::new_normalize(tar - pos));
-
-        let mut nearest: Option<(f64, bool, &Interface)> = None;
-        for inter in interfaces {
-            if let Some((dist, inside)) = inter.mesh().dist_inside(&ray) {
-                if nearest.is_none() || nearest.unwrap().0 > dist {
-                    nearest = Some((dist, inside, inter));
-                }
-            }
-        }
-
-        if let Some((dist, inside, inter)) = nearest {
-            if dist <= domain.dist(&ray).unwrap() {
-                return if inside {
-                    inter.in_mat()
-                } else {
-                    inter.out_mat()
-                };
-            }
-        }
-
-        panic!("Unable to observe material within the domain.");
     }
 
     /// Reference the boundary.

@@ -1,6 +1,6 @@
 {
     "mesh": {
-        "name": "cube"
+        "name": "torus_knot"
     },
     "in_mat": "fog",
     "out_mat": "air"

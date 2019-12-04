@@ -81,6 +81,8 @@ impl<'a> Grid<'a> {
         dom: &Aabb,
         interfaces: &'a [Interface],
     ) -> Vec<(usize, Cell<'a>)> {
+        println!("Initialising cells from thread: {}", thread_id);
+
         let total_cells = num_cells[X as usize] * num_cells[Y as usize] * num_cells[Z as usize];
 
         let mut cell_size = dom.widths();

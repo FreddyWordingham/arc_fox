@@ -68,33 +68,20 @@ impl Triangle {
         &self.norms
     }
 
-    /// Point on the surface which is also within the given aabb.
-    pub fn union_point(&self, aabb: &Aabb) -> Option<Point3<f64>> {
-        if !self.overlap(aabb) {
-            return None;
-        }
+    /// Reference the plane normal.
+    pub const fn plane_norm(&self) -> &Unit<Vector3<f64>> {
+        &self.plane_norm
+    }
 
-        let su = self.verts[Beta as usize] - self.verts[Alpha as usize];
-        let sv = self.verts[Gamma as usize] - self.verts[Alpha as usize];
-
-        for power in 2..7 {
-            let n = 3i32.pow(power);
-            let df = 1.0 / n as f64;
-            for ui in 1..n {
-                let u = df * ui as f64;
-                for vi in 1..(n - ui) {
-                    let v = df * vi as f64;
-
-                    let p: Point3<f64> = self.verts[Alpha as usize] + (su * u) + (sv * v);
-
-                    if aabb.contains(&p) {
-                        return Some(p);
-                    }
-                }
-            }
-        }
-
-        None
+    /// Centre point.
+    pub fn centre(&self) -> Point3<f64> {
+        Point3::from(
+            ((self.verts[Alpha as usize].to_homogeneous()
+                + self.verts[Beta as usize].to_homogeneous()
+                + self.verts[Gamma as usize].to_homogeneous())
+                / 3.0)
+                .xyz(),
+        )
     }
 
     // #[post(ret.is_none() || (ret.unwrap().0 > 0.0 && ret.unwrap().1.iter().all(|x| x.is_normal())))]

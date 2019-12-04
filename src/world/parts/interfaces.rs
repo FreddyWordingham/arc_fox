@@ -1,9 +1,13 @@
 //! Interfaces alias.
 
 use crate::{
-    sci::math::shape::Mesh,
+    sci::math::{
+        rt::{Ray, Trace},
+        shape::{Aabb, Mesh},
+    },
     world::mat::{Interface, InterfaceBuilder, Material},
 };
+use contracts::pre;
 use log::info;
 use std::collections::HashMap;
 
@@ -21,4 +25,38 @@ pub fn build<'a>(
     }
 
     list
+}
+
+/// Determine the interface and side hit.
+#[pre(boundary.contains(ray.pos()))]
+pub fn dist_inside_inter<'a>(
+    ray: &Ray,
+    boundary: &Aabb,
+    interfaces: &'a [Interface<'a>],
+) -> Option<(f64, bool, &'a Interface<'a>)> {
+    let mut nearest: Option<(f64, bool, &'a Interface<'a>)> = None;
+
+    let bound_dist = boundary.dist(&ray).unwrap();
+
+    for inter in interfaces {
+        if let Some(dist) = inter.mesh().aabb().dist(ray) {
+            if dist >= bound_dist {
+                continue;
+            }
+
+            if nearest.is_none() || dist < nearest.unwrap().0 {
+                if let Some((dist, inside)) = inter.mesh().dist_inside(&ray) {
+                    if dist >= bound_dist {
+                        continue;
+                    }
+
+                    if nearest.is_none() || dist < nearest.unwrap().0 {
+                        nearest = Some((dist, inside, inter));
+                    }
+                }
+            }
+        }
+    }
+
+    nearest
 }

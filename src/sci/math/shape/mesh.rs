@@ -73,6 +73,11 @@ impl Mesh {
         Aabb::new(mins, maxs)
     }
 
+    /// Reference the bounding box.
+    pub const fn aabb(&self) -> &Aabb {
+        &self.aabb
+    }
+
     /// Reference the list of component triangles.
     pub const fn tris(&self) -> &Vec<Triangle> {
         &self.tris

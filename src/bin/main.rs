@@ -58,11 +58,6 @@ fn main() {
     arc::util::format::universe(&universe);
 
     section("Post-Processing");
-    // let mat = universe.grid().cells().map(|cell| match cell.mat().name() {
-    //     "air" => 0.0,
-    //     "fog" => 1.0,
-    //     _ => -1.0
-    // });
     let mat = universe.generate_mat_maps();
 
     section("Output");
