@@ -81,8 +81,6 @@ impl<'a> Grid<'a> {
         dom: &Aabb,
         interfaces: &'a [Interface],
     ) -> Vec<(usize, Cell<'a>)> {
-        println!("Initialising cells from thread: {}", thread_id);
-
         let total_cells = num_cells[X as usize] * num_cells[Y as usize] * num_cells[Z as usize];
 
         let mut cell_size = dom.widths();
@@ -91,23 +89,31 @@ impl<'a> Grid<'a> {
         }
 
         let mut cells = Vec::new();
-        while let Some(n) = pb.lock().unwrap().inc(thread_id) {
-            let n = total_cells - 1 - n as usize;
+        loop {
+            let start_end = {pb.lock().unwrap().inc(thread_id, 1000)};
+            if start_end.is_none() {
+                break;
+            }
+            let (start, end) = start_end.unwrap();
 
-            let zi = n % num_cells[X as usize];
-            let yi = ((n - zi) / num_cells[X as usize]) % num_cells[Y as usize];
-            let xi = (n - zi - (yi * num_cells[X as usize]))
-                / (num_cells[X as usize] * num_cells[Y as usize]);
+            for n in start..end {
+                let n = total_cells - 1 - n as usize;
 
-            let mins = dom.mins()
-                + Vector3::new(
-                    cell_size.x * xi as f64,
-                    cell_size.y * yi as f64,
-                    cell_size.z * zi as f64,
-                );
-            let maxs = mins + cell_size;
+                let zi = n % num_cells[X as usize];
+                let yi = ((n - zi) / num_cells[X as usize]) % num_cells[Y as usize];
+                let xi = (n - zi - (yi * num_cells[X as usize]))
+                    / (num_cells[X as usize] * num_cells[Y as usize]);
 
-            cells.push((n, Cell::new(Aabb::new(mins, maxs), dom, interfaces)));
+                let mins = dom.mins()
+                    + Vector3::new(
+                        cell_size.x * xi as f64,
+                        cell_size.y * yi as f64,
+                        cell_size.z * zi as f64,
+                    );
+                let maxs = mins + cell_size;
+
+                cells.push((n, Cell::new(Aabb::new(mins, maxs), dom, interfaces)));
+            }
         }
 
         cells

@@ -36,18 +36,21 @@ impl ParallelBar {
         }
     }
 
-    /// Determine if another increment is possible.
+    /// Determine if the given increment is possible.
     #[pre(thread_id < self.counts.len())]
-    pub fn inc(&mut self, thread_id: usize) -> Option<u64> {
+    pub fn inc(&mut self, thread_id: usize, inc: u64) -> Option<(u64, u64)> {
         let sum: u64 = self.counts.iter().sum();
-        if sum < self.total {
-            self.pb.inc(1);
-            // println!("{:.2}%", 100.0 * sum as f64 / self.total as f64);
-            self.counts[thread_id] += 1;
-            return Some(sum);
+        let remaining = self.total - sum;
+
+        if remaining == 0 {
+            return None;
         }
 
-        None
+        let allocation = (remaining / (2 * self.counts.len() as u64)).min(inc).max(1);
+        self.pb.inc(allocation);
+        self.counts[thread_id] += allocation;
+
+        return Some((sum, sum + allocation));
     }
 
     /// Finish with a message.
