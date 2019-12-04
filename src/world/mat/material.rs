@@ -4,7 +4,7 @@ use crate::{
     sci::chem::Species,
     world::{
         dom::State,
-        mat::{Environment, MaterialBuilder},
+        mat::{MaterialBuilder, Optics},
         parts::Named,
     },
 };
@@ -21,6 +21,8 @@ pub struct Material {
     visc: Option<f64>,
     /// Reaction rate multiplier.
     reaction_multiplier: f64,
+    /// Optical properties.
+    optics: Optics,
     /// Initial state.
     init_state: State,
 }
@@ -34,12 +36,14 @@ impl Material {
         name: String,
         visc: Option<f64>,
         reaction_multiplier: f64,
+        optics: Optics,
         init_state: State,
     ) -> Self {
         Self {
             name,
             visc,
             reaction_multiplier,
+            optics,
             init_state,
         }
     }
@@ -53,7 +57,13 @@ impl Material {
             State::new(Array1::zeros(species.len()), Array1::zeros(species.len()))
         };
 
-        Self::new(name, builder.visc, builder.reaction_multiplier, state)
+        Self::new(
+            name,
+            builder.visc,
+            builder.reaction_multiplier,
+            builder.optics,
+            state,
+        )
     }
 
     /// Get the viscosity.
@@ -66,9 +76,9 @@ impl Material {
         self.reaction_multiplier
     }
 
-    /// Get the optical environment for a given wavelength.
-    pub fn env(&self, _w: f64) -> Environment {
-        Environment::new()
+    /// Reference the optical properties.
+    pub fn optics(&self) -> &Optics {
+        &self.optics
     }
 }
 

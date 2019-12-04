@@ -36,6 +36,13 @@ impl Photon {
         self.weight
     }
 
+    /// Multiply the weight of the photon.
+    #[pre(x > 0.0)]
+    #[post(self.weight > 0.0)]
+    pub fn multiply_weight(&mut self, x: f64) {
+        self.weight *= x;
+    }
+
     /// Get the wavelength.
     #[post(ret > 0.0)]
     pub fn wavelength(&self) -> f64 {
@@ -51,5 +58,16 @@ impl Photon {
     /// Reference the ray.
     pub const fn ray(&self) -> &Ray {
         &self.ray
+    }
+
+    /// Move along the direction the given distance.
+    #[pre(dist > 0.0)]
+    pub fn travel(&mut self, dist: f64) {
+        self.ray.travel(dist);
+    }
+
+    /// Pitch towards the z-axis and then roll around previous direction.
+    pub fn rotate(&mut self, pitch: f64, roll: f64) {
+        self.ray.rotate(pitch, roll);
     }
 }

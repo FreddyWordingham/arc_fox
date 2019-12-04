@@ -6,9 +6,9 @@
         2.0
     ],
     "res": [
-        31,
-        31,
-        31
+        101,
+        101,
+        101
     ],
     "reactions": [
         "ppix_formation"
@@ -16,5 +16,5 @@
     "interfaces": [
         "surface"
     ],
-    "num_phot": 1000
+    "num_phot": 1000000
 }

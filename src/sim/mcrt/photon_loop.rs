@@ -1,8 +1,11 @@
 //! MCRT photon-loop functions.
 
 use crate::{
-    sci::{phys::Photon, rt::Trace},
-    sim::mcrt::{LightMap, Record, MAX_LOOPS},
+    sci::{
+        math::{rng::distribution::henyey_greenstein, rt::Trace},
+        phys::Photon,
+    },
+    sim::mcrt::{Hit, LightMap, Record, BUMP_DIST, MAX_LOOPS},
     util::{
         list::dimension::Cartesian::{X, Y, Z},
         progress::ParallelBar,
@@ -11,8 +14,11 @@ use crate::{
 };
 use contracts::pre;
 use log::warn;
-use rand::thread_rng;
-use std::sync::{Arc, Mutex};
+use rand::{thread_rng, Rng};
+use std::{
+    f64::consts::PI,
+    sync::{Arc, Mutex},
+};
 
 /// Start a single-threaded photon loop.
 #[pre(num_phot > 0)]
@@ -42,26 +48,68 @@ pub fn start(
             // === PHOTON LIFETIME ===
             {
                 let mut phot = light.emit(&mut rng, num_phot);
-                let mut _shifted = false;
+                let mut shifted = false;
                 let mut cell_rec = cell_and_record(&phot, universe, &mut lightmap);
                 cell_rec.1.emissions += phot.weight();
-                let mut _env = cell_rec
+                let mut env = cell_rec
                     .0
                     .mat_at_pos(phot.ray().pos())
                     .unwrap()
+                    .optics()
                     .env(phot.wavelength());
 
-                for _ in 0..MAX_LOOPS {
-                    // let scat_dist = -(rng.gen_range(0.0f64, 1.0)).ln() / env.inter_coeff();
-                    let _cell_dist = cell_rec.0.boundary().dist(phot.ray()).unwrap();
-                    let _inter_dist = cell_rec.0.inter_dist(phot.ray());
-                    break;
-                    // let scat_dist =
+                let mut num_loops = 0;
+                loop {
+                    num_loops += 1;
+                    if num_loops >= MAX_LOOPS {
+                        warn!(
+                            "Photon prematurely killed as number of loops exceeded {}",
+                            MAX_LOOPS
+                        );
+                    }
+
+                    let scat_dist = -(rng.gen_range(0.0f64, 1.0)).ln() / env.inter_coeff;
+                    let cell_dist = cell_rec.0.boundary().dist(phot.ray()).unwrap();
+                    let inter_dist = cell_rec.0.inter_dist(phot.ray());
+
+                    match Hit::new(scat_dist, cell_dist, inter_dist) {
+                        Hit::Scattering(dist) => {
+                            cell_rec.1.dist_travelled += dist;
+                            phot.travel(dist);
+
+                            cell_rec.1.scatters += phot.weight();
+                            phot.rotate(
+                                henyey_greenstein(&mut rng, env.asym),
+                                rng.gen_range(0.0, 2.0 * PI),
+                            );
+
+                            cell_rec.1.absorptions += env.albedo * phot.weight();
+                            phot.multiply_weight(env.albedo);
+
+                            if !shifted && rng.gen_range(0.0, 1.0) <= env.shift_prob {
+                                cell_rec.1.shifts += phot.weight();
+                                shifted = true;
+                            }
+                        }
+                        Hit::Cell(dist) => {
+                            let dist = dist + BUMP_DIST;
+                            cell_rec.1.dist_travelled += dist;
+                            phot.travel(dist);
+
+                            if !universe.grid().dom().contains(phot.ray().pos()) {
+                                break;
+                            }
+
+                            cell_rec = cell_and_record(&phot, universe, &mut lightmap);
+                        }
+                        Hit::Interface(dist) => {
+                            break;
+                        }
+                        Hit::InterfaceCell(dist) => {
+                            break;
+                        }
+                    }
                 }
-                warn!(
-                    "Photon prematurely killed as number of loops exceeded {}",
-                    MAX_LOOPS
-                );
             }
             // === PHOTON LIFETIME ===
         }
