@@ -36,7 +36,7 @@ pub fn dist_inside_inter<'a>(
 ) -> Option<(f64, bool, &'a Interface<'a>)> {
     let mut nearest: Option<(f64, bool, &'a Interface<'a>)> = None;
 
-    let bound_dist = boundary.dist(&ray).unwrap();
+    let bound_dist = boundary.dist(ray).unwrap();
 
     for inter in interfaces {
         if let Some(dist) = inter.mesh().aabb().dist(ray) {
@@ -45,7 +45,7 @@ pub fn dist_inside_inter<'a>(
             }
 
             if nearest.is_none() || dist < nearest.unwrap().0 {
-                if let Some((dist, inside)) = inter.mesh().dist_inside(&ray) {
+                if let Some((dist, inside)) = inter.mesh().dist_inside(ray) {
                     if dist >= bound_dist {
                         continue;
                     }

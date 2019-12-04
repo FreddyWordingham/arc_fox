@@ -9,7 +9,7 @@ documention = "https://freddywordingham.github.io/arc"
 [dependencies]
 colog = "0.2.1"
 colored = "1.8.0"
-contracts = "0.3.0"
+contracts = { version = "0.3.0", features = [] }
 indicatif = "0.13.0"
 log = "0.4.8"
 nalgebra = { version = "0.19.0", features = ["serde-serialize"] }

@@ -50,7 +50,7 @@ impl ParallelBar {
         self.pb.inc(allocation);
         self.counts[thread_id] += allocation;
 
-        return Some((sum, sum + allocation));
+        Some((sum, sum + allocation))
     }
 
     /// Finish with a message.

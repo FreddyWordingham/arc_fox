@@ -64,7 +64,7 @@ impl<'a> Cell<'a> {
         let ray = ray.unwrap();
 
         let (_dist, inside, inter) =
-            interfaces::dist_inside_inter(&ray, &domain, interfaces).unwrap();
+            interfaces::dist_inside_inter(&ray, domain, interfaces).unwrap();
         let mat = if inside {
             inter.in_mat()
         } else {
@@ -90,6 +90,6 @@ impl<'a> Cell<'a> {
 
     /// Central material.
     pub fn mat(&self) -> &'a Material {
-        &self.mat
+        self.mat
     }
 }

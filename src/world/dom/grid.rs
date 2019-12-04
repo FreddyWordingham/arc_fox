@@ -90,7 +90,7 @@ impl<'a> Grid<'a> {
 
         let mut cells = Vec::new();
         loop {
-            let start_end = {pb.lock().unwrap().inc(thread_id, 1000)};
+            let start_end = { pb.lock().unwrap().inc(thread_id, 1000) };
             if start_end.is_none() {
                 break;
             }

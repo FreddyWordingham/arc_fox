@@ -41,7 +41,7 @@ impl<'a> Universe<'a> {
             materials = materials::build(builder.materials, species);
             interfaces = interfaces::build(builder.interfaces, &builder.meshes, materials);
             reactions = reactions::build(builder.reactions, species);
-            grid = Grid::new(num_threads, builder.res, builder.dom, &interfaces);
+            grid = Grid::new(num_threads, builder.res, builder.dom, interfaces);
         }))
         .expect("Could not create universe instance.")
     }
@@ -80,7 +80,7 @@ impl<'a> Universe<'a> {
         for mat in &self.materials {
             let name = mat.name();
             maps.push((
-                name.clone(),
+                name,
                 mats.map(|n| if *n == name { 1.0 } else { 0.0 }),
             ));
         }
