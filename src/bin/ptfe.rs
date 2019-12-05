@@ -122,7 +122,7 @@ fn main() {
 
     info!("Saving Raman total.");
     let mut file = OpenOptions::new().read(true).write(true).create(true).append(true).open(&out_dir.join("tot_raman.txt")).unwrap();
-    writeln!(file, "{}", total_dets);
+    writeln!(file, "{}, {}", total_dets, total_skips);
 }
 
 fn load_form(path: Option<&Path>) -> Setup {
