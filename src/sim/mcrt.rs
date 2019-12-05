@@ -188,7 +188,7 @@ fn run_photon(
                             nalgebra::distance(&Point3::new(0.0129, 0.0, 0.0), phot.ray().pos())
                                 - ptfe_dist;
                         if ptfe_dist < 0.0 || dist < 0.0 {
-                            info!("Negative distance!");
+                            //info!("Negative distance!");
                             cell_rec.1.increase_tot_skip(1.0);
                             break;
                         }
@@ -218,7 +218,7 @@ fn run_photon(
                     let dist = nalgebra::distance(&Point3::new(0.0129, 0.0, 0.0), phot.ray().pos())
                         - ptfe_dist;
                     if ptfe_dist < 0.0 || dist < 0.0 {
-                        info!("Negative distance!");
+                        //info!("Negative distance!");
                         cell_rec.1.increase_tot_skip(1.0);
                         break;
                     }

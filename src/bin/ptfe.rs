@@ -121,7 +121,7 @@ fn main() {
     dets.save(&out_dir.join("dets.nc"));
 
     info!("Saving Raman total.");
-    let mut file = OpenOptions::new().write(true).append(true).open(&out_dir.join("tot_raman.txt")).unwrap();
+    let mut file = OpenOptions::new().read(true).write(true).create(true).append(true).open(&out_dir.join("tot_raman.txt")).unwrap();
     writeln!(file, "{}", total_dets);
 }
 
