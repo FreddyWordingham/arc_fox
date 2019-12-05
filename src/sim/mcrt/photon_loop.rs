@@ -3,18 +3,18 @@
 use crate::{
     sci::{
         math::{rng::distribution::henyey_greenstein, rt::Trace},
-        phys::Photon,
+        phys::{Crossing, Photon},
     },
     sim::mcrt::{Hit, LightMap, Record, BUMP_DIST, MAX_LOOPS},
     util::{
         list::dimension::Cartesian::{X, Y, Z},
         progress::ParallelBar,
     },
-    world::{dom::Cell, parts::Light, Universe},
+    world::{dom::Cell, mat::Environment, parts::Light, Universe},
 };
 use contracts::pre;
 use log::warn;
-use rand::{thread_rng, Rng};
+use rand::{rngs::ThreadRng, thread_rng, Rng};
 use std::{
     f64::consts::PI,
     sync::{Arc, Mutex},
@@ -102,11 +102,17 @@ pub fn start(
 
                             cell_rec = cell_and_record(&phot, universe, &mut lightmap);
                         }
-                        Hit::Interface(dist) => {
-                            break;
+                        Hit::Interface(_dist) => {
+                            hit_interface(&mut rng, &mut phot, &mut cell_rec, &mut env);
                         }
-                        Hit::InterfaceCell(dist) => {
-                            break;
+                        Hit::InterfaceCell(_dist) => {
+                            hit_interface(&mut rng, &mut phot, &mut cell_rec, &mut env);
+
+                            if !universe.grid().dom().contains(phot.ray().pos()) {
+                                break;
+                            }
+
+                            cell_rec = cell_and_record(&phot, universe, &mut lightmap);
                         }
                     }
                 }
@@ -116,6 +122,42 @@ pub fn start(
     }
 
     lightmap
+}
+
+/// Perform an interface hit event.
+fn hit_interface(
+    rng: &mut ThreadRng,
+    phot: &mut Photon,
+    cell_rec: &mut (&Cell, &mut Record),
+    env: &mut Environment,
+) {
+    let (dist, inside, norm, inter) = cell_rec.0.inter_dist_inside_norm_inter(phot.ray()).unwrap();
+
+    let next_mat = if inside {
+        inter.out_mat()
+    } else {
+        inter.in_mat()
+    };
+    let next_env = next_mat.optics().env(phot.wavelength());
+
+    let n_curr = env.ref_index;
+    let n_next = next_env.ref_index;
+
+    let crossing = Crossing::new(phot.ray().dir(), &norm, n_curr, n_next);
+
+    if rng.gen_range(0.0, 1.0) <= crossing.ref_prob() {
+        let dist = dist - BUMP_DIST;
+        cell_rec.1.dist_travelled += dist;
+        phot.travel(dist);
+        phot.set_dir(*crossing.ref_dir());
+    } else {
+        let dist = dist + BUMP_DIST;
+        cell_rec.1.dist_travelled += dist;
+        phot.travel(dist);
+        phot.set_dir(crossing.trans_dir().unwrap());
+
+        *env = next_env;
+    }
 }
 
 /// Retrieve a reference for the cell corresponding record a photon is located within.

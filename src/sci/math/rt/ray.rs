@@ -31,6 +31,12 @@ impl Ray {
         &self.dir
     }
 
+    /// Set the facing direction.
+    #[pre((dir.is_normal()))]
+    pub fn set_dir(&mut self, dir: Unit<Vector3<f64>>) {
+        self.dir = dir;
+    }
+
     /// Move along the direction the given distance.
     #[pre(dist > 0.0)]
     pub fn travel(&mut self, dist: f64) {

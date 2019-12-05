@@ -77,7 +77,6 @@ impl Crossing {
     }
 
     /// Calculate the reflection direction.
-    #[post(inc.dot(&ret) < 0.0)]
     fn init_ref_dir(
         inc: &Unit<Vector3<f64>>,
         norm: &Unit<Vector3<f64>>,

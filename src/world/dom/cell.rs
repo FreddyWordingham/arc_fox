@@ -13,7 +13,7 @@ use crate::{
 };
 use contracts::pre;
 use nalgebra::Point3;
-use nalgebra::Unit;
+use nalgebra::{Unit, Vector3};
 
 /// Cell structure implementation.
 #[derive(Debug)]
@@ -138,6 +138,26 @@ impl<'a> Cell<'a> {
                 if let Some(dist) = tri.dist(&ray) {
                     if nearest.is_none() || dist < nearest.unwrap() {
                         nearest = Some(dist);
+                    }
+                }
+            }
+        }
+
+        nearest
+    }
+
+    /// Determine the distance to an interface contained within the cell, if hitting on the inside of the interface, and the normal at the intersection point.
+    pub fn inter_dist_inside_norm_inter(
+        &self,
+        ray: &Ray,
+    ) -> Option<(f64, bool, Unit<Vector3<f64>>, &Interface)> {
+        let mut nearest: Option<(f64, bool, Unit<Vector3<f64>>, &Interface)> = None;
+
+        for (inter, tris) in &self.inter_tris {
+            for tri in tris {
+                if let Some((dist, inside, norm)) = tri.dist_inside_norm(ray) {
+                    if nearest.is_none() || dist < nearest.unwrap().0 {
+                        nearest = Some((dist, inside, norm, inter));
                     }
                 }
             }

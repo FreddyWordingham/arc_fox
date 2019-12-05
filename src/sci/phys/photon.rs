@@ -1,8 +1,8 @@
 //! Photon structure.
 
-use crate::sci::math::rt::Ray;
+use crate::sci::math::{rt::Ray, Normal};
 use contracts::{post, pre};
-// use nalgebra::{Unit, Vector3};
+use nalgebra::{Unit, Vector3};
 
 /// Photon structure implementation.
 #[derive(Debug)]
@@ -58,6 +58,12 @@ impl Photon {
     /// Reference the ray.
     pub const fn ray(&self) -> &Ray {
         &self.ray
+    }
+
+    /// Set the facing direction.
+    #[pre((dir.is_normal()))]
+    pub fn set_dir(&mut self, dir: Unit<Vector3<f64>>) {
+        self.ray.set_dir(dir);
     }
 
     /// Move along the direction the given distance.
