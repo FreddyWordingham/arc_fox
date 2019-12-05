@@ -9,7 +9,7 @@ use ndarray::Array1;
 
 /// State structure implementation.
 /// Physical state of the cell.
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct State {
     /// Species concentrations.
     concs: Array1<f64>,
@@ -42,5 +42,15 @@ impl State {
         }
 
         Self::new(init_concs, init_sources)
+    }
+
+    /// Reference the species concentrations.
+    pub fn concs(&self) -> &Array1<f64> {
+        &self.concs
+    }
+
+    /// Reference the species sources.
+    pub fn sources(&self) -> &Array1<f64> {
+        &self.sources
     }
 }

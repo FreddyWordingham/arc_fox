@@ -1,4 +1,4 @@
-//! Main example function demonstrating core capabilities.
+//! Monte-Carlo Radiative Transfer example.
 
 use arc::{
     args,

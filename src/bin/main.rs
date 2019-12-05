@@ -70,11 +70,13 @@ fn main() {
     section("Post-Processing");
     let mat = universe.generate_mat_maps();
     let mcrt = light_map.generate_density_maps();
+    let conc = universe.generate_conc_maps();
 
     section("Output");
     report!("Output dir", out_dir.display());
     mat.save(&out_dir.join("materials.nc"));
     mcrt.save(&out_dir.join("mcrt.nc"));
+    conc.save(&out_dir.join("concs.nc"));
 
     section("Finished");
 }

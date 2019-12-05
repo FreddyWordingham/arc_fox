@@ -7,6 +7,7 @@ use crate::{
         shape::{Aabb, Triangle},
     },
     world::{
+        dom::State,
         mat::{Interface, Material},
         parts::interfaces,
     },
@@ -24,6 +25,8 @@ pub struct Cell<'a> {
     inter_tris: Vec<(&'a Interface<'a>, Vec<&'a Triangle>)>,
     /// Central material.
     mat: &'a Material,
+    /// Internal state of the cell.
+    state: State,
 }
 
 impl<'a> Cell<'a> {
@@ -77,6 +80,7 @@ impl<'a> Cell<'a> {
             boundary,
             inter_tris,
             mat,
+            state: mat.init_state().clone(),
         }
     }
 
@@ -90,9 +94,14 @@ impl<'a> Cell<'a> {
         &self.inter_tris
     }
 
-    /// Central material.
+    /// Reference the central material.
     pub fn mat(&self) -> &'a Material {
         self.mat
+    }
+
+    /// Reference the state.
+    pub fn state(&self) -> &State {
+        &self.state
     }
 
     /// Determine the material at a given position within the cell.

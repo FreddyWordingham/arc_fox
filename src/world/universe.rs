@@ -73,13 +73,28 @@ impl<'a> Universe<'a> {
 
     /// Generate a list of material mappings.
     pub fn generate_mat_maps(&self) -> Vec<(&str, Array3<f64>)> {
-        let mut maps = Vec::with_capacity(self.species.len());
+        let mut maps = Vec::with_capacity(self.materials.len());
 
         let mats = self.grid.cells().map(|cell| cell.mat().name());
 
         for mat in &self.materials {
             let name = mat.name();
             maps.push((name, mats.map(|n| if *n == name { 1.0 } else { 0.0 })));
+        }
+
+        maps
+    }
+
+    /// Generate a list of species concentration mappings.
+    pub fn generate_conc_maps(&self) -> Vec<(&str, Array3<f64>)> {
+        let mut maps = Vec::with_capacity(self.species.len());
+
+        for (index, spec) in self.species.iter().enumerate() {
+            let name = spec.name();
+            maps.push((
+                name,
+                self.grid.cells().map(|cell| cell.state().concs()[index]),
+            ));
         }
 
         maps

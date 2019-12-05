@@ -80,6 +80,11 @@ impl Material {
     pub fn optics(&self) -> &Optics {
         &self.optics
     }
+
+    /// Reference the initial state.
+    pub fn init_state(&self) -> &State {
+        &self.init_state
+    }
 }
 
 impl Named for Material {
