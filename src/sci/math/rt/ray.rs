@@ -44,7 +44,6 @@ impl Ray {
     }
 
     /// Pitch towards the z-axis and then roll around previous direction.
-    #[pre(self.dir.z.abs() != 1.0)]
     #[post((self.dir.magnitude() - 1.0).abs() < 1.0e-6)]
     pub fn rotate(&mut self, pitch: f64, roll: f64) {
         let arbit_axis = if (self.dir.z.abs() - 1.0) >= 1.0e-1 {

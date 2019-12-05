@@ -102,7 +102,7 @@ impl<'a> Cell<'a> {
             return Some(self.mat);
         }
 
-        let tar = self.observation_target(&pos).unwrap();
+        let tar = self.observation_target(pos).unwrap();
         let ray = Ray::new(*pos, Unit::new_normalize(tar - pos));
         let mut nearest: Option<(f64, &Material)> = None;
         for (inter, tris) in self.inter_tris() {
@@ -135,7 +135,7 @@ impl<'a> Cell<'a> {
         let mut nearest = None;
         for (_inter, tris) in self.inter_tris() {
             for tri in tris {
-                if let Some(dist) = tri.dist(&ray) {
+                if let Some(dist) = tri.dist(ray) {
                     if nearest.is_none() || dist < nearest.unwrap() {
                         nearest = Some(dist);
                     }

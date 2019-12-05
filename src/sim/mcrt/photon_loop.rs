@@ -68,7 +68,7 @@ pub fn start(
                         );
                     }
 
-                    let scat_dist = -(rng.gen_range(0.0f64, 1.0)).ln() / env.inter_coeff;
+                    let scat_dist = -(rng.gen_range(0.0_f64, 1.0)).ln() / env.inter_coeff;
                     let cell_dist = cell_rec.0.boundary().dist(phot.ray()).unwrap();
                     let inter_dist = cell_rec.0.inter_dist(phot.ray());
 
@@ -146,14 +146,14 @@ fn hit_interface(
     let crossing = Crossing::new(phot.ray().dir(), &norm, n_curr, n_next);
 
     if rng.gen_range(0.0, 1.0) <= crossing.ref_prob() {
-        let dist = dist - BUMP_DIST;
-        cell_rec.1.dist_travelled += dist;
-        phot.travel(dist);
+        let effective_dist = dist - BUMP_DIST;
+        cell_rec.1.dist_travelled += effective_dist;
+        phot.travel(effective_dist);
         phot.set_dir(*crossing.ref_dir());
     } else {
-        let dist = dist + BUMP_DIST;
-        cell_rec.1.dist_travelled += dist;
-        phot.travel(dist);
+        let effective_dist = dist + BUMP_DIST;
+        cell_rec.1.dist_travelled += effective_dist;
+        phot.travel(effective_dist);
         phot.set_dir(crossing.trans_dir().unwrap());
 
         *env = next_env;

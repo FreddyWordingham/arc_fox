@@ -10,7 +10,7 @@ use std::f64::consts::PI;
 #[post(ret < PI)]
 pub fn henyey_greenstein(rng: &mut ThreadRng, asym: f64) -> f64 {
     if asym.abs() < 0.01 {
-        return rng.gen_range(-1.0f64, 1.0).acos();
+        return rng.gen_range(-1.0_f64, 1.0).acos();
     }
 
     ((1.0 + asym.powi(2)

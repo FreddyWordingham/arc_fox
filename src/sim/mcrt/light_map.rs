@@ -54,7 +54,7 @@ impl LightMap {
 }
 
 impl AddAssign<&Self> for LightMap {
-    #[pre(self.cell_vol == rhs.cell_vol)]
+    #[pre((self.cell_vol - rhs.cell_vol).abs() < 1e-9)]
     fn add_assign(&mut self, rhs: &Self) {
         self.recs += &rhs.recs;
     }
