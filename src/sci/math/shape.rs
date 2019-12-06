@@ -13,4 +13,4 @@ pub use self::mesh_builder::*;
 pub use self::triangle::*;
 
 /// Parallel ray catch value.
-const EPSILON: f64 = 1.0e-6;
+const EPSILON: f64 = 1.0e-9;

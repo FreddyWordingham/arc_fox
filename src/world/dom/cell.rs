@@ -54,15 +54,18 @@ impl<'a> Cell<'a> {
         let mut ray = None;
         let pos = boundary.centre();
         for inter in interfaces {
-            for tri in inter.mesh().tris() {
-                let tar = tri.centre();
-                if domain.contains(&tar) {
-                    let dir = Unit::new_normalize(tar - pos);
+            for (tar, norm) in inter
+                .mesh()
+                .tris()
+                .iter()
+                .map(|tri| (tri.centre(), tri.plane_norm()))
+                .filter(|(p, _n)| domain.contains(&p))
+            {
+                let dir = Unit::new_normalize(tar - pos);
 
-                    if tri.plane_norm().dot(&dir).abs() > 0.1 {
-                        ray = Some(Ray::new(pos, dir));
-                        break;
-                    }
+                if norm.dot(&dir).abs() > 0.1 {
+                    ray = Some(Ray::new(pos, dir));
+                    break;
                 }
             }
         }

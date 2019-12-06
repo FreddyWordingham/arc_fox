@@ -1,8 +1,13 @@
 {
     "mesh": {
-        "name": "torus_knot",
+        "name": "cube",
         "trans": {
-            "scale": 0.5
+            "scale": 0.5e-3,
+            "rot": [
+                30.0,
+                30.0,
+                30.0
+            ]
         }
     },
     "in_mat": "fog",

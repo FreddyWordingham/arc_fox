@@ -27,33 +27,24 @@ pub fn build<'a>(
     list
 }
 
-/// Determine the interface and side hit.
+/// Determine the distance along a ray to an interface, and the side hit.
 #[pre(boundary.contains(ray.pos()))]
 pub fn dist_inside_inter<'a>(
     ray: &Ray,
     boundary: &Aabb,
     interfaces: &'a [Interface<'a>],
 ) -> Option<(f64, bool, &'a Interface<'a>)> {
-    let mut nearest: Option<(f64, bool, &'a Interface<'a>)> = None;
+    let bound_dist = boundary.dist(&ray).unwrap();
 
-    let bound_dist = boundary.dist(ray).unwrap();
-
+    let mut nearest: Option<(f64, bool, &Interface)> = None;
     for inter in interfaces {
-        if let Some(dist) = inter.mesh().dist(ray) {
-            if dist >= bound_dist {
+        if let Some((dist, inside)) = inter.mesh().dist_inside(&ray) {
+            if dist > bound_dist {
                 continue;
             }
 
             if nearest.is_none() || dist < nearest.unwrap().0 {
-                if let Some((dist, inside)) = inter.mesh().dist_inside(ray) {
-                    if dist >= bound_dist {
-                        continue;
-                    }
-
-                    if nearest.is_none() || dist < nearest.unwrap().0 {
-                        nearest = Some((dist, inside, inter));
-                    }
-                }
+                nearest = Some((dist, inside, inter));
             }
         }
     }

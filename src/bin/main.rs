@@ -5,7 +5,7 @@ use arc::{
     file::io::{Load, Save},
     form, report,
     sci::{math::shape::Aabb, phys::Spectrum},
-    sim::{diffusion, mcrt},
+    sim::mcrt,
     util::{
         dirs::init::io_dirs,
         info::exec,
@@ -54,7 +54,7 @@ fn main() {
     );
 
     section("Building");
-    let mut universe = Universe::build(form.num_threads, builder);
+    let universe = Universe::build(form.num_threads, builder);
 
     section("Setup");
     arc::util::format::universe(&universe);
@@ -65,7 +65,7 @@ fn main() {
         Spectrum::new_laser(630.0e-9),
         1.0,
     );
-    let light_map = mcrt::run(form.num_threads, form.num_phot, &light, &universe);
+    // let light_map = mcrt::run(form.num_threads, form.num_phot, &light, &universe);
 
     // for k in 0..100 {
     //     diffusion::run(form.num_threads, 1.0, &mut universe);
@@ -75,12 +75,12 @@ fn main() {
 
     section("Post-Processing");
     let mat = universe.generate_mat_maps();
-    let mcrt = light_map.generate_density_maps();
+    // let mcrt = light_map.generate_density_maps();
 
     section("Output");
     report!("Output dir", out_dir.display());
     mat.save(&out_dir.join("materials.nc"));
-    mcrt.save(&out_dir.join("mcrt.nc"));
+    // mcrt.save(&out_dir.join("mcrt.nc"));
 
     section("Finished");
 }
