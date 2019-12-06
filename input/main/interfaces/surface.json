@@ -1,6 +1,9 @@
 {
     "mesh": {
-        "name": "torus_knot"
+        "name": "torus_knot",
+        "trans": {
+            "scale": 0.1
+        }
     },
     "in_mat": "fog",
     "out_mat": "air"

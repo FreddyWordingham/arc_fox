@@ -67,11 +67,11 @@ fn main() {
     );
     let light_map = mcrt::run(form.num_threads, form.num_phot, &light, &universe);
 
-    for k in 0..100 {
-        diffusion::run(form.num_threads, 60.0, &mut universe);
-        let conc = universe.generate_conc_maps();
-        conc.save(&out_dir.join(format!("{}_concs.nc", k)));
-    }
+    // for k in 0..100 {
+    //     diffusion::run(form.num_threads, 1.0, &mut universe);
+    //     let conc = universe.generate_conc_maps();
+    //     conc.save(&out_dir.join(format!("{}_concs.nc", k)));
+    // }
 
     section("Post-Processing");
     let mat = universe.generate_mat_maps();
