@@ -129,6 +129,11 @@ impl<'a> Grid<'a> {
         &self.cells
     }
 
+    /// Reference the cells mutably.
+    pub fn cells_mut(&mut self) -> &mut Array3<Cell<'a>> {
+        &mut self.cells
+    }
+
     /// Get the number of cells.
     pub fn num_cells(&self) -> usize {
         let shape = self.cells.shape();
@@ -138,5 +143,10 @@ impl<'a> Grid<'a> {
     /// Get the cell volume.
     pub fn cell_vol(&self) -> f64 {
         self.dom.vol() / self.num_cells() as f64
+    }
+
+    /// Get the cell dimensions.
+    pub fn cell_widths(&self) -> Vector3<f64> {
+        self.cells[(0, 0, 0)].boundary().widths()
     }
 }

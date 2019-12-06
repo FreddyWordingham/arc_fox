@@ -1,11 +1,7 @@
 {
-    "visc": 8.90e-4,
+    "visc": 8.90e-8,
     "reaction_multiplier": 1.0,
-    "state": {
-        "concs": {
-            "ala": 1.23
-        }
-    },
+    "state": null,
     "optics": {
         "ref_index": {
             "Const": 1.0

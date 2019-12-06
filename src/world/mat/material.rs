@@ -10,6 +10,8 @@ use crate::{
 };
 use contracts::pre;
 use ndarray::Array1;
+use physical_constants::BOLTZMANN_CONSTANT;
+use std::f64::consts::PI;
 
 /// Material structure implementation.
 /// Stores the local optical, diffusive and kinematic information.
@@ -51,10 +53,23 @@ impl Material {
     /// Build a new instance.
     #[pre(!name.is_empty())]
     pub fn build(name: String, builder: MaterialBuilder, species: &[Species]) -> Self {
+        let mut diff_coeffs = Array1::from_elem(species.len(), None);
+        if let Some(visc) = builder.visc {
+            for (d, spec) in diff_coeffs.iter_mut().zip(species) {
+                if let Some(rad) = spec.rad() {
+                    *d = Some((BOLTZMANN_CONSTANT * 310.15) / (6.0 * PI * visc * rad));
+                }
+            }
+        }
+
         let state = if let Some(state) = builder.state {
-            State::build(state, species)
+            State::build(state, diff_coeffs, species)
         } else {
-            State::new(Array1::zeros(species.len()), Array1::zeros(species.len()))
+            State::new(
+                Array1::zeros(species.len()),
+                Array1::zeros(species.len()),
+                diff_coeffs,
+            )
         };
 
         Self::new(

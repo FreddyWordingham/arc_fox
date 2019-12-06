@@ -15,17 +15,29 @@ pub struct State {
     concs: Array1<f64>,
     /// Species sources.
     sources: Array1<f64>,
+    /// Species diffusion coefficients.
+    diff_coeffs: Array1<Option<f64>>,
 }
 
 impl State {
     /// Construct a new instance.
     #[pre(concs.len() == sources.len())]
-    pub fn new(concs: Array1<f64>, sources: Array1<f64>) -> Self {
-        Self { concs, sources }
+    #[pre(diff_coeffs.iter().all(|d| d.is_none() || d.unwrap() > 0.0))]
+    pub fn new(concs: Array1<f64>, sources: Array1<f64>, diff_coeffs: Array1<Option<f64>>) -> Self {
+        Self {
+            concs,
+            sources,
+            diff_coeffs,
+        }
     }
 
     /// Build a new instance.
-    pub fn build(builder: StateBuilder, species: &[Species]) -> Self {
+    #[pre(species.len() == diff_coeffs.len())]
+    pub fn build(
+        builder: StateBuilder,
+        diff_coeffs: Array1<Option<f64>>,
+        species: &[Species],
+    ) -> Self {
         let mut init_concs = Array1::zeros(species.len());
         let mut init_sources = Array1::zeros(species.len());
 
@@ -41,7 +53,7 @@ impl State {
             }
         }
 
-        Self::new(init_concs, init_sources)
+        Self::new(init_concs, init_sources, diff_coeffs)
     }
 
     /// Reference the species concentrations.
@@ -49,8 +61,18 @@ impl State {
         &self.concs
     }
 
+    /// Reference the species concentrations mutably.
+    pub fn concs_mut(&mut self) -> &mut Array1<f64> {
+        &mut self.concs
+    }
+
     /// Reference the species sources.
     pub fn sources(&self) -> &Array1<f64> {
         &self.sources
+    }
+
+    /// Reference the species diffusion coefficients.
+    pub fn diff_coeffs(&self) -> &Array1<Option<f64>> {
+        &self.diff_coeffs
     }
 }

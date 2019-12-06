@@ -104,6 +104,11 @@ impl<'a> Cell<'a> {
         &self.state
     }
 
+    /// Reference the state mutably.
+    pub fn state_mut(&mut self) -> &mut State {
+        &mut self.state
+    }
+
     /// Determine the material at a given position within the cell.
     #[pre(self.boundary.contains(pos))]
     pub fn mat_at_pos(&self, pos: &Point3<f64>) -> Option<&'a Material> {

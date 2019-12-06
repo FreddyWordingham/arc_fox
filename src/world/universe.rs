@@ -71,6 +71,11 @@ impl<'a> Universe<'a> {
         &self.grid
     }
 
+    /// Reference the grid mutably.
+    pub fn grid_mut(&mut self) -> &mut Grid<'a> {
+        &mut self.grid
+    }
+
     /// Generate a list of material mappings.
     pub fn generate_mat_maps(&self) -> Vec<(&str, Array3<f64>)> {
         let mut maps = Vec::with_capacity(self.materials.len());
