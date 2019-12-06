@@ -6,9 +6,9 @@
         1.0e-3
     ],
     "res": [
-        11,
-        11,
-        11
+        101,
+        101,
+        101
     ],
     "reactions": [
         "ppix_formation"

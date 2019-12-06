@@ -1,6 +1,6 @@
 {
     "mesh": {
-        "name": "cube",
+        "name": "torus_knot",
         "trans": {
             "scale": 0.5e-3,
             "rot": [
