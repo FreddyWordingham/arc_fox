@@ -2,7 +2,7 @@
     "mesh": {
         "name": "torus_knot",
         "trans": {
-            "scale": 0.1
+            "scale": 0.5
         }
     },
     "in_mat": "fog",

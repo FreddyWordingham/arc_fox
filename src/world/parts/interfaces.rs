@@ -39,7 +39,7 @@ pub fn dist_inside_inter<'a>(
     let bound_dist = boundary.dist(ray).unwrap();
 
     for inter in interfaces {
-        if let Some(dist) = inter.mesh().aabb().dist(ray) {
+        if let Some(dist) = inter.mesh().dist(ray) {
             if dist >= bound_dist {
                 continue;
             }

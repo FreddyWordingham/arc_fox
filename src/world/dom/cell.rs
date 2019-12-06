@@ -59,17 +59,19 @@ impl<'a> Cell<'a> {
                 if domain.contains(&tar) {
                     let dir = Unit::new_normalize(tar - pos);
 
-                    if tri.plane_norm().dot(&dir) > 1.0e-3 {
+                    if tri.plane_norm().dot(&dir).abs() > 0.1 {
                         ray = Some(Ray::new(pos, dir));
                         break;
                     }
                 }
             }
         }
-        let ray = ray.unwrap();
+        let ray = ray.expect(
+            "Unable to determine adequate targeting ray. Perhaps reduce angular requirement.",
+        );
 
-        let (_dist, inside, inter) =
-            interfaces::dist_inside_inter(&ray, domain, interfaces).unwrap();
+        let (_dist, inside, inter) = interfaces::dist_inside_inter(&ray, domain, interfaces)
+            .expect("Could not determine ray interface.");
         let mat = if inside {
             inter.in_mat()
         } else {
