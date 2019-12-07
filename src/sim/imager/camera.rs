@@ -44,20 +44,26 @@ impl Camera {
     #[pre(w > 0.0)]
     #[pre(w <= 1.0)]
     pub fn observe(&self, img: &mut Array2<f64>, p: &Point3<f64>, w: f64) {
-        let g = Unit::new_normalize(p - self.pos);
-        let phi = (self.right.dot(&g)).asin();
-        let theta = (self.up.dot(&g)).asin();
+        let obs = Unit::new_normalize(p - self.pos);
 
         let shape = img.shape();
+        let h_fov_x = self.fov / 2.0;
+        let h_fov_y = h_fov_x * (shape[Y as usize] as f64 / shape[X as usize] as f64);
+
+        let phi = (self.right.dot(&obs)).asin();
+        if phi.abs() > h_fov_x {
+            return;
+        }
+
+        let theta = (self.up.dot(&obs)).asin();
+        if theta.abs() > h_fov_y {
+            return;
+        }
 
         let dx = self.fov / shape[X as usize] as f64;
 
-        let x = ((phi / dx).floor() as usize) + (shape[X as usize] / 2);
-        let y = ((theta / dx).floor() as usize) + (shape[Y as usize] / 2);
-
-        if x >= shape[X as usize] || y >= shape[Y as usize] {
-            return;
-        }
+        let x = ((phi + h_fov_x) / dx).floor() as usize;
+        let y = ((theta + h_fov_y) / dx).floor() as usize;
 
         img[(x, y)] += w;
     }

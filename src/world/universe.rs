@@ -15,7 +15,7 @@ use crate::{
 use contracts::pre;
 use ndarray::Array3;
 use self_ref::self_referencing;
-use std::sync::Arc;
+use std::{cmp::Ordering, sync::Arc};
 
 /// Universe structure implementation.
 #[derive(Debug)]
@@ -30,6 +30,8 @@ pub struct Universe<'a> {
     reactions: Vec<Reaction>,
     /// Grid.
     grid: Grid<'a>,
+    /// Bump distance.
+    bump_dist: f64,
 }
 
 impl<'a> Universe<'a> {
@@ -42,6 +44,19 @@ impl<'a> Universe<'a> {
             interfaces = interfaces::build(builder.interfaces, &builder.meshes, materials);
             reactions = reactions::build(builder.reactions, species);
             grid = Grid::new(num_threads, builder.res, builder.dom, interfaces);
+            bump_dist = grid.cells()[(0, 0, 0)]
+                .boundary()
+                .widths()
+                .iter()
+                .min_by(|a, b| {
+                    if a < b {
+                        Ordering::Less
+                    } else {
+                        Ordering::Greater
+                    }
+                })
+                .unwrap()
+                / 1000.0;
         }))
         .expect("Could not create universe instance.")
     }
@@ -74,6 +89,11 @@ impl<'a> Universe<'a> {
     /// Reference the grid mutably.
     pub fn grid_mut(&mut self) -> &mut Grid<'a> {
         &mut self.grid
+    }
+
+    /// Get the bump distance.
+    pub fn bump_dist(&self) -> f64 {
+        self.bump_dist
     }
 
     /// Generate a list of material mappings.

@@ -5,7 +5,10 @@ use crate::{
         math::{rng::distribution::henyey_greenstein, rt::Trace},
         phys::{Crossing, Photon},
     },
-    sim::mcrt::{photon_loop::index, Hit, BUMP_DIST, MAX_LOOPS},
+    sim::{
+        imager::Camera,
+        mcrt::{photon_loop::index, Hit, MAX_LOOPS},
+    },
     util::progress::ParallelBar,
     world::{dom::Cell, mat::Environment, parts::Light, Universe},
 };
@@ -14,7 +17,7 @@ use log::warn;
 use ndarray::Array2;
 use rand::{rngs::ThreadRng, thread_rng, Rng};
 use std::{
-    f64::consts::PI,
+    f64::{consts::PI, MIN_POSITIVE},
     sync::{Arc, Mutex},
 };
 
@@ -26,8 +29,9 @@ pub fn start(
     num_phot: u64,
     light: &Light,
     universe: &Universe,
+    cam: &Camera,
 ) -> Array2<f64> {
-    let arr: Array2<f64> = Array2::zeros((4, 5));
+    let mut arr: Array2<f64> = Array2::zeros((1000, 1000));
 
     loop {
         let start_end = { pb.lock().unwrap().inc(thread_id, 100) };
@@ -51,6 +55,8 @@ pub fn start(
 
                 let mut num_loops = 0;
                 loop {
+                    cam.observe(&mut arr, phot.ray().pos(), phot.weight());
+
                     num_loops += 1;
                     if num_loops >= MAX_LOOPS {
                         warn!(
@@ -63,7 +69,7 @@ pub fn start(
                     let cell_dist = cell.boundary().dist(phot.ray()).unwrap();
                     let inter_dist = cell.inter_dist(phot.ray());
 
-                    match Hit::new(scat_dist, cell_dist, inter_dist) {
+                    match Hit::new(scat_dist, cell_dist, inter_dist, universe.bump_dist()) {
                         Hit::Scattering(dist) => {
                             phot.travel(dist);
                             phot.rotate(
@@ -75,9 +81,14 @@ pub fn start(
                             if !shifted && rng.gen_range(0.0, 1.0) <= env.shift_prob {
                                 shifted = true;
                             }
+
+                            if !cell.boundary().contains(phot.ray().pos()) {
+                                panic!("1 Not inside that cell! {:?}", phot.ray().pos());
+                                // TODO: Remove
+                            }
                         }
                         Hit::Cell(dist) => {
-                            let dist = dist + BUMP_DIST;
+                            let dist = dist + universe.bump_dist();
                             phot.travel(dist);
 
                             if !universe.grid().dom().contains(phot.ray().pos()) {
@@ -85,18 +96,47 @@ pub fn start(
                             }
 
                             cell = find_cell(&phot, universe);
+
+                            if !cell.boundary().contains(phot.ray().pos()) {
+                                panic!("2 Not inside that cell! {:?}", phot.ray().pos());
+                                // TODO: Remove
+                            }
                         }
-                        Hit::Interface(_dist) => {
-                            hit_interface(&mut rng, &mut phot, cell, &mut env);
+                        Hit::Interface(dist) => {
+                            hit_interface(
+                                &mut rng,
+                                &mut phot,
+                                cell,
+                                &mut env,
+                                dist,
+                                universe.bump_dist(),
+                            );
+
+                            if !cell.boundary().contains(phot.ray().pos()) {
+                                panic!("3 Not inside that cell! {:?}", phot.ray().pos());
+                                // TODO: Remove
+                            }
                         }
-                        Hit::InterfaceCell(_dist) => {
-                            hit_interface(&mut rng, &mut phot, cell, &mut env);
+                        Hit::InterfaceCell(dist) => {
+                            hit_interface(
+                                &mut rng,
+                                &mut phot,
+                                cell,
+                                &mut env,
+                                dist,
+                                universe.bump_dist(),
+                            );
 
                             if !universe.grid().dom().contains(phot.ray().pos()) {
                                 break;
                             }
 
                             cell = find_cell(&phot, universe);
+
+                            if !cell.boundary().contains(phot.ray().pos()) {
+                                panic!("4 Not inside that cell! {:?}", phot.ray().pos());
+                                // TODO: Remove
+                            }
                         }
                     }
                 }
@@ -109,8 +149,16 @@ pub fn start(
 }
 
 /// Perform an interface hit event.
-pub fn hit_interface(rng: &mut ThreadRng, phot: &mut Photon, cell: &Cell, env: &mut Environment) {
-    let (dist, inside, norm, inter) = cell.inter_dist_inside_norm_inter(phot.ray()).unwrap();
+#[pre(bump_dist > 0.0)]
+pub fn hit_interface(
+    rng: &mut ThreadRng,
+    phot: &mut Photon,
+    cell: &Cell,
+    env: &mut Environment,
+    dist: f64,
+    bump_dist: f64,
+) {
+    let (_dist, inside, norm, inter) = cell.inter_dist_inside_norm_inter(phot.ray()).unwrap();
 
     let next_mat = if inside {
         inter.out_mat()
@@ -125,11 +173,11 @@ pub fn hit_interface(rng: &mut ThreadRng, phot: &mut Photon, cell: &Cell, env: &
     let crossing = Crossing::new(phot.ray().dir(), &norm, n_curr, n_next);
 
     if rng.gen_range(0.0, 1.0) <= crossing.ref_prob() {
-        let effective_dist = dist - BUMP_DIST;
+        let effective_dist = (dist - bump_dist).max(MIN_POSITIVE);
         phot.travel(effective_dist);
         phot.set_dir(*crossing.ref_dir());
     } else {
-        let effective_dist = dist + BUMP_DIST;
+        let effective_dist = dist + bump_dist;
         phot.travel(effective_dist);
         phot.set_dir(crossing.trans_dir().unwrap());
 

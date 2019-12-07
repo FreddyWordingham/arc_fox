@@ -5,7 +5,7 @@ use arc::{
     file::io::{Load, Save},
     form, report,
     sci::{math::shape::Aabb, phys::Spectrum},
-    sim::imager,
+    sim::{imager, imager::Camera},
     util::{
         dirs::init::io_dirs,
         info::exec,
@@ -14,7 +14,7 @@ use arc::{
     world::{parts::Light, Universe, UniverseBuilder},
 };
 use log::info;
-use nalgebra::{Point3, Vector3};
+use nalgebra::{Point3, Unit, Vector3};
 use std::path::Path;
 
 form!(Parameters,
@@ -66,7 +66,15 @@ fn main() {
         1.0,
     );
     // let light_map = mcrt::run(form.num_threads, form.num_phot, &light, &universe);
-    let image = imager::run(form.num_threads, form.num_phot, &light, &universe);
+    let cam = {
+        let d = 2.0;
+        let pos = Point3::new(d, -d, d);
+        let tar = Point3::origin();
+        let dir = Unit::new_normalize(tar - pos);
+        let max_ang = (dir.dot(&Unit::new_normalize(universe.grid().dom().maxs() - pos))).acos();
+        Camera::new(pos, dir, max_ang)
+    };
+    let image = imager::run(form.num_threads, form.num_phot, &light, &universe, &cam);
 
     // for k in 0..100 {
     //     diffusion::run(form.num_threads, 1.0, &mut universe);

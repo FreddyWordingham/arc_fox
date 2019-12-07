@@ -1,6 +1,5 @@
 //! Hit-type enumeration.
 
-use crate::sim::mcrt::BUMP_DIST;
 use contracts::pre;
 
 /// Hit enumeration implementation.
@@ -45,10 +44,18 @@ impl Hit {
     #[pre(scat_dist > 0.0)]
     #[pre(cell_dist > 0.0)]
     #[pre(inter_dist.is_none() || inter_dist.unwrap() > 0.0)]
-    pub fn new(scat_dist: f64, cell_dist: f64, inter_dist: Option<f64>) -> Self {
+    #[pre(bump_dist > 0.0)]
+    pub fn new(scat_dist: f64, cell_dist: f64, inter_dist: Option<f64>, bump_dist: f64) -> Self {
         if cell_dist <= scat_dist {
             if let Some(inter_dist) = inter_dist {
-                if (inter_dist - cell_dist).abs() <= BUMP_DIST {
+                if inter_dist <= 0.0 {
+                    panic!("Bad inter dist: {}", inter_dist); // TODO: Remove.
+                }
+                if cell_dist <= 0.0 {
+                    panic!("Bad cell dist: {}", cell_dist); // TODO: Remove.
+                }
+
+                if cell_dist <= (inter_dist + bump_dist) {
                     return Self::new_interface_cell(inter_dist.max(cell_dist));
                 }
 

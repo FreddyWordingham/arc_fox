@@ -5,7 +5,7 @@ use crate::{
         math::{rng::distribution::henyey_greenstein, rt::Trace},
         phys::{Crossing, Photon},
     },
-    sim::mcrt::{Hit, LightMap, Record, BUMP_DIST, MAX_LOOPS},
+    sim::mcrt::{Hit, LightMap, Record, MAX_LOOPS},
     util::{
         list::dimension::Cartesian::{X, Y, Z},
         progress::ParallelBar,
@@ -16,7 +16,7 @@ use contracts::pre;
 use log::warn;
 use rand::{rngs::ThreadRng, thread_rng, Rng};
 use std::{
-    f64::consts::PI,
+    f64::{consts::PI, MIN_POSITIVE},
     sync::{Arc, Mutex},
 };
 
@@ -72,7 +72,7 @@ pub fn start(
                     let cell_dist = cell_rec.0.boundary().dist(phot.ray()).unwrap();
                     let inter_dist = cell_rec.0.inter_dist(phot.ray());
 
-                    match Hit::new(scat_dist, cell_dist, inter_dist) {
+                    match Hit::new(scat_dist, cell_dist, inter_dist, universe.bump_dist()) {
                         Hit::Scattering(dist) => {
                             cell_rec.1.dist_travelled += dist;
                             phot.travel(dist);
@@ -92,7 +92,7 @@ pub fn start(
                             }
                         }
                         Hit::Cell(dist) => {
-                            let dist = dist + BUMP_DIST;
+                            let dist = dist + universe.bump_dist();
                             cell_rec.1.dist_travelled += dist;
                             phot.travel(dist);
 
@@ -102,11 +102,25 @@ pub fn start(
 
                             cell_rec = cell_and_record(&phot, universe, &mut lightmap);
                         }
-                        Hit::Interface(_dist) => {
-                            hit_interface(&mut rng, &mut phot, &mut cell_rec, &mut env);
+                        Hit::Interface(dist) => {
+                            hit_interface(
+                                &mut rng,
+                                &mut phot,
+                                &mut cell_rec,
+                                &mut env,
+                                dist,
+                                universe.bump_dist(),
+                            );
                         }
-                        Hit::InterfaceCell(_dist) => {
-                            hit_interface(&mut rng, &mut phot, &mut cell_rec, &mut env);
+                        Hit::InterfaceCell(dist) => {
+                            hit_interface(
+                                &mut rng,
+                                &mut phot,
+                                &mut cell_rec,
+                                &mut env,
+                                dist,
+                                universe.bump_dist(),
+                            );
 
                             if !universe.grid().dom().contains(phot.ray().pos()) {
                                 break;
@@ -125,13 +139,17 @@ pub fn start(
 }
 
 /// Perform an interface hit event.
+#[pre(dist > 0.0)]
+#[pre(bump_dist > 0.0)]
 fn hit_interface(
     rng: &mut ThreadRng,
     phot: &mut Photon,
     cell_rec: &mut (&Cell, &mut Record),
     env: &mut Environment,
+    dist: f64,
+    bump_dist: f64,
 ) {
-    let (dist, inside, norm, inter) = cell_rec.0.inter_dist_inside_norm_inter(phot.ray()).unwrap();
+    let (_dist, inside, norm, inter) = cell_rec.0.inter_dist_inside_norm_inter(phot.ray()).unwrap();
 
     let next_mat = if inside {
         inter.out_mat()
@@ -146,12 +164,12 @@ fn hit_interface(
     let crossing = Crossing::new(phot.ray().dir(), &norm, n_curr, n_next);
 
     if rng.gen_range(0.0, 1.0) <= crossing.ref_prob() {
-        let effective_dist = dist - BUMP_DIST;
+        let effective_dist = (dist - bump_dist).max(MIN_POSITIVE);
         cell_rec.1.dist_travelled += effective_dist;
         phot.travel(effective_dist);
         phot.set_dir(*crossing.ref_dir());
     } else {
-        let effective_dist = dist + BUMP_DIST;
+        let effective_dist = dist + bump_dist;
         cell_rec.1.dist_travelled += effective_dist;
         phot.travel(effective_dist);
         phot.set_dir(crossing.trans_dir().unwrap());

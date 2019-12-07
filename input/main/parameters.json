@@ -16,5 +16,5 @@
     "interfaces": [
         "surface"
     ],
-    "num_phot": 1000
+    "num_phot": 1000000
 }
