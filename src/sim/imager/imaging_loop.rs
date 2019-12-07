@@ -208,16 +208,15 @@ pub fn peel_off(mut phot: Photon, mut env: Environment, uni: &Universe, cam: &Ca
     let dir = Unit::new_normalize(cam.pos() - phot.ray().pos());
 
     let cos_ang = phot.ray().dir().dot(&dir);
-    let mut prob = (1.0 - g2) / (1.0 + g2 - (2.0 * g * cos_ang)).powf(1.5);
-
-    if prob < 0.01 {
+    let mut prob = 0.5 * ((1.0 - g2) / (1.0 + g2 - (2.0 * g * cos_ang)).powf(1.5));
+    if prob < 0.1 {
         return 0.0;
     }
 
     phot.set_dir(dir);
     let mut cell = find_cell(&phot, uni);
 
-    while prob > 0.01 {
+    while prob >= 0.1 {
         let cell_dist = cell.boundary().dist(phot.ray()).unwrap();
         let inter_dist = cell.inter_dist_inside_norm_inter(phot.ray());
 

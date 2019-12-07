@@ -47,7 +47,7 @@ impl Camera {
 
     #[pre(!img.is_empty())]
     #[pre(w > 0.0)]
-    #[pre(w <= 1.0)]
+    // #[pre(w <= 1.0)]  TODO: Does this matter?
     pub fn observe(&self, img: &mut Array2<f64>, p: &Point3<f64>, w: f64) {
         let obs = Unit::new_normalize(p - self.pos);
 
