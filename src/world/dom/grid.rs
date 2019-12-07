@@ -8,7 +8,7 @@ use crate::{
     },
     world::{dom::Cell, mat::Interface},
 };
-use contracts::pre;
+use contracts::{post, pre};
 use nalgebra::Vector3;
 use ndarray::Array3;
 use rayon::prelude::*;
@@ -135,9 +135,9 @@ impl<'a> Grid<'a> {
     }
 
     /// Get the number of cells.
+    #[post(ret > 0)]
     pub fn num_cells(&self) -> usize {
-        let shape = self.cells.shape();
-        shape[X as usize] * shape[Y as usize] * shape[Z as usize]
+        self.cells.len()
     }
 
     /// Get the cell volume.
