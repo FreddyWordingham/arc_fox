@@ -55,13 +55,11 @@ impl Hit {
                     panic!("Bad cell dist: {}", cell_dist); // TODO: Remove.
                 }
 
-                if cell_dist <= (inter_dist + bump_dist) {
-                    return Self::new_interface_cell(inter_dist.max(cell_dist));
+                if cell_dist <= (inter_dist + (bump_dist * 1.0)) {
+                    return Self::new_interface_cell(inter_dist);
                 }
 
-                if inter_dist < cell_dist {
-                    return Self::new_interface(inter_dist);
-                }
+                return Self::new_interface(inter_dist);
             }
 
             return Self::new_cell(cell_dist);
