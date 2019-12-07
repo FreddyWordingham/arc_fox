@@ -24,6 +24,7 @@ use std::{
 
 /// Start a single-threaded photon loop.
 #[pre(num_phot > 0)]
+#[pre(power > 0)]
 pub fn start(
     thread_id: usize,
     pb: Arc<Mutex<ParallelBar>>,
@@ -31,8 +32,10 @@ pub fn start(
     light: &Light,
     universe: &Universe,
     cam: &Camera,
+    power: u32,
 ) -> Array2<f64> {
-    let mut arr: Array2<f64> = Array2::zeros((1000, 1000));
+    let res = 2_usize.pow(power);
+    let mut arr: Array2<f64> = Array2::zeros([res, res]);
 
     loop {
         let start_end = { pb.lock().unwrap().inc(thread_id, 100) };

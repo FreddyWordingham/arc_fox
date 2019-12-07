@@ -1,4 +1,4 @@
-//! Main example function demonstrating core capabilities.
+//! Peel-off based imaging.
 
 use arc::{
     args,
@@ -23,7 +23,8 @@ form!(Parameters,
     half_widths: Vector3<f64>;
     res: [usize; 3];
     reactions: Vec<String>;
-    interfaces: Vec<String>
+    interfaces: Vec<String>;
+    power: u32
 );
 
 fn main() {
@@ -74,6 +75,14 @@ fn main() {
         let max_ang = (dir.dot(&Unit::new_normalize(universe.grid().dom().maxs() - pos))).acos();
         Camera::new(pos, dir, max_ang)
     };
+    let image = imager::run(
+        form.num_threads,
+        form.num_phot,
+        &light,
+        &universe,
+        &cam,
+        form.power,
+    );
 
     // for k in 0..100 {
     //     diffusion::run(form.num_threads, 1.0, &mut universe);
@@ -89,6 +98,7 @@ fn main() {
     report!("Output dir", out_dir.display());
     mat.save(&out_dir.join("materials.nc"));
     // mcrt.save(&out_dir.join("mcrt.nc"));
+    image.save(&out_dir.join("image.nc"));
 
     section("Finished");
 }
