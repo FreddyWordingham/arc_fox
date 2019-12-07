@@ -1,6 +1,9 @@
 //! Monte-Carlo imaging sub-module.
 
+pub mod camera;
 pub mod imaging_loop;
+
+pub use self::camera::*;
 
 use crate::{
     util::progress::ParallelBar,
