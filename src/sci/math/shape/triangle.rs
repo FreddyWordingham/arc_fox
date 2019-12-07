@@ -7,7 +7,7 @@ use crate::{
     sci::math::{
         geom::{Collide, Transform},
         rt::{Ray, Trace},
-        shape::{Aabb, EPSILON},
+        shape::Aabb,
         Normal,
     },
     util::list::alphabet::Greek::{Alpha, Beta, Gamma},
@@ -96,7 +96,7 @@ impl Triangle {
         let d_cross_e2 = ray.dir().cross(&e2);
         let e1_dot_d_cross_e2 = e1.dot(&d_cross_e2);
 
-        if e1_dot_d_cross_e2.abs() < EPSILON {
+        if e1_dot_d_cross_e2.abs() <= 0.0 {
             return None;
         }
 
@@ -117,7 +117,7 @@ impl Triangle {
 
         let dist = inv_e1_dot_d_cross_e2 * e2.dot(&q);
 
-        if dist < EPSILON {
+        if dist <= 0.0 {
             return None;
         }
 
