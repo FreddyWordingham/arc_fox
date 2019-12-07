@@ -40,6 +40,11 @@ impl Camera {
         }
     }
 
+    /// Reference the viewing position.
+    pub fn pos(&self) -> &Point3<f64> {
+        &self.pos
+    }
+
     #[pre(!img.is_empty())]
     #[pre(w > 0.0)]
     #[pre(w <= 1.0)]

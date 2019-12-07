@@ -48,13 +48,6 @@ impl Hit {
     pub fn new(scat_dist: f64, cell_dist: f64, inter_dist: Option<f64>, bump_dist: f64) -> Self {
         if cell_dist <= scat_dist {
             if let Some(inter_dist) = inter_dist {
-                if inter_dist <= 0.0 {
-                    panic!("Bad inter dist: {}", inter_dist); // TODO: Remove.
-                }
-                if cell_dist <= 0.0 {
-                    panic!("Bad cell dist: {}", cell_dist); // TODO: Remove.
-                }
-
                 if cell_dist <= (inter_dist + (bump_dist * 1.0)) {
                     return Self::new_interface_cell(inter_dist);
                 }

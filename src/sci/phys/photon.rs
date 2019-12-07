@@ -5,7 +5,7 @@ use contracts::{post, pre};
 use nalgebra::{Unit, Vector3};
 
 /// Photon structure implementation.
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Photon {
     /// Statistical weight.
     weight: f64,

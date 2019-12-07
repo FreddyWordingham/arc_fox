@@ -12,8 +12,9 @@ use crate::{
     util::progress::ParallelBar,
     world::{dom::Cell, mat::Environment, parts::Light, Universe},
 };
-use contracts::pre;
+use contracts::{post, pre};
 use log::warn;
+use nalgebra::Unit;
 use ndarray::Array2;
 use rand::{rngs::ThreadRng, thread_rng, Rng};
 use std::{
@@ -55,8 +56,6 @@ pub fn start(
 
                 let mut num_loops = 0;
                 loop {
-                    cam.observe(&mut arr, phot.ray().pos(), phot.weight());
-
                     num_loops += 1;
                     if num_loops >= MAX_LOOPS {
                         warn!(
@@ -82,10 +81,11 @@ pub fn start(
                                 shifted = true;
                             }
 
-                            if !cell.boundary().contains(phot.ray().pos()) {
-                                panic!("1 Not inside that cell! {:?}", phot.ray().pos());
-                                // TODO: Remove
-                            }
+                            cam.observe(
+                                &mut arr,
+                                phot.ray().pos(),
+                                peel_off(phot.clone(), env.clone(), &universe, &cam),
+                            );
                         }
                         Hit::Cell(dist) => {
                             let dist = dist + universe.bump_dist();
@@ -96,11 +96,6 @@ pub fn start(
                             }
 
                             cell = find_cell(&phot, universe);
-
-                            if !cell.boundary().contains(phot.ray().pos()) {
-                                panic!("2 Not inside that cell! {:?}", phot.ray().pos());
-                                // TODO: Remove
-                            }
                         }
                         Hit::Interface(dist) => {
                             hit_interface(
@@ -111,11 +106,6 @@ pub fn start(
                                 dist,
                                 universe.bump_dist(),
                             );
-
-                            if !cell.boundary().contains(phot.ray().pos()) {
-                                panic!("3 Not inside that cell! {:?}", phot.ray().pos());
-                                // TODO: Remove
-                            }
                         }
                         Hit::InterfaceCell(dist) => {
                             hit_interface(
@@ -132,11 +122,6 @@ pub fn start(
                             }
 
                             cell = find_cell(&phot, universe);
-
-                            if !cell.boundary().contains(phot.ray().pos()) {
-                                panic!("4 Not inside that cell! {:?}", phot.ray().pos());
-                                // TODO: Remove
-                            }
                         }
                     }
                 }
@@ -210,4 +195,54 @@ pub fn find_cell<'a>(phot: &Photon, uni: &'a Universe) -> &'a Cell<'a> {
     }
 
     cell
+}
+
+#[post(ret > 0.0)]
+pub fn peel_off(mut phot: Photon, mut env: Environment, uni: &Universe, cam: &Camera) -> f64 {
+    let g = env.asym;
+    let g2 = g.powi(2);
+
+    let dir = Unit::new_normalize(cam.pos() - phot.ray().pos());
+
+    let cos_ang = phot.ray().dir().dot(&dir);
+    let mut prob = (1.0 - g2) / (1.0 + g2 - (2.0 * g * cos_ang)).powf(1.5);
+
+    if prob < 0.01 {
+        return 0.0;
+    }
+
+    phot.set_dir(dir);
+    let mut cell = find_cell(&phot, uni);
+
+    while prob > 0.01 {
+        let cell_dist = cell.boundary().dist(phot.ray()).unwrap();
+        let inter_dist = cell.inter_dist_inside_norm_inter(phot.ray());
+
+        if let Some((dist, inside, _norm, inter)) = inter_dist {
+            if dist < cell_dist {
+                prob *= (-(dist + uni.bump_dist()) * env.inter_coeff).exp();
+                phot.travel(dist + uni.bump_dist());
+
+                if inside {
+                    env = inter.in_mat().optics().env(phot.wavelength());
+                } else {
+                    env = inter.out_mat().optics().env(phot.wavelength());
+                }
+            } else {
+                prob *= (-(cell_dist + uni.bump_dist()) * env.inter_coeff).exp();
+                phot.travel(cell_dist + uni.bump_dist());
+            }
+        } else {
+            prob *= (-(cell_dist + uni.bump_dist()) * env.inter_coeff).exp();
+            phot.travel(cell_dist + uni.bump_dist());
+        }
+
+        if !uni.grid().dom().contains(phot.ray().pos()) {
+            break;
+        }
+
+        cell = find_cell(&phot, uni);
+    }
+
+    prob
 }

@@ -4,7 +4,7 @@ use contracts::pre;
 
 /// Environment structure implementation.
 /// Information about the local optical environment.
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Environment {
     /// Refractive index.
     pub ref_index: f64,
