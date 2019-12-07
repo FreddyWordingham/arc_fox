@@ -1,9 +1,9 @@
 {
-    "num_threads": 1,
+    "num_threads": 4,
     "half_widths": [
-        1.0e-12,
-        1.0e-12,
-        1.0e-12
+        1.0,
+        1.0,
+        1.0
     ],
     "res": [
         101,

@@ -10,10 +10,10 @@ pub use self::light_map::*;
 pub use self::record::*;
 
 /// Distance to move past boundaries.
-const BUMP_DIST: f64 = 1e-6;
+pub const BUMP_DIST: f64 = 1e-6;
 
 /// Maximum number of loops a photon will make before being culled prematurely.
-const MAX_LOOPS: u64 = 1_000_000;
+pub const MAX_LOOPS: u64 = 1_000_000;
 
 use crate::{
     util::progress::ParallelBar,

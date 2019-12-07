@@ -5,7 +5,7 @@ use arc::{
     file::io::{Load, Save},
     form, report,
     sci::{math::shape::Aabb, phys::Spectrum},
-    sim::mcrt,
+    sim::imager,
     util::{
         dirs::init::io_dirs,
         info::exec,
@@ -66,6 +66,7 @@ fn main() {
         1.0,
     );
     // let light_map = mcrt::run(form.num_threads, form.num_phot, &light, &universe);
+    let image = imager::run(form.num_threads, form.num_phot, &light, &universe);
 
     // for k in 0..100 {
     //     diffusion::run(form.num_threads, 1.0, &mut universe);
@@ -81,6 +82,7 @@ fn main() {
     report!("Output dir", out_dir.display());
     mat.save(&out_dir.join("materials.nc"));
     // mcrt.save(&out_dir.join("mcrt.nc"));
+    image.save(&out_dir.join("image.nc"));
 
     section("Finished");
 }

@@ -2,7 +2,7 @@
     "mesh": {
         "name": "torus_knot",
         "trans": {
-            "scale": 0.5e-12,
+            "scale": 0.5,
             "rot": [
                 30.0,
                 30.0,
