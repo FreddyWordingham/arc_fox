@@ -11,7 +11,7 @@
             "Const": 1.1
         },
         "scat_coeff": {
-            "Const": 4.0
+            "Const": 10.0
         },
         "abs_coeff": {
             "Const": 0.0
@@ -20,7 +20,7 @@
             "Const": 0.0
         },
         "asym": {
-            "Const": 0.4
+            "Const": -0.5
         }
     }
 }
