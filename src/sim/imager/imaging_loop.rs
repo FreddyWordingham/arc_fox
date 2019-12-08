@@ -84,11 +84,11 @@ pub fn start(
                                 shifted = true;
                             }
 
-                            cam.observe(
-                                &mut arr,
-                                phot.ray().pos(),
-                                peel_off(phot.clone(), env.clone(), &universe, &cam),
-                            );
+                            if let Some(weight) =
+                                peel_off(phot.clone(), env.clone(), &universe, &cam)
+                            {
+                                cam.observe(&mut arr, phot.ray().pos(), weight);
+                            }
                         }
                         Hit::Cell(dist) => {
                             let dist = dist + universe.bump_dist();
@@ -109,6 +109,16 @@ pub fn start(
                                 dist,
                                 universe.bump_dist(),
                             );
+
+                            if !cell.boundary().contains(phot.ray().pos()) {
+                                // TODO: This should be able to be removed.
+                                if !universe.grid().dom().contains(phot.ray().pos()) {
+                                    break;
+                                }
+
+                                warn!("It happened!");
+                                cell = find_cell(&phot, universe);
+                            }
                         }
                         Hit::InterfaceCell(dist) => {
                             hit_interface(
@@ -200,8 +210,13 @@ pub fn find_cell<'a>(phot: &Photon, uni: &'a Universe) -> &'a Cell<'a> {
     cell
 }
 
-#[post(ret > 0.0)]
-pub fn peel_off(mut phot: Photon, mut env: Environment, uni: &Universe, cam: &Camera) -> f64 {
+#[post(ret.is_none() || ret.unwrap() > 0.0)]
+pub fn peel_off(
+    mut phot: Photon,
+    mut env: Environment,
+    uni: &Universe,
+    cam: &Camera,
+) -> Option<f64> {
     let g = env.asym;
     let g2 = g.powi(2);
 
@@ -209,14 +224,18 @@ pub fn peel_off(mut phot: Photon, mut env: Environment, uni: &Universe, cam: &Ca
 
     let cos_ang = phot.ray().dir().dot(&dir);
     let mut prob = 0.5 * ((1.0 - g2) / (1.0 + g2 - (2.0 * g * cos_ang)).powf(1.5));
-    if prob < 0.1 {
-        return 0.0;
+    if prob < 0.01 {
+        return None;
     }
 
     phot.set_dir(dir);
     let mut cell = find_cell(&phot, uni);
 
-    while prob >= 0.1 {
+    loop {
+        if prob < 0.01 {
+            return None;
+        }
+
         let cell_dist = cell.boundary().dist(phot.ray()).unwrap();
         let inter_dist = cell.inter_dist_inside_norm_inter(phot.ray());
 
@@ -246,5 +265,5 @@ pub fn peel_off(mut phot: Photon, mut env: Environment, uni: &Universe, cam: &Ca
         cell = find_cell(&phot, uni);
     }
 
-    prob
+    Some(prob)
 }
