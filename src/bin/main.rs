@@ -6,8 +6,8 @@ use arc::{
     form,
     report,
     sci::{math::shape::Aabb, phys::Spectrum},
-    sim::diffusion,
-    // sim::mcrt,
+    // sim::diffusion,
+    sim::mcrt,
     util::{
         dirs::init::io_dirs,
         info::exec,
@@ -56,33 +56,33 @@ fn main() {
     );
 
     section("Building");
-    let mut universe = Universe::build(form.num_threads, builder);
+    let universe = Universe::build(form.num_threads, builder);
 
     section("Setup");
     arc::util::format::universe(&universe);
 
     section("Simulation");
-    let _light = Light::new(
-        Box::new(Point3::origin()),
+    let light = Light::new(
+        Box::new(Point3::new(0.0, 0.0, 250.0e-6)),
         Spectrum::new_laser(630.0e-9),
         1.0,
     );
-    // let light_map = mcrt::run(form.num_threads, form.num_phot, &light, &universe);
-    for k in 0..100 {
-        println!("k: {}", k);
-        diffusion::run(form.num_threads, 0.001, &mut universe);
-        let conc = universe.generate_conc_maps();
-        conc.save(&out_dir.join(format!("{}_concs.nc", k)));
-    }
+    let light_map = mcrt::run(form.num_threads, form.num_phot, &light, &universe);
+    // for k in 0..100 {
+    //     println!("k: {}", k);
+    //     diffusion::run(form.num_threads, 0.001, &mut universe);
+    //     let conc = universe.generate_conc_maps();
+    //     conc.save(&out_dir.join(format!("{}_concs.nc", k)));
+    // }
 
     section("Post-Processing");
     let mat = universe.generate_mat_maps();
-    // let mcrt = light_map.generate_density_maps();
+    let mcrt = light_map.generate_density_maps();
 
     section("Output");
     report!("Output dir", out_dir.display());
     mat.save(&out_dir.join("materials.nc"));
-    // mcrt.save(&out_dir.join("mcrt.nc"));
+    mcrt.save(&out_dir.join("mcrt.nc"));
 
     section("Finished");
 }

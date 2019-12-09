@@ -13,8 +13,8 @@ use crate::{
     },
 };
 use contracts::pre;
-use nalgebra::Point3;
-use nalgebra::{Unit, Vector3};
+use log::warn;
+use nalgebra::{Point3, Unit, Vector3};
 
 /// Cell structure implementation.
 #[derive(Debug)]
@@ -121,7 +121,14 @@ impl<'a> Cell<'a> {
             return Some(self.mat);
         }
 
-        let tar = self.observation_target(pos).unwrap();
+        let tar = self.observation_target(pos);
+        // .expect("Could not determine an observation target."); // TODO: Should be this.
+        if tar.is_none() {
+            warn!("Could not determine an observation target.");
+            return Some(self.mat);
+        }
+        let tar = tar.unwrap();
+
         let ray = Ray::new(*pos, Unit::new_normalize(tar - pos));
         let mut nearest: Option<(f64, &Material)> = None;
         for (inter, tris) in self.inter_tris() {

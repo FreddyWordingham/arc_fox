@@ -111,6 +111,16 @@ pub fn start(
                                 dist,
                                 universe.bump_dist(),
                             );
+
+                            if !cell_rec.0.boundary().contains(phot.ray().pos()) {
+                                // TODO: This should be able to be removed.
+                                if !universe.grid().dom().contains(phot.ray().pos()) {
+                                    break;
+                                }
+
+                                warn!("It happened!");
+                                cell_rec = cell_and_record(&phot, universe, &mut lightmap);
+                            }
                         }
                         Hit::InterfaceCell(dist) => {
                             hit_interface(
