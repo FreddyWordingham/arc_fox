@@ -1,22 +1,26 @@
 {
-    "visc": null,
+    "visc": 8.90e-8,
     "reaction_multiplier": 1.0,
-    "state": null,
+    "state": {
+        "concs": {
+            "ala": 1.0
+        }
+    },
     "optics": {
         "ref_index": {
-            "Const": 1.0
+            "Const": 1.5
         },
         "scat_coeff": {
-            "Const": 0.1
+            "Const": 100.0e3
         },
         "abs_coeff": {
-            "Const": 0.0
+            "Const": 0.630e3
         },
         "shift_coeff": {
             "Const": 0.0
         },
         "asym": {
-            "Const": 0.0
+            "Const": 0.86
         }
     }
 }

@@ -3,8 +3,11 @@
 use arc::{
     args,
     file::io::{Load, Save},
-    form, report,
+    form,
+    report,
     sci::{math::shape::Aabb, phys::Spectrum},
+    sim::diffusion,
+    // sim::mcrt,
     util::{
         dirs::init::io_dirs,
         info::exec,
@@ -53,7 +56,7 @@ fn main() {
     );
 
     section("Building");
-    let universe = Universe::build(form.num_threads, builder);
+    let mut universe = Universe::build(form.num_threads, builder);
 
     section("Setup");
     arc::util::format::universe(&universe);
@@ -65,11 +68,12 @@ fn main() {
         1.0,
     );
     // let light_map = mcrt::run(form.num_threads, form.num_phot, &light, &universe);
-    // for k in 0..100 {
-    //     diffusion::run(form.num_threads, 1.0, &mut universe);
-    //     let conc = universe.generate_conc_maps();
-    //     conc.save(&out_dir.join(format!("{}_concs.nc", k)));
-    // }
+    for k in 0..100 {
+        println!("k: {}", k);
+        diffusion::run(form.num_threads, 0.001, &mut universe);
+        let conc = universe.generate_conc_maps();
+        conc.save(&out_dir.join(format!("{}_concs.nc", k)));
+    }
 
     section("Post-Processing");
     let mat = universe.generate_mat_maps();

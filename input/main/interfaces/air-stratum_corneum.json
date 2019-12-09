@@ -1,0 +1,15 @@
+{
+    "mesh": {
+        "name": "plane",
+        "trans": {
+            "scale": 5.0e-3,
+            "trans": [
+                0.0,
+                0.0,
+                30.0e-6
+            ]
+        }
+    },
+    "out_mat": "air",
+    "in_mat": "stratum_corneum"
+}

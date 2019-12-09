@@ -1,9 +1,5 @@
 //! Diffusion simulation sub-module.
 
-pub mod serial;
-
-pub use self::serial::*;
-
 use crate::world::Universe;
 use contracts::pre;
 use nalgebra::Vector3;
@@ -46,13 +42,11 @@ pub fn run(num_threads: usize, time: f64, universe: &mut Universe) {
         let n = ((time / dt) as u64).max(1);
         let dt = time / n as f64;
 
-        for i in 0..n {
-            println!("{} of {}", i, n);
+        for _ in 0..n {
             diffuse(&mut concs, &coeffs, dt, &widths);
         }
     }
 
-    // for (concs, state) in concs
     for (index, concs) in concs.iter().enumerate() {
         for (cell, conc) in universe.grid_mut().cells_mut().iter_mut().zip(concs) {
             cell.state_mut().concs_mut()[index] = *conc;
