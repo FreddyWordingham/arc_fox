@@ -11,18 +11,13 @@ use arc::{
         },
         phys::Spectrum,
     },
-    sim::diffusion,
-    sim::evolve,
     sim::mcrt,
     util::{
         dirs::init::io_dirs,
         info::exec,
         print::term::{section, title},
     },
-    world::{
-        parts::{index_of_name, Light},
-        Universe, UniverseBuilder,
-    },
+    world::{parts::Light, Universe, UniverseBuilder},
 };
 use log::info;
 use nalgebra::{Point3, Vector3};
@@ -65,7 +60,7 @@ fn main() {
     );
 
     section("Building");
-    let mut universe = Universe::build(form.num_threads, builder);
+    let universe = Universe::build(form.num_threads, builder);
 
     section("Setup");
     arc::util::format::universe(&universe);

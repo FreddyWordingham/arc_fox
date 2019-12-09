@@ -84,8 +84,7 @@ pub fn start(
                                 shifted = true;
                             }
 
-                            if let Some(weight) =
-                                peel_off(phot.clone(), env.clone(), &universe, &cam)
+                            if let Some(weight) = peel_off(phot.clone(), env.clone(), universe, cam)
                             {
                                 cam.observe(&mut arr, phot.ray().pos(), weight);
                             }
