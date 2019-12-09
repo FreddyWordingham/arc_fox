@@ -12,6 +12,7 @@ use ndarray_stats::QuantileExt;
 pub fn run(num_threads: usize, time: f64, universe: &mut Universe) {
     let mut concs = Vec::with_capacity(universe.species().len());
     let mut coeffs = Vec::with_capacity(universe.species().len());
+    let mut sources = Vec::with_capacity(universe.species().len());
 
     for (index, _species) in universe.species().iter().enumerate() {
         concs.push(
@@ -26,6 +27,12 @@ pub fn run(num_threads: usize, time: f64, universe: &mut Universe) {
                 .cells()
                 .map(|cell| cell.state().diff_coeffs()[index]),
         );
+        sources.push(
+            universe
+                .grid()
+                .cells()
+                .map(|cell| cell.state().sources()[index]),
+        );
     }
 
     let max_coeffs: Vec<_> = coeffs
@@ -37,13 +44,15 @@ pub fn run(num_threads: usize, time: f64, universe: &mut Universe) {
     let dx = widths.min();
     let max_dts = max_coeffs.iter().map(|d| dx.powi(2) / (4.0 * d));
 
-    for ((mut concs, coeffs), max_dt) in concs.iter_mut().zip(coeffs).zip(max_dts) {
+    for (((mut concs, coeffs), sources), max_dt) in
+        concs.iter_mut().zip(coeffs).zip(sources).zip(max_dts)
+    {
         let dt = max_dt / 10.0;
         let n = ((time / dt) as u64).max(1);
         let dt = time / n as f64;
 
         for _ in 0..n {
-            diffuse(&mut concs, &coeffs, dt, &widths);
+            diffuse(&mut concs, &coeffs, &sources, dt, &widths);
         }
     }
 
@@ -58,6 +67,7 @@ pub fn run(num_threads: usize, time: f64, universe: &mut Universe) {
 pub fn diffuse(
     concs: &mut Array3<f64>,
     coeffs: &Array3<Option<f64>>,
+    sources: &Array3<f64>,
     dt: f64,
     widths: &Vector3<f64>,
 ) {
@@ -77,15 +87,17 @@ pub fn diffuse(
                 let index = [xi, yi, zi];
 
                 if let Some(coeff) = coeffs[index] {
-                    concs[index] += coeff
-                        * (((old[[prev_x, yi, zi]] - (2.0 * old[index]) + old[[next_x, yi, zi]])
+                    concs[index] += ((coeff
+                        * (((old[[prev_x, yi, zi]] - (2.0 * old[index])
+                            + old[[next_x, yi, zi]])
                             / widths.x.powi(2))
                             + ((old[[xi, prev_y, zi]] - (2.0 * old[index])
                                 + old[[xi, next_y, zi]])
                                 / widths.x.powi(2))
                             + ((old[[xi, yi, prev_z]] - (2.0 * old[index])
                                 + old[[xi, yi, next_z]])
-                                / widths.x.powi(2)))
+                                / widths.x.powi(2))))
+                        + sources[index])
                         * dt;
                 }
             }

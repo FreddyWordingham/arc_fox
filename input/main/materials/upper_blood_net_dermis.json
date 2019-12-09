@@ -1,7 +1,6 @@
 {
-    "visc": 8.90e-8,
+    "visc": 8.90e-4,
     "reaction_multiplier": 1.0,
-    "state": null,
     "optics": {
         "ref_index": {
             "Const": 1.29
@@ -17,6 +16,11 @@
         },
         "asym": {
             "Const": 0.95
+        }
+    },
+    "state": {
+        "sources": {
+            "o2": 0.01
         }
     }
 }
