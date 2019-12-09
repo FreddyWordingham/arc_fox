@@ -14,13 +14,13 @@ from pylab import meshgrid, cm, imshow, contour, clabel, colorbar, axis, title, 
 tot_raman = []
 tot_skip = []
 
-f = open("/Users/lm579/Projects/arc/output/ptfe/tot_raman.txt", 'r')
+f = open("/Users/lm579/Projects/arc/output/ptfe/tot_raman_100k_martha.txt", 'r')
 for line in f:
     data = line.split(",")
     tot_raman.append(np.float(data[0]))
-    tot_skip.append(np.float(data[1]))
+    #tot_skip.append(np.float(data[1]))
 
 plt.plot(tot_raman, label = "Total Raman signal")
-plt.scatter(range(len(tot_skip)), tot_skip, label = "Total skipped photons")
-plt.legend()
+#plt.scatter(range(len(tot_skip)), tot_skip, label = "Total skipped photons")
+#plt.legend()
 plt.show()
