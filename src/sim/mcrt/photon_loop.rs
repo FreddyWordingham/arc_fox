@@ -68,6 +68,15 @@ pub fn start(
                         );
                     }
 
+                    let roulette = 0.1;
+                    if phot.weight() < roulette {
+                        if rng.gen_range(0.0_f64, 1.0) <= roulette {
+                            phot.multiply_weight(1.0 / roulette);
+                        } else {
+                            break;
+                        }
+                    }
+
                     let scat_dist = -(rng.gen_range(0.0_f64, 1.0)).ln() / env.inter_coeff;
                     let cell_dist = cell_rec.0.boundary().dist(phot.ray()).unwrap();
                     let inter_dist = cell_rec.0.inter_dist(phot.ray());

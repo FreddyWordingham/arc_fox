@@ -5,20 +5,16 @@
             "Const": 1.47
         },
         "scat_coeff": {
-            "Const": 255.5
+            "Const": 167000.0
         },
         "abs_coeff": {
-            "Bifur": [
-                900.0e-9,
-                2.0,
-                10.0
-            ]
-        },
-        "shift_coeff": {
             "Const": 0.0
         },
+        "shift_coeff": {
+            "Const": 0.167
+        },
         "asym": {
-            "Const": 0.1
+            "Const": 0.9
         }
     }
 }
