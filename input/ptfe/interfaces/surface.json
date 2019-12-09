@@ -1,0 +1,10 @@
+{
+    "mesh": {
+        "name": "slab",
+        "trans": {
+            "scale": 0.95
+        }
+    },
+    "in_mat": "ptfe",
+    "out_mat": "intralipid"
+}

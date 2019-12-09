@@ -1,4 +1,4 @@
-//! Main example function demonstrating core capabilities.
+//! Laura's ptfe experiment.
 
 use arc::{
     args,
@@ -73,40 +73,22 @@ fn main() {
     section("Simulation");
     let light = Light::new(
         Box::new(Aperture::new(
-            Ray::new(Point3::new(0.0, 0.0, 250.0e-6), -Vector3::z_axis()),
-            15.0_f64.to_radians(),
+            Ray::new(Point3::new(-0.013, 0.0, 0.0), Vector3::x_axis()),
+            0.01_f64.to_radians(),
         )),
-        Spectrum::new_laser(630.0e-9),
+        Spectrum::new_laser(830.0e-9),
         1.0,
     );
     let light_map = mcrt::run(form.num_threads, form.num_phot, &light, &universe);
 
-    let ppix_index = index_of_name(universe.species(), "ppix");
-    // for (&mut cell, rec) in universe.grid_mut().cells_mut().zip(light_map.recs.iter()) {}
-    // for (cell, rec) in universe.grid_mut().cells_mut().zip(light_map.recs) {}
-    let cells = universe.grid_mut().cells_mut();
-    let recs = light_map.recs;
-    // for (c, r) in cells.zip(recs) {}
-    for (rec, cell) in recs.iter().zip(cells) {
-        cell.state_mut().concs_mut()[ppix_index] = rec.dist_travelled;
-    }
-
-    for k in 0..=10 {
-        println!("k: {}", k);
-        let conc = universe.generate_conc_maps();
-        conc.save(&out_dir.join(format!("{}_concs.nc", k)));
-        diffusion::run(form.num_threads, 6.0, &mut universe);
-        evolve::run(form.num_threads, 6.0, &mut universe);
-    }
-
     section("Post-Processing");
     let mat = universe.generate_mat_maps();
-    // let mcrt = light_map.generate_density_maps();
+    let mcrt = light_map.generate_density_maps();
 
     section("Output");
     report!("Output dir", out_dir.display());
     mat.save(&out_dir.join("materials.nc"));
-    // mcrt.save(&out_dir.join("mcrt.nc"));
+    mcrt.save(&out_dir.join("mcrt.nc"));
 
     section("Finished");
 }

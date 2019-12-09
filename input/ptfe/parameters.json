@@ -1,0 +1,18 @@
+{
+    "num_threads": 1,
+    "half_widths": [
+        0.013,
+        0.0205,
+        0.0205
+    ],
+    "res": [
+        101,
+        101,
+        101
+    ],
+    "reactions": [],
+    "interfaces": [
+        "surface"
+    ],
+    "num_phot": 1000
+}

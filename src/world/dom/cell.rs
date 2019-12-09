@@ -63,7 +63,7 @@ impl<'a> Cell<'a> {
             {
                 let dir = Unit::new_normalize(tar - pos);
 
-                if norm.dot(&dir).abs() > 0.1 {
+                if norm.dot(&dir).abs() > 0.01 {
                     ray = Some(Ray::new(pos, dir));
                     break;
                 }
