@@ -8,7 +8,7 @@ documention = "https://freddywordingham.github.io/arc"
 
 [dependencies]
 colog = "0.2.1"
-colored = "1.8.0"
+colored = "1.9.0"
 contracts = { version = "0.3.0", features = [] }
 indicatif = "0.13.0"
 log = "0.4.8"
@@ -18,10 +18,10 @@ ndarray-stats = "0.3.0"
 netcdf = "0.3.1"
 physical_constants = "0.3.0"
 rand = "0.7.2"
-rayon = "1.2.0"
+rayon = "1.2.1"
 self-ref = "0.1.2"
-serde = { version = "1.0.102", features = ["derive"] }
-serde_json = "1.0.41"
+serde = { version = "1.0.103", features = ["derive"] }
+serde_json = "1.0.44"
 terminal_size = "0.1.8"
 
 # Development profile: "cargo build".

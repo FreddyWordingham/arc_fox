@@ -82,16 +82,13 @@ fn main() {
     let light_map = mcrt::run(form.num_threads, form.num_phot, &light, &universe);
 
     let ppix_index = index_of_name(universe.species(), "ppix");
-    // for (&mut cell, rec) in universe.grid_mut().cells_mut().zip(light_map.recs.iter()) {}
-    // for (cell, rec) in universe.grid_mut().cells_mut().zip(light_map.recs) {}
     let cells = universe.grid_mut().cells_mut();
     let recs = light_map.recs;
-    // for (c, r) in cells.zip(recs) {}
     for (rec, cell) in recs.iter().zip(cells) {
         cell.state_mut().concs_mut()[ppix_index] = rec.dist_travelled;
     }
 
-    for k in 0..=10 {
+    for k in 0..=600 {
         println!("k: {}", k);
         let conc = universe.generate_conc_maps();
         conc.save(&out_dir.join(format!("{}_concs.nc", k)));
