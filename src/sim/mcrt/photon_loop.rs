@@ -11,6 +11,7 @@ use crate::{
         progress::ParallelBar,
     },
     world::{dom::Cell, mat::Environment, parts::Light, Universe},
+    report,
 };
 use contracts::{pre, post};
 use log::warn;
@@ -255,18 +256,18 @@ pub fn peel_off(
     let dir = Unit::new_normalize(pos - phot.ray().pos());
 
     let cos_ang = phot.ray().dir().dot(&dir);
-    let mut prob = 0.5 * ((1.0 - g2) / (1.0 + g2 - (2.0 * g * cos_ang)).powf(1.5));
-    if prob < 0.01 {
-        return None;
-    }
+    let mut prob = phot.weight()*0.5 * ((1.0 - g2) / (1.0 + g2 - (2.0 * g * cos_ang)).powf(1.5));
+    //if prob < 0.01 {
+    //    return None;
+    //}
 
     phot.set_dir(dir);
     let mut cell = find_cell(&phot, uni);
 
     loop {
-        if prob < 0.01 {
-            return None;
-        }
+        //if prob < 0.00001 {
+        //    return None;
+        //}
 
         let cell_dist = cell.boundary().dist(phot.ray()).unwrap();
         let inter_dist = cell.inter_dist_inside_norm_inter(phot.ray());
@@ -296,7 +297,7 @@ pub fn peel_off(
 
         cell = find_cell(&phot, uni);
     }
-
+    //report!(prob);
     Some(prob)
 }
 
