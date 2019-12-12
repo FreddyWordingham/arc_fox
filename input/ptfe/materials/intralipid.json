@@ -8,14 +8,14 @@
         },
         "scat_coeff":
         {
-            "Const": 0.000001
+            "Const": 255.5
         },
         "abs_coeff":
         {
             "Bifur": [
                 900.0e-9,
-                0.0,
-                0.0
+                2.0,
+                10.0
             ]
         },
         "shift_coeff":

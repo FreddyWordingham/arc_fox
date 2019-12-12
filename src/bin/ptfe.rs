@@ -90,7 +90,7 @@ fn main() {
     report!("Output dir", out_dir.display());
     mat.save(&out_dir.join("materials.nc"));
     mcrt.save(&out_dir.join("mcrt.nc"));
-
+    report!("Total created Raman:", total.shifts);
     report!("Total detected Raman:", total.det_raman);
 
     section("Finished");

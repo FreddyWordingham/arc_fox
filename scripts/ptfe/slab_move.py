@@ -14,5 +14,5 @@ innerTrans[0] = np.float(sys.argv[1])
 #print(innerTrans)
 #print(outerTrans)
 #print("data: ", data)
-with open("setup.json", "w") as jsonFile:
+with open("input/ptfe/interfaces/surface.json", "w") as jsonFile:
     json.dump(data, jsonFile)
