@@ -1,5 +1,7 @@
 //! Diffusion simulation sub-module.
 
+pub mod step;
+
 use crate::world::Universe;
 use contracts::pre;
 use nalgebra::Vector3;
