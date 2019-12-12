@@ -16,6 +16,8 @@ pub struct Record {
     pub shifts: f64,
     /// Total distance travelled by photons.
     pub dist_travelled: f64,
+    ///Total weight of detected Raman photons.
+    pub det_raman: f64,
 }
 
 impl Default for Record {
@@ -26,6 +28,7 @@ impl Default for Record {
             absorptions: 0.0,
             shifts: 0.0,
             dist_travelled: 0.0,
+            det_raman: 0.0,
         }
     }
 }
@@ -37,5 +40,17 @@ impl AddAssign<Self> for Record {
         self.absorptions += rhs.absorptions;
         self.shifts += rhs.shifts;
         self.dist_travelled += rhs.dist_travelled;
+        self.det_raman += rhs.det_raman;
+    }
+}
+
+impl AddAssign<&Self> for Record {
+    fn add_assign(&mut self, rhs: &Self) {
+        self.emissions += rhs.emissions;
+        self.scatters += rhs.scatters;
+        self.absorptions += rhs.absorptions;
+        self.shifts += rhs.shifts;
+        self.dist_travelled += rhs.dist_travelled;
+        self.det_raman += rhs.det_raman;
     }
 }

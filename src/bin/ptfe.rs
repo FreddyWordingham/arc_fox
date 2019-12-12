@@ -22,6 +22,7 @@ use arc::{
 use log::info;
 use nalgebra::{Point3, Vector3};
 use std::path::Path;
+//use ndarray-stats::Quartile
 
 form!(Parameters,
     num_threads: usize;
@@ -79,11 +80,18 @@ fn main() {
     section("Post-Processing");
     let mat = universe.generate_mat_maps();
     let mcrt = light_map.generate_density_maps();
+    // let total:mcrt::Record = light_map.recs.iter().sum();
+    let mut total = mcrt::Record::default();
+    for rec in light_map.recs.iter() {
+        total += rec;
+    }
 
     section("Output");
     report!("Output dir", out_dir.display());
     mat.save(&out_dir.join("materials.nc"));
     mcrt.save(&out_dir.join("mcrt.nc"));
+
+    report!("Total detected Raman:", total.shifts);
 
     section("Finished");
 }

@@ -12,13 +12,14 @@ use crate::{
     },
     world::{dom::Cell, mat::Environment, parts::Light, Universe},
 };
-use contracts::pre;
+use contracts::{pre, post};
 use log::warn;
 use rand::{rngs::ThreadRng, thread_rng, Rng};
 use std::{
     f64::{consts::PI, MIN_POSITIVE},
     sync::{Arc, Mutex},
 };
+use nalgebra::{Unit, Point3};
 
 /// Start a single-threaded photon loop.
 #[pre(num_phot > 0)]
@@ -86,6 +87,7 @@ pub fn start(
                             cell_rec.1.dist_travelled += dist;
                             phot.travel(dist);
 
+
                             cell_rec.1.scatters += phot.weight();
                             phot.rotate(
                                 henyey_greenstein(&mut rng, env.asym),
@@ -99,6 +101,10 @@ pub fn start(
                                 cell_rec.1.shifts += phot.weight();
                                 shifted = true;
                             }
+                            if shifted{
+                                cell_rec.1.det_raman += peel_off(phot.clone(), env.clone(), &universe,
+                                    &Point3::new(0.0129, 0.0, 0.0)).unwrap_or(0.0);
+                                }
                         }
                         Hit::Cell(dist) => {
                             let dist = dist + universe.bump_dist();
@@ -233,4 +239,90 @@ fn cell_and_record<'a>(
 #[pre(x <= max)]
 pub fn index(x: f64, min: f64, max: f64, res: usize) -> usize {
     (((x - min) / (max - min)) * res as f64) as usize
+}
+
+
+#[post(ret.is_none() || ret.unwrap() >= 0.0)]
+pub fn peel_off(
+    mut phot: Photon,
+    mut env: Environment,
+    uni: &Universe,
+    pos: &Point3<f64>,
+) -> Option<f64> {
+    let g = env.asym;
+    let g2 = g.powi(2);
+
+    let dir = Unit::new_normalize(pos - phot.ray().pos());
+
+    let cos_ang = phot.ray().dir().dot(&dir);
+    let mut prob = 0.5 * ((1.0 - g2) / (1.0 + g2 - (2.0 * g * cos_ang)).powf(1.5));
+    if prob < 0.01 {
+        return None;
+    }
+
+    phot.set_dir(dir);
+    let mut cell = find_cell(&phot, uni);
+
+    loop {
+        if prob < 0.01 {
+            return None;
+        }
+
+        let cell_dist = cell.boundary().dist(phot.ray()).unwrap();
+        let inter_dist = cell.inter_dist_inside_norm_inter(phot.ray());
+
+        if let Some((dist, inside, _norm, inter)) = inter_dist {
+            if dist < cell_dist {
+                prob *= (-(dist + uni.bump_dist()) * env.inter_coeff).exp();
+                phot.travel(dist + uni.bump_dist());
+
+                if inside {
+                    env = inter.in_mat().optics().env(phot.wavelength());
+                } else {
+                    env = inter.out_mat().optics().env(phot.wavelength());
+                }
+            } else {
+                prob *= (-(cell_dist + uni.bump_dist()) * env.inter_coeff).exp();
+                phot.travel(cell_dist + uni.bump_dist());
+            }
+        } else {
+            prob *= (-(cell_dist + uni.bump_dist()) * env.inter_coeff).exp();
+            phot.travel(cell_dist + uni.bump_dist());
+        }
+
+        if !uni.grid().dom().contains(phot.ray().pos()) {
+            break;
+        }
+
+        cell = find_cell(&phot, uni);
+    }
+
+    Some(prob)
+}
+
+/// Retrieve a reference for the cell a photon is located within.
+pub fn find_cell<'a>(phot: &Photon, uni: &'a Universe) -> &'a Cell<'a> {
+    let grid = uni.grid();
+    let dom = grid.dom();
+    let mins = dom.mins();
+    let maxs = dom.maxs();
+    let shape = grid.cells().shape();
+
+    let id: Vec<usize> = phot
+        .ray()
+        .pos()
+        .iter()
+        .zip(mins.iter().zip(maxs.iter()))
+        .zip(shape)
+        .map(|((p, (min, max)), n)| index(*p, *min, *max, *n))
+        .collect();
+    let index = (id[0], id[1], id[2]);
+
+    let cell = &uni.grid().cells()[index];
+
+    if !cell.boundary().contains(phot.ray().pos()) {
+        panic!("Not inside that cell!"); // TODO: Remove
+    }
+
+    cell
 }

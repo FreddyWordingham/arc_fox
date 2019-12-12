@@ -43,6 +43,7 @@ impl LightMap {
             ("absorption density", self.absorption_density()),
             ("shift density", self.shift_density()),
             ("dist travelled density", self.dist_travelled_density()),
+            ("detected Raman photons density", self.det_raman_density()),
         ]
     }
 
@@ -51,6 +52,7 @@ impl LightMap {
     density_datacube!(absorption_density, absorptions);
     density_datacube!(shift_density, shifts);
     density_datacube!(dist_travelled_density, dist_travelled);
+    density_datacube!(det_raman_density, det_raman);
 }
 
 impl AddAssign<&Self> for LightMap {

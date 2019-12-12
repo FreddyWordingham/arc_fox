@@ -6,13 +6,13 @@
         0.0205
     ],
     "res": [
-        101,
-        101,
-        101
+        1,
+        1,
+        1
     ],
     "reactions": [],
     "interfaces": [
         "surface"
     ],
-    "num_phot": 100000
+    "num_phot": 10000
 }

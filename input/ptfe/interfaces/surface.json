@@ -1,8 +1,11 @@
 {
-    "mesh": {
+    "mesh":
+    {
         "name": "slab",
-        "trans": {
-            "scale": 0.95
+        "trans":
+        {
+            "trans": [0.0, 0.0, 0.0],
+            "scale": 1.0
         }
     },
     "in_mat": "ptfe",

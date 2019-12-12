@@ -1,23 +1,29 @@
 {
     "reaction_multiplier": 1.0,
-    "optics": {
-        "ref_index": {
+    "optics":
+    {
+        "ref_index":
+        {
             "Const": 1.47
         },
-        "scat_coeff": {
-            "Const": 255.5
+        "scat_coeff":
+        {
+            "Const": 0.000001
         },
-        "abs_coeff": {
+        "abs_coeff":
+        {
             "Bifur": [
                 900.0e-9,
-                2.0,
-                10.0
+                0.0,
+                0.0
             ]
         },
-        "shift_coeff": {
+        "shift_coeff":
+        {
             "Const": 0.0
         },
-        "asym": {
+        "asym":
+        {
             "Const": 0.1
         }
     }
