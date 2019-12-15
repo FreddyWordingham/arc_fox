@@ -4,7 +4,13 @@ use arc::{
     args,
     file::io::{Load, Save},
     form, report,
-    sci::{math::shape::Aabb, phys::Spectrum},
+    sci::{
+        math::{
+            rt::Ray,
+            shape::{Aabb, Aperture},
+        },
+        phys::Spectrum,
+    },
     sim::{imager, imager::Camera},
     util::{
         dirs::init::io_dirs,
@@ -61,15 +67,23 @@ fn main() {
     arc::util::format::universe(&universe);
 
     section("Simulation");
+    // let light = Light::new(
+    //     Box::new(Point3::origin()),
+    //     Spectrum::new_laser(630.0e-9),
+    //     1.0,
+    // );
     let light = Light::new(
-        Box::new(Point3::origin()),
+        Box::new(Aperture::new(
+            Ray::new(Point3::new(0.0, 0.0, 0.8), -Vector3::z_axis()),
+            45.0_f64.to_radians(),
+        )),
         Spectrum::new_laser(630.0e-9),
         1.0,
     );
     // let light_map = mcrt::run(form.num_threads, form.num_phot, &light, &universe);
     let cam = {
         let d = 2.0;
-        let pos = Point3::new(d, -d, d);
+        let pos = Point3::new(d, d, d / 2.0);
         let tar = Point3::origin();
         let dir = Unit::new_normalize(tar - pos);
         let max_ang = (dir.dot(&Unit::new_normalize(universe.grid().dom().maxs() - pos))).acos();
