@@ -4,6 +4,9 @@
     "state": {
         "concs": {
             "ala": 1.0
+        },
+        "sources": {
+            "ala": 0.1
         }
     },
     "optics": {

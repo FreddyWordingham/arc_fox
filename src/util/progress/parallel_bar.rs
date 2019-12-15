@@ -47,7 +47,7 @@ impl ParallelBar {
         }
 
         let allocation = (remaining / self.counts.len() as u64).min(inc).max(1);
-        // self.pb.inc(allocation);
+        self.pb.inc(allocation);
         self.counts[thread_id] += allocation;
 
         Some((sum, sum + allocation))
@@ -55,6 +55,6 @@ impl ParallelBar {
 
     /// Finish with a message.
     pub fn finish_with_message(&mut self, msg: &'static str) {
-        // self.pb.finish_with_message(msg);
+        self.pb.finish_with_message(msg);
     }
 }
