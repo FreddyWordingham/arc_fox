@@ -74,7 +74,7 @@ fn main() {
     // );
     let light = Light::new(
         Box::new(Aperture::new(
-            Ray::new(Point3::new(0.0, 0.0, 0.8), -Vector3::z_axis()),
+            Ray::new(Point3::new(0.0, 0.0, 0.4), -Vector3::z_axis()),
             45.0_f64.to_radians(),
         )),
         Spectrum::new_laser(630.0e-9),

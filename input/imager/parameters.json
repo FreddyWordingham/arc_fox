@@ -1,14 +1,14 @@
 {
     "num_threads": 4,
     "half_widths": [
-        1.0,
-        1.0,
-        1.0
+        0.5,
+        0.5,
+        0.5
     ],
     "res": [
-        31,
-        31,
-        31
+        101,
+        101,
+        101
     ],
     "reactions": [
         "ppix_formation"
@@ -16,6 +16,6 @@
     "interfaces": [
         "surface"
     ],
-    "num_phot": 100000,
+    "num_phot": 1000,
     "power": 6
 }
