@@ -114,29 +114,31 @@ fn main() {
     );
     let light_map = mcrt::run(form.num_threads, form.num_phot, &light, &universe);
 
-    let ppix_index = index_of_name(universe.species(), "ppix");
+    let udens_index = index_of_name(universe.species(), "udens");
     let cells = universe.grid_mut().cells_mut();
-    let recs = light_map.recs;
-    for (rec, cell) in recs.iter().zip(cells) {
-        cell.state_mut().concs_mut()[ppix_index] = rec.dist_travelled;
+    for (rec, cell) in light_map.recs.iter().zip(cells) {
+        cell.state_mut().concs_mut()[udens_index] = rec.absorptions;
     }
 
-    for k in 0..=100 {
+    let steps = 100;
+    let time = 600.0;
+    let dt = time / steps as f64;
+    for k in 0..=steps {
         println!("k: {}", k);
         let conc = universe.generate_conc_maps();
         conc.save(&out_dir.join(format!("concs_{}.nc", k)));
-        diffusion::run(&mut universe, 60.0);
+        diffusion::run(&mut universe, dt);
         // evolve::run(form.num_threads, 6.0, &mut universe);
     }
 
     section("Post-Processing");
     let mat = universe.generate_mat_maps();
-    // let mcrt = light_map.generate_density_maps();
+    let mcrt = light_map.generate_density_maps();
 
     section("Output");
     report!("Output dir", out_dir.display());
     mat.save(&out_dir.join("materials.nc"));
-    // mcrt.save(&out_dir.join("mcrt.nc"));
+    mcrt.save(&out_dir.join("mcrt.nc"));
 
     section("Finished");
 }

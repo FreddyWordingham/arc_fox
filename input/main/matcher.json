@@ -6,12 +6,13 @@
         5.0e-3
     ],
     "res": [
-        101,
-        101,
-        101
+        51,
+        51,
+        51
     ],
     "reactions": [
-        "ppix_formation"
+        "ppix_formation",
+        "radical_production"
     ],
     "interfaces": [
         "air-stratum_corneum",

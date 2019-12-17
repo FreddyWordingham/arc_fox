@@ -24,8 +24,13 @@ pub fn step_species(
     let max_coeff = coeffs
         .iter()
         .filter_map(Option::as_ref)
-        .max_by(|a, b| a.partial_cmp(b).expect("Invalid diffusion coefficient."))
-        .unwrap();
+        .max_by(|a, b| a.partial_cmp(b).expect("Invalid diffusion coefficient."));
+
+    if max_coeff.is_none() {
+        return;
+    }
+
+    let max_coeff = max_coeff.unwrap();
 
     let max_dt = cell_size.min().powi(2) / (4.0 * max_coeff);
     let dt = max_dt / 10.0;

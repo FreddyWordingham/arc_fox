@@ -7,6 +7,10 @@
         [
             "ppix",
             1
+        ],
+        [
+            "udens",
+            1
         ]
     ],
     "products": [
@@ -16,10 +20,11 @@
         ]
     ],
     "rate": {
-        "Second": [
-            0.8,
+        "Third": [
+            0.9,
             "o2",
-            "ppix"
+            "ppix",
+            "udens"
         ]
     }
 }
