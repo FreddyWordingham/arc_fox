@@ -1,0 +1,14 @@
+00  youre_the_one               sugarcult
+01  thanks_i_hate_it            simple_creatures
+02  ps_i_hope_youre_happy       the_chainsmokers
+03  nvm                         simple_creatures
+04  the_less_i_know_the_better  tame_impala
+05  mona_lisa                   the_all_american_rejects
+06  one_little_lie              simple_creatures
+07  lost_in_you                 sugarcult
+08  i_wanna                     the_all_american_rejects
+09  until_youre_over_me         maroon_5
+10  worst_december              sugarcult
+11  lucky_people                waterparks
+12  the_last_song               the_all_american_rejects
+13  miserable_at_best           mayday_parade
