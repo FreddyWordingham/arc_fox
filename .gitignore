@@ -1,4 +1,5 @@
 .*/
+!.hidden/
 /target
 /output
 **/*.rs.bk
