@@ -25,6 +25,11 @@ impl Ray {
         &self.pos
     }
 
+    /// Set the origin position.
+    pub fn set_pos(&mut self, pos: Point3<f64>) {
+        self.pos = pos;
+    }
+
     /// Reference the facing direction.
     #[post((ret.is_normal()))]
     pub fn dir(&self) -> &Unit<Vector3<f64>> {
