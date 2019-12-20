@@ -12,7 +12,7 @@ use nalgebra::{Point3, Rotation3, Unit, Vector3};
 use ndarray::Array2;
 
 /// Resolution of the image.
-const RESOLUTION: (usize, usize) = (1024 / 4, 1024 / 2);
+const RESOLUTION: (usize, usize) = (1024 / 8, 1024 / 4);
 
 /// Field of view.
 const FOV: f64 = 45.0;

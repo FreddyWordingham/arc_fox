@@ -10,7 +10,7 @@ use contracts::pre;
 #[pre(num_threads > 0)]
 #[pre(time > 0.0)]
 pub fn run(num_threads: usize, time: f64, universe: &mut Universe) {
-    let mut mults = universe
+    let mut _mults = universe
         .grid()
         .cells()
         .map(|cell| cell.mat().reaction_multiplier());
@@ -22,11 +22,11 @@ pub fn run(num_threads: usize, time: f64, universe: &mut Universe) {
     // .into_par_iter()
     // .for_each(|cell| evolve_cell(cell, reactions, time));
 
-    for (cell, mult) in universe.grid_mut().cells_mut().zip(mults.iter()) {
-        // evolve_cell(cell, reactions, time);
-        let state = cell.state_mut();
-        for reaction in universe.reactions() {}
-    }
+    // for (cell, mult) in universe.grid_mut().cells_mut().zip(mults.iter()) {
+    //     // evolve_cell(cell, reactions, time);
+    //     let state = cell.state_mut();
+    //     for reaction in universe.reactions() {}
+    // }
 }
 
 /// Evolve a single cell.
