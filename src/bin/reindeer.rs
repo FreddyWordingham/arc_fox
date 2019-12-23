@@ -12,7 +12,7 @@ use nalgebra::{Point3, Rotation3, Unit, Vector3};
 use ndarray::Array2;
 
 /// Horizontal resolution power.
-const POWER: u32 = 8;
+const POWER: u32 = 11;
 
 /// Field of view.
 const FOV: f64 = 45.0;
@@ -32,7 +32,7 @@ fn main() {
 
     let dist = 1.5;
     let ang = in_ang.to_radians();
-    let view_pos = Point3::new(dist * ang.sin(), dist * ang.cos(), 0.50);
+    let view_pos = Point3::new(dist * ang.sin(), dist * ang.cos(), 0.20);
     let view_dir = Unit::new_normalize(Point3::new(0.0, 0.0, 0.8) - view_pos);
     let sun_dir = Unit::new_normalize(Point3::new(10.0, -10.0, 10.0) - Point3::origin());
 
