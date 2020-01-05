@@ -1,3 +1,3 @@
-//! Information utility sub-module.
+//! Program information sub-module.
 
 pub mod exec;

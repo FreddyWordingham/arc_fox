@@ -1,4 +1,4 @@
-//! Args macro.
+//! Argument getting macro.
 
 /// Import command line arguments as a requested type.
 #[macro_export]

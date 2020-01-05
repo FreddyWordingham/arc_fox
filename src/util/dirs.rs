@@ -1,4 +1,4 @@
-//! Directory utility sub-module.
+//! Directory sub-module.
 
 pub mod init;
 pub mod install;

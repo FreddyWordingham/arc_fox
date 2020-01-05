@@ -7,8 +7,8 @@ pub fn name() -> String {
     let args: Vec<String> = args().collect();
     Path::new(&args[0])
         .file_name()
-        .expect("Unable to determine binary name.")
+        .expect("Unable to determine program name.")
         .to_str()
-        .expect("Unable to convert binary name into str.")
+        .expect("Unable to convert program name into str.")
         .to_string()
 }

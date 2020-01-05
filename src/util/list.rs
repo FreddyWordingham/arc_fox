@@ -1,4 +1,4 @@
-//! List utility sub-module.
+//! List sub-module.
 
 pub mod alphabet;
 pub mod dimension;
