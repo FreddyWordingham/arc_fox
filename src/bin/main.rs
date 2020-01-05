@@ -1,7 +1,9 @@
 //! Main testing function.
 
 use arc::{
-    args, form, report,
+    args,
+    file::io::Load,
+    form, report,
     util::{
         dirs::init::io_dirs,
         info::exec,
@@ -23,10 +25,15 @@ pub fn main() {
 
     let form_name = Path::new(&form_name);
     let (in_dir, out_dir) = io_dirs(None, None);
-
-    report!("Form name", form_name.display());
-    report!("Input dir", in_dir.display());
-    report!("Output dir", out_dir.display());
+    let form_path = &in_dir.join(form_name);
 
     section("Loading");
+    report!("Input dir", in_dir.display());
+
+    report!("Form name", form_name.display());
+    let form = Parameters::load(&form_path);
+    report!(form.num_threads);
+
+    section("Output");
+    report!("Output dir", out_dir.display());
 }
