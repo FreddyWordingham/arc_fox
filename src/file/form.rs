@@ -1,4 +1,4 @@
-/// Form macro.
+//! Form sub-module.
 
 /// Concisely create an input form.
 #[macro_export]
