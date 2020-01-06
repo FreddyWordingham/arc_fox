@@ -1,6 +1,7 @@
 //! MCRT photon-loop functions.
 
 use crate::{
+    report,
     sci::{
         math::{rng::distribution::henyey_greenstein, rt::Trace},
         phys::{Crossing, Photon},
@@ -11,16 +12,15 @@ use crate::{
         progress::ParallelBar,
     },
     world::{dom::Cell, mat::Environment, parts::Light, Universe},
-    report,
 };
-use contracts::{pre, post};
+use contracts::{post, pre};
 use log::warn;
+use nalgebra::{Point3, Unit};
 use rand::{rngs::ThreadRng, thread_rng, Rng};
 use std::{
     f64::{consts::PI, MIN_POSITIVE},
     sync::{Arc, Mutex},
 };
-use nalgebra::{Unit, Point3};
 
 /// Start a single-threaded photon loop.
 #[pre(num_phot > 0)]
@@ -88,7 +88,6 @@ pub fn start(
                             cell_rec.1.dist_travelled += dist;
                             phot.travel(dist);
 
-
                             cell_rec.1.scatters += phot.weight();
                             phot.rotate(
                                 henyey_greenstein(&mut rng, env.asym),
@@ -102,10 +101,15 @@ pub fn start(
                                 cell_rec.1.shifts += phot.weight();
                                 shifted = true;
                             }
-                            if shifted{
-                                cell_rec.1.det_raman += peel_off(phot.clone(), env.clone(), &universe,
-                                    &Point3::new(0.0129, 0.0, 0.0)).unwrap_or(0.0);
-                                }
+                            if shifted {
+                                cell_rec.1.det_raman += peel_off(
+                                    phot.clone(),
+                                    env.clone(),
+                                    &universe,
+                                    &Point3::new(0.0129, 0.0, 0.0),
+                                )
+                                .unwrap_or(0.0);
+                            }
                         }
                         Hit::Cell(dist) => {
                             let dist = dist + universe.bump_dist();
@@ -113,6 +117,13 @@ pub fn start(
                             phot.travel(dist);
 
                             if !universe.grid().dom().contains(phot.ray().pos()) {
+                                if shifted {
+                                    let check = phot.ray().pos().y * phot.ray().pos().y
+                                        + phot.ray().pos().z * phot.ray().pos().z;
+                                    if phot.ray().pos().x >= 0.0129 && check <= 0.000001 {
+                                        cell_rec.1.det_raman += phot.weight();
+                                    }
+                                }
                                 break;
                             }
 
@@ -131,9 +142,12 @@ pub fn start(
                             if !cell_rec.0.boundary().contains(phot.ray().pos()) {
                                 // TODO: This should be able to be removed.
                                 if !universe.grid().dom().contains(phot.ray().pos()) {
-                                    let check = phot.ray().pos().y*phot.ray().pos().y + phot.ray().pos().z*phot.ray().pos().z;
-                                    if phot.ray().pos().x >= 0.0129 && check <= 0.000001{
-                                        cell_rec.1.det_raman += phot.weight();
+                                    if shifted {
+                                        let check = phot.ray().pos().y * phot.ray().pos().y
+                                            + phot.ray().pos().z * phot.ray().pos().z;
+                                        if phot.ray().pos().x >= 0.0129 && check <= 0.000001 {
+                                            cell_rec.1.det_raman += phot.weight();
+                                        }
                                     }
                                     break;
                                 }
@@ -153,9 +167,12 @@ pub fn start(
                             );
 
                             if !universe.grid().dom().contains(phot.ray().pos()) {
-                                let check = phot.ray().pos().y*phot.ray().pos().y + phot.ray().pos().z*phot.ray().pos().z;
-                                if phot.ray().pos().x >= 0.0129 && check <= 0.000001{
-                                    cell_rec.1.det_raman += phot.weight();
+                                if shifted {
+                                    let check = phot.ray().pos().y * phot.ray().pos().y
+                                        + phot.ray().pos().z * phot.ray().pos().z;
+                                    if phot.ray().pos().x >= 0.0129 && check <= 0.000001 {
+                                        cell_rec.1.det_raman += phot.weight();
+                                    }
                                 }
                                 break;
                             }
@@ -250,7 +267,6 @@ pub fn index(x: f64, min: f64, max: f64, res: usize) -> usize {
     (((x - min) / (max - min)) * res as f64) as usize
 }
 
-
 #[post(ret.is_none() || ret.unwrap() >= 0.0)]
 pub fn peel_off(
     mut phot: Photon,
@@ -264,7 +280,7 @@ pub fn peel_off(
     let dir = Unit::new_normalize(pos - phot.ray().pos());
 
     let cos_ang = phot.ray().dir().dot(&dir);
-    let mut prob = phot.weight()*0.5 * ((1.0 - g2) / (1.0 + g2 - (2.0 * g * cos_ang)).powf(1.5));
+    let mut prob = phot.weight() * 0.5 * ((1.0 - g2) / (1.0 + g2 - (2.0 * g * cos_ang)).powf(1.5));
     //if prob < 0.01 {
     //    return None;
     //}
