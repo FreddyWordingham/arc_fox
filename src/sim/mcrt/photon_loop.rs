@@ -113,6 +113,12 @@ pub fn start(
                             phot.travel(dist);
 
                             if !universe.grid().dom().contains(phot.ray().pos()) {
+                                if shifted{
+                                    let check = phot.ray().pos().y*phot.ray().pos().y + phot.ray().pos().z*phot.ray().pos().z;
+                                    if phot.ray().pos().x >= 0.0129 && check <= 0.000001{
+                                        cell_rec.1.det_raman += phot.weight();
+                                    }
+                                }
                                 break;
                             }
 
@@ -131,9 +137,11 @@ pub fn start(
                             if !cell_rec.0.boundary().contains(phot.ray().pos()) {
                                 // TODO: This should be able to be removed.
                                 if !universe.grid().dom().contains(phot.ray().pos()) {
-                                    let check = phot.ray().pos().y*phot.ray().pos().y + phot.ray().pos().z*phot.ray().pos().z;
-                                    if phot.ray().pos().x >= 0.0129 && check <= 0.000001{
-                                        cell_rec.1.det_raman += phot.weight();
+                                    if shifted{
+                                        let check = phot.ray().pos().y*phot.ray().pos().y + phot.ray().pos().z*phot.ray().pos().z;
+                                        if phot.ray().pos().x >= 0.0129 && check <= 0.000001{
+                                            cell_rec.1.det_raman += phot.weight();
+                                        }
                                     }
                                     break;
                                 }
@@ -153,9 +161,11 @@ pub fn start(
                             );
 
                             if !universe.grid().dom().contains(phot.ray().pos()) {
-                                let check = phot.ray().pos().y*phot.ray().pos().y + phot.ray().pos().z*phot.ray().pos().z;
-                                if phot.ray().pos().x >= 0.0129 && check <= 0.000001{
-                                    cell_rec.1.det_raman += phot.weight();
+                                if shifted{
+                                    let check = phot.ray().pos().y*phot.ray().pos().y + phot.ray().pos().z*phot.ray().pos().z;
+                                    if phot.ray().pos().x >= 0.0129 && check <= 0.000001{
+                                        cell_rec.1.det_raman += phot.weight();
+                                    }
                                 }
                                 break;
                             }
