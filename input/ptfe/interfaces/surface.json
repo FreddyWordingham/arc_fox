@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 {"mesh": {"name": "slab", "trans": {"trans": [0.008, 0.0, 0.0], "scale": 1.0}}, "in_mat": "ptfe", "out_mat": "intralipid"}
+=======
+{"mesh": {"name": "slab", "trans": {"trans": [0.01, 0.0, 0.0], "scale": 1.0}}, "in_mat": "ptfe", "out_mat": "intralipid"}
+>>>>>>> 3c331bd2f11f97a2101256a0eab5d4b430979bdd

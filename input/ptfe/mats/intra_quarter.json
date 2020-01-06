@@ -1,0 +1,34 @@
+{
+    "range": {
+        "min": 5e-7,
+        "max": 10e-7
+    },
+    "ref_index": {
+        "Const": 1.47
+    },
+    "scat_coeff": {
+        "Bifur": [
+            900.0e-9,
+            10960.0,
+            8560.0
+        ]
+    },
+    "abs_coeff": {
+        "Bifur": [
+            900.0e-9,
+            2.0,
+            10.0
+        ]
+    },
+    "shift_coeff": {
+        "Const": 0.0
+    },
+    "asym": {
+        "Bifur": [
+            900.0e-9,
+            0.67,
+            0.63
+        ]
+    },
+    "visc": null
+}

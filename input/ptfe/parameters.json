@@ -1,5 +1,4 @@
 {
-    "num_threads": 4,
     "half_widths": [
         0.013,
         0.0205,
@@ -14,5 +13,4 @@
     "interfaces": [
         "surface"
     ],
-    "num_phot": 10000
 }
