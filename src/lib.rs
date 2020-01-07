@@ -13,7 +13,7 @@
 // #![allow(clippy::cast_precision_loss)]
 // #![allow(clippy::cast_sign_loss)]
 // #![allow(clippy::else_if_without_else)]
-// #![allow(clippy::float_arithmetic)]
+#![allow(clippy::float_arithmetic)]
 // #![allow(clippy::implicit_hasher)]
 #![allow(clippy::implicit_return)]
 // #![allow(clippy::indexing_slicing)]
