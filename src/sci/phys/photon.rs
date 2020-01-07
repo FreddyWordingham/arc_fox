@@ -5,13 +5,13 @@ use crate::sci::math::rt::Ray;
 /// Photon as a particle representation.
 pub struct Photon {
     /// Statistical weight.
-    weight: f64,
+    pub weight: f64,
     /// Wavelength [m].
-    wavelength: f64,
+    pub wavelength: f64,
     /// Power [J/s].
-    power: f64,
+    pub power: f64,
     /// Ray of travel.
-    ray: Ray,
+    pub ray: Ray,
 }
 
 impl Photon {
@@ -31,5 +31,17 @@ impl Photon {
             power,
             ray,
         }
+    }
+
+    /// Move the photon forward the given distance.
+    #[inline]
+    pub fn travel(&mut self, dist: f64) {
+        self.ray.travel(dist);
+    }
+
+    /// Rotate the photon with a given pitch and subsequent roll manoeuvre.
+    #[inline]
+    pub fn rotate(&mut self, pitch: f64, roll: f64) {
+        self.ray.rotate(pitch, roll);
     }
 }
