@@ -11,6 +11,7 @@ pub trait Load: Debug {
 }
 
 /// Deserialise the type in json format.
+#[inline]
 pub fn from_json<T>(path: &Path) -> T
 where
     for<'de> T: Deserialize<'de>,

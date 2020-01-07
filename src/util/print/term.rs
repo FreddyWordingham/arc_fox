@@ -1,9 +1,12 @@
 //! Terminal functions.
 
+#![allow(clippy::print_stdout)]
+
 use colored::Colorize;
 use terminal_size::terminal_size;
 
 /// Print a main title bar.
+#[inline]
 pub fn title(title: &str) {
     let title = title.to_uppercase();
 
@@ -37,6 +40,7 @@ pub fn title(title: &str) {
 }
 
 /// Print a section bar.
+#[inline]
 pub fn section(title: &str) {
     let term_width = (terminal_size()
         .expect("Unable to determine the terminal size.")

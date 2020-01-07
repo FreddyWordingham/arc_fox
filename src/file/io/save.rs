@@ -11,6 +11,7 @@ pub trait Save: Debug {
 }
 
 /// Serialise the type in json format.
+#[inline]
 pub fn as_json<T: Serialize>(instance: &T, path: &Path) {
     write(
         path,

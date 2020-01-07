@@ -1,7 +1,6 @@
 //! Cartesian dimension enumeration.
 
 /// Cartesian enumeration implementation.
-#[derive(Debug)]
 pub enum Cartesian {
     /// First spatial dimension.
     X,
