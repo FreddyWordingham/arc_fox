@@ -30,5 +30,6 @@
 #![warn(missing_docs)]
 
 pub mod file;
+pub mod ord;
 pub mod sci;
 pub mod util;

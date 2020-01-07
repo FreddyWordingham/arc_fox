@@ -1,10 +1,8 @@
 //! Rate enumeration.
 
 use ndarray::Array1;
-use serde::{Deserialize, Serialize};
 
 /// Rates that accept a single scalar value, and return a single scalar value.
-#[derive(Deserialize, Serialize)]
 pub enum Rate {
     /// Niladic function. f(cs) = k;
     Zeroth(f64),
@@ -59,11 +57,39 @@ impl Rate {
     pub fn res(&self, concs: &Array1<f64>) -> f64 {
         match self {
             Self::Zeroth(k) => -k,
-            Self::First(k, a) => -k * concs[*a],
-            Self::Second(k, a, b) => -k * concs[*a] * concs[*b],
-            Self::Third(k, a, b, c) => -k * concs[*a] * concs[*b] * concs[*c],
+            Self::First(k, a) => {
+                -k * concs
+                    .get(*a)
+                    .expect("Could not get concentration from index.")
+            }
+            Self::Second(k, a, b) => {
+                -k * concs
+                    .get(*a)
+                    .expect("Could not get concentration from index.")
+                    * concs
+                        .get(*b)
+                        .expect("Could not get concentration from index.")
+            }
+            Self::Third(k, a, b, c) => {
+                -k * concs
+                    .get(*a)
+                    .expect("Could not get concentration from index.")
+                    * concs
+                        .get(*b)
+                        .expect("Could not get concentration from index.")
+                    * concs
+                        .get(*c)
+                        .expect("Could not get concentration from index.")
+            }
             Self::Poly(k, cs) => {
-                let p: f64 = cs.iter().map(|a| concs[*a]).product();
+                let p: f64 = cs
+                    .iter()
+                    .map(|n| {
+                        concs
+                            .get(*n)
+                            .expect("Could not get concentration from index.")
+                    })
+                    .product();
                 -k * p
             }
         }
