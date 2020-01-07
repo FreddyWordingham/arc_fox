@@ -11,8 +11,8 @@ pub enum Spectrum {
 impl Spectrum {
     /// Construct a new laser spectrum.
     #[inline]
-    pub fn new_laser(wavelength: f64) -> Self {
-        Self::Laser(wavelength)
+    pub const fn new_laser(wavelength: f64) -> Self {
+        Self::Laser { 0: wavelength }
     }
 
     /// Sample the spectrum for a wavelength.
