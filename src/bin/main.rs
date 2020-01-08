@@ -3,8 +3,10 @@
 use arc::{
     args,
     file::io::{load_map, Load},
-    form, report,
-    sci::chem::{ReactionBuilder, SpeciesBuilder},
+    form,
+    ord::Named,
+    report,
+    sci::chem::{Reaction, ReactionBuilder, Species, SpeciesBuilder},
     util::{
         dirs::init::io_dirs,
         info::exec,
@@ -41,16 +43,26 @@ pub fn main() {
     let form = Parameters::load(&form_path);
     report!(form.num_threads);
 
-    info!("Loading reactions:");
     let proto_reactions = load_map::<ReactionBuilder>(&in_dir.join("reactions"), &form.reactions);
-    for (name, _) in proto_reactions.iter() {
-        println!("Proto-reaction {}", name);
-    }
-
     let species_list = get_species_list(&form.species.unwrap_or_else(|| vec![]), &proto_reactions);
     let proto_species = load_map::<SpeciesBuilder>(&in_dir.join("species"), &species_list);
-    for (name, _) in proto_species.iter() {
-        println!("Proto-species {}", name);
+
+    section("Building");
+    let mut species = Vec::with_capacity(proto_species.len());
+    for (name, proto) in proto_species {
+        species.push(Species::build(name, proto));
+    }
+    let mut reactions = Vec::with_capacity(proto_reactions.len());
+    for (name, proto) in proto_reactions {
+        reactions.push(Reaction::build(name, proto, &species));
+    }
+
+    section("Report");
+    for spec in species {
+        info!("Species {}", spec.name());
+    }
+    for reaction in reactions {
+        info!("Reaction {}", reaction.name);
     }
 
     section("Output");
