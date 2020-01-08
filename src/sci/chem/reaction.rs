@@ -1,6 +1,9 @@
 //! Species reaction structure.
 
-use crate::sci::chem::Rate;
+use crate::{
+    ord::Set,
+    sci::chem::{Rate, ReactionBuilder, Species},
+};
 
 /// Species reaction structure.
 pub struct Reaction {
@@ -15,16 +18,36 @@ pub struct Reaction {
 }
 
 impl Reaction {
-    // Build a new instance.
-    // #[inline]
-    // pub const fn build(name: String, proto: ReactionBuilder, species: &[Species]) -> Self {
-    //     let reactants = Vec::with_capacity(proto.reactants.len());
-    //     for (name, coeff) in proto.reactants {
-    //         reactants.push((, coeff));
-    //     }
+    /// Build a new instance.
+    #[inline]
+    pub fn build(name: String, proto: ReactionBuilder, species: &[Species]) -> Self {
+        let mut reactants = Vec::with_capacity(proto.reactants.len());
+        for (name, coeff) in &proto.reactants {
+            reactants.push((
+                species
+                    .index_of(name)
+                    .expect("Could not find reactant species in loaded list."),
+                *coeff,
+            ));
+        }
 
-    //     let products = Vec::with_capacity(proto.products.len());
+        let mut products = Vec::with_capacity(proto.products.len());
+        for (name, coeff) in &proto.products {
+            products.push((
+                species
+                    .index_of(name)
+                    .expect("Could not find product species in loaded list."),
+                *coeff,
+            ));
+        }
 
-    //     Self { name }
-    // }
+        let rate = Rate::build(proto.rate, species);
+
+        Self {
+            name,
+            reactants,
+            products,
+            rate,
+        }
+    }
 }

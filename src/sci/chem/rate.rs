@@ -1,5 +1,9 @@
 //! Rate enumeration.
 
+use crate::{
+    ord::Set,
+    sci::chem::{RateBuilder, Species},
+};
 use ndarray::Array1;
 
 /// Rates that accept a single scalar value, and return a single scalar value.
@@ -17,39 +21,48 @@ pub enum Rate {
 }
 
 impl Rate {
-    /// Construct a new zeroth-order instance.
-    #[inline]
-    pub const fn new_zeroth(k: f64) -> Self {
-        Self::Zeroth { 0: k }
-    }
-
-    /// Construct a new first-order instance.
-    #[inline]
-    pub fn new_first(k: f64, a: usize) -> Self {
-        Self::First { 0: k, 1: a }
-    }
-
-    /// Construct a new second-order instance.
-    #[inline]
-    pub fn new_second(k: f64, a: usize, b: usize) -> Self {
-        Self::Second { 0: k, 1: a, 2: b }
-    }
-
-    /// Construct a new third-order instance.
-    #[inline]
-    pub fn new_third(k: f64, a: usize, b: usize, c: usize) -> Self {
-        Self::Third {
-            0: k,
-            1: a,
-            2: b,
-            3: c,
+    /// Build an instance.
+    pub fn build(proto: RateBuilder, species: &[Species]) -> Self {
+        match proto {
+            RateBuilder::Zeroth(k) => Rate::Zeroth(k),
+            RateBuilder::First(k, a) => Rate::First(
+                k,
+                species
+                    .index_of(&a)
+                    .expect("Could not locate rate species in known species list."),
+            ),
+            RateBuilder::Second(k, a, b) => Rate::Second(
+                k,
+                species
+                    .index_of(&a)
+                    .expect("Could not locate rate species in known species list."),
+                species
+                    .index_of(&b)
+                    .expect("Could not locate rate species in known species list."),
+            ),
+            RateBuilder::Third(k, a, b, c) => Rate::Third(
+                k,
+                species
+                    .index_of(&a)
+                    .expect("Could not locate rate species in known species list."),
+                species
+                    .index_of(&b)
+                    .expect("Could not locate rate species in known species list."),
+                species
+                    .index_of(&c)
+                    .expect("Could not locate rate species in known species list."),
+            ),
+            RateBuilder::Poly(k, cs) => Rate::Poly(
+                k,
+                cs.iter()
+                    .map(|c| {
+                        species
+                            .index_of(c)
+                            .expect("Could not locate rate species in known species list.")
+                    })
+                    .collect(),
+            ),
         }
-    }
-
-    /// Construct a new nth-order instance.
-    #[inline]
-    pub fn new_poly(k: f64, cs: Array1<usize>) -> Self {
-        Self::Poly { 0: k, 1: cs }
     }
 
     /// Calculate the current rate.
