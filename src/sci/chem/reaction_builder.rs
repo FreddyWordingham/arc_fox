@@ -3,7 +3,7 @@
 use crate::{rw_json, sci::chem::RateBuilder};
 use serde::{Deserialize, Serialize};
 
-/// Species reaction builder structure.
+/// Reaction builder structure.
 #[derive(Debug, Deserialize, Serialize)]
 pub struct ReactionBuilder {
     /// List of reactant species buy name, and their stoichiometric coefficient.

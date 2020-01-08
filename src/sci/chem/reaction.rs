@@ -15,19 +15,16 @@ pub struct Reaction {
 }
 
 impl Reaction {
-    /// Construct a new instance.
-    #[inline]
-    pub const fn new(
-        name: String,
-        reactants: Vec<(usize, f64)>,
-        products: Vec<(usize, f64)>,
-        rate: Rate,
-    ) -> Self {
-        Self {
-            name,
-            reactants,
-            products,
-            rate,
-        }
-    }
+    // Build a new instance.
+    // #[inline]
+    // pub const fn build(name: String, proto: ReactionBuilder, species: &[Species]) -> Self {
+    //     let reactants = Vec::with_capacity(proto.reactants.len());
+    //     for (name, coeff) in proto.reactants {
+    //         reactants.push((, coeff));
+    //     }
+
+    //     let products = Vec::with_capacity(proto.products.len());
+
+    //     Self { name }
+    // }
 }

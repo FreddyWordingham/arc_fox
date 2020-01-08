@@ -27,7 +27,7 @@ pub fn load_map<T: Load>(dir: &Path, names: &[String]) -> HashMap<String, T> {
     let mut map = HashMap::with_capacity(names.len());
 
     for name in names {
-        let path = dir.join(name);
+        let path = dir.join(name).with_extension("json");
         map.insert(name.to_string(), T::load(&path));
     }
 

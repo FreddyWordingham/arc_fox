@@ -4,7 +4,7 @@ use arc::{
     args,
     file::io::{load_map, Load},
     form, report,
-    sci::chem::ReactionBuilder,
+    sci::chem::{ReactionBuilder, SpeciesBuilder},
     util::{
         dirs::init::io_dirs,
         info::exec,
@@ -43,9 +43,14 @@ pub fn main() {
 
     info!("Loading reactions:");
     let proto_reactions = load_map::<ReactionBuilder>(&in_dir.join("reactions"), &form.reactions);
+    for (name, _) in proto_reactions.iter() {
+        println!("Proto-reaction {}", name);
+    }
+
     let species_list = get_species_list(&form.species.unwrap_or(vec![]), &proto_reactions);
-    for name in species_list {
-        println!("Known element: {}", name);
+    let proto_species = load_map::<SpeciesBuilder>(&in_dir.join("species"), &species_list);
+    for (name, _) in proto_species.iter() {
+        println!("Proto-species {}", name);
     }
 
     section("Output");

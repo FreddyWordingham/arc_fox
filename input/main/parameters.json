@@ -1,7 +1,7 @@
 {
     "num_threads": 4,
     "reactions": [
-        "a.json",
-        "b.json"
+        "a",
+        "b"
     ]
 }
