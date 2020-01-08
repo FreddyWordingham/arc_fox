@@ -2,7 +2,7 @@
 
 use serde::Deserialize;
 use serde_json::from_reader;
-use std::{fmt::Debug, fs::File, io::BufReader, path::Path};
+use std::{collections::HashMap, fmt::Debug, fs::File, io::BufReader, path::Path};
 
 /// Types implementing this trait can be loaded from a file.
 pub trait Load: Debug {
@@ -20,4 +20,16 @@ where
         File::open(path).unwrap_or_else(|_| panic!("Unable to open file {}.", path.display()));
     from_reader(BufReader::new(file))
         .unwrap_or_else(|_| panic!("Unable to parse type from json file {}", path.display()))
+}
+
+/// Load a map of instances.
+pub fn load_map<T: Load>(dir: &Path, names: &[String]) -> HashMap<String, T> {
+    let mut map = HashMap::with_capacity(names.len());
+
+    for name in names {
+        let path = dir.join(name);
+        map.insert(name.to_string(), T::load(&path));
+    }
+
+    map
 }
