@@ -47,7 +47,7 @@ pub fn main() {
         println!("Proto-reaction {}", name);
     }
 
-    let species_list = get_species_list(&form.species.unwrap_or(vec![]), &proto_reactions);
+    let species_list = get_species_list(&form.species.unwrap_or_else(|| vec![]), &proto_reactions);
     let proto_species = load_map::<SpeciesBuilder>(&in_dir.join("species"), &species_list);
     for (name, _) in proto_species.iter() {
         println!("Proto-species {}", name);
@@ -62,9 +62,9 @@ fn get_species_list(
     requested: &[String],
     proto_reactions: &HashMap<String, ReactionBuilder>,
 ) -> Vec<String> {
-    let mut names = requested.clone().to_vec();
+    let mut names = (*requested).to_vec();
 
-    for (_, reaction) in proto_reactions {
+    for reaction in proto_reactions.values() {
         for (reactant, _) in reaction.reactants.iter() {
             names.push(reactant.to_string());
         }
