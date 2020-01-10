@@ -19,7 +19,7 @@ impl Species {
 
     /// Build a new instance.
     #[inline]
-    pub const fn build(name: String, proto: SpeciesBuilder) -> Self {
+    pub const fn build(name: String, proto: &SpeciesBuilder) -> Self {
         Self {
             name,
             rad: proto.rad,
@@ -28,6 +28,7 @@ impl Species {
 }
 
 impl Named for Species {
+    #[inline]
     fn name(&self) -> &str {
         &self.name
     }

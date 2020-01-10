@@ -11,12 +11,14 @@ pub use self::save::*;
 macro_rules! rw_json {
     ($type:ident) => {
         impl crate::file::io::Save for $type {
+            #[inline]
             fn save(&self, path: &std::path::Path) {
                 crate::file::io::as_json(self, path);
             }
         }
 
         impl crate::file::io::Load for $type {
+            #[inline]
             fn load(path: &std::path::Path) -> Self {
                 crate::file::io::from_json(path)
             }

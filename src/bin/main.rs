@@ -2,7 +2,7 @@
 
 use arc::{
     args,
-    file::io::{load_map, Load},
+    file::io::{map, Load},
     form,
     ord::Named,
     report,
@@ -10,6 +10,7 @@ use arc::{
     util::{
         dirs::init::io_dirs,
         info::exec,
+        pb::Bar,
         print::term::{section, title},
     },
 };
@@ -43,14 +44,14 @@ pub fn main() {
     let form = Parameters::load(&form_path);
     report!(form.num_threads);
 
-    let proto_reactions = load_map::<ReactionBuilder>(&in_dir.join("reactions"), &form.reactions);
+    let proto_reactions = map::<ReactionBuilder>(&in_dir.join("reactions"), &form.reactions);
     let species_list = get_species_list(&form.species.unwrap_or_else(|| vec![]), &proto_reactions);
-    let proto_species = load_map::<SpeciesBuilder>(&in_dir.join("species"), &species_list);
+    let proto_species = map::<SpeciesBuilder>(&in_dir.join("species"), &species_list);
 
     section("Building");
     let mut species = Vec::with_capacity(proto_species.len());
     for (name, proto) in proto_species {
-        species.push(Species::build(name, proto));
+        species.push(Species::build(name, &proto));
     }
     let mut reactions = Vec::with_capacity(proto_reactions.len());
     for (name, proto) in proto_reactions {
@@ -64,6 +65,15 @@ pub fn main() {
     for reaction in reactions {
         info!("Reaction {}", reaction.name);
     }
+
+    let total = 1_000;
+    let mut bar = Bar::new("Counting to a million", total, 1);
+    while let Some((start, end)) = bar.block(0, 10) {
+        for _ in start..end {
+            bar.inc();
+        }
+    }
+    bar.finish_with_message("Done!");
 
     section("Output");
     report!("Output dir", out_dir.display());

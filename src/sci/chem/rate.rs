@@ -22,16 +22,17 @@ pub enum Rate {
 
 impl Rate {
     /// Build an instance.
+    #[inline]
     pub fn build(proto: RateBuilder, species: &[Species]) -> Self {
         match proto {
-            RateBuilder::Zeroth(k) => Rate::Zeroth(k),
-            RateBuilder::First(k, a) => Rate::First(
+            RateBuilder::Zeroth(k) => Self::Zeroth(k),
+            RateBuilder::First(k, a) => Self::First(
                 k,
                 species
                     .index_of(&a)
                     .expect("Could not locate rate species in known species list."),
             ),
-            RateBuilder::Second(k, a, b) => Rate::Second(
+            RateBuilder::Second(k, a, b) => Self::Second(
                 k,
                 species
                     .index_of(&a)
@@ -40,7 +41,7 @@ impl Rate {
                     .index_of(&b)
                     .expect("Could not locate rate species in known species list."),
             ),
-            RateBuilder::Third(k, a, b, c) => Rate::Third(
+            RateBuilder::Third(k, a, b, c) => Self::Third(
                 k,
                 species
                     .index_of(&a)
@@ -52,7 +53,7 @@ impl Rate {
                     .index_of(&c)
                     .expect("Could not locate rate species in known species list."),
             ),
-            RateBuilder::Poly(k, cs) => Rate::Poly(
+            RateBuilder::Poly(k, cs) => Self::Poly(
                 k,
                 cs.iter()
                     .map(|c| {

@@ -23,7 +23,8 @@ where
 }
 
 /// Load a map of instances.
-pub fn load_map<T: Load>(dir: &Path, names: &[String]) -> HashMap<String, T> {
+#[inline]
+pub fn map<T: Load>(dir: &Path, names: &[String]) -> HashMap<String, T> {
     let mut map = HashMap::with_capacity(names.len());
 
     for name in names {
