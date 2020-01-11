@@ -16,7 +16,13 @@ use arc::{
 };
 use colog;
 use log::info;
-use std::{collections::HashMap, path::Path};
+use ndarray::Array1;
+use std::{
+    collections::HashMap,
+    fs::File,
+    io::{BufWriter, Write},
+    path::Path,
+};
 
 form!(
     Parameters,
@@ -59,20 +65,38 @@ pub fn main() {
     }
 
     section("Report");
-    for spec in species {
+    for spec in species.iter() {
         info!("Species {}", spec.name());
     }
-    for reaction in reactions {
+    for reaction in reactions.iter() {
         info!("Reaction {}", reaction.name);
     }
 
-    let total = 1_000;
+    let mut state = State::new(
+        Array1::from(vec![1.0, 1.0, 1.0, 1.0, 1.0]),
+        Array1::from(vec![0.0, 0.0, 0.0, 0.0, 0.0]),
+    );
+
+    let mut file = BufWriter::new(
+        File::create(out_dir.join("concentrations.csv")).expect("Unable to create output file."),
+    );
+    let total = 10_000;
     let mut bar = Bar::new("Counting to a million", total, 1);
-    while let Some((start, end)) = bar.block(0, 10) {
+    while let Some((start, end)) = bar.block(0, total / 100) {
+        for conc in state.concs.iter() {
+            write!(file, "{:+.6e},\t", conc).unwrap();
+        }
+        writeln!(file, "{}", start).unwrap();
         for _ in start..end {
+            state.add_source(1.0e-3);
+            state.evolve(1.0e-3, &reactions);
             bar.inc();
         }
     }
+    for conc in state.concs.iter() {
+        write!(file, "{:+.6e},\t", conc).unwrap();
+    }
+    writeln!(file, "{}", total).unwrap();
     bar.finish_with_message("Done!");
 
     section("Output");
@@ -102,4 +126,35 @@ fn get_species_list(
     names.dedup();
 
     names
+}
+
+struct State {
+    pub concs: Array1<f64>,
+    pub sources: Array1<f64>,
+}
+
+impl State {
+    pub fn new(concs: Array1<f64>, sources: Array1<f64>) -> Self {
+        Self { concs, sources }
+    }
+
+    pub fn add_source(&mut self, dt: f64) {
+        self.concs += &(&self.sources * dt);
+    }
+
+    pub fn evolve(&mut self, dt: f64, reactions: &[Reaction]) {
+        let mut deltas = Array1::<f64>::zeros(self.concs.len());
+        for reaction in reactions {
+            let rate = reaction.rate.calc(&self.concs);
+
+            for (index, coeff) in reaction.reactants.iter() {
+                deltas[*index] += rate * coeff;
+            }
+            for (index, coeff) in reaction.products.iter() {
+                deltas[*index] -= rate * coeff;
+            }
+        }
+
+        self.concs += &(&deltas * dt);
+    }
 }

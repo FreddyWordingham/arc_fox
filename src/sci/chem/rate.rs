@@ -68,7 +68,7 @@ impl Rate {
 
     /// Calculate the current rate.
     #[inline]
-    pub fn res(&self, concs: &Array1<f64>) -> f64 {
+    pub fn calc(&self, concs: &Array1<f64>) -> f64 {
         match self {
             Self::Zeroth(k) => -k,
             Self::First(k, a) => {
