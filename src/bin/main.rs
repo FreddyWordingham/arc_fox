@@ -4,9 +4,8 @@ use arc::{
     args,
     file::io::{map, Load},
     form,
-    ord::Named,
     report,
-    sci::chem::{Reaction, ReactionBuilder, Species, SpeciesBuilder},
+    sci::chem::{Reaction, ReactionBuilder, Species, SpeciesBuilder, State, StateBuilder},
     util::{
         dirs::init::io_dirs,
         info::exec,
@@ -16,7 +15,6 @@ use arc::{
 };
 use colog;
 use log::info;
-use ndarray::Array1;
 use std::{
     collections::HashMap,
     fs::File,
@@ -28,7 +26,8 @@ form!(
     Parameters,
         num_threads: usize;
         reactions: Vec<String>;
-        species: Option<Vec<String>>
+        species: Option<Vec<String>>;
+        init_state: StateBuilder
 );
 
 pub fn main() {
@@ -64,23 +63,10 @@ pub fn main() {
         reactions.push(Reaction::build(name, proto, &species));
     }
 
-    let mut state = State::new(
-        Array1::from(vec![0.0, 0.0, 0.0, 0.0, 0.0]),
-        Array1::from(vec![0.0, 0.0, 0.0, 0.0, 0.0]),
-    );
+    // let mut state = State::new(Array1::zeros(species.len()), Array1::zeros(species.len()));
+    let mut state = State::build(form.init_state, &species);
 
     section("Report");
-    for (spec, (conc, _source)) in species
-        .iter()
-        .zip(state.concs.iter_mut().zip(state.sources.iter_mut()))
-    {
-        info!("Species {}", spec.name());
-        match spec.name() {
-            "ala" => *conc = 1.0,
-            "fe" => *conc = 1.0,
-            &_ => (),
-        }
-    }
     for reaction in reactions.iter() {
         info!("Reaction {}", reaction.name);
     }
@@ -90,7 +76,7 @@ pub fn main() {
     );
     let total = 30_000;
     let mut bar = Bar::new("Counting to a million", total, 1);
-    while let Some((start, end)) = bar.block(0, total / 100) {
+    while let Some((start, end)) = bar.block(0, total / 1000) {
         write!(file, "{:+.6}", start).unwrap();
         for conc in state.concs.iter() {
             write!(file, ",\t{:+.6e}", conc).unwrap();
@@ -136,35 +122,4 @@ fn get_species_list(
     names.dedup();
 
     names
-}
-
-struct State {
-    pub concs: Array1<f64>,
-    pub sources: Array1<f64>,
-}
-
-impl State {
-    pub fn new(concs: Array1<f64>, sources: Array1<f64>) -> Self {
-        Self { concs, sources }
-    }
-
-    pub fn add_source(&mut self, dt: f64) {
-        self.concs += &(&self.sources * dt);
-    }
-
-    pub fn evolve(&mut self, dt: f64, reactions: &[Reaction]) {
-        let mut deltas = Array1::<f64>::zeros(self.concs.len());
-        for reaction in reactions {
-            let rate = reaction.rate.calc(&self.concs);
-
-            for (index, coeff) in reaction.reactants.iter() {
-                deltas[*index] += rate * coeff;
-            }
-            for (index, coeff) in reaction.products.iter() {
-                deltas[*index] -= rate * coeff;
-            }
-        }
-
-        self.concs += &(&deltas * dt);
-    }
 }

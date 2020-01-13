@@ -6,16 +6,18 @@ use serde::{Deserialize, Serialize};
 /// Builds reaction rates.
 #[derive(Debug, Deserialize, Serialize)]
 pub enum RateBuilder {
-    /// Niladic function. f(cs) = k;
+    /// Niladic function. f(cs) = k
     Zeroth(f64),
-    /// Monadic. f(cs) = k[A];
+    /// Monadic. f(cs) = k[A]
     First(f64, String),
-    /// Dyadic. f(cs) = k[A][B];
+    /// Dyadic. f(cs) = k[A][B]
     Second(f64, String, String),
-    /// Triadic. f(cs) = k[A][B][C];
+    /// Triadic. f(cs) = k[A][B][C]
     Third(f64, String, String, String),
-    /// Polyadic. f(cs) = prod(k[n]);
+    /// Polyadic. f(cs) = prod(k[n])
     Poly(f64, Array1<String>),
+    /// Dependant f(cs) = [A] > C ? x : y
+    Dependant(String, f64, f64, f64),
 }
 
 impl RateBuilder {
@@ -28,6 +30,7 @@ impl RateBuilder {
             Self::Second(_, a, b) => vec![a.clone(), b.clone()],
             Self::Third(_, a, b, c) => vec![a.clone(), b.clone(), c.clone()],
             Self::Poly(_, cs) => cs.as_slice().expect("Invalid poly rate.").to_vec(),
+            Self::Dependant(a, _, _, _) => vec![a.clone()],
         }
     }
 }
