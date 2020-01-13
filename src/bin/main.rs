@@ -64,18 +64,26 @@ pub fn main() {
         reactions.push(Reaction::build(name, proto, &species));
     }
 
+    let mut state = State::new(
+        Array1::from(vec![0.0, 0.0, 0.0, 0.0, 0.0]),
+        Array1::from(vec![0.0, 0.0, 0.0, 0.0, 0.0]),
+    );
+
     section("Report");
-    for spec in species.iter() {
+    for (spec, (conc, _source)) in species
+        .iter()
+        .zip(state.concs.iter_mut().zip(state.sources.iter_mut()))
+    {
         info!("Species {}", spec.name());
+        match spec.name() {
+            "ala" => *conc = 1.0,
+            "fe" => *conc = 1.0,
+            &_ => (),
+        }
     }
     for reaction in reactions.iter() {
         info!("Reaction {}", reaction.name);
     }
-
-    let mut state = State::new(
-        Array1::from(vec![1.0, 1.0, 1.0, 1.0, 1.0]),
-        Array1::from(vec![0.0, 0.0, 0.0, 0.0, 0.0]),
-    );
 
     let mut file = BufWriter::new(
         File::create(out_dir.join("concentrations.csv")).expect("Unable to create output file."),

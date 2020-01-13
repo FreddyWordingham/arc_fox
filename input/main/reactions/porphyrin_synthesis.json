@@ -1,25 +1,25 @@
 {
     "reactants": [
         [
-            "c",
-            0.0
+            "ppix",
+            1.0
         ],
         [
-            "d",
-            0.0
+            "fe",
+            1.0
         ]
     ],
     "products": [
         [
-            "e",
-            0.0
+            "porphyrin",
+            1.0
         ]
     ],
     "rate": {
         "Second": [
-            0.0,
-            "c",
-            "d"
+            10.0,
+            "ppix",
+            "fe"
         ]
     }
 }
