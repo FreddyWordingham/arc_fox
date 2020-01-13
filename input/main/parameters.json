@@ -1,9 +1,14 @@
 {
     "num_threads": 4,
     "reactions": [
-        "ppix_synthesis"
+        "ppix_synthesis",
+        "cell_death",
+        "porphyrin_synthesis"
     ],
     "init_state": {
-        "init": [["ala", 4.0, 0.0]]
+        "init": [
+            ["ala", 4.0, 0.0],
+            ["fe", 1.0, 0.0]
+        ]
     }
 }

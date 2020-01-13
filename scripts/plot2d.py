@@ -72,10 +72,10 @@ for col in data:
 plt.xlabel(X_AXIS_LABEL)
 plt.ylabel(Y_AXIS_LABEL)
 plt.title(TITLE_LABEL)
-plt.legend(['ALA',
-            'Fe',
-            'PPIX',
-            'Porphyrin', ])
+# plt.legend(['ALA',
+            # 'Fe',
+            # 'PPIX',
+            # 'Porphyrin', ])
 #             'GAMMA_LED',
 #             'GAMMA_630',
 #             'GAMMA_670',
