@@ -73,7 +73,7 @@ pub fn main() {
     let mut file = BufWriter::new(
         File::create(out_dir.join("concentrations.csv")).expect("Unable to create output file."),
     );
-    let total = 30_000;
+    let total = 100_000;
     let mut bar = Bar::new("Counting to a million", total, 1);
     while let Some((start, end)) = bar.block(0, total / 1000) {
         write!(file, "{:+.6}", start).unwrap();
@@ -82,8 +82,8 @@ pub fn main() {
         }
         writeln!(file, "").unwrap();
         for _ in start..end {
-            state.add_source(1.0e-3);
-            state.evolve(1.0e-3, &reactions);
+            state.add_source(1.0e-4);
+            state.evolve(1.0e-4, &reactions);
             bar.inc();
         }
     }

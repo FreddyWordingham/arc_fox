@@ -11,8 +11,7 @@ documention = "https://freddywordingham.github.io/arc"
 
 [dependencies]
 colog = "0.2.1"
-colored = "1.9.0"
-contracts = { version = "0.3.0", features = [] }
+colored = "1.9.2"
 indicatif = "0.13.0"
 log = "0.4.8"
 nalgebra = { version = "0.19.0", features = ["serde-serialize"] }
@@ -20,8 +19,8 @@ ndarray = { version = "0.13.0", features = ["rayon", "serde-1"] }
 ndarray-stats = "0.3.0"
 netcdf = "0.3.1"
 physical_constants = "0.3.0"
-rand = "0.7.2"
-rayon = "1.2.1"
+rand = "0.7.3"
+rayon = "1.3.0"
 serde = { version = "1.0.104", features = ["derive"] }
 serde_json = "1.0.44"
-terminal_size = "0.1.8"
+terminal_size = "0.1.10"
