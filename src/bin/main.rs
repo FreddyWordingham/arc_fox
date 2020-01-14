@@ -16,7 +16,7 @@ use arc::{
 use colog;
 use log::info;
 use std::{
-    collections::HashMap,
+    collections::BTreeMap,
     fs::File,
     io::{BufWriter, Write},
     path::Path,
@@ -56,21 +56,20 @@ pub fn main() {
     section("Building");
     let mut species = Vec::with_capacity(proto_species.len());
     for (name, proto) in proto_species {
+        info!("Species {}", name);
         species.push(Species::build(name, &proto));
     }
+    println!();
     let mut reactions = Vec::with_capacity(proto_reactions.len());
     for (name, proto) in proto_reactions {
+        info!("Reaction {}", name);
         reactions.push(Reaction::build(name, proto, &species));
     }
 
     // let mut state = State::new(Array1::zeros(species.len()), Array1::zeros(species.len()));
     let mut state = State::build(form.init_state, &species);
 
-    section("Report");
-    for reaction in reactions.iter() {
-        info!("Reaction {}", reaction.name);
-    }
-
+    section("Simulation");
     let mut file = BufWriter::new(
         File::create(out_dir.join("concentrations.csv")).expect("Unable to create output file."),
     );
@@ -102,7 +101,7 @@ pub fn main() {
 /// Determine the list of species involved.
 fn get_species_list(
     requested: &[String],
-    proto_reactions: &HashMap<String, ReactionBuilder>,
+    proto_reactions: &BTreeMap<String, ReactionBuilder>,
 ) -> Vec<String> {
     let mut names = (*requested).to_vec();
 

@@ -2,7 +2,7 @@
 
 use serde::Deserialize;
 use serde_json::from_reader;
-use std::{collections::HashMap, fmt::Debug, fs::File, io::BufReader, path::Path};
+use std::{collections::BTreeMap, fmt::Debug, fs::File, io::BufReader, path::Path};
 
 /// Types implementing this trait can be loaded from a file.
 pub trait Load: Debug {
@@ -24,8 +24,8 @@ where
 
 /// Load a map of instances.
 #[inline]
-pub fn map<T: Load>(dir: &Path, names: &[String]) -> HashMap<String, T> {
-    let mut map = HashMap::with_capacity(names.len());
+pub fn map<T: Load>(dir: &Path, names: &[String]) -> BTreeMap<String, T> {
+    let mut map = BTreeMap::new();
 
     for name in names {
         let path = dir.join(name).with_extension("json");
