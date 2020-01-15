@@ -17,14 +17,22 @@ pub struct State {
 impl State {
     /// Build a new instance.
     #[inline]
-    pub fn build(proto: StateBuilder, species: &[Species]) -> Self {
+    pub fn build(builder: StateBuilder, species: &[Species]) -> Self {
         let mut concs = Array1::zeros(species.len());
         let mut sources = Array1::zeros(species.len());
 
-        for (name, conc, source) in proto.init {
-            let index = species.index_of(&name).expect("Unknown species name.");
-            *concs.get_mut(index).expect("Invalid species index.") = conc;
-            *sources.get_mut(index).expect("Invalid species index.") = source;
+        if let Some(builder_concs) = builder.concs {
+            for (name, conc) in builder_concs {
+                let index = species.index_of(&name).expect("Unknown species name.");
+                *concs.get_mut(index).expect("Invalid species index.") = conc;
+            }
+        }
+
+        if let Some(builder_sources) = builder.sources {
+            for (name, source) in builder_sources {
+                let index = species.index_of(&name).expect("Unknown species name.");
+                *sources.get_mut(index).expect("Invalid species index.") = source;
+            }
         }
 
         Self { concs, sources }

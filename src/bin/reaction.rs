@@ -4,7 +4,7 @@ use arc::{
     args,
     file::{io::Load, map},
     form, report,
-    sci::chem::{ReactionBuilder, SpeciesBuilder},
+    sci::chem::{Reaction, ReactionBuilder, Species, SpeciesBuilder, State, StateBuilder},
     util::{
         dirs::init::io_dirs,
         info::exec,
@@ -24,59 +24,75 @@ use std::{
 // path::Path,
 // };
 
-form!(Parameters, reactions: Vec<String>);
+form!(
+    Parameters,
+        reactions: Vec<String>;
+        init_state: StateBuilder
+);
 
 fn main() {
     colog::init();
     title(&exec::name());
 
     section("Initialisation");
-    let (in_dir, out_dir, param_path) = initialisation();
+    let (in_dir, out_dir, params_path) = initialisation();
     report!("input directory", in_dir.display());
     report!("output directory", out_dir.display());
-    report!("parameters path", param_path.display());
+    report!("parameters path", params_path.display());
 
     section("Prelude");
-    let param = prelude(&param_path);
+    let params = prelude(&params_path);
     info!("loaded parameters file");
 
     section("Manifest");
-    let (reaction_builders, species_builders) = manifest(&in_dir, &param);
-    info!("{} reactions:", reaction_builders.len());
+    let (reaction_builders, species_builders, state_builder) = manifest(params, &in_dir);
+    info!("found {} reactions:", reaction_builders.len());
     for name in reaction_builders.keys() {
-        println!("\t{}", name);
+        info!("\t{}", name);
     }
-    info!("{} species:", species_builders.len());
+    info!("found {} species:", species_builders.len());
     for name in species_builders.keys() {
-        println!("\t{}", name);
+        info!("\t{}", name);
     }
 
     section("Building");
-    building();
+    let (species, reactions, state) = building(reaction_builders, species_builders, state_builder);
+    info!("built {} species:", species.len());
+    for (spec, (conc, source)) in species
+        .iter()
+        .zip(state.concs.iter().zip(state.sources.iter()))
+    {
+        info!("\t{}\t{}\t{}", spec.name, conc, source);
+    }
+    info!("built {} reactions:", reactions.len());
+    for react in reactions {
+        info!("\t{}", react.name);
+    }
 }
 
 fn initialisation() -> (PathBuf, PathBuf, PathBuf) {
     args!(_bin_path: String;
-        param_name: String);
+        params_name: String);
 
     let (in_dir, out_dir) = io_dirs(None, None);
-    let param_path = &in_dir.join(param_name);
+    let params_path = &in_dir.join(params_name);
 
-    (in_dir, out_dir, param_path.to_path_buf())
+    (in_dir, out_dir, params_path.to_path_buf())
 }
 
-fn prelude(param_path: &Path) -> Parameters {
-    let param = Parameters::load(&param_path);
+fn prelude(params_path: &Path) -> Parameters {
+    let params = Parameters::load(&params_path);
 
-    param
+    params
 }
 
 fn manifest(
+    params: Parameters,
     in_dir: &Path,
-    params: &Parameters,
 ) -> (
     BTreeMap<String, ReactionBuilder>,
     BTreeMap<String, SpeciesBuilder>,
+    StateBuilder,
 ) {
     let reaction_builders = map::<ReactionBuilder>(&in_dir.join("reactions"), &params.reactions);
 
@@ -96,7 +112,27 @@ fn manifest(
     species_names.dedup();
     let species_builders = map::<SpeciesBuilder>(&in_dir.join("species"), &species_names);
 
-    (reaction_builders, species_builders)
+    let state_builder = params.init_state;
+
+    (reaction_builders, species_builders, state_builder)
 }
 
-fn building() {}
+fn building(
+    reaction_builders: BTreeMap<String, ReactionBuilder>,
+    species_builders: BTreeMap<String, SpeciesBuilder>,
+    state_builder: StateBuilder,
+) -> (Vec<Species>, Vec<Reaction>, State) {
+    let mut species = Vec::with_capacity(species_builders.len());
+    for (name, builder) in species_builders {
+        species.push(Species::build(name, &builder));
+    }
+
+    let mut reactions = Vec::with_capacity(reaction_builders.len());
+    for (name, builder) in reaction_builders {
+        reactions.push(Reaction::build(name, builder, &species));
+    }
+
+    let state = State::build(state_builder, &species);
+
+    (species, reactions, state)
+}

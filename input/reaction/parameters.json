@@ -3,5 +3,17 @@
         "ppix_synth",
         "haem_synth",
         "cell_death_mech"
-    ]
+    ],
+    "init_state": {
+        "concs": [
+            [
+                "ala",
+                1.0
+            ],
+            [
+                "ppix",
+                2.4
+            ]
+        ]
+    }
 }
