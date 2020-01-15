@@ -28,6 +28,8 @@
 // #![allow(clippy::zero_prefixed_literal)]
 #![warn(clippy::missing_docs_in_private_items)]
 #![warn(missing_docs)]
+// Temporary suppression.
+#![allow(clippy::missing_inline_in_public_items)]
 
 pub mod file;
 pub mod ord;

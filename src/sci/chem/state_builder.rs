@@ -14,7 +14,7 @@ impl StateBuilder {
     /// Construct a new instance.
     #[inline]
     pub const fn new(init: Vec<(String, f64, f64)>) -> Self {
-        StateBuilder { init }
+        Self { init }
     }
 }
 

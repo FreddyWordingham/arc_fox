@@ -18,8 +18,6 @@ pub enum Rate {
     Third(f64, usize, usize, usize),
     /// Polyadic. f(cs) = prod(k[n])
     Poly(f64, Array1<usize>),
-    /// Dependant f(cs) = [A] > C ? x : y
-    Dependant(usize, f64, f64, f64),
 }
 
 impl Rate {
@@ -65,14 +63,6 @@ impl Rate {
                     })
                     .collect(),
             ),
-            RateBuilder::Dependant(a, c, x, y) => Self::Dependant(
-                species
-                    .index_of(&a)
-                    .expect("Could not locate rate species in known species list."),
-                c,
-                x,
-                y,
-            ),
         }
     }
 
@@ -115,16 +105,6 @@ impl Rate {
                     })
                     .product();
                 -k * p
-            }
-            Self::Dependant(a, c, x, y) => {
-                let a = concs
-                    .get(*a)
-                    .expect("Could not get concentration from index.");
-                if a >= c {
-                    -x * a
-                } else {
-                    -y * a
-                }
             }
         }
     }

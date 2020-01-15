@@ -44,7 +44,10 @@ impl Bar {
         }
 
         let allocation = (remaining / self.counts.len() as u64).min(inc).max(1);
-        self.counts[thread_id] += allocation;
+        *self
+            .counts
+            .get_mut(thread_id)
+            .expect("Invalid thread index.") += allocation;
 
         Some((sum, sum + allocation))
     }

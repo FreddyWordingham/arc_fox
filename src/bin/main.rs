@@ -3,8 +3,7 @@
 use arc::{
     args,
     file::io::{map, Load},
-    form,
-    report,
+    form, report,
     sci::chem::{Reaction, ReactionBuilder, Species, SpeciesBuilder, State, StateBuilder},
     util::{
         dirs::init::io_dirs,
@@ -74,25 +73,25 @@ pub fn main() {
         File::create(out_dir.join("concentrations.csv")).expect("Unable to create output file."),
     );
     let total = 100_000;
-    let mut bar = Bar::new("Counting to a million", total, 1);
-    while let Some((start, end)) = bar.block(0, total / 1000) {
+    let mut pb = Bar::new("Counting to a million", total, 1);
+    while let Some((start, end)) = pb.block(0, total / 1000) {
         write!(file, "{:+.6}", start).unwrap();
         for conc in state.concs.iter() {
             write!(file, ",\t{:+.6e}", conc).unwrap();
         }
-        writeln!(file, "").unwrap();
+        writeln!(file).unwrap();
         for _ in start..end {
             state.add_source(1.0e-4);
             state.evolve(1.0e-4, &reactions);
-            bar.inc();
+            pb.inc();
         }
     }
     write!(file, "{:+.6}", total).unwrap();
     for conc in state.concs.iter() {
         write!(file, ",\t{:+.6e}", conc).unwrap();
     }
-    writeln!(file, "").unwrap();
-    bar.finish_with_message("Done!");
+    writeln!(file).unwrap();
+    pb.finish_with_message("Done!");
 
     section("Output");
     report!("Output dir", out_dir.display());
