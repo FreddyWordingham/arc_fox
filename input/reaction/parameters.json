@@ -1,5 +1,7 @@
 {
     "reactions": [
-        "ppix_synth"
+        "ppix_synth",
+        "haem_synth",
+        "cell_death_mech"
     ]
 }

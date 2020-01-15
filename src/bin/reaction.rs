@@ -4,7 +4,7 @@ use arc::{
     args,
     file::{io::Load, map},
     form, report,
-    sci::chem::ReactionBuilder,
+    sci::chem::{ReactionBuilder, SpeciesBuilder},
     util::{
         dirs::init::io_dirs,
         info::exec,
@@ -30,25 +30,32 @@ fn main() {
     colog::init();
     title(&exec::name());
 
+    section("Initialisation");
     let (in_dir, out_dir, param_path) = initialisation();
     report!("input directory", in_dir.display());
     report!("output directory", out_dir.display());
     report!("parameters path", param_path.display());
 
+    section("Prelude");
     let param = prelude(&param_path);
+    info!("loaded parameters file");
 
-    let reaction_builders = manifest(&in_dir, &param);
+    section("Manifest");
+    let (reaction_builders, species_builders) = manifest(&in_dir, &param);
     info!("{} reactions:", reaction_builders.len());
     for name in reaction_builders.keys() {
         println!("\t{}", name);
     }
+    info!("{} species:", species_builders.len());
+    for name in species_builders.keys() {
+        println!("\t{}", name);
+    }
 
+    section("Building");
     building();
 }
 
 fn initialisation() -> (PathBuf, PathBuf, PathBuf) {
-    section("Initialisation");
-
     args!(_bin_path: String;
         param_name: String);
 
@@ -59,21 +66,37 @@ fn initialisation() -> (PathBuf, PathBuf, PathBuf) {
 }
 
 fn prelude(param_path: &Path) -> Parameters {
-    section("Prelude");
-
     let param = Parameters::load(&param_path);
 
     param
 }
 
-fn manifest(in_dir: &Path, params: &Parameters) -> BTreeMap<String, ReactionBuilder> {
-    section("Manifest");
-
+fn manifest(
+    in_dir: &Path,
+    params: &Parameters,
+) -> (
+    BTreeMap<String, ReactionBuilder>,
+    BTreeMap<String, SpeciesBuilder>,
+) {
     let reaction_builders = map::<ReactionBuilder>(&in_dir.join("reactions"), &params.reactions);
 
-    reaction_builders
+    let mut species_names = Vec::new();
+    for builder in reaction_builders.values() {
+        for (reactant, _) in builder.reactants.iter() {
+            species_names.push(reactant.to_string());
+        }
+        for (product, _) in builder.products.iter() {
+            species_names.push(product.to_string());
+        }
+        for catalyst in builder.rate.catalysts() {
+            species_names.push(catalyst.to_string());
+        }
+    }
+    species_names.sort();
+    species_names.dedup();
+    let species_builders = map::<SpeciesBuilder>(&in_dir.join("species"), &species_names);
+
+    (reaction_builders, species_builders)
 }
 
-fn building() {
-    section("Building");
-}
+fn building() {}

@@ -1,20 +1,20 @@
 {
     "reactants": [
         [
-            "ala",
-            8.0
+            "ppix",
+            1.0
         ]
     ],
     "products": [
         [
-            "ppix",
+            "death",
             1.0
         ]
     ],
     "rate": {
         "First": [
             1.0,
-            "ala"
+            "ppix"
         ]
     }
 }
