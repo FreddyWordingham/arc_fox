@@ -3,5 +3,4 @@
 pub mod form;
 pub mod io;
 
-pub use self::form::*;
-pub use self::io::*;
+pub use self::{form::*, io::*};

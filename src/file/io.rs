@@ -3,8 +3,7 @@
 pub mod load;
 pub mod save;
 
-pub use self::load::*;
-pub use self::save::*;
+pub use self::{load::*, save::*};
 
 /// Type can be read and written between the binary and stored json.
 #[macro_export]

@@ -9,11 +9,7 @@ pub mod species_builder;
 pub mod state;
 pub mod state_builder;
 
-pub use self::rate::*;
-pub use self::rate_builder::*;
-pub use self::reaction::*;
-pub use self::reaction_builder::*;
-pub use self::species::*;
-pub use self::species_builder::*;
-pub use self::state::*;
-pub use self::state_builder::*;
+pub use self::{
+    rate::*, rate_builder::*, reaction::*, reaction_builder::*, species::*, species_builder::*,
+    state::*, state_builder::*,
+};
