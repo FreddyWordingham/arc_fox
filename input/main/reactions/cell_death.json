@@ -12,11 +12,9 @@
         ]
     ],
     "rate": {
-        "Dependant": [
-            "ppix",
-            0.5,
+        "First": [
             1.0,
-            0.0
+            "ppix"
         ]
     }
 }

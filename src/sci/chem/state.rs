@@ -48,6 +48,12 @@ impl State {
             }
         }
 
+        for conc in self.concs.iter_mut() {
+            if *conc <= 0.0 {
+                *conc = 0.0;
+            }
+        }
+
         self.concs += &(&deltas * dt);
     }
 }

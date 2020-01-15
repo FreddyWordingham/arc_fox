@@ -3,11 +3,12 @@
     "reactions": [
         "ppix_synthesis",
         "cell_death",
-        "porphyrin_synthesis"
+        "haem_synthesis"
     ],
     "init_state": {
         "init": [
-            ["ala", 8.0, 0.0]
+            ["ala", 0.0, 0.1],
+            ["iron", 1.0, 0.0]
         ]
     }
 }
