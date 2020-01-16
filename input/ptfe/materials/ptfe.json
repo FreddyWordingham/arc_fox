@@ -1,29 +1,25 @@
 {
     "reaction_multiplier": 1.0,
-    "optics": {
-        "ref_index": {
+    "optics":
+    {
+        "ref_index":
+        {
             "Const": 1.47
         },
-<<<<<<< HEAD
         "scat_coeff":
         {
-=======
-        "scat_coeff": {
->>>>>>> 3c331bd2f11f97a2101256a0eab5d4b430979bdd
-            "Const": 16700.0
+            "Bifur": [900.0e-9, 9997.0, 8410.0]
         },
-        "abs_coeff": {
-            "Const": 0.0
+        "abs_coeff":
+        {
+            "Bifur": [900.0e-9, 4.77, 7.04]
         },
-<<<<<<< HEAD
         "shift_coeff":
         {
-=======
-        "shift_coeff": {
->>>>>>> 3c331bd2f11f97a2101256a0eab5d4b430979bdd
-            "Const": 0.528
+            "Bifur": [900.0e-9, 0.1, 0.0]
         },
-        "asym": {
+        "asym":
+        {
             "Const": 0.9
         }
     }

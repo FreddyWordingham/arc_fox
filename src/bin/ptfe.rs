@@ -22,6 +22,9 @@ use arc::{
 use log::info;
 use nalgebra::{Point3, Vector3};
 use std::path::Path;
+use std::fs::OpenOptions;
+use std::io::{Write, BufWriter};
+
 //use ndarray-stats::Quartile
 
 form!(Parameters,
@@ -90,8 +93,12 @@ fn main() {
     report!("Output dir", out_dir.display());
     mat.save(&out_dir.join("materials.nc"));
     mcrt.save(&out_dir.join("mcrt.nc"));
-    report!("Total created Raman:", total.shifts);
-    report!("Total detected Raman:", total.det_raman);
+    report!("Total created Raman", total.shifts);
+    report!("Total detected Raman", total.det_raman);
+
+    let mut file = BufWriter::new(OpenOptions::new().append(true).open(&out_dir.join("Ramans.txt")).unwrap());
+    writeln!(file, "{}, {}", total.shifts, total.det_raman).unwrap();
+
 
     section("Finished");
 }
