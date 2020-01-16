@@ -15,19 +15,19 @@ use colog;
 use log::info;
 use std::{
     collections::BTreeMap,
+    fs::File,
+    io::{BufWriter, Write},
     path::{Path, PathBuf},
 };
-// use std::{
-// collections::BTreeMap,
-// fs::File,
-// io::{BufWriter, Write},
-// path::Path,
-// };
+
+const MULTIPLIER: f64 = 0.1;
 
 form!(
     Parameters,
         reactions: Vec<String>;
-        init_state: StateBuilder
+        init_state: StateBuilder;
+        integration_time: f64;
+        min_dt: f64
 );
 
 fn main() {
@@ -45,7 +45,7 @@ fn main() {
     info!("loaded parameters file");
 
     section("Manifest");
-    let (reaction_builders, species_builders, state_builder) = manifest(params, &in_dir);
+    let (reaction_builders, species_builders, state_builder) = manifest(&params, &in_dir);
     info!("found {} reactions:", reaction_builders.len());
     for name in reaction_builders.keys() {
         info!("\t{}", name);
@@ -56,7 +56,8 @@ fn main() {
     }
 
     section("Building");
-    let (species, reactions, state) = building(reaction_builders, species_builders, state_builder);
+    let (species, reactions, mut state) =
+        building(reaction_builders, species_builders, state_builder);
     info!("built {} species:", species.len());
     for (spec, (conc, source)) in species
         .iter()
@@ -65,9 +66,20 @@ fn main() {
         info!("\t{}\t{}\t{}", spec.name, conc, source);
     }
     info!("built {} reactions:", reactions.len());
-    for react in reactions {
+    for react in &reactions {
         info!("\t{}", react.name);
     }
+
+    section("Simulation");
+    let _table = simulation(
+        &mut state,
+        &reactions,
+        params.integration_time,
+        params.min_dt,
+        &out_dir,
+    );
+
+    section("Output");
 }
 
 fn initialisation() -> (PathBuf, PathBuf, PathBuf) {
@@ -87,7 +99,7 @@ fn prelude(params_path: &Path) -> Parameters {
 }
 
 fn manifest(
-    params: Parameters,
+    params: &Parameters,
     in_dir: &Path,
 ) -> (
     BTreeMap<String, ReactionBuilder>,
@@ -112,7 +124,7 @@ fn manifest(
     species_names.dedup();
     let species_builders = map::<SpeciesBuilder>(&in_dir.join("species"), &species_names);
 
-    let state_builder = params.init_state;
+    let state_builder = params.init_state.clone();
 
     (reaction_builders, species_builders, state_builder)
 }
@@ -135,4 +147,54 @@ fn building(
     let state = State::build(state_builder, &species);
 
     (species, reactions, state)
+}
+
+fn simulation(
+    state: &mut State,
+    reactions: &[Reaction],
+    integration_time: f64,
+    min_dt: f64,
+    out_dir: &Path,
+) -> () {
+    let mut file = BufWriter::new(
+        File::create(out_dir.join("concentrations.csv")).expect("Unable to create output file."),
+    );
+
+    let mut time = 0.0;
+    while time < integration_time {
+        let rates = state.rate_of_change(&reactions);
+
+        let mut dt = integration_time - time;
+        for (rate, conc) in rates.iter().zip(&state.concs) {
+            let a = ((-conc / rate) * MULTIPLIER).abs();
+            if a < dt {
+                dt = a;
+            }
+        }
+
+        if dt < min_dt {
+            dt = min_dt;
+        }
+
+        state.concs += &(rates * dt);
+
+        time += dt;
+
+        // println!("{}%", time / integration_time * 100.0);
+
+        write!(file, "{:+.6}", time).unwrap();
+        for conc in state.concs.iter() {
+            write!(file, ",\t{:+.6e}", conc).unwrap();
+        }
+        writeln!(file).unwrap();
+    }
+    write!(file, "{:+.6}", time).unwrap();
+    for conc in state.concs.iter() {
+        write!(file, ",\t{:+.6e}", conc).unwrap();
+    }
+    writeln!(file).unwrap();
+
+    // let mut pb = Bar::new("Evolving", total, 1);
+
+    ()
 }

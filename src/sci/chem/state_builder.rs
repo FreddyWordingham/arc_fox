@@ -4,7 +4,7 @@ use crate::rw_json;
 use serde::{Deserialize, Serialize};
 
 /// Reaction builder structure.
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct StateBuilder {
     /// Initial state of species concentration.
     pub concs: Option<Vec<(String, f64)>>,

@@ -9,11 +9,9 @@
             [
                 "ala",
                 1.0
-            ],
-            [
-                "ppix",
-                2.4
             ]
         ]
-    }
+    },
+    "integration_time": 3.0,
+    "min_dt": 1.0e-6
 }

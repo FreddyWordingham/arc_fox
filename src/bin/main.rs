@@ -66,7 +66,7 @@ pub fn main() {
     }
 
     // let mut state = State::new(Array1::zeros(species.len()), Array1::zeros(species.len()));
-    let mut state = State::build(form.init_state, &species);
+    let state = State::build(form.init_state, &species);
 
     section("Simulation");
     let mut file = BufWriter::new(
@@ -81,9 +81,10 @@ pub fn main() {
         }
         writeln!(file).unwrap();
         for _ in start..end {
-            state.add_source(1.0e-4);
-            state.evolve(1.0e-4, &reactions);
+            // state.add_source(1.0e-4);
+            // state.evolve(1.0e-4, &reactions);
             pb.inc();
+            panic!("Removed");
         }
     }
     write!(file, "{:+.6}", total).unwrap();

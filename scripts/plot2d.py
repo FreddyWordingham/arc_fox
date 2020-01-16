@@ -74,8 +74,7 @@ plt.ylabel(Y_AXIS_LABEL)
 plt.title(TITLE_LABEL)
 plt.legend(['ALA',
             'Cell Death',
-            'Iron',
-            'Porphyrin',
+            'Haem',
             'PPIX', ])
 #             'GAMMA_LED',
 #             'GAMMA_630',
