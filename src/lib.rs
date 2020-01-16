@@ -19,6 +19,7 @@
 // #![allow(clippy::indexing_slicing)]
 #![allow(clippy::integer_arithmetic)]
 #![allow(clippy::integer_division)]
+#![allow(clippy::result_expect_used)]
 // #![allow(clippy::missing_const_for_fn)]
 // #![allow(clippy::missing_inline_in_public_items)]
 // #![allow(clippy::option_unwrap_used)]
