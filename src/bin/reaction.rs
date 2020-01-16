@@ -2,7 +2,11 @@
 
 use arc::{
     args,
-    file::{io::Load, map},
+    data::Table,
+    file::{
+        io::{Load, Save},
+        map,
+    },
     form, report,
     sci::chem::{Reaction, ReactionBuilder, Species, SpeciesBuilder, State, StateBuilder},
     util::{
@@ -15,8 +19,6 @@ use colog;
 use log::info;
 use std::{
     collections::BTreeMap,
-    fs::File,
-    io::{BufWriter, Write},
     path::{Path, PathBuf},
 };
 
@@ -71,15 +73,20 @@ fn main() {
     }
 
     section("Simulation");
-    let _table = simulation(
+    info!("Evolving...");
+    let table = simulation(
         &mut state,
         &reactions,
         params.integration_time,
         params.min_dt,
-        &out_dir,
     );
+    info!("Evolution complete.");
 
     section("Output");
+    info!("Saving...");
+    // println!("Table:\n{}", table);
+    table.save(&out_dir.join("concs.csv"));
+    info!("Saving complete.");
 }
 
 fn initialisation() -> (PathBuf, PathBuf, PathBuf) {
@@ -154,11 +161,8 @@ fn simulation(
     reactions: &[Reaction],
     integration_time: f64,
     min_dt: f64,
-    out_dir: &Path,
-) -> () {
-    let mut file = BufWriter::new(
-        File::create(out_dir.join("concentrations.csv")).expect("Unable to create output file."),
-    );
+) -> Table<f64> {
+    let mut data: Vec<Vec<f64>> = Vec::new();
 
     let mut time = 0.0;
     while time < integration_time {
@@ -180,21 +184,20 @@ fn simulation(
 
         time += dt;
 
-        // println!("{}%", time / integration_time * 100.0);
-
-        write!(file, "{:+.6}", time).unwrap();
-        for conc in state.concs.iter() {
-            write!(file, ",\t{:+.6e}", conc).unwrap();
-        }
-        writeln!(file).unwrap();
+        let mut row = vec![time];
+        row.append(&mut state.concs.to_vec());
+        assert_eq!(row.len(), 5);
+        data.push(row);
     }
-    write!(file, "{:+.6}", time).unwrap();
-    for conc in state.concs.iter() {
-        write!(file, ",\t{:+.6e}", conc).unwrap();
-    }
-    writeln!(file).unwrap();
 
-    // let mut pb = Bar::new("Evolving", total, 1);
-
-    ()
+    Table::from_nested(
+        vec![
+            "time".to_string(),
+            "ala".to_string(),
+            "death".to_string(),
+            "haem".to_string(),
+            "ppix".to_string(),
+        ],
+        data,
+    )
 }

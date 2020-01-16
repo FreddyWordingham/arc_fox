@@ -31,6 +31,7 @@
 // Temporary suppression.
 #![allow(clippy::missing_inline_in_public_items)]
 
+pub mod data;
 pub mod file;
 pub mod ord;
 pub mod sci;
