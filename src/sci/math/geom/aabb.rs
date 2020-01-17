@@ -1,11 +1,12 @@
 //! Axis-aligned bounding box structure.
 
-use crate::sci::math::rt::Ray;
+use crate::sci::math::{geom::Collide, rt::Ray};
 use nalgebra::{Point3, Vector3};
 use std::cmp::Ordering;
 
 /// Axis-aligned bounding box geometry.
 /// Commonly used for spatial partitioning.
+#[derive(Clone)]
 pub struct Aabb {
     /// Minimum bound.
     pub mins: Point3<f64>,
@@ -108,5 +109,15 @@ impl Aabb {
             .expect("Invalid aabb bounds.");
 
         (t_min, t_max)
+    }
+}
+
+impl Collide for Aabb {
+    fn bounding_box(&self) -> Aabb {
+        self.clone()
+    }
+
+    fn overlap(&self, aabb: &Aabb) -> bool {
+        self.mins <= aabb.maxs && self.maxs >= aabb.mins
     }
 }
