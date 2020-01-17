@@ -18,6 +18,7 @@ macro_rules! rw_json {
 
         impl crate::file::io::Load for $type {
             #[inline]
+            #[must_use]
             fn load(path: &std::path::Path) -> Self {
                 crate::file::io::from_json(path)
             }

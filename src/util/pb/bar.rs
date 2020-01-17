@@ -15,15 +15,16 @@ pub struct Bar {
 impl Bar {
     /// Construct a new instance.
     #[inline]
+    #[must_use]
     pub fn new(msg: &'static str, total: u64, num_threads: usize) -> Self {
         let pb = ProgressBar::new(total);
         pb.set_style(
-                ProgressStyle::default_bar()
-                    .template(
-                        "[{elapsed_precise}] [{bar:40.cyan/red}] [{pos}/{len}] {percent}% ({eta}) {msg}",
-                    )
-                    .progress_chars("{}}"),
-            );
+            ProgressStyle::default_bar()
+            .template(
+                "[{elapsed_precise}] [{bar:40.cyan/red}] [{pos}/{len}] {percent}% ({eta}) {msg}",
+            )
+            .progress_chars("{}}"),
+        );
         pb.set_message(msg);
 
         Self {
@@ -35,6 +36,7 @@ impl Bar {
 
     /// Determine if the given increment block is possible.
     #[inline]
+    #[must_use]
     pub fn block(&mut self, thread_id: usize, inc: u64) -> Option<(u64, u64)> {
         let sum: u64 = self.counts.iter().sum();
         let remaining = self.total - sum;

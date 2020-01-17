@@ -15,6 +15,7 @@ pub struct StateBuilder {
 impl StateBuilder {
     /// Construct a new instance.
     #[inline]
+    #[must_use]
     pub const fn new(
         concs: Option<Vec<(String, f64)>>,
         sources: Option<Vec<(String, f64)>>,

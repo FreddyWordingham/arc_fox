@@ -100,9 +100,7 @@ fn initialisation() -> (PathBuf, PathBuf, PathBuf) {
 }
 
 fn prelude(params_path: &Path) -> Parameters {
-    let params = Parameters::load(&params_path);
-
-    params
+    Parameters::load(&params_path)
 }
 
 fn manifest(
@@ -198,6 +196,6 @@ fn simulation(
             "haem".to_string(),
             "ppix".to_string(),
         ],
-        data,
+        &data,
     )
 }

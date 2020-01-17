@@ -4,6 +4,7 @@ use std::{env::args, path::Path};
 
 /// Determine the name of the executable.
 #[inline]
+#[must_use]
 pub fn name() -> String {
     let args: Vec<String> = args().collect();
     Path::new(

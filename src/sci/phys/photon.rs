@@ -17,6 +17,7 @@ pub struct Photon {
 impl Photon {
     /// Construct a new instance.
     #[inline]
+    #[must_use]
     pub const fn new(wavelength: f64, power: f64, ray: Ray) -> Self {
         Self {
             weight: 1.0,

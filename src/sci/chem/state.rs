@@ -17,6 +17,7 @@ pub struct State {
 impl State {
     /// Build a new instance.
     #[inline]
+    #[must_use]
     pub fn build(builder: StateBuilder, species: &[Species]) -> Self {
         let mut concs = Array1::zeros(species.len());
         let mut sources = Array1::zeros(species.len());
@@ -69,6 +70,8 @@ impl State {
     // }
 
     /// Calculate the current rate of change for the state.
+    #[inline]
+    #[must_use]
     pub fn rate_of_change(&self, reactions: &[Reaction]) -> Array1<f64> {
         let mut rates = self.sources.clone();
 

@@ -13,12 +13,14 @@ pub struct Species {
 impl Species {
     /// Construct a new instance.
     #[inline]
+    #[must_use]
     pub const fn new(name: String, rad: Option<f64>) -> Self {
         Self { name, rad }
     }
 
     /// Build a new instance.
     #[inline]
+    #[must_use]
     pub const fn build(name: String, proto: &SpeciesBuilder) -> Self {
         Self {
             name,
@@ -29,6 +31,7 @@ impl Species {
 
 impl Named for Species {
     #[inline]
+    #[must_use]
     fn name(&self) -> &str {
         &self.name
     }

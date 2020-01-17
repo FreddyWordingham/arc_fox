@@ -13,6 +13,7 @@ pub struct Ray {
 impl Ray {
     /// Construct a new instance.
     #[inline]
+    #[must_use]
     pub const fn new(pos: Point3<f64>, dir: Unit<Vector3<f64>>) -> Self {
         Self { pos, dir }
     }

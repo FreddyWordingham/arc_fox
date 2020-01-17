@@ -12,6 +12,7 @@ pub trait Load: Debug {
 
 /// Deserialise the type in json format.
 #[inline]
+#[must_use]
 pub fn from_json<T>(path: &Path) -> T
 where
     for<'de> T: Deserialize<'de>,
@@ -24,6 +25,7 @@ where
 
 /// Load a map of instances.
 #[inline]
+#[must_use]
 pub fn map<T: Load>(dir: &Path, names: &[String]) -> BTreeMap<String, T> {
     let mut map = BTreeMap::new();
 

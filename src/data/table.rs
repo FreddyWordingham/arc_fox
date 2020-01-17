@@ -20,12 +20,16 @@ pub struct Table<T> {
 
 impl<T: Clone> Table<T> {
     /// Construct a new table.
+    #[inline]
+    #[must_use]
     pub fn new(headings: Vec<String>, data: Array2<T>) -> Self {
         Self { headings, data }
     }
 
     /// Construct a new table from a nested vector .
-    pub fn from_nested(headings: Vec<String>, data: Vec<Vec<T>>) -> Self {
+    #[inline]
+    #[must_use]
+    pub fn from_nested(headings: Vec<String>, data: &[Vec<T>]) -> Self {
         let num_cols = headings.len();
         let num_rows = data.len();
 
@@ -40,6 +44,8 @@ impl<T: Clone> Table<T> {
     }
 
     /// Get an array view of the requested column.
+    #[inline]
+    #[must_use]
     pub fn col(&self, name: &str) -> ArrayView1<T> {
         for (index, heading) in self.headings.iter().enumerate() {
             if heading == name {
@@ -52,6 +58,7 @@ impl<T: Clone> Table<T> {
 }
 
 impl<T: Display> Display for Table<T> {
+    #[inline]
     fn fmt(&self, fmt: &mut Formatter) -> Result {
         write!(
             fmt,
@@ -78,6 +85,7 @@ impl<T: Display> Display for Table<T> {
 }
 
 impl<T: Debug + Display> Save for Table<T> {
+    #[inline]
     fn save(&self, path: &Path) {
         let mut file =
             BufWriter::new(File::create(path).expect("Unable to create output csv file."));

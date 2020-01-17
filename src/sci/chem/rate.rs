@@ -23,6 +23,7 @@ pub enum Rate {
 impl Rate {
     /// Build an instance.
     #[inline]
+    #[must_use]
     pub fn build(proto: RateBuilder, species: &[Species]) -> Self {
         match proto {
             RateBuilder::Zeroth(k) => Self::Zeroth(k),
@@ -68,6 +69,7 @@ impl Rate {
 
     /// Calculate the current rate.
     #[inline]
+    #[must_use]
     pub fn calc(&self, concs: &Array1<f64>) -> f64 {
         match self {
             Self::Zeroth(k) => -k,

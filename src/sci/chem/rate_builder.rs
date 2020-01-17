@@ -21,6 +21,7 @@ pub enum RateBuilder {
 impl RateBuilder {
     /// List all the catalysts of the reaction.
     #[inline]
+    #[must_use]
     pub fn catalysts(&self) -> Vec<String> {
         match self {
             Self::Zeroth(_) => vec![],

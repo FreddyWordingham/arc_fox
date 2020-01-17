@@ -10,6 +10,7 @@ use std::{
 /// Set and get the input and output directories.
 /// Returned pair is (input, output).
 #[inline]
+#[must_use]
 pub fn io_dirs(input: Option<PathBuf>, output: Option<PathBuf>) -> (PathBuf, PathBuf) {
     let in_dir = if let Some(input) = input {
         input
