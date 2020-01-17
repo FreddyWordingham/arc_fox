@@ -1,4 +1,4 @@
-//! Axis-aligned bounding box structure.
+//! Axis-aligned bounding box geometry structure.
 
 use crate::sci::math::{
     geom::Collide,
@@ -51,6 +51,14 @@ impl Aabb {
     #[must_use]
     pub fn centre(&self) -> Point3<f64> {
         nalgebra::center(&self.mins, &self.maxs)
+    }
+
+    /// Calculate the surface area.
+    #[inline]
+    #[must_use]
+    pub fn area(&self) -> f64 {
+        let ws = self.widths();
+        2.0 * ws.z.mul_add(ws.x, ws.x.mul_add(ws.y, ws.y * ws.z))
     }
 
     /// Calculate the volume.
