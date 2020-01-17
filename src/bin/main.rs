@@ -1,4 +1,4 @@
-//! Main testing function.
+//! Main testing binary.
 
 use arc::{
     args,

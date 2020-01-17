@@ -1,4 +1,4 @@
-//! Reaction series example function.
+//! Reaction series example binary.
 
 use arc::{
     args,
