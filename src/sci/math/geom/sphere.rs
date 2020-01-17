@@ -1,6 +1,10 @@
 //! Sphere geometry structure.
 
-use nalgebra::Point3;
+use crate::sci::math::{
+    geom::{Aabb, Collide},
+    rt::{Ray, Trace},
+};
+use nalgebra::{Point3, Vector3};
 use std::f64::consts::PI;
 
 /// Sphere geometry.
@@ -39,5 +43,19 @@ impl Sphere {
     #[must_use]
     pub fn contains(&self, p: &Point3<f64>) -> bool {
         nalgebra::distance_squared(&self.pos, p) <= self.rad.powi(2)
+    }
+}
+
+impl Collide for Sphere {
+    #[inline]
+    #[must_use]
+    fn bounding_box(&self) -> Aabb {
+        Aabb::new_centred(&self.pos, &Vector3::new(self.rad, self.rad, self.rad))
+    }
+
+    #[inline]
+    #[must_use]
+    fn overlap(&self, aabb: &Aabb) -> bool {
+        aabb.dist_sq_from_point(&self.pos) <= self.rad.powi(2)
     }
 }

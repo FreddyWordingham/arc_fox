@@ -76,6 +76,23 @@ impl Aabb {
         p >= &self.mins && p <= &self.maxs
     }
 
+    /// Calculate the distance to the aabb from a given point.
+    #[inline]
+    #[must_use]
+    pub fn dist_sq_from_point(&self, p: &Point3<f64>) -> f64 {
+        let mut dist_sq = 0.0;
+
+        for (v, (min, max)) in p.iter().zip(self.mins.iter().zip(self.maxs.iter())) {
+            if v < min {
+                dist_sq += (min - v).powi(2);
+            } else if v > max {
+                dist_sq += (v - max).powi(2);
+            }
+        }
+
+        dist_sq
+    }
+
     /// Determine the intersection distances along a ray's direction.
     #[must_use]
     fn intersections(&self, ray: &Ray) -> (f64, f64) {
