@@ -2,7 +2,7 @@
 
 use arc::{
     args,
-    file::io::Load,
+    file::io::{Load, Save},
     form, report,
     util::{
         dirs::init::io_dirs,
@@ -12,9 +12,13 @@ use arc::{
 };
 use colog;
 use log::info;
+use ndarray::Array2;
 use std::path::{Path, PathBuf};
 
-form!(Parameters, num_phot: f64);
+form!(Parameters,
+    num_phot: f64;
+    res: (usize, usize)
+);
 
 fn main() {
     colog::init();
@@ -36,11 +40,12 @@ fn main() {
 
     section("Simulation");
     info!("Tracing...");
-    let _ccd = simulation(num_phot);
+    let ccd = simulation(num_phot, params.res);
     info!("Tracing complete.");
 
     section("Output");
     info!("Saving...");
+    ccd.save(&out_dir.join("ccd.nc"));
     info!("Saving complete.");
 }
 
@@ -58,4 +63,8 @@ fn prelude(params_path: &Path) -> Parameters {
     Parameters::load(&params_path)
 }
 
-fn simulation(_num_phot: u64) -> () {}
+fn simulation(_num_phot: u64, res: (usize, usize)) -> Array2<f64> {
+    let num_hits = Array2::zeros(res);
+
+    num_hits
+}

@@ -4,13 +4,14 @@
 #![allow(dead_code)]
 #![warn(
     clippy::all,
+    // clippy::cargo
     clippy::missing_docs_in_private_items,
     clippy::nursery,
     clippy::pedantic,
     clippy::restriction,
-    // clippy::cargo
 )]
 #![allow(
+    clippy::else_if_without_else,
     clippy::float_arithmetic,
     clippy::implicit_return,
     clippy::integer_arithmetic,

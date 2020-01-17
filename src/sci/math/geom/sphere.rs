@@ -91,7 +91,8 @@ impl Trace for Sphere {
         if let Some((min, max)) = self.intersections(ray) {
             if min > 0.0 {
                 return Some(min);
-            } else if max > 0.0 {
+            }
+            if max > 0.0 {
                 return Some(max);
             }
         }
