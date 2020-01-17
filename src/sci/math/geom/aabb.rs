@@ -1,7 +1,10 @@
 //! Axis-aligned bounding box structure.
 
-use crate::sci::math::{geom::Collide, rt::Ray};
-use nalgebra::{Point3, Vector3};
+use crate::sci::math::{
+    geom::Collide,
+    rt::{Ray, Trace},
+};
+use nalgebra::{Point3, Unit, Vector3};
 use std::cmp::Ordering;
 
 /// Axis-aligned bounding box geometry.
@@ -121,5 +124,58 @@ impl Collide for Aabb {
     #[must_use]
     fn overlap(&self, aabb: &Aabb) -> bool {
         self.mins <= aabb.maxs && self.maxs >= aabb.mins
+    }
+}
+
+impl Trace for Aabb {
+    #[inline]
+    #[must_use]
+    fn hit(&self, ray: &Ray) -> bool {
+        let (t_min, t_max) = self.intersections(ray);
+
+        !(t_max <= 0.0 || t_min > t_max)
+    }
+
+    #[inline]
+    #[must_use]
+    fn dist(&self, ray: &Ray) -> Option<f64> {
+        let (t_min, t_max) = self.intersections(ray);
+
+        if t_max <= 0.0 || t_min > t_max {
+            return None;
+        }
+
+        if t_min > 0.0 {
+            return Some(t_min);
+        }
+
+        Some(t_max)
+    }
+
+    #[inline]
+    #[must_use]
+    fn dist_norm(&self, _ray: &Ray) -> Option<(f64, Unit<Vector3<f64>>)> {
+        unimplemented!("Tell me (Freddy) if you need this.");
+    }
+
+    #[inline]
+    #[must_use]
+    fn dist_inside(&self, ray: &Ray) -> Option<(f64, bool)> {
+        if let Some(dist) = self.dist(ray) {
+            return Some((dist, self.contains(&ray.pos)));
+        }
+
+        None
+    }
+
+    #[inline]
+    #[must_use]
+    fn dist_inside_norm(&self, ray: &Ray) -> Option<(f64, bool, Unit<Vector3<f64>>)> {
+        if let Some((dist, norm)) = self.dist_norm(ray) {
+            let inside = self.contains(&ray.pos);
+            Some((dist, inside, norm))
+        } else {
+            None
+        }
     }
 }
