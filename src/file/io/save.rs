@@ -30,11 +30,17 @@ impl<T: Debug + Numeric> Save for Array2<T> {
         let shape = self.shape();
 
         let dim1_name = "x";
-        file.add_dimension(dim1_name, shape[X as usize])
-            .expect("Unable to add X dimension.");
+        file.add_dimension(
+            dim1_name,
+            *shape.get(X as usize).expect("Invalid dimension index."),
+        )
+        .expect("Unable to add X dimension.");
         let dim2_name = "y";
-        file.add_dimension(dim2_name, shape[Y as usize])
-            .expect("Unable to add Y dimension.");
+        file.add_dimension(
+            dim2_name,
+            *shape.get(Y as usize).expect("Invalid dimension index."),
+        )
+        .expect("Unable to add Y dimension.");
 
         let mut var = file
             .add_variable::<T>("data", &[dim1_name, dim2_name])
@@ -55,14 +61,23 @@ impl<T: Debug + Numeric> Save for Array3<T> {
         let shape = self.shape();
 
         let dim1_name = "x";
-        file.add_dimension(dim1_name, shape[X as usize])
-            .expect("Unable to add X dimension.");
+        file.add_dimension(
+            dim1_name,
+            *shape.get(X as usize).expect("Invalid dimension index."),
+        )
+        .expect("Unable to add X dimension.");
         let dim2_name = "y";
-        file.add_dimension(dim2_name, shape[Y as usize])
-            .expect("Unable to add Y dimension.");
+        file.add_dimension(
+            dim2_name,
+            *shape.get(Y as usize).expect("Invalid dimension index."),
+        )
+        .expect("Unable to add Y dimension.");
         let dim3_name = "z";
-        file.add_dimension(dim3_name, shape[Z as usize])
-            .expect("Unable to add Z dimension.");
+        file.add_dimension(
+            dim3_name,
+            *shape.get(Z as usize).expect("Invalid dimension index."),
+        )
+        .expect("Unable to add Z dimension.");
 
         let mut var = file
             .add_variable::<T>("data", &[dim1_name, dim2_name, dim3_name])
