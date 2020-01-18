@@ -24,9 +24,11 @@
 #![allow(clippy::missing_inline_in_public_items)]
 
 mod hello_macro;
+mod json;
 mod new;
 
 use hello_macro::*;
+use json::*;
 use new::*;
 
 extern crate proc_macro;
@@ -45,3 +47,48 @@ pub fn hello_macro_derive(input: TokenStream) -> TokenStream {
 pub fn new_macro_derive(input: TokenStream) -> TokenStream {
     impl_new_macro(input)
 }
+
+/// Create the procedural macro Form.
+#[proc_macro_derive(Form)]
+pub fn form_macro_derive(input: TokenStream) -> TokenStream {
+    impl_form_macro(input)
+}
+
+/// Create the procedural macro Json.
+#[proc_macro_derive(Json)]
+pub fn json_macro_derive(input: TokenStream) -> TokenStream {
+    impl_json_macro(input)
+}
+
+/// Create the procedural macro Save.
+#[proc_macro_derive(Save)]
+pub fn save_macro_derive(input: TokenStream) -> TokenStream {
+    impl_save_macro(input)
+}
+
+/// Create the procedural macro Save.
+#[proc_macro_derive(Load)]
+pub fn load_macro_derive(input: TokenStream) -> TokenStream {
+    impl_load_macro(input)
+}
+
+// extern crate proc_macro;
+// extern crate proc_macro2;
+// #[macro_use]
+// extern crate quote;
+// extern crate syn;
+
+// use proc_macro2::TokenStream;
+
+// #[proc_macro_attribute]
+// pub fn add_derive(
+//     _metadata: proc_macro::TokenStream,
+//     input: proc_macro::TokenStream,
+// ) -> proc_macro::TokenStream {
+//     let input: TokenStream = input.into();
+//     let output = quote! {
+//         #[derive(Debug, Serialize, Deserialize, etc, ...)]
+//         #input
+//     };
+//     output.into()
+// }

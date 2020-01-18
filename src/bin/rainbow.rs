@@ -3,7 +3,7 @@
 use arc::{
     args,
     file::io::{Load, Save},
-    form, report,
+    report,
     util::{
         dirs::init::io_dirs,
         info::exec,
@@ -13,18 +13,13 @@ use arc::{
 use colog;
 use log::info;
 use ndarray::Array2;
-use proc_mac::{HelloMacro, New};
+use proc_mac::Form;
 use std::path::{Path, PathBuf};
 
-form!(Parameters,
-    num_phot: f64;
-    res: (usize, usize)
-);
-
-#[derive(Debug, HelloMacro, New)]
-struct Thing {
-    fgh: f64,
-    beans: usize,
+#[derive(Debug, serde::Serialize, serde::Deserialize, Form)]
+struct Parameters {
+    num_phot: f64,
+    res: (usize, usize),
 }
 
 fn main() {
@@ -56,9 +51,6 @@ fn main() {
     info!("Saving complete.");
 
     println!("THis:\n{:?}", params);
-
-    Thing::hello_macro();
-    let t = Thing::new(2.0, 6);
 }
 
 fn initialisation() -> (PathBuf, PathBuf, PathBuf) {
