@@ -3,7 +3,7 @@
 use arc::{
     args,
     file::io::{map, Load},
-    form, report,
+    report,
     sci::chem::{Reaction, ReactionBuilder, Species, SpeciesBuilder, State, StateBuilder},
     util::{
         dirs::init::io_dirs,
@@ -14,6 +14,7 @@ use arc::{
 };
 use colog;
 use log::info;
+use proc_mac::Form;
 use std::{
     collections::BTreeMap,
     fs::File,
@@ -21,13 +22,13 @@ use std::{
     path::Path,
 };
 
-form!(
-    Parameters,
-        num_threads: usize;
-        reactions: Vec<String>;
-        species: Option<Vec<String>>;
-        init_state: StateBuilder
-);
+#[derive(Debug, serde::Serialize, serde::Deserialize, Form)]
+struct Parameters {
+    num_threads: usize,
+    reactions: Vec<String>,
+    species: Option<Vec<String>>,
+    init_state: StateBuilder,
+}
 
 pub fn main() {
     colog::init();

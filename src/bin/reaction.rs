@@ -7,7 +7,7 @@ use arc::{
         io::{Load, Save},
         map,
     },
-    form, report,
+    report,
     sci::chem::{Reaction, ReactionBuilder, Species, SpeciesBuilder, State, StateBuilder},
     util::{
         dirs::init::io_dirs,
@@ -17,6 +17,7 @@ use arc::{
 };
 use colog;
 use log::info;
+use proc_mac::Form;
 use std::{
     collections::BTreeMap,
     path::{Path, PathBuf},
@@ -24,13 +25,13 @@ use std::{
 
 const MULTIPLIER: f64 = 0.1;
 
-form!(
-    Parameters,
-        reactions: Vec<String>;
-        init_state: StateBuilder;
-        integration_time: f64;
-        min_dt: f64
-);
+#[derive(Debug, serde::Serialize, serde::Deserialize, Form)]
+struct Parameters {
+    reactions: Vec<String>,
+    init_state: StateBuilder,
+    integration_time: f64,
+    min_dt: f64,
+}
 
 fn main() {
     colog::init();
