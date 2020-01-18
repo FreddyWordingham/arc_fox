@@ -25,22 +25,3 @@ macro_rules! access {
         }
     };
 }
-
-/// Succinctly define a struct and a simple constructor method.
-#[macro_export]
-macro_rules! new {
-    ($name:ident { $( $field:ident: $type:ty ),* }) => {
-        pub struct $name {
-            $($field: $type,)*
-        }
-
-        impl $name {
-            pub fn new() -> Self {
-                Self {
-                    $( $field, )*
-                }
-            }
-        }
-    };
-
-}

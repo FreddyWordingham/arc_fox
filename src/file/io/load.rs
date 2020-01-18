@@ -2,14 +2,7 @@
 
 use json5;
 use serde::Deserialize;
-use serde_json::from_reader;
-use std::{
-    collections::BTreeMap,
-    fmt::Debug,
-    fs::{read_to_string, File},
-    io::BufReader,
-    path::Path,
-};
+use std::{collections::BTreeMap, fmt::Debug, fs::read_to_string, path::Path};
 
 /// Types implementing this trait can be loaded from a file.
 pub trait Load: Debug {

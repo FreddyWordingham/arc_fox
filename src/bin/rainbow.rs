@@ -13,12 +13,16 @@ use arc::{
 use colog;
 use log::info;
 use ndarray::Array2;
+use proc_mac::HelloMacro;
 use std::path::{Path, PathBuf};
 
 form!(Parameters,
     num_phot: f64;
     res: (usize, usize)
 );
+
+#[derive(Debug, HelloMacro)]
+struct Thing;
 
 fn main() {
     colog::init();
@@ -47,6 +51,8 @@ fn main() {
     info!("Saving...");
     ccd.save(&out_dir.join("ccd.nc"));
     info!("Saving complete.");
+
+    println!("THis:\n{:?}", params);
 }
 
 fn initialisation() -> (PathBuf, PathBuf, PathBuf) {
