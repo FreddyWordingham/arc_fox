@@ -13,7 +13,7 @@ use arc::{
 use colog;
 use log::info;
 use ndarray::Array2;
-use proc_mac::HelloMacro;
+use proc_mac::{HelloMacro, Noob};
 use std::path::{Path, PathBuf};
 
 form!(Parameters,
@@ -21,8 +21,11 @@ form!(Parameters,
     res: (usize, usize)
 );
 
-#[derive(Debug, HelloMacro)]
-struct Thing;
+#[derive(Debug, HelloMacro, Noob)]
+struct Thing {
+    fgh: f64,
+    beans: usize,
+}
 
 fn main() {
     colog::init();
@@ -55,6 +58,7 @@ fn main() {
     println!("THis:\n{:?}", params);
 
     Thing::hello_macro();
+    let t = Thing::new(2.0, 6);
 }
 
 fn initialisation() -> (PathBuf, PathBuf, PathBuf) {
