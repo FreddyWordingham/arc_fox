@@ -22,3 +22,4 @@ serde_json = "1.0.44"
 terminal_size = "0.1.10"
 json5 = "0.2.5"
 proc_mac = { path = "res/proc_mac" }
+attr_mac = { path = "res/attr_mac" }
