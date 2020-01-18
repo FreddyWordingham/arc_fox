@@ -1,4 +1,4 @@
-//! Implementation function of the procedural macro `Json`.
+//! Implementation function of the json related procedural macros.
 
 use crate::proc_macro::TokenStream;
 use quote::quote;

@@ -15,9 +15,9 @@ use arc::{
         print::term::{section, title},
     },
 };
+use attr_mac::form;
 use colog;
 use log::info;
-use proc_mac::Form;
 use std::{
     collections::BTreeMap,
     path::{Path, PathBuf},
@@ -25,7 +25,7 @@ use std::{
 
 const MULTIPLIER: f64 = 0.1;
 
-#[derive(Debug, serde::Serialize, serde::Deserialize, Form)]
+#[form]
 struct Parameters {
     reactions: Vec<String>,
     init_state: StateBuilder,

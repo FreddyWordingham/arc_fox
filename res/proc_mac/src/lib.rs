@@ -23,18 +23,17 @@
 // Temporary suppression.
 #![allow(clippy::missing_inline_in_public_items)]
 
+extern crate proc_macro;
+extern crate proc_macro2;
+
 mod hello_macro;
 mod json;
 mod new;
 
+use crate::proc_macro::TokenStream;
 use hello_macro::*;
 use json::*;
 use new::*;
-
-extern crate proc_macro;
-extern crate proc_macro2;
-
-use crate::proc_macro::TokenStream;
 
 /// Create the procedural macro `HelloMacro`.
 #[proc_macro_derive(HelloMacro)]

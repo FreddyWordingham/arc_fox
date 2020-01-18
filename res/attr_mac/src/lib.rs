@@ -26,16 +26,31 @@
 extern crate proc_macro;
 extern crate proc_macro2;
 
-use proc_macro::TokenStream as TS1;
-use proc_macro2::TokenStream as TS2;
+mod json;
 
-/// Create the attribute macro Form.
+use json::*;
+use proc_macro::TokenStream;
+
+/// Create the attribute macro form.
 #[proc_macro_attribute]
-pub fn form(_metadata: TS1, input: TS1) -> TS1 {
-    let input: TS2 = input.into();
-    let output = quote::quote! {
-        #[derive(Debug, serde::Serialize, serde::Deserialize, proc_mac::Form)]
-        #input
-    };
-    output.into()
+pub fn form(metadata: TokenStream, input: TokenStream) -> TokenStream {
+    form_attr_macro_impl(metadata, input)
+}
+
+/// Create the attribute macro json.
+#[proc_macro_attribute]
+pub fn json(metadata: TokenStream, input: TokenStream) -> TokenStream {
+    json_attr_macro_impl(metadata, input)
+}
+
+/// Create the attribute macro save.
+#[proc_macro_attribute]
+pub fn save(metadata: TokenStream, input: TokenStream) -> TokenStream {
+    save_attr_macro_impl(metadata, input)
+}
+
+/// Create the attribute macro load.
+#[proc_macro_attribute]
+pub fn load(metadata: TokenStream, input: TokenStream) -> TokenStream {
+    load_attr_macro_impl(metadata, input)
 }

@@ -1,10 +1,9 @@
 //! Reaction builder structure.
 
-use proc_mac::Json;
-use serde::{Deserialize, Serialize};
+use attr_mac::json;
 
 /// Species builder structure.
-#[derive(Debug, Deserialize, Serialize, Json)]
+#[json]
 pub struct SpeciesBuilder {
     /// Optional diffusive radius [m].
     pub rad: Option<f64>,

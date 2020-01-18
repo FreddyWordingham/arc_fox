@@ -10,13 +10,13 @@ use arc::{
         print::term::{section, title},
     },
 };
+use attr_mac::form;
 use colog;
 use log::info;
 use ndarray::Array2;
-use proc_mac::Form;
 use std::path::{Path, PathBuf};
 
-#[derive(Debug, serde::Serialize, serde::Deserialize, Form)]
+#[form]
 struct Parameters {
     num_phot: f64,
     res: (usize, usize),
