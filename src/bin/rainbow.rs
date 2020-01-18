@@ -13,7 +13,7 @@ use arc::{
 use colog;
 use log::info;
 use ndarray::Array2;
-use proc_mac::{HelloMacro, Noob};
+use proc_mac::{HelloMacro, New};
 use std::path::{Path, PathBuf};
 
 form!(Parameters,
@@ -21,7 +21,7 @@ form!(Parameters,
     res: (usize, usize)
 );
 
-#[derive(Debug, HelloMacro, Noob)]
+#[derive(Debug, HelloMacro, New)]
 struct Thing {
     fgh: f64,
     beans: usize,
