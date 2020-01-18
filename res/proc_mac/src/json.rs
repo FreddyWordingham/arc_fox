@@ -53,39 +53,3 @@ pub fn json_derive_impl(input: TokenStream) -> TokenStream {
 
     TokenStream::from(output)
 }
-
-/// Implement the `Save` trait using json parsing.
-pub fn save_derive_impl(input: TokenStream) -> TokenStream {
-    let input = parse_macro_input!(input as ItemStruct);
-
-    let name = &input.ident;
-
-    let output = quote! {
-        impl crate::file::io::Save for #name {
-            #[inline]
-            fn save(&self, path: &std::path::Path) {
-                crate::file::io::as_json(self, path);
-            }
-        }
-    };
-
-    TokenStream::from(output)
-}
-
-/// Implement the `Load` trait using json parsing.
-pub fn load_derive_impl(input: TokenStream) -> TokenStream {
-    let input = parse_macro_input!(input as ItemStruct);
-
-    let name = &input.ident;
-
-    let output = quote! {
-        impl crate::file::io::Load for #name {
-            #[inline]
-            fn load(path: &std::path::Path) -> Self {
-                crate::file::io::from_json(path)
-            }
-        }
-    };
-
-    TokenStream::from(output)
-}

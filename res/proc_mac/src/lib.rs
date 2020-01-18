@@ -59,15 +59,3 @@ pub fn form_derive(input: TokenStream) -> TokenStream {
 pub fn json_derive(input: TokenStream) -> TokenStream {
     json_derive_impl(input)
 }
-
-/// Create the procedural macro Save.
-#[proc_macro_derive(Save)]
-pub fn save_derive(input: TokenStream) -> TokenStream {
-    save_derive_impl(input)
-}
-
-/// Create the procedural macro Save.
-#[proc_macro_derive(Load)]
-pub fn load_derive(input: TokenStream) -> TokenStream {
-    load_derive_impl(input)
-}

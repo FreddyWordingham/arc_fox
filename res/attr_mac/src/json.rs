@@ -21,23 +21,3 @@ pub fn json_impl(_metadata: TokenStream, input: TokenStream) -> TokenStream {
     };
     output.into()
 }
-
-/// Create the attribute macro load.
-pub fn load_impl(_metadata: TokenStream, input: TokenStream) -> TokenStream {
-    let input: proc_macro2::TokenStream = input.into();
-    let output = quote::quote! {
-        #[derive(Debug, serde::Deserialize, proc_mac::Load)]
-        #input
-    };
-    output.into()
-}
-
-/// Create the attribute macro save.
-pub fn save_impl(_metadata: TokenStream, input: TokenStream) -> TokenStream {
-    let input: proc_macro2::TokenStream = input.into();
-    let output = quote::quote! {
-        #[derive(Debug, serde::Serialize, proc_mac::Save)]
-        #input
-    };
-    output.into()
-}

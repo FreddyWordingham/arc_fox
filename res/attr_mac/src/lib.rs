@@ -42,15 +42,3 @@ pub fn form(metadata: TokenStream, input: TokenStream) -> TokenStream {
 pub fn json(metadata: TokenStream, input: TokenStream) -> TokenStream {
     json_impl(metadata, input)
 }
-
-/// Create the attribute macro save.
-#[proc_macro_attribute]
-pub fn save(metadata: TokenStream, input: TokenStream) -> TokenStream {
-    save_impl(metadata, input)
-}
-
-/// Create the attribute macro load.
-#[proc_macro_attribute]
-pub fn load(metadata: TokenStream, input: TokenStream) -> TokenStream {
-    load_impl(metadata, input)
-}
