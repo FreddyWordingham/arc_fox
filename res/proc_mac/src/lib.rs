@@ -37,37 +37,37 @@ use new::*;
 
 /// Create the procedural macro `HelloMacro`.
 #[proc_macro_derive(HelloMacro)]
-pub fn hello_macro_derive(input: TokenStream) -> TokenStream {
+pub fn hello_derive(input: TokenStream) -> TokenStream {
     let ast = syn::parse(input).expect("Unable to parse token stream.");
-    impl_hello_macro(&ast)
+    hello_derive_impl(&ast)
 }
 
 /// Create the procedural macro New.
 #[proc_macro_derive(New)]
-pub fn new_macro_derive(input: TokenStream) -> TokenStream {
-    impl_new_macro(input)
+pub fn new_derive(input: TokenStream) -> TokenStream {
+    new_derive_impl(input)
 }
 
 /// Create the procedural macro Form.
 #[proc_macro_derive(Form)]
-pub fn form_macro_derive(input: TokenStream) -> TokenStream {
-    impl_form_macro(input)
+pub fn form_derive(input: TokenStream) -> TokenStream {
+    form_derive_impl(input)
 }
 
 /// Create the procedural macro Json.
 #[proc_macro_derive(Json)]
-pub fn json_macro_derive(input: TokenStream) -> TokenStream {
-    impl_json_macro(input)
+pub fn json_derive(input: TokenStream) -> TokenStream {
+    json_derive_impl(input)
 }
 
 /// Create the procedural macro Save.
 #[proc_macro_derive(Save)]
-pub fn save_macro_derive(input: TokenStream) -> TokenStream {
-    impl_save_macro(input)
+pub fn save_derive(input: TokenStream) -> TokenStream {
+    save_derive_impl(input)
 }
 
 /// Create the procedural macro Save.
 #[proc_macro_derive(Load)]
-pub fn load_macro_derive(input: TokenStream) -> TokenStream {
-    impl_load_macro(input)
+pub fn load_derive(input: TokenStream) -> TokenStream {
+    load_derive_impl(input)
 }

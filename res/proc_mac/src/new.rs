@@ -5,7 +5,7 @@ use quote::quote;
 use syn::{parse_macro_input, ItemStruct};
 
 /// Add a simple constructor function which moves field variables (in order) into the structure.
-pub fn impl_new_macro(input: TokenStream) -> TokenStream {
+pub fn new_derive_impl(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as ItemStruct);
 
     let name = &input.ident;

@@ -5,7 +5,7 @@ use quote::quote;
 use syn::{parse_macro_input, ItemStruct};
 
 /// Implement `Save` and `Load` traits using json parsing.
-pub fn impl_form_macro(input: TokenStream) -> TokenStream {
+pub fn form_derive_impl(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as ItemStruct);
 
     let name = &input.ident;
@@ -30,7 +30,7 @@ pub fn impl_form_macro(input: TokenStream) -> TokenStream {
 }
 
 /// Implement `Save` and `Load` traits using json parsing.
-pub fn impl_json_macro(input: TokenStream) -> TokenStream {
+pub fn json_derive_impl(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as ItemStruct);
 
     let name = &input.ident;
@@ -55,7 +55,7 @@ pub fn impl_json_macro(input: TokenStream) -> TokenStream {
 }
 
 /// Implement the `Save` trait using json parsing.
-pub fn impl_save_macro(input: TokenStream) -> TokenStream {
+pub fn save_derive_impl(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as ItemStruct);
 
     let name = &input.ident;
@@ -73,7 +73,7 @@ pub fn impl_save_macro(input: TokenStream) -> TokenStream {
 }
 
 /// Implement the `Load` trait using json parsing.
-pub fn impl_load_macro(input: TokenStream) -> TokenStream {
+pub fn load_derive_impl(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as ItemStruct);
 
     let name = &input.ident;

@@ -34,23 +34,23 @@ use proc_macro::TokenStream;
 /// Create the attribute macro form.
 #[proc_macro_attribute]
 pub fn form(metadata: TokenStream, input: TokenStream) -> TokenStream {
-    form_attr_macro_impl(metadata, input)
+    form_impl(metadata, input)
 }
 
 /// Create the attribute macro json.
 #[proc_macro_attribute]
 pub fn json(metadata: TokenStream, input: TokenStream) -> TokenStream {
-    json_attr_macro_impl(metadata, input)
+    json_impl(metadata, input)
 }
 
 /// Create the attribute macro save.
 #[proc_macro_attribute]
 pub fn save(metadata: TokenStream, input: TokenStream) -> TokenStream {
-    save_attr_macro_impl(metadata, input)
+    save_impl(metadata, input)
 }
 
 /// Create the attribute macro load.
 #[proc_macro_attribute]
 pub fn load(metadata: TokenStream, input: TokenStream) -> TokenStream {
-    load_attr_macro_impl(metadata, input)
+    load_impl(metadata, input)
 }
