@@ -53,6 +53,8 @@ fn main() {
     info!("Saving complete.");
 
     println!("THis:\n{:?}", params);
+
+    Thing::hello_macro();
 }
 
 fn initialisation() -> (PathBuf, PathBuf, PathBuf) {
