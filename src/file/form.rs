@@ -3,7 +3,7 @@
 /// Concisely create an input form.
 #[macro_export]
 macro_rules! form {
-    ($name:ident, $( $field:ident : $type:ty); *) => {
+    ($name:ident, $($field:ident : $type:ty); *) => {
         #[derive(Debug, serde::Deserialize, serde::Serialize)]
         pub struct $name {
             $( pub $field: $type, )*

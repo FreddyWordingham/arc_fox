@@ -1,6 +1,7 @@
 //! Triangle geometry structure.
 
 use crate::{
+    access,
     sci::math::rt::ray::Ray,
     util::list::alphabet::Greek::{Alpha, Beta, Gamma},
 };
@@ -11,14 +12,18 @@ use nalgebra::{Point3, Unit, Vector3};
 #[derive(Clone)]
 pub struct SmoothTriangle {
     /// Vertex points.
-    pub verts: [Point3<f64>; 3],
+    verts: [Point3<f64>; 3],
     /// Normal vectors.
-    pub norms: [Unit<Vector3<f64>>; 3],
+    norms: [Unit<Vector3<f64>>; 3],
     /// Surface plane normal.
-    pub plane_norm: Unit<Vector3<f64>>,
+    plane_norm: Unit<Vector3<f64>>,
 }
 
 impl SmoothTriangle {
+    access!(verts, [Point3<f64>; 3]);
+    access!(norms, [Unit<Vector3<f64>>; 3]);
+    access!(plane_norm, Unit<Vector3<f64>>);
+
     /// Construct a new instance.
     #[inline]
     #[must_use]
@@ -44,11 +49,25 @@ impl SmoothTriangle {
     }
 
     /// Centre point.
+    #[inline]
+    #[must_use]
     pub fn centre(&self) -> Point3<f64> {
         Point3::from(
-            ((self.verts[Alpha as usize].to_homogeneous()
-                + self.verts[Beta as usize].to_homogeneous()
-                + self.verts[Gamma as usize].to_homogeneous())
+            ((self
+                .verts
+                .get(Alpha as usize)
+                .expect("Invalid vertex index")
+                .to_homogeneous()
+                + self
+                    .verts
+                    .get(Beta as usize)
+                    .expect("Invalid vertex index")
+                    .to_homogeneous()
+                + self
+                    .verts
+                    .get(Gamma as usize)
+                    .expect("Invalid vertex index")
+                    .to_homogeneous())
                 / 3.0)
                 .xyz(),
         )
@@ -56,6 +75,7 @@ impl SmoothTriangle {
 
     /// Determine the intersection distances along a ray's direction.
     /// Also return the barycentric intersection coordinates.
+    #[inline]
     fn intersection_coors(&self, ray: &Ray) -> Option<(f64, [f64; 3])> {
         let verts = self.verts;
 

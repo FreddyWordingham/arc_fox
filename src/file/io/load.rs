@@ -1,8 +1,15 @@
 //! Loadable trait.
 
+use json5;
 use serde::Deserialize;
 use serde_json::from_reader;
-use std::{collections::BTreeMap, fmt::Debug, fs::File, io::BufReader, path::Path};
+use std::{
+    collections::BTreeMap,
+    fmt::Debug,
+    fs::{read_to_string, File},
+    io::BufReader,
+    path::Path,
+};
 
 /// Types implementing this trait can be loaded from a file.
 pub trait Load: Debug {
@@ -17,10 +24,8 @@ pub fn from_json<T>(path: &Path) -> T
 where
     for<'de> T: Deserialize<'de>,
 {
-    let file =
-        File::open(path).unwrap_or_else(|_| panic!("Unable to open file {}.", path.display()));
-    from_reader(BufReader::new(file))
-        .unwrap_or_else(|_| panic!("Unable to parse type from json file {}", path.display()))
+    json5::from_str(&read_to_string(path).expect("Unable to read file."))
+        .expect("Unable to parse json file.")
 }
 
 /// Load a map of instances.
