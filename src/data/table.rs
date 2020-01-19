@@ -1,6 +1,6 @@
 //! Table structure.
 
-use crate::file::io::Save;
+use crate::{access, file::io::Save};
 use ndarray::{Array2, ArrayView1};
 use std::{
     fmt::{Debug, Display, Formatter, Result},
@@ -13,12 +13,15 @@ use std::{
 #[derive(Debug)]
 pub struct Table<T> {
     /// Column headings.
-    pub headings: Vec<String>,
+    headings: Vec<String>,
     /// Data.
-    pub data: Array2<T>,
+    data: Array2<T>,
 }
 
 impl<T: Clone> Table<T> {
+    access!(headings, Vec<String>);
+    access!(data, Array2<T>);
+
     /// Construct a new table.
     #[inline]
     #[must_use]

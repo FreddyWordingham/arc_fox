@@ -6,7 +6,7 @@ macro_rules! access {
     ($field:ident, $type:ty) => {
         #[inline]
         #[must_use]
-        pub const fn $field(&self) -> &$type {
+        pub fn $field(&self) -> &$type {
             &self.$field
         }
     };
@@ -14,7 +14,7 @@ macro_rules! access {
     ($field:ident, $setter:ident, $type:ty) => {
         #[inline]
         #[must_use]
-        pub const fn $field(&self) -> &$type {
+        pub fn $field(&self) -> &$type {
             &self.$field
         }
 
