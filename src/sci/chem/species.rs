@@ -1,16 +1,19 @@
 //! Substance species.
 
-use crate::{ord::Named, sci::chem::SpeciesBuilder};
+use crate::{access, ord::Named, sci::chem::SpeciesBuilder};
 
 /// Reactive species structure.
 pub struct Species {
     /// Unique name.
-    pub name: String,
+    name: String,
     /// Optional diffusive radius [m].
-    pub rad: Option<f64>,
+    rad: Option<f64>,
 }
 
 impl Species {
+    access!(name, String);
+    access!(rad, Option<f64>);
+
     /// Construct a new instance.
     #[inline]
     #[must_use]
@@ -21,10 +24,10 @@ impl Species {
     /// Build a new instance.
     #[inline]
     #[must_use]
-    pub const fn build(name: String, proto: &SpeciesBuilder) -> Self {
+    pub fn build(name: String, proto: &SpeciesBuilder) -> Self {
         Self {
             name,
-            rad: proto.rad,
+            rad: *proto.rad(),
         }
     }
 }

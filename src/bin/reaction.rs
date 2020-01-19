@@ -64,13 +64,13 @@ fn main() {
     info!("built {} species:", species.len());
     for (spec, (conc, source)) in species
         .iter()
-        .zip(state.concs.iter().zip(state.sources.iter()))
+        .zip(state.concs().iter().zip(state.sources().iter()))
     {
-        info!("\t{}\t{}\t{}", spec.name, conc, source);
+        info!("\t{}\t{}\t{}", spec.name(), conc, source);
     }
     info!("built {} reactions:", reactions.len());
     for react in &reactions {
-        info!("\t{}", react.name);
+        info!("\t{}", react.name());
     }
 
     section("Simulation");
@@ -168,7 +168,7 @@ fn simulation(
         let rates = state.rate_of_change(&reactions);
 
         let mut dt = integration_time - time;
-        for (rate, conc) in rates.iter().zip(&state.concs) {
+        for (rate, conc) in rates.iter().zip(state.concs()) {
             let a = ((-conc / rate) * MULTIPLIER).abs();
             if a < dt {
                 dt = a;
@@ -179,12 +179,12 @@ fn simulation(
             dt = min_dt;
         }
 
-        state.concs += &(rates * dt);
+        *state.concs_mut() += &(rates * dt);
 
         time += dt;
 
         let mut row = vec![time];
-        row.append(&mut state.concs.to_vec());
+        row.append(&mut state.concs().to_vec());
         assert_eq!(row.len(), 5);
         data.push(row);
     }

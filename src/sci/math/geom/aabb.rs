@@ -1,8 +1,11 @@
 //! Axis-aligned bounding box geometry structure.
 
-use crate::sci::math::{
-    geom::Collide,
-    rt::{Ray, Trace},
+use crate::{
+    access,
+    sci::math::{
+        geom::Collide,
+        rt::{Ray, Trace},
+    },
 };
 use nalgebra::{Point3, Unit, Vector3};
 use std::cmp::Ordering;
@@ -12,12 +15,15 @@ use std::cmp::Ordering;
 #[derive(Clone)]
 pub struct Aabb {
     /// Minimum bound.
-    pub mins: Point3<f64>,
+    mins: Point3<f64>,
     /// Maximum bound.
-    pub maxs: Point3<f64>,
+    maxs: Point3<f64>,
 }
 
 impl Aabb {
+    access!(mins, Point3<f64>);
+    access!(maxs, Point3<f64>);
+
     /// Construct a new instance.
     #[inline]
     #[must_use]
@@ -99,14 +105,14 @@ impl Aabb {
         let t_0: Vec<_> = self
             .mins
             .iter()
-            .zip(ray.pos.iter().zip(ray.dir.iter()))
+            .zip(ray.pos().iter().zip(ray.dir().iter()))
             .map(|(m, (p, d))| (m - p) / d)
             .collect();
 
         let t_1: Vec<_> = self
             .maxs
             .iter()
-            .zip(ray.pos.iter().zip(ray.dir.iter()))
+            .zip(ray.pos().iter().zip(ray.dir().iter()))
             .map(|(m, (p, d))| (m - p) / d)
             .collect();
 
@@ -189,7 +195,7 @@ impl Trace for Aabb {
     #[must_use]
     fn dist_inside(&self, ray: &Ray) -> Option<(f64, bool)> {
         if let Some(dist) = self.dist(ray) {
-            return Some((dist, self.contains(&ray.pos)));
+            return Some((dist, self.contains(&ray.pos())));
         }
 
         None
@@ -199,7 +205,7 @@ impl Trace for Aabb {
     #[must_use]
     fn dist_inside_norm(&self, ray: &Ray) -> Option<(f64, bool, Unit<Vector3<f64>>)> {
         if let Some((dist, norm)) = self.dist_norm(ray) {
-            let inside = self.contains(&ray.pos);
+            let inside = self.contains(&ray.pos());
             Some((dist, inside, norm))
         } else {
             None

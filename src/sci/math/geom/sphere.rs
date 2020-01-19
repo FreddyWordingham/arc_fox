@@ -1,8 +1,11 @@
 //! Sphere geometry structure.
 
-use crate::sci::math::{
-    geom::{Aabb, Collide},
-    rt::{Ray, Trace},
+use crate::{
+    access,
+    sci::math::{
+        geom::{Aabb, Collide},
+        rt::{Ray, Trace},
+    },
 };
 use nalgebra::{Point3, Unit, Vector3};
 use std::f64::consts::PI;
@@ -11,12 +14,15 @@ use std::f64::consts::PI;
 #[derive(Clone)]
 pub struct Sphere {
     /// Central point.
-    pub pos: Point3<f64>,
+    pos: Point3<f64>,
     /// Radius.
-    pub rad: f64,
+    rad: f64,
 }
 
 impl Sphere {
+    access!(pos, Point3<f64>);
+    access!(rad, f64);
+
     /// Construct a new instance.
     #[inline]
     #[must_use]
@@ -48,8 +54,8 @@ impl Sphere {
     /// Determine the intersection distances along a ray's direction.
     #[must_use]
     fn intersections(&self, ray: &Ray) -> Option<(f64, f64)> {
-        let m = ray.pos - self.pos;
-        let b = m.dot(&ray.dir);
+        let m = ray.pos() - self.pos;
+        let b = m.dot(ray.dir());
         let c = (m.dot(&m)) - self.rad.powi(2);
 
         if c > 0.0 && b > 0.0 {
@@ -108,7 +114,7 @@ impl Trace for Sphere {
         if let Some(dist) = self.dist(ray) {
             let mut hit = ray.clone();
             hit.travel(dist);
-            return Some((dist, Unit::new_normalize(hit.pos - self.pos)));
+            return Some((dist, Unit::new_normalize(hit.pos() - self.pos)));
         }
 
         None
@@ -135,7 +141,7 @@ impl Trace for Sphere {
         if let Some((dist, inside)) = self.dist_inside(ray) {
             let mut hit = ray.clone();
             hit.travel(dist);
-            return Some((dist, inside, Unit::new_normalize(hit.pos - self.pos)));
+            return Some((dist, inside, Unit::new_normalize(hit.pos() - self.pos)));
         }
 
         None

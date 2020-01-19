@@ -1,5 +1,6 @@
 //! State building structure.
 
+use crate::access;
 use attr_mac::json;
 
 /// Reaction builder structure.
@@ -7,12 +8,15 @@ use attr_mac::json;
 #[derive(Clone)]
 pub struct StateBuilder {
     /// Initial state of species concentration.
-    pub concs: Option<Vec<(String, f64)>>,
+    concs: Option<Vec<(String, f64)>>,
     /// Initial state of species source/sink terms.
-    pub sources: Option<Vec<(String, f64)>>,
+    sources: Option<Vec<(String, f64)>>,
 }
 
 impl StateBuilder {
+    access!(concs, Option<Vec<(String, f64)>>);
+    access!(sources, Option<Vec<(String, f64)>>);
+
     /// Construct a new instance.
     #[inline]
     #[must_use]

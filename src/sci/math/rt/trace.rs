@@ -28,7 +28,7 @@ pub trait Trace {
         if let Some(dist) = self.dist(ray) {
             let mut scan = ray.clone();
             scan.travel(dist);
-            Some(scan.pos)
+            Some(*scan.pos())
         } else {
             None
         }

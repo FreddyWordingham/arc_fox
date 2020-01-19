@@ -84,7 +84,7 @@ impl SmoothTriangle {
         let e2 = verts.get(Gamma as usize).expect("Invalid vertex index.")
             - verts.get(Alpha as usize).expect("Invalid vertex index.");
 
-        let d_cross_e2 = ray.dir.cross(&e2);
+        let d_cross_e2 = ray.dir().cross(&e2);
         let e1_dot_d_cross_e2 = e1.dot(&d_cross_e2);
 
         if e1_dot_d_cross_e2.abs() <= 0.0 {
@@ -92,7 +92,7 @@ impl SmoothTriangle {
         }
 
         let inv_e1_dot_d_cross_e2 = 1.0 / e1_dot_d_cross_e2;
-        let rel_pos = ray.pos - verts.get(Alpha as usize).expect("Invalid vertex index.");
+        let rel_pos = ray.pos() - verts.get(Alpha as usize).expect("Invalid vertex index.");
         let u = inv_e1_dot_d_cross_e2 * rel_pos.dot(&d_cross_e2);
 
         if (u < 0.0) || (u > 1.0) {
@@ -100,7 +100,7 @@ impl SmoothTriangle {
         }
 
         let q = rel_pos.cross(&e1);
-        let v = inv_e1_dot_d_cross_e2 * ray.dir.dot(&q);
+        let v = inv_e1_dot_d_cross_e2 * ray.dir().dot(&q);
 
         if (v < 0.0) || ((u + v) > 1.0) {
             return None;

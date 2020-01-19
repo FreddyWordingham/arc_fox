@@ -77,7 +77,7 @@ pub fn main() {
     let mut pb = Bar::new("Counting to a million", total, 1);
     while let Some((start, end)) = pb.block(0, total / 1000) {
         write!(file, "{:+.6}", start).unwrap();
-        for conc in state.concs.iter() {
+        for conc in state.concs().iter() {
             write!(file, ",\t{:+.6e}", conc).unwrap();
         }
         writeln!(file).unwrap();
@@ -89,7 +89,7 @@ pub fn main() {
         }
     }
     write!(file, "{:+.6}", total).unwrap();
-    for conc in state.concs.iter() {
+    for conc in state.concs().iter() {
         write!(file, ",\t{:+.6e}", conc).unwrap();
     }
     writeln!(file).unwrap();

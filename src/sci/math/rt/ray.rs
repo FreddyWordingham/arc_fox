@@ -1,17 +1,21 @@
 //! Ray structure.
 
+use crate::access;
 use nalgebra::{Point3, Rotation3, Unit, Vector3};
 
 /// Point-direction.
 #[derive(Clone)]
 pub struct Ray {
     /// Ray origin.
-    pub pos: Point3<f64>,
+    pos: Point3<f64>,
     /// Ray direction.
-    pub dir: Unit<Vector3<f64>>,
+    dir: Unit<Vector3<f64>>,
 }
 
 impl Ray {
+    access!(pos, Point3<f64>);
+    access!(dir, Unit<Vector3<f64>>);
+
     /// Construct a new instance.
     #[inline]
     #[must_use]

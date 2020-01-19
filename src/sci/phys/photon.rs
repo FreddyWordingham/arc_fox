@@ -1,20 +1,25 @@
 //! Photon structure.
 
-use crate::sci::math::rt::Ray;
+use crate::{access, sci::math::rt::Ray};
 
 /// Photon as a particle representation.
 pub struct Photon {
     /// Statistical weight.
-    pub weight: f64,
+    weight: f64,
     /// Wavelength [m].
-    pub wavelength: f64,
+    wavelength: f64,
     /// Power [J/s].
-    pub power: f64,
+    power: f64,
     /// Ray of travel.
-    pub ray: Ray,
+    ray: Ray,
 }
 
 impl Photon {
+    access!(weight, f64);
+    access!(wavelength, f64);
+    access!(power, f64);
+    access!(ray, Ray);
+
     /// Construct a new instance.
     #[inline]
     #[must_use]

@@ -1,6 +1,7 @@
 //! Species reaction structure.
 
 use crate::{
+    access,
     ord::Set,
     sci::chem::{Rate, ReactionBuilder, Species},
 };
@@ -8,16 +9,21 @@ use crate::{
 /// Species reaction structure.
 pub struct Reaction {
     /// Unique name.
-    pub name: String,
+    name: String,
     /// List of reactant species buy index, and their stoichiometric coefficient.
-    pub reactants: Vec<(usize, f64)>,
+    reactants: Vec<(usize, f64)>,
     /// List of product species buy index, and their stoichiometric coefficient.
-    pub products: Vec<(usize, f64)>,
+    products: Vec<(usize, f64)>,
     /// Rate.
-    pub rate: Rate,
+    rate: Rate,
 }
 
 impl Reaction {
+    access!(name, String);
+    access!(reactants, Vec<(usize, f64)>);
+    access!(products, Vec<(usize, f64)>);
+    access!(rate, Rate);
+
     /// Build a new instance.
     #[inline]
     #[must_use]
