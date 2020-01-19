@@ -1,6 +1,9 @@
 //! Smooth-triangle geometry structure.
 
-use crate::{access, sci::math::geom::Triangle};
+use crate::{
+    access,
+    sci::math::geom::{Aabb, Collide, Triangle},
+};
 use nalgebra::{Unit, Vector3};
 
 /// Triangle structure implementation with Phong normal interpolation.
@@ -25,5 +28,19 @@ impl SmoothTriangle {
         }
 
         Self { tri, norms }
+    }
+}
+
+impl Collide for SmoothTriangle {
+    #[inline]
+    #[must_use]
+    fn bounding_box(&self) -> Aabb {
+        self.tri.bounding_box()
+    }
+
+    #[inline]
+    #[must_use]
+    fn overlap(&self, aabb: &Aabb) -> bool {
+        self.tri.overlap(aabb)
     }
 }
