@@ -43,9 +43,9 @@ pub fn main() {
     let form_path = &in_dir.join(form_name);
 
     section("Loading");
-    report!("Input dir", in_dir.display());
+    report!(in_dir.display(), "Input dir");
 
-    report!("Form name", form_name.display());
+    report!(form_name.display(), "Form name");
     let form = Parameters::load(&form_path);
     report!(form.num_threads);
 
@@ -96,7 +96,7 @@ pub fn main() {
     pb.finish_with_message("Done!");
 
     section("Output");
-    report!("Output dir", out_dir.display());
+    report!(out_dir.display(), "Output dir");
 }
 
 /// Determine the list of species involved.

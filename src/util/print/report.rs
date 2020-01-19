@@ -6,10 +6,12 @@ macro_rules! report {
     ($expression: expr) => {
         log::info!("{: <31}: {}", stringify!($expression), $expression);
     };
-    ($desc: tt, $expression: expr) => {
+
+    ($expression: expr, $desc: tt) => {
         log::info!("{: <31}: {}", $desc, $expression);
     };
-    ($desc: tt, $expression: expr, $units: tt) => {
+
+    ($expression: expr, $desc: tt, $units: tt) => {
         log::info!("{: <31}: {} [{}]", $desc, $expression, $units);
     };
 }

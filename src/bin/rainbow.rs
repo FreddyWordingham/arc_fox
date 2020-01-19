@@ -28,9 +28,9 @@ fn main() {
 
     section("Initialisation");
     let (in_dir, out_dir, params_path) = initialisation();
-    report!("input directory", in_dir.display());
-    report!("output directory", out_dir.display());
-    report!("parameters path", params_path.display());
+    report!(in_dir.display(), "input directory");
+    report!(out_dir.display(), "output directory");
+    report!(params_path.display(), "parameters path");
 
     section("Prelude");
     let params = prelude(&params_path);
