@@ -107,13 +107,13 @@ fn get_species_list(
     let mut names = (*requested).to_vec();
 
     for reaction in proto_reactions.values() {
-        for (reactant, _) in reaction.reactants.iter() {
+        for (reactant, _) in reaction.reactants().iter() {
             names.push(reactant.to_string());
         }
-        for (product, _) in reaction.products.iter() {
+        for (product, _) in reaction.products().iter() {
             names.push(product.to_string());
         }
-        for catalyst in reaction.rate.catalysts() {
+        for catalyst in reaction.rate().catalysts() {
             names.push(catalyst.to_string());
         }
     }

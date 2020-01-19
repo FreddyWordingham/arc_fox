@@ -5,6 +5,7 @@ use ndarray::Array1;
 
 /// Builds reaction rates.
 #[json]
+#[derive(Clone)]
 pub enum RateBuilder {
     /// Niladic function. f(cs) = k
     Zeroth(f64),

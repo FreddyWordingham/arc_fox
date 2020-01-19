@@ -22,8 +22,8 @@ impl Reaction {
     #[inline]
     #[must_use]
     pub fn build(name: String, proto: ReactionBuilder, species: &[Species]) -> Self {
-        let mut reactants = Vec::with_capacity(proto.reactants.len());
-        for (name, coeff) in &proto.reactants {
+        let mut reactants = Vec::with_capacity(proto.reactants().len());
+        for (name, coeff) in proto.reactants() {
             reactants.push((
                 species
                     .index_of(name)
@@ -32,8 +32,8 @@ impl Reaction {
             ));
         }
 
-        let mut products = Vec::with_capacity(proto.products.len());
-        for (name, coeff) in &proto.products {
+        let mut products = Vec::with_capacity(proto.products().len());
+        for (name, coeff) in proto.products() {
             products.push((
                 species
                     .index_of(name)
@@ -42,7 +42,7 @@ impl Reaction {
             ));
         }
 
-        let rate = Rate::build(proto.rate, species);
+        let rate = Rate::build(proto.rate().clone(), species);
 
         Self {
             name,

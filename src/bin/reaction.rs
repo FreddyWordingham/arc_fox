@@ -116,13 +116,13 @@ fn manifest(
 
     let mut species_names = Vec::new();
     for builder in reaction_builders.values() {
-        for (reactant, _) in builder.reactants.iter() {
+        for (reactant, _) in builder.reactants().iter() {
             species_names.push(reactant.to_string());
         }
-        for (product, _) in builder.products.iter() {
+        for (product, _) in builder.products().iter() {
             species_names.push(product.to_string());
         }
-        for catalyst in builder.rate.catalysts() {
+        for catalyst in builder.rate().catalysts() {
             species_names.push(catalyst.to_string());
         }
     }

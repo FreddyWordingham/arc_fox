@@ -68,7 +68,5 @@ fn prelude(params_path: &Path) -> Parameters {
 }
 
 fn simulation(_num_phot: u64, res: (usize, usize)) -> Array2<f64> {
-    let num_hits = Array2::zeros(res);
-
-    num_hits
+    Array2::zeros(res)
 }
