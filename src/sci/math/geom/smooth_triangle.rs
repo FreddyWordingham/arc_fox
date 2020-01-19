@@ -48,6 +48,30 @@ impl SmoothTriangle {
         }
     }
 
+    /// Calculate the perimeter length.
+    #[inline]
+    #[must_use]
+    pub fn perimeter(&self) -> f64 {
+        let ab = nalgebra::distance(&self.verts[0], &self.verts[1]);
+        let bc = nalgebra::distance(&self.verts[1], &self.verts[2]);
+        let ca = nalgebra::distance(&self.verts[2], &self.verts[0]);
+
+        ab + bc + ca
+    }
+
+    /// Calculate the surface area.
+    #[inline]
+    #[must_use]
+    pub fn area(&self) -> f64 {
+        let ab = nalgebra::distance(&self.verts[0], &self.verts[1]);
+        let bc = nalgebra::distance(&self.verts[1], &self.verts[2]);
+        let ca = nalgebra::distance(&self.verts[2], &self.verts[0]);
+
+        let s = (ab + bc + ca) * 0.5;
+
+        (s * (s - ab) * (s - bc) * (s - ca)).sqrt()
+    }
+
     /// Centre point.
     #[inline]
     #[must_use]
