@@ -1,10 +1,10 @@
 //! Rate  builder enumeration.
 
+use attr_mac::json;
 use ndarray::Array1;
-use serde::{Deserialize, Serialize};
 
 /// Builds reaction rates.
-#[derive(Debug, Deserialize, Serialize)]
+#[json]
 pub enum RateBuilder {
     /// Niladic function. f(cs) = k
     Zeroth(f64),

@@ -2,10 +2,10 @@
 
 use json5;
 use serde::Deserialize;
-use std::{collections::BTreeMap, fmt::Debug, fs::read_to_string, path::Path};
+use std::{collections::BTreeMap, fs::read_to_string, path::Path};
 
 /// Types implementing this trait can be loaded from a file.
-pub trait Load: Debug {
+pub trait Load {
     /// Deserialize the type from a given file.
     fn load(path: &Path) -> Self;
 }

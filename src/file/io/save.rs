@@ -8,7 +8,7 @@ use serde_json::to_string;
 use std::{fmt::Debug, fs::write, path::Path};
 
 /// Types implementing this trait can be saved to file.
-pub trait Save: Debug {
+pub trait Save {
     /// Serialise the type to a given file.
     fn save(&self, path: &Path);
 }

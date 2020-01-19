@@ -2,13 +2,18 @@
 
 use crate::proc_macro::TokenStream;
 use quote::quote;
-use syn::{parse_macro_input, ItemStruct};
+use syn::{parse_macro_input, Item};
 
 /// Implement `Save` and `Load` traits using json parsing.
 pub fn form_derive_impl(input: TokenStream) -> TokenStream {
-    let input = parse_macro_input!(input as ItemStruct);
+    let input = parse_macro_input!(input as Item);
 
-    let name = &input.ident;
+    let name = match input {
+        Item::Struct(s) => s.ident,
+        Item::Enum(e) => e.ident,
+        Item::Union(u) => u.ident,
+        _ => panic!("Can not derive json for this item."),
+    };
 
     let output = quote! {
         impl arc::file::io::Save for #name {
@@ -31,9 +36,14 @@ pub fn form_derive_impl(input: TokenStream) -> TokenStream {
 
 /// Implement `Save` and `Load` traits using json parsing.
 pub fn json_derive_impl(input: TokenStream) -> TokenStream {
-    let input = parse_macro_input!(input as ItemStruct);
+    let input = parse_macro_input!(input as Item);
 
-    let name = &input.ident;
+    let name = match input {
+        Item::Struct(s) => s.ident,
+        Item::Enum(e) => e.ident,
+        Item::Union(u) => u.ident,
+        _ => panic!("Can not derive json for this item."),
+    };
 
     let output = quote! {
         impl crate::file::io::Save for #name {

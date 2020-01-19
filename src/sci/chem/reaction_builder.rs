@@ -1,11 +1,10 @@
 //! Reaction builder structure.
 
 use crate::sci::chem::RateBuilder;
-use proc_mac::Json;
-use serde::{Deserialize, Serialize};
+use attr_mac::json;
 
 /// Reaction builder structure.
-#[derive(Debug, Deserialize, Serialize, Json)]
+#[json]
 pub struct ReactionBuilder {
     /// List of reactant species buy name, and their stoichiometric coefficient.
     pub reactants: Vec<(String, f64)>,

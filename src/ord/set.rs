@@ -12,6 +12,7 @@ pub trait Set<T> {
 }
 
 impl<T: Named> Set<T> for &[T] {
+    #[must_use]
     #[inline]
     fn index_of(&self, name: &str) -> Option<usize> {
         for (index, elem) in self.iter().enumerate() {
@@ -23,6 +24,7 @@ impl<T: Named> Set<T> for &[T] {
         None
     }
 
+    #[must_use]
     #[inline]
     fn ref_of(&self, name: &str) -> Option<&T> {
         for elem in self.iter() {

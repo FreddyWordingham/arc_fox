@@ -58,7 +58,6 @@ impl<T: Clone> Table<T> {
 }
 
 impl<T: Display> Display for Table<T> {
-    #[inline]
     fn fmt(&self, fmt: &mut Formatter) -> Result {
         write!(
             fmt,
@@ -85,7 +84,6 @@ impl<T: Display> Display for Table<T> {
 }
 
 impl<T: Debug + Display> Save for Table<T> {
-    #[inline]
     fn save(&self, path: &Path) {
         let mut file =
             BufWriter::new(File::create(path).expect("Unable to create output csv file."));

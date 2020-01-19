@@ -141,11 +141,13 @@ impl Aabb {
 }
 
 impl Collide for Aabb {
+    #[inline]
     #[must_use]
     fn bounding_box(&self) -> Aabb {
         self.clone()
     }
 
+    #[inline]
     #[must_use]
     fn overlap(&self, aabb: &Aabb) -> bool {
         self.mins <= aabb.maxs && self.maxs >= aabb.mins

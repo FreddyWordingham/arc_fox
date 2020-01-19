@@ -81,11 +81,13 @@ impl Collide for Sphere {
 }
 
 impl Trace for Sphere {
+    #[inline]
     #[must_use]
     fn hit(&self, ray: &Ray) -> bool {
         self.intersections(ray).is_some()
     }
 
+    #[inline]
     #[must_use]
     fn dist(&self, ray: &Ray) -> Option<f64> {
         if let Some((min, max)) = self.intersections(ray) {
@@ -100,6 +102,7 @@ impl Trace for Sphere {
         None
     }
 
+    #[inline]
     #[must_use]
     fn dist_norm(&self, ray: &Ray) -> Option<(f64, Unit<Vector3<f64>>)> {
         if let Some(dist) = self.dist(ray) {
@@ -111,6 +114,7 @@ impl Trace for Sphere {
         None
     }
 
+    #[inline]
     #[must_use]
     fn dist_inside(&self, ray: &Ray) -> Option<(f64, bool)> {
         if let Some((min, max)) = self.intersections(ray) {
@@ -125,6 +129,7 @@ impl Trace for Sphere {
         None
     }
 
+    #[inline]
     #[must_use]
     fn dist_inside_norm(&self, ray: &Ray) -> Option<(f64, bool, Unit<Vector3<f64>>)> {
         if let Some((dist, inside)) = self.dist_inside(ray) {

@@ -22,6 +22,8 @@ pub trait Trace {
     fn dist_inside_norm(&self, ray: &Ray) -> Option<(f64, bool, Unit<Vector3<f64>>)>;
 
     /// Calculate the hit point of a ray.
+    #[inline]
+    #[must_use]
     fn hit_point(&self, ray: &Ray) -> Option<Point3<f64>> {
         if let Some(dist) = self.dist(ray) {
             let mut scan = ray.clone();

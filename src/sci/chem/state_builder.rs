@@ -1,10 +1,10 @@
 //! State building structure.
 
-use proc_mac::Json;
-use serde::{Deserialize, Serialize};
+use attr_mac::json;
 
 /// Reaction builder structure.
-#[derive(Debug, Serialize, Deserialize, Json, Clone)]
+#[json]
+#[derive(Clone)]
 pub struct StateBuilder {
     /// Initial state of species concentration.
     pub concs: Option<Vec<(String, f64)>>,
