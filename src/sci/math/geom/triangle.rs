@@ -2,7 +2,10 @@
 
 use crate::{
     access,
-    sci::math::rt::ray::Ray,
+    sci::math::{
+        geom::{Aabb, Collide},
+        rt::ray::Ray,
+    },
     util::list::alphabet::Greek::{Alpha, Beta, Gamma},
 };
 use nalgebra::{Point3, Unit, Vector3};
@@ -127,5 +130,118 @@ impl Triangle {
         let w = 1.0 - (u + v);
 
         Some((dist, [u, v, w]))
+    }
+}
+
+impl Collide for Triangle {
+    #[inline]
+    #[must_use]
+    fn bounding_box(&self) -> Aabb {
+        let mut mins = self.verts[Alpha as usize];
+        let mut maxs = mins;
+
+        for v in self.verts.iter().skip(1) {
+            for (v, (min, max)) in v.iter().zip(mins.iter_mut().zip(maxs.iter_mut())) {
+                if *min > *v {
+                    *min = *v;
+                } else if *max < *v {
+                    *max = *v;
+                }
+            }
+        }
+
+        Aabb::new(mins, maxs)
+    }
+
+    #[must_use]
+    fn overlap(&self, aabb: &Aabb) -> bool {
+        let c = aabb.centre();
+        let e = aabb.half_widths();
+
+        let v0 = self.verts[Alpha as usize] - c;
+        let v1 = self.verts[Beta as usize] - c;
+        let v2 = self.verts[Gamma as usize] - c;
+
+        let f0 = v1 - v0;
+        let f1 = v2 - v1;
+        let f2 = v0 - v2;
+
+        let u0 = Vector3::x_axis();
+        let u1 = Vector3::y_axis();
+        let u2 = Vector3::z_axis();
+
+        let axis_test = |axis: &Vector3<f64>| {
+            let p0 = v0.dot(axis);
+            let p1 = v1.dot(axis);
+            let p2 = v2.dot(axis);
+
+            let r = (e.x * (u0.dot(axis)).abs())
+                + (e.y * (u1.dot(axis)).abs())
+                + (e.z * (u2.dot(axis)).abs());
+
+            if (-(p0.max(p1).max(p2))).max(p0.min(p1).min(p2)) > r {
+                return false;
+            }
+
+            true
+        };
+
+        if !axis_test(&u0) {
+            return false;
+        }
+        if !axis_test(&u1) {
+            return false;
+        }
+        if !axis_test(&u2) {
+            return false;
+        }
+
+        let axis_u0_f0 = u0.cross(&f0);
+        let axis_u0_f1 = u0.cross(&f1);
+        let axis_u0_f2 = u0.cross(&f2);
+
+        let axis_u1_f0 = u1.cross(&f0);
+        let axis_u1_f1 = u1.cross(&f1);
+        let axis_u1_f2 = u1.cross(&f2);
+
+        let axis_u2_f0 = u2.cross(&f0);
+        let axis_u2_f1 = u2.cross(&f1);
+        let axis_u2_f2 = u2.cross(&f2);
+
+        if !axis_test(&axis_u0_f0) {
+            return false;
+        }
+        if !axis_test(&axis_u0_f1) {
+            return false;
+        }
+        if !axis_test(&axis_u0_f2) {
+            return false;
+        }
+
+        if !axis_test(&axis_u1_f0) {
+            return false;
+        }
+        if !axis_test(&axis_u1_f1) {
+            return false;
+        }
+        if !axis_test(&axis_u1_f2) {
+            return false;
+        }
+
+        if !axis_test(&axis_u2_f0) {
+            return false;
+        }
+        if !axis_test(&axis_u2_f1) {
+            return false;
+        }
+        if !axis_test(&axis_u2_f2) {
+            return false;
+        }
+
+        if !axis_test(&self.plane_norm) {
+            return false;
+        }
+
+        true
     }
 }
