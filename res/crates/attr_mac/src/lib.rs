@@ -15,6 +15,7 @@
     clippy::integer_arithmetic,
     clippy::integer_division,
     clippy::module_name_repetitions,
+    clippy::needless_pass_by_value,
     clippy::option_expect_used,
     clippy::panic,
     clippy::result_expect_used,

@@ -21,5 +21,5 @@ serde = { version = "1.0.104", features = ["derive"] }
 serde_json = "1.0.44"
 terminal_size = "0.1.10"
 json5 = "0.2.5"
-proc_mac = { path = "res/proc_mac" }
-attr_mac = { path = "res/attr_mac" }
+proc_mac = { path = "res/crates/proc_mac" }
+attr_mac = { path = "res/crates/attr_mac" }
