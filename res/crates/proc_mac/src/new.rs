@@ -9,11 +9,12 @@ pub fn new_derive_impl(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as ItemStruct);
 
     let name = &input.ident;
+    let generics = &input.generics;
     let fields = input.fields.iter();
     let names = input.fields.iter().map(|f| &f.ident);
 
     let output = quote! {
-        impl #name {
+        impl #generics #name #generics {
             pub fn new(#(#fields),*) -> Self {
                 Self {
                     #(#names),*

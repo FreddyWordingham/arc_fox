@@ -9,12 +9,19 @@ use std::{
     path::Path,
 };
 
+// /// Table structure used to save data in csv format.
+// #[derive(Debug)]
+// pub struct Table<T> {
+//     /// Column headings.
+//     headings: Vec<String>,
+//     /// Data.
+//     data: Array2<T>,
+// }
 /// Table structure used to save data in csv format.
-#[derive(Debug)]
+
+#[derive(Debug, proc_mac::New)]
 pub struct Table<T> {
-    /// Column headings.
     headings: Vec<String>,
-    /// Data.
     data: Array2<T>,
 }
 
@@ -22,12 +29,12 @@ impl<T: Clone> Table<T> {
     access!(headings, Vec<String>);
     access!(data, Array2<T>);
 
-    /// Construct a new table.
-    #[inline]
-    #[must_use]
-    pub fn new(headings: Vec<String>, data: Array2<T>) -> Self {
-        Self { headings, data }
-    }
+    // /// Construct a new table.
+    // #[inline]
+    // #[must_use]
+    // pub fn new(headings: Vec<String>, data: Array2<T>) -> Self {
+    //     Self { headings, data }
+    // }
 
     /// Construct a new table from a nested vector .
     #[inline]
