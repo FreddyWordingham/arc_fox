@@ -63,11 +63,11 @@ pub fn main() {
     let mut reactions = Vec::with_capacity(proto_reactions.len());
     for (name, proto) in proto_reactions {
         info!("Reaction {}", name);
-        reactions.push(Reaction::build(name, proto, &species));
+        reactions.push(Reaction::build(name, &proto, &species));
     }
 
     // let mut state = State::new(Array1::zeros(species.len()), Array1::zeros(species.len()));
-    let state = State::build(form.init_state, &species);
+    let state = State::build(&form.init_state, &species);
 
     section("Simulation");
     let mut file = BufWriter::new(

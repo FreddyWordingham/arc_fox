@@ -22,7 +22,7 @@
     clippy::unreachable
 )]
 // Temporary suppression.
-#![allow(clippy::missing_inline_in_public_items)]
+#![allow(clippy::missing_inline_in_public_items, clippy::missing_const_for_fn)]
 
 pub mod data;
 pub mod file;

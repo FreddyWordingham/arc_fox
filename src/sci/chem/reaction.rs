@@ -27,7 +27,7 @@ impl Reaction {
     /// Build a new instance.
     #[inline]
     #[must_use]
-    pub fn build(name: String, proto: ReactionBuilder, species: &[Species]) -> Self {
+    pub fn build(name: String, proto: &ReactionBuilder, species: &[Species]) -> Self {
         let mut reactants = Vec::with_capacity(proto.reactants().len());
         for (name, coeff) in proto.reactants() {
             reactants.push((

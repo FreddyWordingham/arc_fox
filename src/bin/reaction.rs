@@ -147,10 +147,10 @@ fn building(
 
     let mut reactions = Vec::with_capacity(reaction_builders.len());
     for (name, builder) in reaction_builders {
-        reactions.push(Reaction::build(name, builder, &species));
+        reactions.push(Reaction::build(name, &builder, &species));
     }
 
-    let state = State::build(state_builder, &species);
+    let state = State::build(&state_builder, &species);
 
     (species, reactions, state)
 }

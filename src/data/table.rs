@@ -2,7 +2,6 @@
 
 use crate::{access, file::io::Save};
 use ndarray::{Array2, ArrayView1};
-use proc_mac::New;
 use std::{
     fmt::{Debug, Display, Formatter, Result},
     fs::File,
@@ -10,15 +9,25 @@ use std::{
     path::Path,
 };
 
-#[derive(Debug, New)]
+/// Table structure for writing csv files.
+#[derive(Debug)]
 pub struct Table<T> {
+    /// Column headings.
     headings: Vec<String>,
+    /// Data.
     data: Array2<T>,
 }
 
 impl<T: Clone> Table<T> {
     access!(headings, Vec<String>);
     access!(data, Array2<T>);
+
+    /// Construct a new table.
+    #[inline]
+    #[must_use]
+    pub fn new(headings: Vec<String>, data: Array2<T>) -> Self {
+        Self { headings, data }
+    }
 
     /// Construct a new table from a nested vector .
     #[inline]
