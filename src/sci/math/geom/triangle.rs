@@ -4,7 +4,7 @@ use crate::{
     access,
     sci::math::{
         geom::{Aabb, Collide},
-        rt::ray::Ray,
+        rt::{Ray, Trace},
     },
     util::list::alphabet::Greek::{Alpha, Beta, Gamma},
 };
@@ -88,7 +88,7 @@ impl Triangle {
         )
     }
 
-    /// Determine the intersection distances along a ray's direction.
+    /// Determine the intersection distance along a ray's direction.
     /// Also return the barycentric intersection coordinates.
     #[inline]
     fn intersection_coors(&self, ray: &Ray) -> Option<(f64, [f64; 3])> {
@@ -243,5 +243,53 @@ impl Collide for Triangle {
         }
 
         true
+    }
+}
+
+impl Trace for Triangle {
+    #[inline]
+    #[must_use]
+    fn hit(&self, ray: &Ray) -> bool {
+        self.intersection_coors(ray).is_some()
+    }
+
+    #[inline]
+    #[must_use]
+    fn dist(&self, ray: &Ray) -> Option<f64> {
+        if let Some((dist, _coors)) = self.intersection_coors(ray) {
+            return Some(dist);
+        }
+
+        None
+    }
+
+    #[inline]
+    #[must_use]
+    fn dist_norm(&self, ray: &Ray) -> Option<(f64, Unit<Vector3<f64>>)> {
+        if let Some((dist, _coors)) = self.intersection_coors(ray) {
+            return Some((dist, self.plane_norm));
+        }
+
+        None
+    }
+
+    #[inline]
+    #[must_use]
+    fn dist_inside(&self, ray: &Ray) -> Option<(f64, bool)> {
+        if let Some(dist) = self.dist(ray) {
+            Some((dist, self.plane_norm.dot(ray.dir()) > 0.0))
+        } else {
+            None
+        }
+    }
+
+    #[inline]
+    #[must_use]
+    fn dist_inside_norm(&self, ray: &Ray) -> Option<(f64, bool, Unit<Vector3<f64>>)> {
+        if let Some(dist) = self.dist(ray) {
+            Some((dist, self.plane_norm.dot(ray.dir()) > 0.0, self.plane_norm))
+        } else {
+            None
+        }
     }
 }

@@ -44,3 +44,4 @@ impl Collide for SmoothTriangle {
         self.tri.overlap(aabb)
     }
 }
+
