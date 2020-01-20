@@ -1,7 +1,8 @@
 //! Triangular-mesh structure.
 
 use crate::{
-    sci::math::geom::{Aabb, SmoothTriangle},
+    access,
+    sci::math::geom::{Aabb, Collide, SmoothTriangle},
     util::list::alphabet::Greek::Alpha,
 };
 
@@ -15,6 +16,9 @@ pub struct Mesh {
 }
 
 impl Mesh {
+    access!(aabb, Aabb);
+    access!(tris, Vec<SmoothTriangle>);
+
     /// Construct a new instance.
     pub fn new(tris: Vec<SmoothTriangle>) -> Self {
         let mut mins = tris[0].tri().verts()[Alpha as usize];
@@ -35,5 +39,42 @@ impl Mesh {
         let aabb = Aabb::new(mins, maxs);
 
         Self { aabb, tris }
+    }
+
+    /// Calculate the surface area.
+    #[inline]
+    #[must_use]
+    pub fn area(&self) -> f64 {
+        let mut area = 0.0;
+
+        for tri in &self.tris {
+            area += tri.tri().area();
+        }
+
+        area
+    }
+}
+
+impl Collide for Mesh {
+    #[inline]
+    #[must_use]
+    fn bounding_box(&self) -> Aabb {
+        self.aabb.clone()
+    }
+
+    #[inline]
+    #[must_use]
+    fn overlap(&self, aabb: &Aabb) -> bool {
+        if !self.aabb.overlap(aabb) {
+            return false;
+        }
+
+        for tri in &self.tris {
+            if tri.overlap(aabb) {
+                return true;
+            }
+        }
+
+        false
     }
 }
