@@ -90,8 +90,8 @@ impl Triangle {
 
     /// Determine the intersection distance along a ray's direction.
     /// Also return the barycentric intersection coordinates.
-    #[inline]
-    fn intersection_coors(&self, ray: &Ray) -> Option<(f64, [f64; 3])> {
+    #[must_use]
+    pub fn intersection_coors(&self, ray: &Ray) -> Option<(f64, [f64; 3])> {
         let verts = self.verts;
 
         let e1 = verts.get(Beta as usize).expect("Invalid vertex index.")
