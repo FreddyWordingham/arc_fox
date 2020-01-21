@@ -2,7 +2,7 @@
 
 use crate::{
     access,
-    sci::math::rt::Ray,
+    sci::math::rt::{Ray, Trace},
     util::list::alphabet::Greek::{Alpha, Beta, Gamma},
 };
 use nalgebra::{Point3, Unit, Vector3};
@@ -98,7 +98,7 @@ impl Parallelogram {
         let q = rel_pos.cross(&e1);
         let v = inv_e1_dot_d_cross_e2 * ray.dir().dot(&q);
 
-        if v < 0.0 {
+        if (v < 0.0) || (v > 1.0) {
             return None;
         }
 
@@ -109,5 +109,53 @@ impl Parallelogram {
         }
 
         Some((dist, [u, v]))
+    }
+}
+
+impl Trace for Parallelogram {
+    #[inline]
+    #[must_use]
+    fn hit(&self, ray: &Ray) -> bool {
+        self.intersection_coors(ray).is_some()
+    }
+
+    #[inline]
+    #[must_use]
+    fn dist(&self, ray: &Ray) -> Option<f64> {
+        if let Some((dist, _coors)) = self.intersection_coors(ray) {
+            return Some(dist);
+        }
+
+        None
+    }
+
+    #[inline]
+    #[must_use]
+    fn dist_norm(&self, ray: &Ray) -> Option<(f64, Unit<Vector3<f64>>)> {
+        if let Some((dist, _coors)) = self.intersection_coors(ray) {
+            return Some((dist, self.plane_norm));
+        }
+
+        None
+    }
+
+    #[inline]
+    #[must_use]
+    fn dist_inside(&self, ray: &Ray) -> Option<(f64, bool)> {
+        if let Some(dist) = self.dist(ray) {
+            Some((dist, self.plane_norm.dot(ray.dir()) > 0.0))
+        } else {
+            None
+        }
+    }
+
+    #[inline]
+    #[must_use]
+    fn dist_inside_norm(&self, ray: &Ray) -> Option<(f64, bool, Unit<Vector3<f64>>)> {
+        if let Some(dist) = self.dist(ray) {
+            Some((dist, self.plane_norm.dot(ray.dir()) > 0.0, self.plane_norm))
+        } else {
+            None
+        }
     }
 }
