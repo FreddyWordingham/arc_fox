@@ -39,17 +39,17 @@ impl Lambda {
     #[must_use]
     pub fn y(&self, x: f64) -> f64 {
         match self {
-            Lambda::X {} => x,
-            Lambda::Constant { c } => *c,
-            Lambda::Linear { c, m } => (x * m) + c,
-            Lambda::Polynomial { cs } => {
+            Self::X {} => x,
+            Self::Constant { c } => *c,
+            Self::Linear { c, m } => (x * m) + c,
+            Self::Polynomial { cs } => {
                 let mut sum = 0.0;
                 for (i, c) in cs.iter().enumerate() {
                     sum += c * x.powi(i as i32);
                 }
                 sum
             }
-            Lambda::Recovery { c, r } => (c - x) * r,
+            Self::Recovery { c, r } => (c - x) * r,
         }
     }
 }

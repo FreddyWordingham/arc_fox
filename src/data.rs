@@ -1,6 +1,6 @@
 //! Data module.
 
-pub mod hist;
+pub mod histogram;
 pub mod table;
 
-pub use self::{hist::*, table::*};
+pub use self::{histogram::*, table::*};

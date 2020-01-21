@@ -7,3 +7,6 @@ pub mod list;
 pub mod methods;
 pub mod pb;
 pub mod print;
+pub mod range;
+
+pub use self::range::*;
