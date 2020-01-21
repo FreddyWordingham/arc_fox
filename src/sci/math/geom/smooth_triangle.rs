@@ -17,8 +17,8 @@ use std::{
     result::Result,
 };
 
-/// Triangle structure implementation with Phong normal interpolation.
-/// Forms meshes.
+/// Triangle geometry with Phong normal interpolation.
+/// Used to form meshes.
 pub struct SmoothTriangle {
     /// Base triangle.
     tri: Triangle,

@@ -10,8 +10,7 @@ use crate::{
 };
 use nalgebra::{Unit, Vector3};
 
-/// Mesh structure implementation.
-/// Forms the surface of the majority of complex components.
+/// Mesh geometry.
 pub struct Mesh {
     /// Bounding box.
     aabb: Aabb,

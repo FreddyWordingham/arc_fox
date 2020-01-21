@@ -17,8 +17,7 @@ use std::{
     result::Result,
 };
 
-/// Triangle structure implementation.
-/// Forms meshes.
+/// Triangle geometry.
 pub struct Triangle {
     /// Vertex points.
     verts: [Point3<f64>; 3],
