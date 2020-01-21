@@ -2,9 +2,13 @@
 
 use crate::{
     access,
-    sci::math::geom::{Aabb, Collide, SmoothTriangle},
+    sci::math::{
+        geom::{Aabb, Collide, SmoothTriangle},
+        rt::{Ray, Trace},
+    },
     util::list::alphabet::Greek::Alpha,
 };
+use nalgebra::{Unit, Vector3};
 
 /// Mesh structure implementation.
 /// Forms the surface of the majority of complex components.
@@ -76,5 +80,69 @@ impl Collide for Mesh {
         }
 
         false
+    }
+}
+
+impl Trace for Mesh {
+    #[inline]
+    #[must_use]
+    fn hit(&self, ray: &Ray) -> bool {
+        if !self.aabb.hit(ray) {
+            return false;
+        }
+
+        self.tris.iter().any(|t| t.hit(ray))
+    }
+
+    #[inline]
+    #[must_use]
+    fn dist(&self, ray: &Ray) -> Option<f64> {
+        if !self.aabb.hit(ray) {
+            return None;
+        }
+
+        self.tris
+            .iter()
+            .filter_map(|tri| tri.dist(ray))
+            .min_by(|a, b| a.partial_cmp(b).unwrap())
+    }
+
+    #[inline]
+    #[must_use]
+    fn dist_norm(&self, ray: &Ray) -> Option<(f64, Unit<Vector3<f64>>)> {
+        if !self.aabb.hit(ray) {
+            return None;
+        }
+
+        self.tris
+            .iter()
+            .filter_map(|tri| tri.dist_norm(ray))
+            .min_by(|a, b| a.0.partial_cmp(&b.0).unwrap())
+    }
+
+    #[inline]
+    #[must_use]
+    fn dist_inside(&self, ray: &Ray) -> Option<(f64, bool)> {
+        if !self.aabb.hit(ray) {
+            return None;
+        }
+
+        self.tris
+            .iter()
+            .filter_map(|tri| tri.dist_inside(ray))
+            .min_by(|a, b| a.0.partial_cmp(&b.0).unwrap())
+    }
+
+    #[inline]
+    #[must_use]
+    fn dist_inside_norm(&self, ray: &Ray) -> Option<(f64, bool, Unit<Vector3<f64>>)> {
+        if !self.aabb.hit(ray) {
+            return None;
+        }
+
+        self.tris
+            .iter()
+            .filter_map(|tri| tri.dist_inside_norm(ray))
+            .min_by(|a, b| a.0.partial_cmp(&b.0).unwrap())
     }
 }
