@@ -4,7 +4,7 @@ use arc::{
     args,
     file::io::{Load, Save},
     report,
-    sci::math::{geom::Parallelogram, rt::trace::Trace},
+    sci::math::{geom::Rectangle, rt::trace::Trace},
     util::{
         dirs::init::io_dirs,
         info::exec,
@@ -70,10 +70,10 @@ fn prelude(params_path: &Path) -> Parameters {
 fn simulation(res: (usize, usize)) -> Array2<f64> {
     let mut dists = Array2::zeros(res);
 
-    let tri = Parallelogram::new([
+    let tri = Rectangle::from_points([
         Point3::new(10.0, -1.0, -1.0),
         Point3::new(10.0, 1.0, -1.0),
-        Point3::new(10.0, -0.5, 1.0),
+        Point3::new(10.0, -1.0, 1.0),
     ]);
 
     let proj = Projector::new(Point3::origin(), Vector3::x_axis(), 45.0f64.to_radians());
