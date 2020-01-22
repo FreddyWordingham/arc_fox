@@ -28,4 +28,5 @@ pub mod data;
 pub mod file;
 pub mod ord;
 pub mod sci;
+pub mod sim;
 pub mod util;
