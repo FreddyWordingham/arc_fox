@@ -2,10 +2,11 @@
 
 use crate::{
     access,
-    sci::math::rt::{Ray, Trace},
+    sci::math::rt::{Emit, Ray, Trace},
     util::list::alphabet::Greek::{Alpha, Beta, Gamma},
 };
 use nalgebra::{Point3, Unit, Vector3};
+use rand::{rngs::ThreadRng, Rng};
 
 /// Parallelogram geometry.
 /// Used to form `Rectangles`.
@@ -36,6 +37,14 @@ impl Parallelogram {
         Self { verts, plane_norm }
     }
 
+    /// Create a pair of side vectors.
+    fn edges(&self) -> (Vector3<f64>, Vector3<f64>) {
+        let edge_ab = self.verts[0] - self.verts[1];
+        let edge_ac = self.verts[1] - self.verts[2];
+
+        (edge_ab, edge_ac)
+    }
+
     /// Calculate the perimeter length.
     #[inline]
     #[must_use]
@@ -63,10 +72,9 @@ impl Parallelogram {
     #[inline]
     #[must_use]
     pub fn centre(&self) -> Point3<f64> {
-        let ab = self.verts[1] - self.verts[0];
-        let ac = self.verts[2] - self.verts[0];
+        let (edge_ab, edge_ac) = self.edges();
 
-        self.verts[0] + (0.5 * ab) + (0.5 * ac)
+        self.verts[0] + (0.5 * edge_ab) + (0.5 * edge_ac)
     }
 
     /// Determine the intersection distance along a ray's direction.
@@ -75,10 +83,7 @@ impl Parallelogram {
     pub fn intersection_coors(&self, ray: &Ray) -> Option<(f64, [f64; 2])> {
         let verts = self.verts;
 
-        let e1 = verts.get(Beta as usize).expect("Invalid vertex index.")
-            - verts.get(Alpha as usize).expect("Invalid vertex index.");
-        let e2 = verts.get(Gamma as usize).expect("Invalid vertex index.")
-            - verts.get(Alpha as usize).expect("Invalid vertex index.");
+        let (e1, e2) = self.edges();
 
         let d_cross_e2 = ray.dir().cross(&e2);
         let e1_dot_d_cross_e2 = e1.dot(&d_cross_e2);
@@ -157,5 +162,17 @@ impl Trace for Parallelogram {
         } else {
             None
         }
+    }
+}
+
+impl Emit for Parallelogram {
+    #[inline]
+    #[must_use]
+    fn cast(&self, rng: &mut ThreadRng) -> Ray {
+        let (edge_ab, edge_ac) = self.edges();
+
+        let pos = self.verts[0] + (edge_ab * rng.gen::<f64>()) + (edge_ac * rng.gen::<f64>());
+
+        Ray::new(pos, self.plane_norm)
     }
 }
