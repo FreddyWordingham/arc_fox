@@ -71,7 +71,7 @@ impl Detect for Ccd {
 
     #[inline]
     #[must_use]
-    fn detect(&mut self, phot: &Photon) {
+    fn capture(&mut self, phot: &Photon) {
         let [u, v] = self.uv(phot.ray().pos());
         let [px, py] = self.res();
 

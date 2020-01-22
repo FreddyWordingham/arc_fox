@@ -39,8 +39,8 @@ impl Parallelogram {
 
     /// Create a pair of side vectors.
     fn edges(&self) -> (Vector3<f64>, Vector3<f64>) {
-        let edge_ab = self.verts[0] - self.verts[1];
-        let edge_ac = self.verts[1] - self.verts[2];
+        let edge_ab = self.verts[1] - self.verts[0];
+        let edge_ac = self.verts[2] - self.verts[0];
 
         (edge_ab, edge_ac)
     }

@@ -4,7 +4,7 @@ use crate::access;
 use nalgebra::{Point3, Rotation3, Unit, Vector3};
 
 /// Point-direction.
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct Ray {
     /// Ray origin.
     pos: Point3<f64>,

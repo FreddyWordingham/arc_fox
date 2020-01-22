@@ -3,6 +3,7 @@
 use crate::{access, sci::math::rt::Ray};
 
 /// Photon as a particle representation.
+#[derive(Debug)]
 pub struct Photon {
     /// Statistical weight.
     weight: f64,
