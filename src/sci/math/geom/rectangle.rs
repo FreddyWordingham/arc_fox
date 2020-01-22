@@ -1,5 +1,6 @@
 //! Rectangle geometry structure.
 
+use crate::sci::math::rt::Emit;
 use crate::{
     access,
     sci::math::{
@@ -8,6 +9,7 @@ use crate::{
     },
 };
 use nalgebra::{Point3, Unit, Vector3};
+use rand::rngs::ThreadRng;
 use std::f64::consts::FRAC_PI_2;
 
 /// Maximum absolute deviation [rad].
@@ -94,5 +96,13 @@ impl Trace for Rectangle {
         } else {
             None
         }
+    }
+}
+
+impl Emit for Rectangle {
+    #[inline]
+    #[must_use]
+    fn cast(&self, rng: &mut ThreadRng) -> Ray {
+        self.para.cast(rng)
     }
 }
