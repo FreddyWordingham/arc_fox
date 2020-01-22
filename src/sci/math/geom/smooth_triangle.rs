@@ -1,5 +1,6 @@
 //! Smooth-triangle geometry structure.
 
+use crate::sci::math::rt::Emit;
 use crate::{
     access,
     file::io::Load,
@@ -10,6 +11,7 @@ use crate::{
     util::list::alphabet::Greek::{Alpha, Beta, Gamma},
 };
 use nalgebra::{Point3, Unit, Vector3};
+use rand::{rngs::ThreadRng, Rng};
 use std::{
     fs::File,
     io::{BufRead, BufReader},
@@ -193,5 +195,32 @@ impl Load for Vec<SmoothTriangle> {
         }
 
         tris
+    }
+}
+
+impl Emit for SmoothTriangle {
+    #[inline]
+    #[must_use]
+    fn cast(&self, rng: &mut ThreadRng) -> Ray {
+        let mut u = rng.gen::<f64>();
+        let mut v = rng.gen::<f64>();
+
+        if (u + v) > 1.0 {
+            u = 1.0 - u;
+            v = 1.0 - v;
+        }
+        let w = 1.0 - u - v;
+
+        let edge_ab = self.tri.verts()[1] - self.tri.verts()[0];
+        let edge_ac = self.tri.verts()[2] - self.tri.verts()[0];
+
+        let pos = self.tri.verts()[0] + (edge_ab * u) + (edge_ac * v);
+        let dir = Unit::new_normalize(
+            (self.norms[Beta as usize].into_inner() * u)
+                + (self.norms[Gamma as usize].into_inner() * v)
+                + (self.norms[Alpha as usize].into_inner() * w),
+        );
+
+        Ray::new(pos, dir)
     }
 }
