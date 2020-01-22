@@ -1,11 +1,10 @@
 //! Rectangle geometry structure.
 
-use crate::sci::math::rt::Emit;
 use crate::{
     access,
     sci::math::{
         geom::Parallelogram,
-        rt::{Ray, Trace},
+        rt::{Emit, Ray, Trace},
     },
 };
 use nalgebra::{Point3, Unit, Vector3};

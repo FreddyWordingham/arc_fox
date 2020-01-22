@@ -5,11 +5,12 @@ use crate::{
     file::io::Load,
     sci::math::{
         geom::{Aabb, Collide},
-        rt::{Ray, Trace},
+        rt::{Emit, Ray, Trace},
     },
     util::list::alphabet::Greek::{Alpha, Beta, Gamma},
 };
 use nalgebra::{Point3, Unit, Vector3};
+use rand::{rngs::ThreadRng, Rng};
 use std::{
     fs::File,
     io::{BufRead, BufReader},
@@ -378,5 +379,26 @@ impl Load for Vec<Triangle> {
         }
 
         tris
+    }
+}
+
+impl Emit for Triangle {
+    #[inline]
+    #[must_use]
+    fn cast(&self, rng: &mut ThreadRng) -> Ray {
+        let mut u = rng.gen::<f64>();
+        let mut v = rng.gen::<f64>();
+
+        if (u + v) > 1.0 {
+            u = 1.0 - u;
+            v = 1.0 - v;
+        }
+
+        let edge_ab = self.verts[1] - self.verts[0];
+        let edge_ac = self.verts[2] - self.verts[0];
+
+        let pos = self.verts[0] + (edge_ab * u) + (edge_ac * v);
+
+        Ray::new(pos, self.plane_norm)
     }
 }

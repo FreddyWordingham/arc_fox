@@ -4,10 +4,11 @@ use crate::{
     access,
     sci::math::{
         geom::{Aabb, Collide},
-        rt::{Ray, Trace},
+        rt::{Emit, Ray, Trace},
     },
 };
 use nalgebra::{Point3, Unit, Vector3};
+use rand::rngs::ThreadRng;
 use std::f64::consts::PI;
 
 /// Sphere geometry.
@@ -145,5 +146,16 @@ impl Trace for Sphere {
         }
 
         None
+    }
+}
+
+impl Emit for Sphere {
+    #[inline]
+    #[must_use]
+    fn cast(&self, rng: &mut ThreadRng) -> Ray {
+        let mut ray = self.pos.cast(rng);
+        ray.travel(self.rad);
+
+        ray
     }
 }
