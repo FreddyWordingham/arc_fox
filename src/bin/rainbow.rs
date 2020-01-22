@@ -116,7 +116,7 @@ fn simulation(params: &Parameters) -> Array2<f64> {
 
     while let Some((start, end)) = pb.block(0, num_phot / 1000) {
         for _ in start..end {
-            // pb.inc();
+            pb.inc();
             let mut phot = light.emit(&mut rng, params.light_power / params.num_phot);
 
             loop {
@@ -129,12 +129,11 @@ fn simulation(params: &Parameters) -> Array2<f64> {
                     }
                     Hit::Interface(dist) => {
                         phot.travel(dist);
-                        println!("Inter!");
+                        break;
                     }
                     Hit::Detection(dist) => {
                         phot.travel(dist);
                         ccd.capture(&phot);
-                        println!("Capture!");
                     }
                 }
             }
@@ -176,10 +175,9 @@ impl Hit {
 }
 
 use arc::sci::math::geom::Sphere;
-use arc::sci::math::rt::{Ray, Trace};
+use arc::sci::math::rt::Trace;
 use arc::sci::phys::Spectrum;
 use arc::sim::mcrt::Detect;
 use arc::sim::mcrt::Light;
 use arc::util::pb::Bar;
-use nalgebra::{Unit, Vector3};
 use rand::thread_rng;

@@ -53,10 +53,10 @@ impl Ccd {
 
         let h_vec = p - self.surf.para().verts()[0];
         let h = h_vec.magnitude();
-        let theta = ((u_edge.dot(&v_edge)) / (u_edge.magnitude() * h)).acos();
+        let theta = (u_edge.dot(&h_vec) / (u_edge.magnitude() * h)).acos();
 
-        let u = h * theta.cos();
-        let v = h * theta.sin();
+        let u = (h * theta.cos()) / u_edge.magnitude();
+        let v = (h * theta.sin()) / v_edge.magnitude();
 
         [u, v]
     }

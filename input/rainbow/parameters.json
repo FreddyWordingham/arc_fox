@@ -3,8 +3,8 @@
     "res": 256,
     "raindrop_rad": 0.5,
     "ccd_dist": 1.0,
-    "ccd_size": 0.5,
-    "light_size": 0.5,
+    "ccd_size": 1.5,
+    "light_size": 1.0,
     "light_power": 1.0,
     "wavelength": 630.0e-9,
 }
