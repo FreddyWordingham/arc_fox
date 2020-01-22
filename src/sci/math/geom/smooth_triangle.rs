@@ -1,12 +1,11 @@
 //! Smooth-triangle geometry structure.
 
-use crate::sci::math::rt::Emit;
 use crate::{
     access,
     file::io::Load,
     sci::math::{
         geom::{Aabb, Collide, Triangle},
-        rt::{Ray, Trace},
+        rt::{Emit, Ray, Trace},
     },
     util::list::alphabet::Greek::{Alpha, Beta, Gamma},
 };
