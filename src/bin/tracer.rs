@@ -4,7 +4,10 @@ use arc::{
     args,
     file::io::{Load, Save},
     report,
-    sci::math::{geom::Parallelogram, rt::trace::Trace},
+    sci::{
+        math::{geom::Mesh, rt::trace::Trace},
+        phys::Crossing,
+    },
     util::{
         dirs::init::io_dirs,
         info::exec,
@@ -42,12 +45,16 @@ fn main() {
 
     section("Simulation");
     info!("Tracing...");
-    let dist = simulation(params.res);
+    let (dist, norms_x, norms_y, norms_z, surf_norms) = simulation(params.res);
     info!("Tracing complete.");
 
     section("Output");
     info!("Saving...");
     dist.save(&out_dir.join("dist.nc"));
+    norms_x.save(&out_dir.join("norms_x.nc"));
+    norms_y.save(&out_dir.join("norms_y.nc"));
+    norms_z.save(&out_dir.join("norms_z.nc"));
+    surf_norms.save(&out_dir.join("surf_norms.nc"));
     info!("Saving complete.");
 
     println!("THis:\n{:?}", params);
@@ -67,29 +74,55 @@ fn prelude(params_path: &Path) -> Parameters {
     Parameters::load(&params_path)
 }
 
-fn simulation(res: (usize, usize)) -> Array2<f64> {
+fn simulation(
+    res: (usize, usize),
+) -> (
+    Array2<f64>,
+    Array2<f64>,
+    Array2<f64>,
+    Array2<f64>,
+    Array2<f64>,
+) {
     let mut dists = Array2::zeros(res);
+    let mut norms_x = Array2::from_elem(res, -2.0);
+    let mut norms_y = Array2::from_elem(res, -2.0);
+    let mut norms_z = Array2::from_elem(res, -2.0);
+    let mut surf_norms = Array2::zeros(res);
 
-    let tar = Parallelogram::new([
-        Point3::new(10.0, -1.0, -1.0),
-        Point3::new(10.0, -1.0, 1.0),
-        Point3::new(10.0, 1.0, -1.0),
-    ]);
+    let surf = Mesh::new(Vec::load(Path::new("surface.obj")));
+    let tar = Mesh::new(Vec::load(Path::new("all.obj")));
 
-    let proj = Projector::new(Point3::origin(), Vector3::x_axis(), 90.0f64.to_radians());
+    let p = Point3::new(-15.0, -10.0, 8.0);
+    let t = Point3::new(0.0, 0.0, 3.0);
+    let proj = Projector::new(p, Unit::new_normalize(t - p), 35.0f64.to_radians());
+    let mut pb = arc::util::pb::Bar::new("Tracing", res.0 as u64 * res.1 as u64, 1);
     for xi in 0..res.0 {
         for yi in 0..res.1 {
+            pb.inc();
             let index = (xi, yi);
-            let ray = proj.cast(res, index);
-            if let Some(dist) = tar.dist(&ray) {
+            let mut ray = proj.cast(res, index);
+
+            if let Some((surf_dist, norm)) = surf.dist_norm(&ray) {
+                surf_norms[index] = norm.dot(&Vector3::z_axis());
+
+                ray.travel(surf_dist);
+                let crossing = Crossing::new(1.0, 1.05, *ray.dir(), norm);
+                *ray.dir_mut() = crossing.trans_dir();
+                // *ray.dir_mut() = crossing.ref_dir();
+            }
+
+            if let Some((dist, norm)) = tar.dist_norm(&ray) {
                 dists[index] = dist;
+                norms_x[index] = norm.dot(&Vector3::x_axis());
+                norms_y[index] = norm.dot(&Vector3::y_axis());
+                norms_z[index] = norm.dot(&Vector3::z_axis());
             } else {
-                dists[index] = 0.0;
+                dists[index] = 100.0;
             }
         }
     }
 
-    dists
+    (dists, norms_x, norms_y, norms_z, surf_norms)
 }
 
 use arc::sci::math::rt::Ray;

@@ -19,7 +19,7 @@ impl Photon {
     access!(weight, f64);
     access!(wavelength, f64);
     access!(power, f64);
-    access!(ray, Ray);
+    access!(ray, ray_mut, Ray);
 
     /// Construct a new instance.
     #[inline]

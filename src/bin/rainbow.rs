@@ -36,7 +36,7 @@ fn main() {
     title(&exec::name());
 
     section("Initialisation");
-    let (in_dir, out_dir, params_path) = initialisation();
+    let (in_dir, out_dir, params_path, ref_index) = initialisation();
     report!(in_dir.display(), "input directory");
     report!(out_dir.display(), "output directory");
     report!(params_path.display(), "parameters path");
@@ -51,32 +51,34 @@ fn main() {
 
     section("Simulation");
     info!("Tracing...");
-    let ccd = simulation(&params);
+    let ccd = simulation(&params, ref_index);
     info!("Tracing complete.");
 
     section("Output");
     info!("Saving...");
-    ccd.save(&out_dir.join("ccd.nc"));
+    ccd.save(&out_dir.join(format!("ccd_{}.nc", (ref_index * 1000.0) as usize)));
     info!("Saving complete.");
 
     println!("THis:\n{:?}", params);
 }
 
-fn initialisation() -> (PathBuf, PathBuf, PathBuf) {
+fn initialisation() -> (PathBuf, PathBuf, PathBuf, f64) {
     args!(_bin_path: String;
-        params_name: String);
+        params_name: String;
+        ref_index: f64
+    );
 
     let (in_dir, out_dir) = io_dirs(None, None);
     let params_path = &in_dir.join(params_name);
 
-    (in_dir, out_dir, params_path.to_path_buf())
+    (in_dir, out_dir, params_path.to_path_buf(), ref_index)
 }
 
 fn prelude(params_path: &Path) -> Parameters {
     Parameters::load(&params_path)
 }
 
-fn simulation(params: &Parameters) -> Array2<f64> {
+fn simulation(params: &Parameters, ref_index: f64) -> Array2<f64> {
     let mut rng = thread_rng();
 
     let mut ccd = Ccd::new(
@@ -119,6 +121,8 @@ fn simulation(params: &Parameters) -> Array2<f64> {
             pb.inc();
             let mut phot = light.emit(&mut rng, params.light_power / params.num_phot);
 
+            let mut inside = false;
+
             loop {
                 let rain_dist = raindrop.dist(phot.ray());
                 let ccd_dist = ccd.dist(phot.ray());
@@ -127,9 +131,19 @@ fn simulation(params: &Parameters) -> Array2<f64> {
                     Hit::Nothing => {
                         break;
                     }
-                    Hit::Interface(dist) => {
+                    Hit::Interface(_dist) => {
+                        let (dist, norm) = raindrop.dist_norm(phot.ray()).unwrap();
                         phot.travel(dist);
-                        break;
+
+                        let crossing = if inside {
+                            Crossing::new(ref_index, 1.0, *phot.ray().dir(), norm)
+                        } else {
+                            Crossing::new(1.0, ref_index, *phot.ray().dir(), norm)
+                        };
+                        inside = !inside;
+
+                        *phot.ray_mut().dir_mut() = crossing.trans_dir();
+                        phot.travel(1.0e-6);
                     }
                     Hit::Detection(dist) => {
                         phot.travel(dist);
@@ -174,10 +188,12 @@ impl Hit {
     }
 }
 
-use arc::sci::math::geom::Sphere;
-use arc::sci::math::rt::Trace;
-use arc::sci::phys::Spectrum;
-use arc::sim::mcrt::Detect;
-use arc::sim::mcrt::Light;
-use arc::util::pb::Bar;
+use arc::{
+    sci::{
+        math::{geom::Sphere, rt::Trace},
+        phys::{Crossing, Spectrum},
+    },
+    sim::mcrt::{Detect, Light},
+    util::pb::Bar,
+};
 use rand::thread_rng;

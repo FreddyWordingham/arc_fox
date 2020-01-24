@@ -1,10 +1,12 @@
 //! CCD detector structure.
 
-use crate::sci::math::rt::Trace;
 use crate::{
     access,
     sci::{
-        math::{geom::Rectangle, rt::Ray},
+        math::{
+            geom::Rectangle,
+            rt::{Ray, Trace},
+        },
         phys::Photon,
     },
     sim::mcrt::Detect,

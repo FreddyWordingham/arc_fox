@@ -3,5 +3,4 @@
 pub mod detector;
 pub mod light;
 
-pub use self::detector::*;
-pub use self::light::*;
+pub use self::{detector::*, light::*};
