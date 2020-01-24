@@ -19,8 +19,8 @@ impl Emit for Point3<f64> {
         Ray::new(
             *self,
             Unit::new_normalize(Vector3::new(
-                (1.0f64 - (z * z)).sqrt() * theta.cos(),
-                (1.0f64 - (z * z)).sqrt() * theta.sin(),
+                (1.0_f64 - (z * z)).sqrt() * theta.cos(),
+                (1.0_f64 - (z * z)).sqrt() * theta.sin(),
                 z,
             )),
         )

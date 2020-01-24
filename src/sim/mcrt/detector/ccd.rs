@@ -10,6 +10,7 @@ use crate::{
         phys::Photon,
     },
     sim::mcrt::Detect,
+    util::list::alphabet::Greek::{Alpha, Beta, Gamma},
 };
 use nalgebra::Point3;
 use ndarray::Array2;
@@ -40,8 +41,16 @@ impl Ccd {
     #[inline]
     #[must_use]
     pub fn res(&self) -> [usize; 2] {
-        let px = self.data.shape()[0];
-        let py = self.data.shape()[1];
+        let px = *self
+            .data
+            .shape()
+            .get(Alpha as usize)
+            .expect("Missing vertex.");
+        let py = *self
+            .data
+            .shape()
+            .get(Beta as usize)
+            .expect("Missing vertex.");
 
         [px, py]
     }
@@ -50,10 +59,37 @@ impl Ccd {
     #[inline]
     #[must_use]
     pub fn uv(&self, p: &Point3<f64>) -> [f64; 2] {
-        let u_edge = self.surf.para().verts()[1] - self.surf.para().verts()[0];
-        let v_edge = self.surf.para().verts()[2] - self.surf.para().verts()[0];
+        let u_edge = self
+            .surf
+            .para()
+            .verts()
+            .get(Beta as usize)
+            .expect("Missing vertex.")
+            - self
+                .surf
+                .para()
+                .verts()
+                .get(Alpha as usize)
+                .expect("Missing vertex.");
+        let v_edge = self
+            .surf
+            .para()
+            .verts()
+            .get(Gamma as usize)
+            .expect("Missing vertex.")
+            - self
+                .surf
+                .para()
+                .verts()
+                .get(Alpha as usize)
+                .expect("Missing vertex.");
 
-        let h_vec = p - self.surf.para().verts()[0];
+        let h_vec = p - self
+            .surf
+            .para()
+            .verts()
+            .get(0)
+            .expect("Missing vertex index.");
         let h = h_vec.magnitude();
         let theta = (u_edge.dot(&h_vec) / (u_edge.magnitude() * h)).acos();
 
@@ -72,11 +108,19 @@ impl Detect for Ccd {
     }
 
     #[inline]
-    #[must_use]
+    #[allow(clippy::cast_possible_truncation)]
+    #[allow(clippy::cast_precision_loss)]
+    #[allow(clippy::cast_sign_loss)]
     fn capture(&mut self, phot: &Photon) {
         let [u, v] = self.uv(phot.ray().pos());
         let [px, py] = self.res();
 
-        self.data[[(u * px as f64) as usize, (v * py as f64) as usize]] += phot.weight();
+        *self
+            .data
+            .get_mut([
+                (u * (px as f64)).floor() as usize,
+                (v * (py as f64)).floor() as usize,
+            ])
+            .expect("Invalid uv index calculated.") += phot.weight();
     }
 }

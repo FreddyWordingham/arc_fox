@@ -5,7 +5,10 @@ use arc::{
     file::io::{Load, Save},
     report,
     sci::{
-        math::{geom::Mesh, rt::trace::Trace},
+        math::{
+            geom::{Mesh, SmoothTriangle},
+            rt::trace::Trace,
+        },
         phys::Crossing,
     },
     util::{
@@ -45,7 +48,7 @@ fn main() {
 
     section("Simulation");
     info!("Tracing...");
-    let (dist, norms_x, norms_y, norms_z, surf_norms) = simulation(params.res);
+    let [dist, norms_x, norms_y, norms_z, surf_norms] = simulation(params.res);
     info!("Tracing complete.");
 
     section("Output");
@@ -74,23 +77,15 @@ fn prelude(params_path: &Path) -> Parameters {
     Parameters::load(&params_path)
 }
 
-fn simulation(
-    res: (usize, usize),
-) -> (
-    Array2<f64>,
-    Array2<f64>,
-    Array2<f64>,
-    Array2<f64>,
-    Array2<f64>,
-) {
+fn simulation(res: (usize, usize)) -> [Array2<f64>; 5] {
     let mut dists = Array2::zeros(res);
     let mut norms_x = Array2::from_elem(res, -2.0);
     let mut norms_y = Array2::from_elem(res, -2.0);
     let mut norms_z = Array2::from_elem(res, -2.0);
     let mut surf_norms = Array2::zeros(res);
 
-    let surf = Mesh::new(Vec::load(Path::new("surface.obj")));
-    let tar = Mesh::new(Vec::load(Path::new("all.obj")));
+    let surf = Mesh::new(SmoothTriangle::load_list(Path::new("surface.obj")));
+    let tar = Mesh::new(SmoothTriangle::load_list(Path::new("all.obj")));
 
     let p = Point3::new(-15.0, -10.0, 8.0);
     let t = Point3::new(0.0, 0.0, 3.0);
@@ -122,7 +117,7 @@ fn simulation(
         }
     }
 
-    (dists, norms_x, norms_y, norms_z, surf_norms)
+    [dists, norms_x, norms_y, norms_z, surf_norms]
 }
 
 use arc::sci::math::rt::Ray;

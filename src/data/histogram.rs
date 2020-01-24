@@ -22,6 +22,7 @@ impl Histogram {
     /// Construct a new instance
     #[inline]
     #[must_use]
+    #[allow(clippy::cast_precision_loss)]
     pub fn new(range: Range, num_bins: usize) -> Self {
         let bin_width = range.width() / num_bins as f64;
 
@@ -33,6 +34,9 @@ impl Histogram {
     }
 
     /// Find the corresponding index of the bin data for a given value.
+    #[allow(clippy::cast_possible_truncation)]
+    #[allow(clippy::cast_precision_loss)]
+    #[allow(clippy::cast_sign_loss)]
     fn find_index(&self, x: f64) -> usize {
         (((x - self.range.min()) / self.range.width()) * self.bins.len() as f64).floor() as usize
     }
@@ -40,13 +44,13 @@ impl Histogram {
     /// Increment the bin corresponding to x by unity.
     pub fn collect(&mut self, x: f64) {
         let index = self.find_index(x);
-        self.bins[index] += 1.0;
+        *self.bins.get_mut(index).expect("Invalid index.") += 1.0;
     }
 
     /// Increment the bin corresponding to x by the given weight.
     pub fn collect_weight(&mut self, x: f64, weight: f64) {
         let index = self.find_index(x);
-        self.bins[index] += weight;
+        *self.bins.get_mut(index).expect("Invalid index.") += weight;
     }
 
     /// Increment the bin corresponding to x by unity if the value of x is within the value range.
@@ -69,12 +73,13 @@ impl Histogram {
 }
 
 impl Save for Histogram {
+    #[allow(clippy::cast_precision_loss)]
     fn save(&self, path: &Path) {
-        let mut file = File::create(path).unwrap();
+        let mut file = File::create(path).expect("Unable to create histogram file.");
 
         for (iter, value) in self.bins.iter().enumerate() {
             let x = ((iter as f64 + 0.5) * self.bin_width()) + self.range.min();
-            writeln!(file, "{:>31}, {:>31}", x, value).unwrap();
+            writeln!(file, "{:>31}, {:>31}", x, value).expect("Failed to write to file.");
         }
     }
 }

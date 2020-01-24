@@ -37,6 +37,8 @@ impl Lambda {
     /// Determine the corresponding output value for the given input.
     #[inline]
     #[must_use]
+    #[allow(clippy::cast_possible_wrap)]
+    #[allow(clippy::cast_possible_truncation)]
     pub fn y(&self, x: f64) -> f64 {
         match self {
             Self::X {} => x,

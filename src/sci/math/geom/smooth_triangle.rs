@@ -2,7 +2,6 @@
 
 use crate::{
     access,
-    file::io::Load,
     sci::math::{
         geom::{Aabb, Collide, Triangle},
         rt::{Emit, Ray, Trace},
@@ -41,80 +40,12 @@ impl SmoothTriangle {
 
         Self { tri, norms }
     }
-}
 
-impl Collide for SmoothTriangle {
-    #[inline]
+    /// Load a list of triangle from a wavefront file.
     #[must_use]
-    fn bounding_box(&self) -> Aabb {
-        self.tri.bounding_box()
-    }
-
-    #[inline]
-    #[must_use]
-    fn overlap(&self, aabb: &Aabb) -> bool {
-        self.tri.overlap(aabb)
-    }
-}
-
-impl Trace for SmoothTriangle {
-    #[inline]
-    #[must_use]
-    fn hit(&self, ray: &Ray) -> bool {
-        self.tri.intersection_coors(ray).is_some()
-    }
-
-    #[inline]
-    #[must_use]
-    fn dist(&self, ray: &Ray) -> Option<f64> {
-        if let Some((dist, _coors)) = self.tri.intersection_coors(ray) {
-            return Some(dist);
-        }
-
-        None
-    }
-
-    #[inline]
-    #[must_use]
-    fn dist_norm(&self, ray: &Ray) -> Option<(f64, Unit<Vector3<f64>>)> {
-        if let Some((dist, [u, v, w])) = self.tri.intersection_coors(ray) {
-            return Some((
-                dist,
-                Unit::new_normalize(
-                    (self.norms[Beta as usize].into_inner() * u)
-                        + (self.norms[Gamma as usize].into_inner() * v)
-                        + (self.norms[Alpha as usize].into_inner() * w),
-                ),
-            ));
-        }
-
-        None
-    }
-
-    #[inline]
-    #[must_use]
-    fn dist_inside(&self, ray: &Ray) -> Option<(f64, bool)> {
-        if let Some(dist) = self.dist(ray) {
-            Some((dist, self.tri.plane_norm().dot(ray.dir()) > 0.0))
-        } else {
-            None
-        }
-    }
-
-    #[inline]
-    #[must_use]
-    fn dist_inside_norm(&self, ray: &Ray) -> Option<(f64, bool, Unit<Vector3<f64>>)> {
-        if let Some((dist, norm)) = self.dist_norm(ray) {
-            let inside = ray.dir().dot(self.tri.plane_norm()) > 0.0;
-            Some((dist, inside, norm))
-        } else {
-            None
-        }
-    }
-}
-
-impl Load for Vec<SmoothTriangle> {
-    fn load(path: &Path) -> Self {
+    #[allow(clippy::too_many_lines)]
+    #[allow(clippy::pedantic::use_self)]
+    pub fn load_list(path: &Path) -> Vec<Self> {
         let vertex_lines: Vec<_> = BufReader::new(File::open(path).expect("Unable to open file!"))
             .lines()
             .map(Result::unwrap)
@@ -156,9 +87,21 @@ impl Load for Vec<SmoothTriangle> {
             let mut words = line.split_whitespace();
             words.next();
 
-            let nx = words.next().unwrap().parse::<f64>().unwrap();
-            let ny = words.next().unwrap().parse::<f64>().unwrap();
-            let nz = words.next().unwrap().parse::<f64>().unwrap();
+            let nx = words
+                .next()
+                .expect("Missing normal value entry.")
+                .parse::<f64>()
+                .expect("Unable to parse string to usize.");
+            let ny = words
+                .next()
+                .expect("Missing normal value entry.")
+                .parse::<f64>()
+                .expect("Unable to parse string to usize.");
+            let nz = words
+                .next()
+                .expect("Missing normal value entry.")
+                .parse::<f64>()
+                .expect("Unable to parse string to usize.");
 
             norms.push(Unit::new_normalize(Vector3::new(nx, ny, nz)));
         }
@@ -175,25 +118,148 @@ impl Load for Vec<SmoothTriangle> {
             let mut words = line.split_whitespace();
             words.next();
 
-            let fx = words.next().unwrap().parse::<usize>().unwrap() - 1;
-            let nx = words.next().unwrap().parse::<usize>().unwrap() - 1;
-            let fy = words.next().unwrap().parse::<usize>().unwrap() - 1;
-            let ny = words.next().unwrap().parse::<usize>().unwrap() - 1;
-            let fz = words.next().unwrap().parse::<usize>().unwrap() - 1;
-            let nz = words.next().unwrap().parse::<usize>().unwrap() - 1;
+            let fx = words
+                .next()
+                .expect("Missing face index entry.")
+                .parse::<usize>()
+                .expect("Unable to parse string to usize.")
+                - 1;
+            let nx = words
+                .next()
+                .expect("Missing normal index entry.")
+                .parse::<usize>()
+                .expect("Unable to parse string to usize.")
+                - 1;
+            let fy = words
+                .next()
+                .expect("Missing face index entry.")
+                .parse::<usize>()
+                .expect("Unable to parse string to usize.")
+                - 1;
+            let ny = words
+                .next()
+                .expect("Missing normal index entry.")
+                .parse::<usize>()
+                .expect("Unable to parse string to usize.")
+                - 1;
+            let fz = words
+                .next()
+                .expect("Missing face index entry.")
+                .parse::<usize>()
+                .expect("Unable to parse string to usize.")
+                - 1;
+            let nz = words
+                .next()
+                .expect("Missing normal index entry.")
+                .parse::<usize>()
+                .expect("Unable to parse string to usize.")
+                - 1;
 
             faces.push(((fx, fy, fz), (nx, ny, nz)));
         }
 
         let mut tris = Vec::with_capacity(faces.len());
         for face in faces {
-            tris.push(SmoothTriangle::new(
-                Triangle::new([verts[(face.0).0], verts[(face.0).1], verts[(face.0).2]]),
-                [norms[(face.1).0], norms[(face.1).1], norms[(face.1).2]],
+            tris.push(Self::new(
+                Triangle::new([
+                    *verts.get((face.0).0).expect("Missing vertex."),
+                    *verts.get((face.0).1).expect("Missing vertex."),
+                    *verts.get((face.0).2).expect("Missing vertex."),
+                ]),
+                [
+                    *norms.get((face.1).0).expect("Missing normal."),
+                    *norms.get((face.1).1).expect("Missing normal."),
+                    *norms.get((face.1).2).expect("Missing normal."),
+                ],
             ));
         }
 
         tris
+    }
+}
+
+impl Collide for SmoothTriangle {
+    #[inline]
+    #[must_use]
+    fn bounding_box(&self) -> Aabb {
+        self.tri.bounding_box()
+    }
+
+    #[inline]
+    #[must_use]
+    fn overlap(&self, aabb: &Aabb) -> bool {
+        self.tri.overlap(aabb)
+    }
+}
+
+impl Trace for SmoothTriangle {
+    #[inline]
+    #[must_use]
+    fn hit(&self, ray: &Ray) -> bool {
+        self.tri.intersection_coors(ray).is_some()
+    }
+
+    #[inline]
+    #[must_use]
+    fn dist(&self, ray: &Ray) -> Option<f64> {
+        if let Some((dist, _coors)) = self.tri.intersection_coors(ray) {
+            return Some(dist);
+        }
+
+        None
+    }
+
+    #[inline]
+    #[must_use]
+    fn dist_norm(&self, ray: &Ray) -> Option<(f64, Unit<Vector3<f64>>)> {
+        if let Some((dist, [u, v, w])) = self.tri.intersection_coors(ray) {
+            return Some((
+                dist,
+                Unit::new_normalize(
+                    (self
+                        .norms
+                        .get(Beta as usize)
+                        .expect("Missing normal.")
+                        .into_inner()
+                        * u)
+                        + (self
+                            .norms
+                            .get(Gamma as usize)
+                            .expect("Missing normal.")
+                            .into_inner()
+                            * v)
+                        + (self
+                            .norms
+                            .get(Alpha as usize)
+                            .expect("Missing normal.")
+                            .into_inner()
+                            * w),
+                ),
+            ));
+        }
+
+        None
+    }
+
+    #[inline]
+    #[must_use]
+    fn dist_inside(&self, ray: &Ray) -> Option<(f64, bool)> {
+        if let Some(dist) = self.dist(ray) {
+            Some((dist, self.tri.plane_norm().dot(ray.dir()) > 0.0))
+        } else {
+            None
+        }
+    }
+
+    #[inline]
+    #[must_use]
+    fn dist_inside_norm(&self, ray: &Ray) -> Option<(f64, bool, Unit<Vector3<f64>>)> {
+        if let Some((dist, norm)) = self.dist_norm(ray) {
+            let inside = ray.dir().dot(self.tri.plane_norm()) > 0.0;
+            Some((dist, inside, norm))
+        } else {
+            None
+        }
     }
 }
 
@@ -210,14 +276,53 @@ impl Emit for SmoothTriangle {
         }
         let w = 1.0 - u - v;
 
-        let edge_ab = self.tri.verts()[1] - self.tri.verts()[0];
-        let edge_ac = self.tri.verts()[2] - self.tri.verts()[0];
+        let edge_a_b = self
+            .tri
+            .verts()
+            .get(Beta as usize)
+            .expect("Missing vertex.")
+            - self
+                .tri
+                .verts()
+                .get(Alpha as usize)
+                .expect("Missing vertex.");
+        let edge_a_c = self
+            .tri
+            .verts()
+            .get(Gamma as usize)
+            .expect("Missing vertex.")
+            - self
+                .tri
+                .verts()
+                .get(Alpha as usize)
+                .expect("Missing vertex.");
 
-        let pos = self.tri.verts()[0] + (edge_ab * u) + (edge_ac * v);
+        let pos = self
+            .tri
+            .verts()
+            .get(Alpha as usize)
+            .expect("Missing vertex.")
+            + (edge_a_b * u)
+            + (edge_a_c * v);
         let dir = Unit::new_normalize(
-            (self.norms[Beta as usize].into_inner() * u)
-                + (self.norms[Gamma as usize].into_inner() * v)
-                + (self.norms[Alpha as usize].into_inner() * w),
+            (self
+                .norms
+                .get(Beta as usize)
+                .expect("Missing normal.")
+                .into_inner()
+                * u)
+                + (self
+                    .norms
+                    .get(Gamma as usize)
+                    .expect("Missing normal.")
+                    .into_inner()
+                    * v)
+                + (self
+                    .norms
+                    .get(Alpha as usize)
+                    .expect("Missing normal.")
+                    .into_inner()
+                    * w),
         );
 
         Ray::new(pos, dir)

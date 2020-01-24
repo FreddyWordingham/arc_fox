@@ -2,7 +2,6 @@
 
 use crate::{
     access,
-    file::io::Load,
     sci::math::{
         geom::{Aabb, Collide},
         rt::{Emit, Ray, Trace},
@@ -11,12 +10,6 @@ use crate::{
 };
 use nalgebra::{Point3, Unit, Vector3};
 use rand::{rngs::ThreadRng, Rng};
-use std::{
-    fs::File,
-    io::{BufRead, BufReader},
-    path::Path,
-    result::Result,
-};
 
 /// Triangle geometry.
 pub struct Triangle {
@@ -144,7 +137,7 @@ impl Collide for Triangle {
     #[inline]
     #[must_use]
     fn bounding_box(&self) -> Aabb {
-        let mut mins = self.verts[Alpha as usize];
+        let mut mins = *self.verts.get(Alpha as usize).expect("Missing vertex.");
         let mut maxs = mins;
 
         for v in self.verts.iter().skip(1) {
@@ -165,9 +158,9 @@ impl Collide for Triangle {
         let c = aabb.centre();
         let e = aabb.half_widths();
 
-        let v0 = self.verts[Alpha as usize] - c;
-        let v1 = self.verts[Beta as usize] - c;
-        let v2 = self.verts[Gamma as usize] - c;
+        let v0 = self.verts.get(Alpha as usize).expect("Missing vertex.") - c;
+        let v1 = self.verts.get(Beta as usize).expect("Missing vertex.") - c;
+        let v2 = self.verts.get(Gamma as usize).expect("Missing vertex.") - c;
 
         let f0 = v1 - v0;
         let f1 = v2 - v1;
@@ -182,9 +175,10 @@ impl Collide for Triangle {
             let p1 = v1.dot(axis);
             let p2 = v2.dot(axis);
 
-            let r = (e.x * (u0.dot(axis)).abs())
-                + (e.y * (u1.dot(axis)).abs())
-                + (e.z * (u2.dot(axis)).abs());
+            let r = e.z.mul_add(
+                u2.dot(axis).abs(),
+                e.x.mul_add(u0.dot(axis).abs(), e.y * u1.dot(axis).abs()),
+            );
 
             if (-(p0.max(p1).max(p2))).max(p0.min(p1).min(p2)) > r {
                 return false;
@@ -301,87 +295,6 @@ impl Trace for Triangle {
     }
 }
 
-impl Load for Vec<Triangle> {
-    fn load(path: &Path) -> Self {
-        let vertex_lines: Vec<_> = BufReader::new(File::open(path).expect("Unable to open file!"))
-            .lines()
-            .map(Result::unwrap)
-            .filter(|line| line.starts_with("v "))
-            .collect();
-
-        let mut verts = Vec::with_capacity(vertex_lines.len());
-        for line in vertex_lines {
-            let mut words = line.split_whitespace();
-            words.next();
-
-            let px = words
-                .next()
-                .expect("Could not get the next word.")
-                .parse::<f64>()
-                .expect("Could not parse px value.");
-            let py = words
-                .next()
-                .expect("Could not get the next word.")
-                .parse::<f64>()
-                .expect("Could not parse py value.");
-            let pz = words
-                .next()
-                .expect("Could not get the next word.")
-                .parse::<f64>()
-                .expect("Could not parse pz value.");
-
-            verts.push(Point3::new(px, py, pz));
-        }
-
-        let normal_lines: Vec<_> = BufReader::new(File::open(path).expect("Unable to open file!"))
-            .lines()
-            .map(Result::unwrap)
-            .filter(|line| line.starts_with("vn "))
-            .collect();
-
-        let mut norms = Vec::with_capacity(normal_lines.len());
-        for line in normal_lines {
-            let mut words = line.split_whitespace();
-            words.next();
-
-            let nx = words.next().unwrap().parse::<f64>().unwrap();
-            let ny = words.next().unwrap().parse::<f64>().unwrap();
-            let nz = words.next().unwrap().parse::<f64>().unwrap();
-
-            norms.push(Unit::new_normalize(Vector3::new(nx, ny, nz)));
-        }
-
-        let face_lines: Vec<_> = BufReader::new(File::open(path).expect("Unable to open file!"))
-            .lines()
-            .map(Result::unwrap)
-            .filter(|line| line.starts_with("f "))
-            .collect();
-
-        let mut faces = Vec::with_capacity(face_lines.len());
-        for line in face_lines {
-            let line = line.replace("//", " ");
-            let mut words = line.split_whitespace();
-            words.next();
-
-            let fx = words.next().unwrap().parse::<usize>().unwrap() - 1;
-            words.next();
-            let fy = words.next().unwrap().parse::<usize>().unwrap() - 1;
-            words.next();
-            let fz = words.next().unwrap().parse::<usize>().unwrap() - 1;
-            words.next();
-
-            faces.push((fx, fy, fz));
-        }
-
-        let mut tris = Vec::with_capacity(faces.len());
-        for face in faces {
-            tris.push(Triangle::new([verts[face.0], verts[face.1], verts[face.2]]));
-        }
-
-        tris
-    }
-}
-
 impl Emit for Triangle {
     #[inline]
     #[must_use]
@@ -394,10 +307,14 @@ impl Emit for Triangle {
             v = 1.0 - v;
         }
 
-        let edge_ab = self.verts[1] - self.verts[0];
-        let edge_ac = self.verts[2] - self.verts[0];
+        let edge_a_b = self.verts.get(Beta as usize).expect("Missing vertex.")
+            - self.verts.get(Alpha as usize).expect("Missing vertex.");
+        let edge_a_c = self.verts.get(Gamma as usize).expect("Missing vertex.")
+            - self.verts.get(Alpha as usize).expect("Missing vertex.");
 
-        let pos = self.verts[0] + (edge_ab * u) + (edge_ac * v);
+        let pos = self.verts.get(Alpha as usize).expect("Missing vertex.")
+            + (edge_a_b * u)
+            + (edge_a_c * v);
 
         Ray::new(pos, self.plane_norm)
     }

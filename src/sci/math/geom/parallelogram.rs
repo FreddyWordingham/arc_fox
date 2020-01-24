@@ -39,18 +39,26 @@ impl Parallelogram {
 
     /// Create a pair of side vectors.
     fn edges(&self) -> (Vector3<f64>, Vector3<f64>) {
-        let edge_ab = self.verts[1] - self.verts[0];
-        let edge_ac = self.verts[2] - self.verts[0];
+        let edge_a_b = self.verts.get(Beta as usize).expect("Missing vertex.")
+            - self.verts.get(Alpha as usize).expect("Missing vertex.");
+        let edge_a_c = self.verts.get(Gamma as usize).expect("Missing vertex.")
+            - self.verts.get(Alpha as usize).expect("Missing vertex.");
 
-        (edge_ab, edge_ac)
+        (edge_a_b, edge_a_c)
     }
 
     /// Calculate the perimeter length.
     #[inline]
     #[must_use]
     pub fn perimeter(&self) -> f64 {
-        let ab = nalgebra::distance(&self.verts[0], &self.verts[1]);
-        let bc = nalgebra::distance(&self.verts[1], &self.verts[2]);
+        let ab = nalgebra::distance(
+            self.verts.get(Alpha as usize).expect("Missing vertex."),
+            self.verts.get(Beta as usize).expect("Missing vertex."),
+        );
+        let bc = nalgebra::distance(
+            self.verts.get(Beta as usize).expect("Missing vertex."),
+            self.verts.get(Gamma as usize).expect("Missing vertex."),
+        );
 
         (ab + bc) * 2.0
     }
@@ -59,9 +67,18 @@ impl Parallelogram {
     #[inline]
     #[must_use]
     pub fn area(&self) -> f64 {
-        let ab = nalgebra::distance(&self.verts[0], &self.verts[1]);
-        let bc = nalgebra::distance(&self.verts[1], &self.verts[2]);
-        let ca = nalgebra::distance(&self.verts[2], &self.verts[0]);
+        let ab = nalgebra::distance(
+            self.verts.get(Alpha as usize).expect("Missing vertex."),
+            self.verts.get(Beta as usize).expect("Missing vertex."),
+        );
+        let bc = nalgebra::distance(
+            self.verts.get(Beta as usize).expect("Missing vertex."),
+            self.verts.get(Gamma as usize).expect("Missing vertex."),
+        );
+        let ca = nalgebra::distance(
+            self.verts.get(Gamma as usize).expect("Missing vertex."),
+            self.verts.get(Alpha as usize).expect("Missing vertex."),
+        );
 
         let s = (ab + bc + ca) * 0.5;
 
@@ -72,9 +89,11 @@ impl Parallelogram {
     #[inline]
     #[must_use]
     pub fn centre(&self) -> Point3<f64> {
-        let (edge_ab, edge_ac) = self.edges();
+        let (edge_a_b, edge_a_c) = self.edges();
 
-        self.verts[0] + (0.5 * edge_ab) + (0.5 * edge_ac)
+        self.verts.get(Alpha as usize).expect("Missing vertex.")
+            + (0.5 * edge_a_b)
+            + (0.5 * edge_a_c)
     }
 
     /// Determine the intersection distance along a ray's direction.
@@ -169,9 +188,11 @@ impl Emit for Parallelogram {
     #[inline]
     #[must_use]
     fn cast(&self, rng: &mut ThreadRng) -> Ray {
-        let (edge_ab, edge_ac) = self.edges();
+        let (edge_a_b, edge_a_c) = self.edges();
 
-        let pos = self.verts[0] + (edge_ab * rng.gen::<f64>()) + (edge_ac * rng.gen::<f64>());
+        let pos = self.verts.get(Alpha as usize).expect("Missing vertex.")
+            + (edge_a_b * rng.gen::<f64>())
+            + (edge_a_c * rng.gen::<f64>());
 
         Ray::new(pos, self.plane_norm)
     }

@@ -23,17 +23,24 @@ impl Mesh {
     access!(tris, Vec<SmoothTriangle>);
 
     /// Construct a new instance.
+    #[must_use]
     pub fn new(tris: Vec<SmoothTriangle>) -> Self {
-        let mut mins = tris[0].tri().verts()[Alpha as usize];
+        let mut mins = *tris
+            .get(0)
+            .expect("No triangles.")
+            .tri()
+            .verts()
+            .get(Alpha as usize)
+            .expect("Missing vertex.");
         let mut maxs = mins;
 
-        for tri in tris.iter() {
+        for tri in &tris {
             for v in tri.tri().verts().iter() {
-                for i in 0..3 {
-                    if mins[i] > v[i] {
-                        mins[i] = v[i];
-                    } else if maxs[i] < v[i] {
-                        maxs[i] = v[i];
+                for (v, (min, max)) in v.iter().zip(mins.iter_mut().zip(maxs.iter_mut())) {
+                    if *min > *v {
+                        *min = *v;
+                    } else if *max < *v {
+                        *max = *v;
                     }
                 }
             }
@@ -103,7 +110,7 @@ impl Trace for Mesh {
         self.tris
             .iter()
             .filter_map(|tri| tri.dist(ray))
-            .min_by(|a, b| a.partial_cmp(b).unwrap())
+            .min_by(|a, b| a.partial_cmp(b).expect("Failed comparison."))
     }
 
     #[inline]
@@ -116,7 +123,7 @@ impl Trace for Mesh {
         self.tris
             .iter()
             .filter_map(|tri| tri.dist_norm(ray))
-            .min_by(|a, b| a.0.partial_cmp(&b.0).unwrap())
+            .min_by(|a, b| a.0.partial_cmp(&b.0).expect("Failed comparison."))
     }
 
     #[inline]
@@ -129,7 +136,7 @@ impl Trace for Mesh {
         self.tris
             .iter()
             .filter_map(|tri| tri.dist_inside(ray))
-            .min_by(|a, b| a.0.partial_cmp(&b.0).unwrap())
+            .min_by(|a, b| a.0.partial_cmp(&b.0).expect("Failed comparison."))
     }
 
     #[inline]
@@ -142,6 +149,6 @@ impl Trace for Mesh {
         self.tris
             .iter()
             .filter_map(|tri| tri.dist_inside_norm(ray))
-            .min_by(|a, b| a.0.partial_cmp(&b.0).unwrap())
+            .min_by(|a, b| a.0.partial_cmp(&b.0).expect("Failed comparison."))
     }
 }
