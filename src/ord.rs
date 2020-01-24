@@ -1,5 +1,6 @@
 //! Order module.
 
+pub mod dom;
 pub mod named;
 pub mod set;
 
