@@ -2,6 +2,7 @@
 
 pub mod geom;
 pub mod lambda;
+pub mod rng;
 pub mod rt;
 
-pub use self::{geom::*, lambda::*, rt::*};
+pub use self::{geom::*, lambda::*, rng::*, rt::*};

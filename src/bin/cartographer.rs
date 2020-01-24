@@ -2,19 +2,18 @@
 
 use arc::{
     args,
-    file::io::{map, Load},
+    file::io::Load,
     report,
-    sci::chem::{Reaction, ReactionBuilder, Species, SpeciesBuilder, State, StateBuilder},
     util::{
         dirs::init::io_dirs,
         info::exec,
-        pb::Bar,
         print::term::{section, title},
     },
 };
 use attr_mac::form;
 use colog;
 use log::info;
+use std::path::{Path, PathBuf};
 
 #[form]
 struct Parameters {
@@ -25,5 +24,27 @@ pub fn main() {
     colog::init();
     title(&exec::name());
 
-    info!("Hello world!");
+    section("Initialisation");
+    let (in_dir, out_dir, params_path) = initialisation();
+    report!(in_dir.display(), "input directory");
+    report!(out_dir.display(), "output directory");
+    report!(params_path.display(), "parameters path");
+
+    section("Prelude");
+    let _params = prelude(&params_path);
+    info!("loaded parameters file");
+}
+
+fn initialisation() -> (PathBuf, PathBuf, PathBuf) {
+    args!(_bin_path: String;
+        params_name: String);
+
+    let (in_dir, out_dir) = io_dirs(None, None);
+    let params_path = &in_dir.join(params_name);
+
+    (in_dir, out_dir, params_path.to_path_buf())
+}
+
+fn prelude(params_path: &Path) -> Parameters {
+    Parameters::load(&params_path)
 }
