@@ -1,6 +1,6 @@
 //! Cell structure implementation.
 
-use crate::sci::math::geom::Aabb;
+use crate::{access, sci::math::geom::Aabb};
 
 /// Cell holding local information.
 pub struct Cell {
@@ -9,6 +9,8 @@ pub struct Cell {
 }
 
 impl Cell {
+    access!(bound, Aabb);
+
     /// Construct a new instance.
     #[inline]
     #[must_use]

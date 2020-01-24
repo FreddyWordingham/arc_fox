@@ -1,6 +1,6 @@
 //! Grid structure.
 
-use crate::{ord::dom::Cell, sci::math::geom::Aabb};
+use crate::{access, ord::dom::Cell, sci::math::geom::Aabb};
 use nalgebra::Point3;
 use ndarray::Array3;
 
@@ -13,6 +13,9 @@ pub struct Grid {
 }
 
 impl Grid {
+    access!(bound, Aabb);
+    access!(cells, Array3<Cell>);
+
     /// Construct a new instance.
     #[must_use]
     #[allow(clippy::cast_precision_loss)]
@@ -50,7 +53,8 @@ impl Grid {
 
         Self {
             bound,
-            cells: Array3::from_shape_vec(shape, cells).unwrap(),
+            cells: Array3::from_shape_vec(shape, cells)
+                .expect("Failed to convert cell vector to an array3."),
         }
     }
 }
