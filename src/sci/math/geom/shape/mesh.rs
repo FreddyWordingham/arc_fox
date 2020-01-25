@@ -3,7 +3,7 @@
 use crate::{
     access,
     sci::math::{
-        geom::{Aabb, SmoothTriangle},
+        geom::shape::{Aabb, SmoothTriangle},
         rt::{Ray, Trace},
         Collide,
     },

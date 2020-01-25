@@ -1,6 +1,6 @@
 //! Grid structure.
 
-use crate::{access, ord::dom::Cell, sci::math::geom::Aabb};
+use crate::{access, ord::dom::Cell, sci::math::geom::shape::Aabb};
 use nalgebra::Point3;
 use ndarray::Array3;
 

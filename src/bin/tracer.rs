@@ -6,7 +6,7 @@ use arc::{
     report,
     sci::{
         math::{
-            geom::{Mesh, SmoothTriangle},
+            geom::shape::{Mesh, SmoothTriangle},
             rt::trace::Trace,
         },
         phys::Crossing,

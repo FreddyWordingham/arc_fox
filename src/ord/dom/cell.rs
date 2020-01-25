@@ -1,6 +1,6 @@
 //! Cell structure implementation.
 
-use crate::{access, sci::math::geom::Aabb};
+use crate::{access, sci::math::geom::shape::Aabb};
 
 /// Cell holding local information.
 pub struct Cell {

@@ -1,6 +1,6 @@
 //! Collide trait.
 
-use crate::sci::math::geom::Aabb;
+use crate::sci::math::geom::shape::Aabb;
 
 /// Collide trait implementation.
 /// Structures implementing this trait can be tested for collision with an axis-aligned bounding box.

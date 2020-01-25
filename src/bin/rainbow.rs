@@ -4,7 +4,7 @@ use arc::{
     args,
     file::io::{Load, Save},
     report,
-    sci::math::geom::Rectangle,
+    sci::math::geom::shape::Rectangle,
     sim::mcrt::detector::Ccd,
     util::{
         dirs::init::io_dirs,
@@ -190,7 +190,7 @@ impl Hit {
 
 use arc::{
     sci::{
-        math::{geom::Sphere, rt::Trace},
+        math::{geom::shape::Sphere, rt::Trace},
         phys::{Crossing, Spectrum},
     },
     sim::mcrt::{Detect, Light},

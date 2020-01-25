@@ -3,7 +3,7 @@
 use crate::{
     access,
     sci::math::{
-        geom::Aabb,
+        geom::shape::Aabb,
         rt::{Emit, Ray, Trace},
         Collide,
     },

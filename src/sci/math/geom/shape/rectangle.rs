@@ -3,7 +3,7 @@
 use crate::{
     access,
     sci::math::{
-        geom::Parallelogram,
+        geom::shape::Parallelogram,
         rt::{Emit, Ray, Trace},
     },
 };

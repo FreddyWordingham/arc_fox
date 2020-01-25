@@ -4,7 +4,7 @@ use crate::{
     access,
     sci::{
         math::{
-            geom::Rectangle,
+            geom::shape::Rectangle,
             rt::{Ray, Trace},
         },
         phys::Photon,
