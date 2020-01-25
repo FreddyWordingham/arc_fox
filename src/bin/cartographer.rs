@@ -3,11 +3,11 @@
 use arc::{
     args,
     file::io::Load,
-    ord::{req_materials, req_meshes, req_species, Set},
+    ord::{dom::Grid, req_materials, req_meshes, req_species, Set},
     report,
     sci::{
         chem::{Reaction, Species},
-        math::geom::shape::Mesh,
+        math::geom::shape::{Aabb, Mesh},
         phys::{Interface, Material},
     },
     util::{
@@ -19,6 +19,7 @@ use arc::{
 use attr_mac::form;
 use colog;
 use log::info;
+use nalgebra::Point3;
 use std::path::{Path, PathBuf};
 
 #[form]
@@ -26,6 +27,8 @@ struct Parameters {
     num_threads: usize,
     reactions: Vec<String>,
     interfaces: Vec<String>,
+    half_widths: [f64; 3],
+    shape: [usize; 3],
 }
 
 pub fn main() {
@@ -63,6 +66,13 @@ pub fn main() {
 
     let meshes = req_meshes(&interfaces);
     let meshes = Set::<Mesh>::load(&in_dir.join("meshes"), &meshes, "obj");
+
+    let half_widths = Point3::new(
+        params.half_widths[0],
+        params.half_widths[1],
+        params.half_widths[2],
+    );
+    let _grid = Grid::new(Aabb::new(-half_widths, half_widths), params.shape);
 
     section("Reporting");
     info!("Known reactions:");

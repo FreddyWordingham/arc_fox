@@ -7,4 +7,14 @@
     "interfaces": [
         "air_skin"
     ],
+    "half_widths": [
+        1.0e-3,
+        1.0e-3,
+        1.0e-3
+    ],
+    "shape": [
+        16,
+        16,
+        16
+    ]
 }
