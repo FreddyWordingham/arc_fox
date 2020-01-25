@@ -1,3 +1,13 @@
 {
     "num_threads": 4,
+    "reactions": [
+        "a",
+        "b"
+    ],
+    "species": [
+        "ala",
+        "ppix",
+        "udens",
+        "death"
+    ],
 }

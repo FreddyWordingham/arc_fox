@@ -4,7 +4,7 @@ use arc::{
     args,
     file::io::Load,
     report,
-    uni::parts::reactions,
+    uni::parts::Reactions,
     util::{
         dirs::init::io_dirs,
         info::exec,
@@ -19,6 +19,7 @@ use std::path::{Path, PathBuf};
 #[form]
 struct Parameters {
     num_threads: usize,
+    reactions: Vec<String>,
 }
 
 pub fn main() {
@@ -32,11 +33,17 @@ pub fn main() {
     report!(params_path.display(), "parameters path");
 
     section("Prelude");
-    let _params = prelude(&params_path);
+    let params = prelude(&params_path);
     info!("loaded parameters file");
 
     section("Building");
-    let _reactions = reactions::load(&in_dir.join("reactions"), &["a.json", "b.json"]);
+    let reactions = Reactions::load(&in_dir.join("reactions"), params.reactions.as_slice());
+
+    section("Reporting");
+    info!("Known reactions:");
+    for (name, _val) in reactions.map().iter() {
+        info!("\t{}", name);
+    }
 }
 
 fn initialisation() -> (PathBuf, PathBuf, PathBuf) {

@@ -1,20 +1,50 @@
 //! Reactions type alias.
 
-use crate::sci::chem::Reaction;
+use crate::{access, file::io::Load, sci::chem::Reaction};
 use log::info;
-use std::{collections::BTreeMap, path::Path};
+use std::{collections::BTreeMap, ops::Index, path::Path};
 
-type Reactions = BTreeMap<String, Reaction>;
+/// Reaction mapping.
+pub struct Reactions {
+    /// Internal map ping.
+    map: BTreeMap<String, Reaction>,
+}
 
-pub fn load(dir: &Path, names: &[&str]) -> Reactions {
-    let reactions = Reactions::new();
+impl Reactions {
+    access!(map, BTreeMap<String, Reaction>);
 
-    for name in names {
-        info!("Loading reaction: {}", name);
-        let _path = dir.join(name);
-
-        // reactions.insert(name.to_string(), Reaction::load(path));
+    /// Construct a new instance.
+    #[inline]
+    #[must_use]
+    pub fn new(map: BTreeMap<String, Reaction>) -> Self {
+        Self { map }
     }
 
-    reactions
+    /// Construct a new instance by loading reaction files.
+    #[inline]
+    #[must_use]
+    pub fn load(dir: &Path, names: &[String]) -> Self {
+        let mut map = BTreeMap::new();
+
+        for name in names {
+            let path = dir.join(format!("{}.json", name));
+            info!("Loading reaction: {}", path.display());
+
+            map.insert(name.to_string(), Reaction::load(&path));
+        }
+
+        Self::new(map)
+    }
+}
+
+impl Index<&str> for Reactions {
+    type Output = Reaction;
+
+    #[inline]
+    #[must_use]
+    fn index(&self, st: &str) -> &Self::Output {
+        self.map
+            .get(st)
+            .expect("Did not find id entry within reaction map.")
+    }
 }

@@ -1,10 +1,12 @@
 //! Species reaction structure.
 
-use crate::{access, sci::chem::Rate};
-use attr_mac::json;
+use crate::{
+    access,
+    ord::Set,
+    sci::chem::{Rate, ReactionBuilder, Species},
+};
 
 /// Species reaction structure.
-#[json]
 pub struct Reaction {
     /// List of reactant species buy id, and their stoichiometric coefficient.
     reactants: Vec<(String, f64)>,
