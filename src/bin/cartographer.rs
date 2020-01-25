@@ -3,11 +3,11 @@
 use arc::{
     args,
     file::io::Load,
-    ord::{req_species, Set},
+    ord::{req_materials, req_species, Set},
     report,
     sci::{
         chem::{Reaction, Species},
-        phys::Interface,
+        phys::{Interface, Material},
     },
     util::{
         dirs::init::io_dirs,
@@ -24,7 +24,6 @@ use std::path::{Path, PathBuf};
 struct Parameters {
     num_threads: usize,
     reactions: Vec<String>,
-    species: Vec<String>,
     interfaces: Vec<String>,
 }
 
@@ -39,16 +38,20 @@ pub fn main() {
     report!(params_path.display(), "parameters path");
 
     section("Prelude");
-    let mut params = prelude(&params_path);
+    let params = prelude(&params_path);
     info!("loaded parameters file");
 
     section("Building");
     let reactions = Set::<Reaction>::load(&in_dir.join("reactions"), params.reactions.as_slice());
-    let mut species = req_species(&reactions);
-    species.append(&mut params.species);
+
+    let species = req_species(&reactions);
     let species = Set::<Species>::load(&in_dir.join("species"), &species);
+
     let interfaces =
         Set::<Interface>::load(&in_dir.join("interfaces"), params.interfaces.as_slice());
+
+    let materials = req_materials(&interfaces);
+    let materials = Set::<Material>::load(&in_dir.join("materials"), &materials);
 
     section("Reporting");
     info!("Known reactions:");
@@ -62,6 +65,10 @@ pub fn main() {
     info!("Known interfaces:");
     for (name, val) in interfaces.map().iter() {
         report!(val, name);
+    }
+    info!("Known materials:");
+    for (name, val) in materials.map().iter() {
+        report!(format!("{:?}", val), name);
     }
 }
 
