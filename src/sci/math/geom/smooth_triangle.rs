@@ -3,8 +3,9 @@
 use crate::{
     access,
     sci::math::{
-        geom::{Aabb, Collide, Triangle},
+        geom::{Aabb, Triangle},
         rt::{Emit, Ray, Trace},
+        Collide,
     },
     util::list::alphabet::Greek::{Alpha, Beta, Gamma},
 };

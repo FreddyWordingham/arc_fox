@@ -12,19 +12,19 @@ pub enum Lambda {
         /// Constant.
         c: f64,
     },
-    /// Linear formula. = (f(x) * m) + c
+    /// Linear formula. = (x * m) + c
     Linear {
         /// Offset coefficient.
         c: f64,
         /// Gradient.
         m: f64,
     },
-    /// Polynomial formula. = sum((f(x)^i) * c[i])
+    /// Polynomial formula. = sum((x^i) * c[i])
     Polynomial {
         /// Constants starting with the zeroth order coefficient.
         cs: Vec<f64>,
     },
-    /// Recovery formula. = (c - f(x)) * r
+    /// Recovery formula. = (c - x) * r
     Recovery {
         /// Target value.
         c: f64,

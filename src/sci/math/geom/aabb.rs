@@ -3,8 +3,8 @@
 use crate::{
     access,
     sci::math::{
-        geom::Collide,
         rt::{Ray, Trace},
+        Collide,
     },
 };
 use nalgebra::{Point3, Unit, Vector3};
