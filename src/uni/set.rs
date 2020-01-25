@@ -1,22 +1,22 @@
-//! Reactions type alias.
+//! Set storage map structure.
 
-use crate::{access, file::io::Load, sci::chem::Reaction};
+use crate::{access, file::io::Load};
 use log::info;
 use std::{collections::BTreeMap, ops::Index, path::Path};
 
-/// Reaction mapping.
-pub struct Reactions {
-    /// Internal map ping.
-    map: BTreeMap<String, Reaction>,
+/// Set mapping.
+pub struct Set<T> {
+    /// Internal map.
+    map: BTreeMap<String, T>,
 }
 
-impl Reactions {
-    access!(map, BTreeMap<String, Reaction>);
+impl<T: Load> Set<T> {
+    access!(map, BTreeMap<String, T>);
 
     /// Construct a new instance.
     #[inline]
     #[must_use]
-    pub fn new(map: BTreeMap<String, Reaction>) -> Self {
+    pub fn new(map: BTreeMap<String, T>) -> Self {
         Self { map }
     }
 
@@ -30,21 +30,21 @@ impl Reactions {
             let path = dir.join(format!("{}.json", name));
             info!("Loading reaction: {}", path.display());
 
-            map.insert(name.to_string(), Reaction::load(&path));
+            map.insert(name.to_string(), T::load(&path));
         }
 
         Self::new(map)
     }
 }
 
-impl Index<&str> for Reactions {
-    type Output = Reaction;
+impl<T> Index<&str> for Set<T> {
+    type Output = T;
 
     #[inline]
     #[must_use]
     fn index(&self, st: &str) -> &Self::Output {
         self.map
             .get(st)
-            .expect("Did not find id entry within reaction map.")
+            .expect("Did not find id entry within the set.")
     }
 }

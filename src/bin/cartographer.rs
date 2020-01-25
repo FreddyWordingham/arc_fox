@@ -4,7 +4,8 @@ use arc::{
     args,
     file::io::Load,
     report,
-    uni::parts::Reactions,
+    sci::chem::{Reaction, Species},
+    uni::Set,
     util::{
         dirs::init::io_dirs,
         info::exec,
@@ -20,6 +21,7 @@ use std::path::{Path, PathBuf};
 struct Parameters {
     num_threads: usize,
     reactions: Vec<String>,
+    species: Vec<String>,
 }
 
 pub fn main() {
@@ -37,11 +39,16 @@ pub fn main() {
     info!("loaded parameters file");
 
     section("Building");
-    let reactions = Reactions::load(&in_dir.join("reactions"), params.reactions.as_slice());
+    let reactions = Set::<Reaction>::load(&in_dir.join("reactions"), params.reactions.as_slice());
+    let species = Set::<Species>::load(&in_dir.join("species"), params.species.as_slice());
 
     section("Reporting");
     info!("Known reactions:");
     for (name, _val) in reactions.map().iter() {
+        info!("\t{}", name);
+    }
+    info!("Known species:");
+    for (name, _val) in species.map().iter() {
         info!("\t{}", name);
     }
 }
