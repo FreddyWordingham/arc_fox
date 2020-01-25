@@ -1,8 +1,10 @@
 //! Material structure.
 
 use crate::{access, sci::phys::Optics};
+use attr_mac::json;
 
 /// Material physical properties.
+#[json]
 pub struct Material {
     /// Optical properties.
     optics: Optics,

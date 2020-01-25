@@ -1,8 +1,10 @@
 //! Spectrum enumeration.
 
+use attr_mac::json;
 use rand::rngs::ThreadRng;
 
 /// Spectrum enumeration implementation.
+#[json]
 pub enum Spectrum {
     /// Single wavelength.
     Laser(f64),

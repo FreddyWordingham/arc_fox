@@ -1,8 +1,10 @@
 //! Optical property structure.
 
 use crate::{access, sci::math::Lambda, sci::phys::Environment};
+use attr_mac::json;
 
 /// Optical properties structure.
+#[json]
 pub struct Optics {
     /// Refractive index.
     ref_index: Lambda,
