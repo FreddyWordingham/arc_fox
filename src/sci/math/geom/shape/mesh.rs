@@ -2,6 +2,7 @@
 
 use crate::{
     access,
+    file::io::Load,
     sci::math::{
         geom::shape::{Aabb, SmoothTriangle},
         rt::{Ray, Trace},
@@ -10,6 +11,7 @@ use crate::{
     util::list::alphabet::Greek::Alpha,
 };
 use nalgebra::{Unit, Vector3};
+use std::path::Path;
 
 /// Mesh geometry.
 pub struct Mesh {
@@ -151,5 +153,11 @@ impl Trace for Mesh {
             .iter()
             .filter_map(|tri| tri.dist_inside_norm(ray))
             .min_by(|a, b| a.0.partial_cmp(&b.0).expect("Failed comparison."))
+    }
+}
+
+impl Load for Mesh {
+    fn load(path: &Path) -> Self {
+        Self::new(SmoothTriangle::load_list(path))
     }
 }

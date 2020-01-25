@@ -3,10 +3,11 @@
 use arc::{
     args,
     file::io::Load,
-    ord::{req_materials, req_species, Set},
+    ord::{req_materials, req_meshes, req_species, Set},
     report,
     sci::{
         chem::{Reaction, Species},
+        math::geom::shape::Mesh,
         phys::{Interface, Material},
     },
     util::{
@@ -42,16 +43,26 @@ pub fn main() {
     info!("loaded parameters file");
 
     section("Building");
-    let reactions = Set::<Reaction>::load(&in_dir.join("reactions"), params.reactions.as_slice());
+    let reactions = Set::<Reaction>::load(
+        &in_dir.join("reactions"),
+        params.reactions.as_slice(),
+        "json",
+    );
 
     let species = req_species(&reactions);
-    let species = Set::<Species>::load(&in_dir.join("species"), &species);
+    let species = Set::<Species>::load(&in_dir.join("species"), &species, "json");
 
-    let interfaces =
-        Set::<Interface>::load(&in_dir.join("interfaces"), params.interfaces.as_slice());
+    let interfaces = Set::<Interface>::load(
+        &in_dir.join("interfaces"),
+        params.interfaces.as_slice(),
+        "json",
+    );
 
     let materials = req_materials(&interfaces);
-    let materials = Set::<Material>::load(&in_dir.join("materials"), &materials);
+    let materials = Set::<Material>::load(&in_dir.join("materials"), &materials, "json");
+
+    let meshes = req_meshes(&interfaces);
+    let meshes = Set::<Mesh>::load(&in_dir.join("meshes"), &meshes, "obj");
 
     section("Reporting");
     info!("Known reactions:");
@@ -69,6 +80,10 @@ pub fn main() {
     info!("Known materials:");
     for (name, val) in materials.map().iter() {
         report!(format!("{:?}", val), name);
+    }
+    info!("Known meshes:");
+    for (name, _val) in meshes.map().iter() {
+        info!("{}", name);
     }
 }
 
