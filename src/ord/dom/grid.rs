@@ -46,7 +46,7 @@ impl Grid {
 
                     let mins = Point3::new(x, y, z);
                     let maxs = mins + cell_size;
-                    cells.push(Cell::new(Aabb::new(mins, maxs)));
+                    cells.push(Cell::new(Aabb::new(mins, maxs), "TODO".to_string()));
                 }
             }
         }

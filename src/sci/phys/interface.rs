@@ -1,24 +1,26 @@
 //! Interface structure.
 
-use crate::{access, sci::math::geom::shape::Mesh};
+use crate::{access, ord::Name};
 
 /// Material interface structure.
 pub struct Interface {
-    /// Surface mesh.
-    surf: Mesh,
+    /// Surface mesh id.
+    surf: Name,
     /// Inside material id.
-    in_mat: String,
+    in_mat: Name,
     /// Outside material id.
-    out_mat: String,
+    out_mat: Name,
 }
 
 impl Interface {
-    access!(surf, Mesh);
-    access!(in_mat, String);
-    access!(out_mat, String);
+    access!(surf, Name);
+    access!(in_mat, Name);
+    access!(out_mat, Name);
 
     /// Construct a new instance.
-    pub fn new(surf: Mesh, in_mat: String, out_mat: String) -> Self {
+    #[inline]
+    #[must_use]
+    pub fn new(surf: Name, in_mat: Name, out_mat: Name) -> Self {
         Self {
             surf,
             in_mat,

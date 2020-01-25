@@ -1,29 +1,29 @@
 //! Set storage map structure.
 
-use crate::{access, file::io::Load};
+use crate::{access, file::io::Load, ord::Name};
 use log::info;
 use std::{collections::BTreeMap, ops::Index, path::Path};
 
 /// Set mapping.
 pub struct Set<T> {
     /// Internal map.
-    map: BTreeMap<String, T>,
+    map: BTreeMap<Name, T>,
 }
 
 impl<T: Load> Set<T> {
-    access!(map, BTreeMap<String, T>);
+    access!(map, BTreeMap<Name, T>);
 
     /// Construct a new instance.
     #[inline]
     #[must_use]
-    pub fn new(map: BTreeMap<String, T>) -> Self {
+    pub fn new(map: BTreeMap<Name, T>) -> Self {
         Self { map }
     }
 
     /// Construct a new instance by loading reaction files.
     #[inline]
     #[must_use]
-    pub fn load(dir: &Path, names: &[String]) -> Self {
+    pub fn load(dir: &Path, names: &[Name]) -> Self {
         let mut map = BTreeMap::new();
 
         for name in names {
