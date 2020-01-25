@@ -11,7 +11,7 @@ pub fn load(dir: &Path, names: &[&str]) -> Reactions {
 
     for name in names {
         info!("Loading reaction: {}", name);
-        let path = dir.join(name);
+        let _path = dir.join(name);
 
         // reactions.insert(name.to_string(), Reaction::load(path));
     }
