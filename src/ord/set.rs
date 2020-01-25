@@ -1,6 +1,6 @@
 //! Set storage map structure.
 
-use crate::{access, file::io::Load, ord::Name};
+use crate::{access, file::io::Load, ord::Name, sci::chem::Reaction};
 use log::info;
 use std::{collections::BTreeMap, ops::Index, path::Path};
 
@@ -47,4 +47,17 @@ impl<T> Index<&str> for Set<T> {
             .get(st)
             .expect("Did not find id entry within the set.")
     }
+}
+
+pub fn req_species(reactions: &Set<Reaction>) -> Vec<String> {
+    let mut species = Vec::new();
+
+    for r in reactions.map().values() {
+        species.append(&mut r.req_species());
+    }
+
+    species.sort();
+    species.dedup();
+
+    species
 }

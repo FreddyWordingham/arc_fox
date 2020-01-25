@@ -3,7 +3,7 @@
 use arc::{
     args,
     file::io::Load,
-    ord::Set,
+    ord::{req_species, Set},
     report,
     sci::{
         chem::{Reaction, Species},
@@ -39,12 +39,14 @@ pub fn main() {
     report!(params_path.display(), "parameters path");
 
     section("Prelude");
-    let params = prelude(&params_path);
+    let mut params = prelude(&params_path);
     info!("loaded parameters file");
 
     section("Building");
     let reactions = Set::<Reaction>::load(&in_dir.join("reactions"), params.reactions.as_slice());
-    let species = Set::<Species>::load(&in_dir.join("species"), params.species.as_slice());
+    let mut species = req_species(&reactions);
+    species.append(&mut params.species);
+    let species = Set::<Species>::load(&in_dir.join("species"), &species);
     let interfaces =
         Set::<Interface>::load(&in_dir.join("interfaces"), params.interfaces.as_slice());
 

@@ -1,16 +1,11 @@
 {
     "num_threads": 4,
     "reactions": [
-        "a",
-        "b"
-    ],
-    "species": [
-        "ala",
-        "ppix",
-        "udens",
-        "death"
+        "cell_death_mechanism",
+        "ppix_synthesis"
     ],
     "interfaces": [
         "air_skin"
-    ]
+    ],
+    "species": []
 }

@@ -1,20 +1,20 @@
 {
     "reactants": [
         [
-            "b",
-            1
+            "ala",
+            8
         ]
     ],
     "products": [
         [
-            "c",
+            "ppix",
             1
         ]
     ],
     "rate": {
         "First": [
-            0.2,
-            "b"
+            0.1,
+            "ala"
         ]
     }
 }

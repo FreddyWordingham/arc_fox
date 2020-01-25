@@ -30,6 +30,26 @@ impl Reaction {
             rate,
         }
     }
+
+    /// Get a list of all species required for the reaction.
+    #[inline]
+    #[must_use]
+    pub fn req_species(&self) -> Vec<Name> {
+        let mut names = Vec::new();
+
+        for (name, _c) in &self.reactants {
+            names.push(name.clone());
+        }
+        for (name, _c) in &self.products {
+            names.push(name.clone());
+        }
+        names.append(&mut self.rate.req_species());
+
+        names.sort();
+        names.dedup();
+
+        names
+    }
 }
 
 impl Display for Reaction {
