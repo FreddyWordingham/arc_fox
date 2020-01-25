@@ -2,13 +2,13 @@
     "reactants": [
         [
             "a",
-            1.0
+            1
         ]
     ],
     "products": [
         [
             "b",
-            1.0
+            1
         ]
     ],
     "rate": {

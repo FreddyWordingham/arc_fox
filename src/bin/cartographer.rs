@@ -50,8 +50,8 @@ pub fn main() {
 
     section("Reporting");
     info!("Known reactions:");
-    for (name, _val) in reactions.map().iter() {
-        info!("\t{}", name);
+    for (name, val) in reactions.map().iter() {
+        info!("\t{}:\t{}", name, val);
     }
     info!("Known species:");
     for (name, _val) in species.map().iter() {
