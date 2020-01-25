@@ -1,8 +1,10 @@
 //! Interface structure.
 
 use crate::{access, ord::Name};
+use attr_mac::json;
 
 /// Material interface structure.
+#[json]
 pub struct Interface {
     /// Surface mesh id.
     surf: Name,

@@ -5,7 +5,10 @@ use arc::{
     file::io::Load,
     ord::Set,
     report,
-    sci::chem::{Reaction, Species},
+    sci::{
+        chem::{Reaction, Species},
+        phys::Interface,
+    },
     util::{
         dirs::init::io_dirs,
         info::exec,
@@ -22,6 +25,7 @@ struct Parameters {
     num_threads: usize,
     reactions: Vec<String>,
     species: Vec<String>,
+    interfaces: Vec<String>,
 }
 
 pub fn main() {
@@ -41,6 +45,8 @@ pub fn main() {
     section("Building");
     let reactions = Set::<Reaction>::load(&in_dir.join("reactions"), params.reactions.as_slice());
     let species = Set::<Species>::load(&in_dir.join("species"), params.species.as_slice());
+    let interfaces =
+        Set::<Interface>::load(&in_dir.join("interfaces"), params.interfaces.as_slice());
 
     section("Reporting");
     info!("Known reactions:");
@@ -49,6 +55,10 @@ pub fn main() {
     }
     info!("Known species:");
     for (name, _val) in species.map().iter() {
+        info!("\t{}", name);
+    }
+    info!("Known interfaces:");
+    for (name, _val) in interfaces.map().iter() {
         info!("\t{}", name);
     }
 }

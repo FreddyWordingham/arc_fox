@@ -28,7 +28,7 @@ impl<T: Load> Set<T> {
 
         for name in names {
             let path = dir.join(format!("{}.json", name));
-            info!("Loading reaction: {}", path.display());
+            info!("Loading: {}", path.display());
 
             map.insert(name.to_string(), T::load(&path));
         }

@@ -10,4 +10,7 @@
         "udens",
         "death"
     ],
+    "interfaces": [
+        "air_skin"
+    ]
 }
