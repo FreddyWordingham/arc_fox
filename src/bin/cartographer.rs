@@ -3,6 +3,7 @@
 use arc::{
     args,
     file::io::Load,
+    ord::parts::reactions,
     report,
     util::{
         dirs::init::io_dirs,
@@ -33,6 +34,9 @@ pub fn main() {
     section("Prelude");
     let _params = prelude(&params_path);
     info!("loaded parameters file");
+
+    section("Building");
+    let _reactions = reactions::load(&in_dir.join("reactions"), &["a.json", "b.json"]);
 }
 
 fn initialisation() -> (PathBuf, PathBuf, PathBuf) {
