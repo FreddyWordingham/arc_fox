@@ -2,6 +2,7 @@
 
 use crate::access;
 use attr_mac::json;
+use std::fmt::{Display, Formatter, Result};
 
 /// Reactive species structure.
 #[json]
@@ -18,5 +19,15 @@ impl Species {
     #[must_use]
     pub const fn new(rad: Option<f64>) -> Self {
         Self { rad }
+    }
+}
+
+impl Display for Species {
+    fn fmt(&self, fmt: &mut Formatter) -> Result {
+        if let Some(rad) = self.rad {
+            write!(fmt, "Diffusive. Radius {}nm", rad * 1.0e9)
+        } else {
+            write!(fmt, "Non-diffusive.")
+        }
     }
 }

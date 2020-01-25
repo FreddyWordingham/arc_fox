@@ -35,18 +35,18 @@ impl Reaction {
 impl Display for Reaction {
     fn fmt(&self, fmt: &mut Formatter) -> Result {
         if let Some((name, coeff)) = self.reactants.first() {
-            write!(fmt, "{}{}", coeff, name).expect("Could not write to formatter.");
+            write!(fmt, "{}{}", coeff, name)?;
             for (name, coeff) in self.reactants.iter().skip(1) {
-                write!(fmt, " + {}{}", coeff, name).expect("Could not write to formatter.");
+                write!(fmt, " + {}{}", coeff, name)?;
             }
         }
 
         write!(fmt, " -> ").expect("Could not write to formatter.");
 
         if let Some((name, coeff)) = self.products.first() {
-            write!(fmt, "{}{}", coeff, name).expect("Could not write to formatter.");
+            write!(fmt, "{}{}", coeff, name)?;
             for (name, coeff) in self.products.iter().skip(1) {
-                write!(fmt, " + {}{}", coeff, name).expect("Could not write to formatter.");
+                write!(fmt, " + {}{}", coeff, name)?;
             }
         }
         write!(fmt, "\t:\t{}", self.rate)

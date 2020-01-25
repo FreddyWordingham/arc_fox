@@ -51,15 +51,15 @@ pub fn main() {
     section("Reporting");
     info!("Known reactions:");
     for (name, val) in reactions.map().iter() {
-        info!("\t{}:\t{}", name, val);
+        report!(val, name);
     }
     info!("Known species:");
-    for (name, _val) in species.map().iter() {
-        info!("\t{}", name);
+    for (name, val) in species.map().iter() {
+        report!(val, name);
     }
     info!("Known interfaces:");
-    for (name, _val) in interfaces.map().iter() {
-        info!("\t{}", name);
+    for (name, val) in interfaces.map().iter() {
+        report!(val, name);
     }
 }
 

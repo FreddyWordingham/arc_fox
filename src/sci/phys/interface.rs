@@ -2,6 +2,7 @@
 
 use crate::{access, ord::Name};
 use attr_mac::json;
+use std::fmt::{Display, Formatter, Result};
 
 /// Material interface structure.
 #[json]
@@ -28,5 +29,15 @@ impl Interface {
             in_mat,
             out_mat,
         }
+    }
+}
+
+impl Display for Interface {
+    fn fmt(&self, fmt: &mut Formatter) -> Result {
+        write!(
+            fmt,
+            "surf: {}\t{} :| {}",
+            self.surf, self.in_mat, self.out_mat
+        )
     }
 }
