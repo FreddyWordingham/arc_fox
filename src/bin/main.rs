@@ -2,7 +2,7 @@
 
 use arc::{
     args,
-    file::io::Load,
+    file::io::{Load, Save},
     report,
     util::{
         dirs::init::io_dirs,
@@ -19,6 +19,7 @@ use std::path::{Path, PathBuf};
 struct Parameters {
     num_threads: usize,
     verse: arc::file::form::Verse,
+    grid: arc::file::form::Grid,
 }
 
 pub fn main() {
@@ -35,11 +36,27 @@ pub fn main() {
     let params = prelude(&params_path);
     info!("loaded parameters file");
 
-    section("Building");
+    section("Loading");
     let verse = params.verse.form(&in_dir);
+
+    section("Building");
+    let grid = params.grid.form(&verse);
+
+    let mut maps = Vec::with_capacity(verse.materials().map().len());
+    for mat in verse.materials().map().keys() {
+        maps.push((mat, grid.gen_mat_map(mat)));
+    }
 
     section("Pre-Flight");
     report!(verse);
+
+    section("Output");
+    info!("Saving maps...");
+    for (name, map) in maps {
+        map.save(&out_dir.join(format!("{}.nc", name)));
+        println!("{} -> {}", name, map.sum());
+        // println!("{} -> {:?}", name, map);
+    }
 }
 
 fn initialisation() -> (PathBuf, PathBuf, PathBuf) {

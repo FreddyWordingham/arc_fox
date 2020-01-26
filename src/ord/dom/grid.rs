@@ -3,8 +3,10 @@
 use crate::{
     access,
     ord::{dom::Cell, set::interfaces},
+    report,
     sci::math::{geom::shape::Aabb, rt::Ray},
     uni::Verse,
+    util::pb::Bar,
 };
 use nalgebra::{Point3, Unit};
 use ndarray::Array3;
@@ -26,6 +28,7 @@ impl Grid {
     #[allow(clippy::cast_precision_loss)]
     pub fn new(bound: Aabb, shape: [usize; 3], verse: &Verse) -> Self {
         let total_cells = shape[0] * shape[1] * shape[2];
+        report!(total_cells);
         let mut cells = Vec::with_capacity(total_cells);
 
         let mut cell_size = bound.widths();
@@ -51,6 +54,7 @@ impl Grid {
         }
         .expect("Could not determine suitable trace target.");
 
+        let mut pb = Bar::new("Constructing cells", total_cells as u64, 1);
         for xi in 0..*shape.get(0).expect("Invalid index.") {
             let x = cell_size
                 .get(0)
@@ -62,6 +66,8 @@ impl Grid {
                     .expect("Invalid index.")
                     .mul_add(yi as f64, bound.mins().y);
                 for zi in 0..*shape.get(2).expect("Invalid index.") {
+                    pb.inc();
+
                     let z = cell_size
                         .get(2)
                         .expect("Invalid index.")
@@ -86,11 +92,20 @@ impl Grid {
                 }
             }
         }
+        pb.finish_with_message("Cells constructed.");
 
         Self {
             bound,
             cells: Array3::from_shape_vec(shape, cells)
                 .expect("Failed to convert cell vector to an array3."),
         }
+    }
+
+    /// Map a given material key.
+    #[inline]
+    #[must_use]
+    pub fn gen_mat_map(&self, name: &str) -> Array3<f64> {
+        self.cells
+            .map(|cell| if cell.mat() == name { 1.0 } else { 0.0 })
     }
 }

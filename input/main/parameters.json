@@ -7,8 +7,31 @@
         ],
         "species": [],
         "interfaces": [
-            "air_skin"
+            "air_to_stratum_corneum",
+            "stratum_corenum_to_living_epidermis",
+            "deep_blood_net_dermis_to_subcutaneous_fat",
+            "living_epidermis_to_papillary_dermis",
+            "papillary_dermis_to_upper_blood_net_dermis",
+            "reticular_dermis_to_deep_blood_net_dermis",
+            "upper_blood_net_dermis_to_reticular_dermis"
         ],
         "materials": []
+    },
+    "grid": {
+        "res": [
+            64,
+            64,
+            64
+        ],
+        "maxs": [
+            5.0e-3,
+            5.0e-3,
+            2.0e-3
+        ],
+        "mins": [
+            -5.0e-3,
+            -5.0e-3,
+            -8.0e-3
+        ],
     }
 }
