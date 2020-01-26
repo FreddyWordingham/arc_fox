@@ -7,6 +7,7 @@ use crate::{
     },
     sci::{
         chem::{Reaction, Species},
+        math::geom::shape::Mesh,
         phys::{Interface, Material},
     },
     uni::Verse as Universe,
@@ -25,6 +26,8 @@ pub struct Verse {
     interfaces: Vec<Name>,
     /// Optional list of additional materials.
     materials: Option<Vec<Name>>,
+    /// Optional list of additional meshes.
+    meshes: Option<Vec<Name>>,
 }
 
 impl Verse {
@@ -36,12 +39,14 @@ impl Verse {
         species: Option<Vec<Name>>,
         interfaces: Vec<Name>,
         materials: Option<Vec<Name>>,
+        meshes: Option<Vec<Name>>,
     ) -> Self {
         Self {
             reactions,
             species,
             interfaces,
             materials,
+            meshes,
         }
     }
 
@@ -72,6 +77,13 @@ impl Verse {
         };
         let materials = Set::<Material>::load(&in_dir.join("materials"), &material_names, "json");
 
-        Universe::new(reactions, species, interfaces, materials)
+        let mesh_names = {
+            let mut rm = interfaces::req_meshes(&interfaces);
+            rm.extend_from_slice(self.meshes.as_ref().unwrap_or(&vec![]));
+            rm
+        };
+        let meshes = Set::<Mesh>::load(&in_dir.join("meshes"), &mesh_names, "obj");
+
+        Universe::new(reactions, species, interfaces, materials, meshes)
     }
 }

@@ -5,6 +5,7 @@ use crate::{
     ord::Set,
     sci::{
         chem::{Reaction, Species},
+        math::geom::shape::Mesh,
         phys::{Interface, Material},
     },
 };
@@ -20,6 +21,8 @@ pub struct Verse {
     interfaces: Set<Interface>,
     /// Material set.
     materials: Set<Material>,
+    /// Mesh set.
+    meshes: Set<Mesh>,
 }
 
 impl Verse {
@@ -27,6 +30,7 @@ impl Verse {
     access!(species, Set<Species>);
     access!(interfaces, Set<Interface>);
     access!(materials, Set<Material>);
+    access!(meshes, Set<Mesh>);
 
     /// Construct a new instance.
     #[inline]
@@ -36,12 +40,14 @@ impl Verse {
         species: Set<Species>,
         interfaces: Set<Interface>,
         materials: Set<Material>,
+        meshes: Set<Mesh>,
     ) -> Self {
         Self {
             reactions,
             species,
             interfaces,
             materials,
+            meshes,
         }
     }
 }
@@ -67,6 +73,11 @@ impl Display for Verse {
 
         writeln!(fmt, "\n{} materials:", self.materials.map().len())?;
         for (name, _m) in self.materials.map() {
+            writeln!(fmt, "{:>16}", name)?;
+        }
+
+        writeln!(fmt, "\n{} meshes:", self.meshes.map().len())?;
+        for (name, _m) in self.meshes.map() {
             writeln!(fmt, "{:>16}", name)?;
         }
 
