@@ -1,6 +1,9 @@
 //! Optical property structure.
 
-use crate::{access, sci::math::Lambda, sci::phys::Environment};
+use crate::{
+    access,
+    sci::{math::Lambda, phys::Environment},
+};
 use attr_mac::json;
 
 /// Optical properties structure.

@@ -3,7 +3,7 @@
 use arc::{
     args,
     file::io::Load,
-    ord::{dom::Grid, req_materials, req_meshes, req_species, Set},
+    ord::{dom::Grid, interfaces, reactions, Set},
     report,
     sci::{
         chem::{Reaction, Species},
@@ -52,7 +52,7 @@ pub fn main() {
         "json",
     );
 
-    let species = req_species(&reactions);
+    let species = reactions::req_species(&reactions);
     let species = Set::<Species>::load(&in_dir.join("species"), &species, "json");
 
     let interfaces = Set::<Interface>::load(
@@ -61,10 +61,10 @@ pub fn main() {
         "json",
     );
 
-    let materials = req_materials(&interfaces);
+    let materials = interfaces::req_materials(&interfaces);
     let materials = Set::<Material>::load(&in_dir.join("materials"), &materials, "json");
 
-    let meshes = req_meshes(&interfaces);
+    let meshes = interfaces::req_meshes(&interfaces);
     let meshes = Set::<Mesh>::load(&in_dir.join("meshes"), &meshes, "obj");
 
     let half_widths = Point3::new(
@@ -95,15 +95,6 @@ pub fn main() {
     for (name, _val) in meshes.map().iter() {
         info!("{}", name);
     }
-
-    let _verse = arc::uni::Verse::load(
-        &in_dir,
-        &[
-            "ppix_synthesis".to_string(),
-            "cell_death_mechanism".to_string(),
-        ],
-        &[],
-    );
 }
 
 fn initialisation() -> (PathBuf, PathBuf, PathBuf) {
