@@ -8,6 +8,7 @@ use crate::{
         phys::{Interface, Material},
     },
 };
+use std::fmt::{Display, Formatter, Result};
 
 /// Universe instance.
 pub struct Verse {
@@ -42,5 +43,18 @@ impl Verse {
             interfaces,
             materials,
         }
+    }
+}
+
+impl Display for Verse {
+    fn fmt(&self, fmt: &mut Formatter) -> Result {
+        writeln!(fmt, "Universe rundown:")?;
+
+        writeln!(fmt, "{} known reactions:", self.reactions.map().len())?;
+        for (name, r) in self.reactions.map() {
+            writeln!(fmt, "{:>32}:\t{}", name, r)?;
+        }
+
+        Ok(())
     }
 }

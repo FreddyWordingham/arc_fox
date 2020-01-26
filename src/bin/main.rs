@@ -36,7 +36,10 @@ pub fn main() {
     info!("loaded parameters file");
 
     section("Building");
-    let _verse = params.verse.form(&in_dir);
+    let verse = params.verse.form(&in_dir);
+
+    section("Pre-Flight");
+    report!(verse);
 }
 
 fn initialisation() -> (PathBuf, PathBuf, PathBuf) {
