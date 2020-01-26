@@ -2,7 +2,7 @@
     "num_threads": 4,
     "verse": {
         "reactions": [
-            "cell_death_mechanism",
+            "death_mechanism",
             "ppix_synthesis"
         ],
         "species": [],

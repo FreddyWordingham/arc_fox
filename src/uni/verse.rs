@@ -50,9 +50,24 @@ impl Display for Verse {
     fn fmt(&self, fmt: &mut Formatter) -> Result {
         writeln!(fmt, "Universe rundown:")?;
 
-        writeln!(fmt, "{} known reactions:", self.reactions.map().len())?;
+        writeln!(fmt, "\n{} reactions:", self.reactions.map().len())?;
         for (name, r) in self.reactions.map() {
-            writeln!(fmt, "{:>32}:\t{}", name, r)?;
+            writeln!(fmt, "{:>16}:\t{}", name, r)?;
+        }
+
+        writeln!(fmt, "\n{} species:", self.species.map().len())?;
+        for (name, s) in self.species.map() {
+            writeln!(fmt, "{:>16}:\t{}", name, s)?;
+        }
+
+        writeln!(fmt, "\n{} interfaces:", self.interfaces.map().len())?;
+        for (name, i) in self.interfaces.map() {
+            writeln!(fmt, "{:>16}:\t{}", name, i)?;
+        }
+
+        writeln!(fmt, "\n{} materials:", self.materials.map().len())?;
+        for (name, _m) in self.materials.map() {
+            writeln!(fmt, "{:>16}", name)?;
         }
 
         Ok(())
