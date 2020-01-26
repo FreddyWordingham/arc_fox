@@ -72,7 +72,7 @@ pub fn main() {
         params.half_widths[1],
         params.half_widths[2],
     );
-    let _grid = Grid::new(Aabb::new(-half_widths, half_widths), params.shape);
+    // let _grid = Grid::new(Aabb::new(-half_widths, half_widths), params.shape);
 
     section("Reporting");
     info!("Known reactions:");

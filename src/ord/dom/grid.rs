@@ -1,6 +1,6 @@
 //! Grid structure.
 
-use crate::{access, ord::dom::Cell, sci::math::geom::shape::Aabb};
+use crate::{access, ord::dom::Cell, sci::math::geom::shape::Aabb, uni::Verse};
 use nalgebra::Point3;
 use ndarray::Array3;
 
@@ -19,7 +19,7 @@ impl Grid {
     /// Construct a new instance.
     #[must_use]
     #[allow(clippy::cast_precision_loss)]
-    pub fn new(bound: Aabb, shape: [usize; 3]) -> Self {
+    pub fn new(bound: Aabb, shape: [usize; 3], _verse: &Verse) -> Self {
         let total_cells = shape[0] * shape[1] * shape[2];
         let mut cells = Vec::with_capacity(total_cells);
 
