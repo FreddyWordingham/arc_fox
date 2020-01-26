@@ -1,7 +1,13 @@
 {
     "num_threads": 4,
-    "reactions": [
-        "cell_death_mechanism",
-        "ppix_synthesis"
-    ]
+    "verse": {
+        "reactions": [
+            "cell_death_mechanism",
+            "ppix_synthesis"
+        ],
+        "species": [],
+        "interfaces": [
+            "air_skin"
+        ]
+    }
 }

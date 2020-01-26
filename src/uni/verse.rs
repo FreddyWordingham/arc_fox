@@ -13,6 +13,13 @@ pub struct Verse {
 }
 
 impl Verse {
+    /// Construct a new instance.
+    #[inline]
+    #[must_use]
+    pub fn new(reactions: Set<Reaction>) -> Self {
+        Self { reactions }
+    }
+
     /// Load a new instance.
     #[inline]
     #[must_use]

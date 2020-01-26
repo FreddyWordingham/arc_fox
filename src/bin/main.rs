@@ -18,7 +18,7 @@ use std::path::{Path, PathBuf};
 #[form]
 struct Parameters {
     num_threads: usize,
-    reactions: Vec<String>,
+    verse: arc::file::form::Verse,
 }
 
 pub fn main() {
@@ -36,7 +36,7 @@ pub fn main() {
     info!("loaded parameters file");
 
     section("Building");
-    let _verse = arc::uni::Verse::load(&in_dir, &params.reactions, &[]);
+    let _verse = params.verse.form(&in_dir);
 }
 
 fn initialisation() -> (PathBuf, PathBuf, PathBuf) {
