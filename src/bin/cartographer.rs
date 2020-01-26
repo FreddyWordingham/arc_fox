@@ -95,6 +95,15 @@ pub fn main() {
     for (name, _val) in meshes.map().iter() {
         info!("{}", name);
     }
+
+    let _verse = arc::uni::Verse::load(
+        &in_dir,
+        &[
+            "ppix_synthesis".to_string(),
+            "cell_death_mechanism".to_string(),
+        ],
+        &[],
+    );
 }
 
 fn initialisation() -> (PathBuf, PathBuf, PathBuf) {
