@@ -1,7 +1,6 @@
 //! Functions for set of reactions.
 
-use crate::ord::Set;
-use crate::sci::chem::Reaction;
+use crate::{ord::Set, sci::chem::Reaction};
 
 /// Get a list of all species required for the set of reactions.
 #[inline]

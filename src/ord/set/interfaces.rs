@@ -1,7 +1,6 @@
 //! Functions for sets of interfaces.
 
-use crate::ord::Set;
-use crate::sci::phys::Interface;
+use crate::{ord::Set, sci::phys::Interface};
 
 /// Get a list of all meshes required for the set of interfaces.
 #[inline]
