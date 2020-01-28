@@ -9,10 +9,15 @@
     clippy::restriction,
 )]
 #![allow(
+    clippy::float_arithmetic,
     clippy::implicit_return,
     clippy::integer_arithmetic,
+    clippy::integer_division,
+    clippy::missing_const_for_fn,
     clippy::module_name_repetitions,
+    clippy::option_expect_used,
     clippy::panic,
+    clippy::print_stdout,
     clippy::result_expect_used,
     clippy::wildcard_enum_match_arm
 )]
