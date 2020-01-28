@@ -16,3 +16,13 @@
     clippy::result_expect_used,
     clippy::wildcard_enum_match_arm
 )]
+
+pub mod chem;
+pub mod data;
+pub mod dom;
+pub mod file;
+pub mod geom;
+pub mod math;
+pub mod phys;
+pub mod sim;
+pub mod util;
