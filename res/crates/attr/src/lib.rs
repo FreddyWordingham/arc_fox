@@ -9,20 +9,13 @@
     clippy::restriction,
 )]
 #![allow(
-    clippy::else_if_without_else,
-    clippy::float_arithmetic,
     clippy::implicit_return,
     clippy::integer_arithmetic,
-    clippy::integer_division,
     clippy::module_name_repetitions,
-    clippy::needless_pass_by_value,
-    clippy::option_expect_used,
     clippy::panic,
     clippy::result_expect_used,
-    clippy::unreachable
+    clippy::wildcard_enum_match_arm
 )]
-// Temporary suppression.
-#![allow(clippy::missing_inline_in_public_items)]
 
 extern crate proc_macro;
 extern crate proc_macro2;
@@ -33,13 +26,15 @@ use json::*;
 use proc_macro::TokenStream;
 
 /// Create the attribute macro form.
+#[inline]
 #[proc_macro_attribute]
 pub fn form(metadata: TokenStream, input: TokenStream) -> TokenStream {
-    form_impl(metadata, input)
+    form_impl(&metadata, input)
 }
 
 /// Create the attribute macro json.
+#[inline]
 #[proc_macro_attribute]
 pub fn json(metadata: TokenStream, input: TokenStream) -> TokenStream {
-    json_impl(metadata, input)
+    json_impl(&metadata, input)
 }
