@@ -19,6 +19,7 @@
     clippy::panic,
     clippy::print_stdout,
     clippy::result_expect_used,
+    clippy::unreachable,
     clippy::wildcard_enum_match_arm
 )]
 
