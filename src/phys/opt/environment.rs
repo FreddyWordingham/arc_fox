@@ -43,16 +43,22 @@ impl Environment {
     }
 
     /// Determine the interaction coefficient.
+    #[inline]
+    #[must_use]
     pub fn inter_coeff(&self) -> f64 {
         self.scat_coeff + self.abs_coeff + self.shift_coeff
     }
 
     /// Calculate the albedo.
+    #[inline]
+    #[must_use]
     pub fn albedo(&self) -> f64 {
         1.0 - (self.abs_coeff / self.inter_coeff())
     }
 
     /// Calculate the shifting probability.
+    #[inline]
+    #[must_use]
     pub fn shift_prob(&self) -> f64 {
         self.shift_coeff / self.inter_coeff()
     }
