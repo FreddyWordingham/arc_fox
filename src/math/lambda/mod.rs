@@ -1,5 +1,5 @@
 //! Lambda sub-module.
 
-pub mod func;
+pub mod formula;
 
-pub use self::func::*;
+pub use self::formula::*;
