@@ -3,10 +3,10 @@
 use crate::{
     access,
     file::Load,
-    geom::{Aabb, Collide, Ray, SmoothTriangle, Trace},
+    geom::{Aabb, Collide, Ray, SmoothTriangle, Trace, Transform},
     list::Greek::Alpha,
 };
-use nalgebra::{Unit, Vector3};
+use nalgebra::{Similarity3, Unit, Vector3};
 use std::path::Path;
 
 /// Mesh geometry.
@@ -25,6 +25,14 @@ impl Mesh {
     #[inline]
     #[must_use]
     pub fn new(tris: Vec<SmoothTriangle>) -> Self {
+        Self {
+            aabb: Self::init_aabb(&tris),
+            tris,
+        }
+    }
+
+    /// Initialise the bounding box for the mesh.
+    fn init_aabb(tris: &[SmoothTriangle]) -> Aabb {
         let mut mins = *tris
             .get(0)
             .expect("No triangles.")
@@ -34,7 +42,7 @@ impl Mesh {
             .expect("Missing vertex.");
         let mut maxs = mins;
 
-        for tri in &tris {
+        for tri in tris {
             for v in tri.tri().verts().iter() {
                 for (v, (min, max)) in v.iter().zip(mins.iter_mut().zip(maxs.iter_mut())) {
                     if *min > *v {
@@ -46,9 +54,7 @@ impl Mesh {
             }
         }
 
-        let aabb = Aabb::new(mins, maxs);
-
-        Self { aabb, tris }
+        Aabb::new(mins, maxs)
     }
 
     /// Calculate the surface area.
@@ -150,6 +156,17 @@ impl Collide for Mesh {
         }
 
         false
+    }
+}
+
+impl Transform for Mesh {
+    #[inline]
+    fn transform(&mut self, trans: &Similarity3<f64>) {
+        for tri in &mut self.tris {
+            tri.transform(trans);
+        }
+
+        self.aabb = Self::init_aabb(&self.tris);
     }
 }
 
