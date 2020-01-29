@@ -154,6 +154,8 @@ impl Collide for Mesh {
 }
 
 impl Load for Mesh {
+    #[inline]
+    #[must_use]
     fn load(path: &Path) -> Self {
         Self::new(SmoothTriangle::load_list(path))
     }
