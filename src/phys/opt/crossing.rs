@@ -46,17 +46,18 @@ impl Crossing {
             Some((n_next / n_curr).asin())
         };
 
-        let (ref_prob, trans_dir) = if crit_ang.is_some() && (ci.acos() >= crit_ang.unwrap()) {
-            (1.0, None)
-        } else {
-            let s2t = n.powi(2) * (1.0 - ci.powi(2));
-            let ct = (1.0 - s2t).sqrt();
+        let (ref_prob, trans_dir) =
+            if crit_ang.is_some() && (ci.acos() >= crit_ang.expect("Calculation failure.")) {
+                (1.0, None)
+            } else {
+                let s2t = n.powi(2) * (1.0 - ci.powi(2));
+                let ct = (1.0 - s2t).sqrt();
 
-            (
-                Self::init_ref_prob(n_curr, n_next, ci, ct),
-                Some(Self::init_trans_dir(inc, &norm, n, ci, ct)),
-            )
-        };
+                (
+                    Self::init_ref_prob(n_curr, n_next, ci, ct),
+                    Some(Self::init_trans_dir(inc, &norm, n, ci, ct)),
+                )
+            };
 
         Self {
             ref_prob,
@@ -71,13 +72,13 @@ impl Crossing {
         assert!(n1 >= 0.0);
         assert!(n2 >= 0.0);
 
-        let n1_ci = n1 * ci;
-        let n2_ct = n2 * ct;
-        let rn = ((n1_ci - n2_ct) / (n1_ci + n2_ct)).powi(2);
+        let n1_c_i = n1 * ci;
+        let n2_c_t = n2 * ct;
+        let rn = ((n1_c_i - n2_c_t) / (n1_c_i + n2_c_t)).powi(2);
 
-        let n2_ci = n2 * ci;
-        let n1_ct = n1 * ct;
-        let rt = ((n2_ci - n1_ct) / (n2_ci + n1_ct)).powi(2);
+        let n2_c_i = n2 * ci;
+        let n1_c_t = n1 * ct;
+        let rt = ((n2_c_i - n1_c_t) / (n2_c_i + n1_c_t)).powi(2);
 
         (rn + rt) / 2.0
     }

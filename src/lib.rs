@@ -9,6 +9,10 @@
     clippy::restriction,
 )]
 #![allow(
+    clippy::cast_possible_truncation,
+    clippy::cast_possible_wrap,
+    clippy::cast_precision_loss,
+    clippy::cast_sign_loss,
     clippy::else_if_without_else,
     clippy::float_arithmetic,
     clippy::implicit_return,
