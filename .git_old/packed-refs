@@ -1,8 +1,0 @@
-# pack-refs with: peeled fully-peeled sorted 
-81939e87ebca8d9576d610ca5e197f2208a65ed5 refs/heads/fox
-5a27616653a565985913a39bd7830d7ba972bcc5 refs/heads/gnr
-7b5beaa014cbaf28e2574ea25ef014630f0b6454 refs/heads/master
-5a27616653a565985913a39bd7830d7ba972bcc5 refs/heads/ptfe
-7d6cbb9ecfa69f7193620456120d19427ef7421b refs/heads/reindeer
-7b5beaa014cbaf28e2574ea25ef014630f0b6454 refs/remotes/origin/master
-fd0e91dc1fec43b324ecbb4c0f30104b2673f94e refs/stash
