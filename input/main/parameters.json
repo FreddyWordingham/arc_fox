@@ -1,3 +1,12 @@
 {
-    "num_threads": 4
+    "num_threads": 4,
+    "interfaces": {
+        "subject": {
+            "surf": {
+                "name": "torus",
+            },
+            "in_mat": "skin",
+            "out_mat": "air",
+        }
+    }
 }

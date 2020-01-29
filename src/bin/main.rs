@@ -2,18 +2,25 @@
 
 use arc::{
     args,
+    dom::Set,
+    file::json,
     file::Load,
     report,
+    sim::Material,
     util::{banner, exec, io_dirs},
 };
 use attr::form;
 use colog;
 use log::info;
-use std::path::{Path, PathBuf};
+use std::{
+    collections::BTreeMap,
+    path::{Path, PathBuf},
+};
 
 #[form]
 struct Parameters {
     num_threads: usize,
+    interfaces: BTreeMap<String, json::Interface>,
 }
 
 fn main() {
@@ -27,10 +34,11 @@ fn main() {
     report!(params_path.display(), "parameters path");
 
     banner::section("Prelude");
-    let _params = prelude(&params_path);
+    let params = prelude(&params_path);
     info!("loaded parameters file");
 
     banner::section("Loading");
+    load(&in_dir, &params);
 
     banner::section("Building");
 
@@ -52,4 +60,23 @@ fn initialisation() -> (PathBuf, PathBuf, PathBuf) {
 
 fn prelude(params_path: &Path) -> Parameters {
     Parameters::load(&params_path)
+}
+
+fn load(in_dir: &Path, params: &Parameters) {
+    let materials: Vec<String> = params
+        .interfaces
+        .values()
+        .flat_map(|inter| vec![inter.in_mat().to_string(), inter.out_mat().to_string()])
+        .collect();
+
+    let _materials = Set::<Material>::load(&in_dir.join("materials"), &materials, "json");
+
+    // let interfaces = BTreeMap::new();
+    // for (name, interface) in &params.interfaces {
+    //     println!("Loading interface: {}", name);
+
+    //     interfaces.push(
+    //         (name, interface.build(, &materials))
+    //     );
+    // }
 }
