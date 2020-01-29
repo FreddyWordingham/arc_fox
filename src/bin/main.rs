@@ -2,7 +2,7 @@
 
 use arc::{
     args,
-    dom::{filter_materials, load_set},
+    dom::{build_interfaces, filter_materials, load_set},
     file::{Interface, Load},
     report,
     sim::Material,
@@ -64,4 +64,6 @@ fn prelude(params_path: &Path) -> Parameters {
 fn load(in_dir: &Path, params: &Parameters) {
     let materials = filter_materials(&params.interfaces);
     let materials = load_set::<Material>(&in_dir.join("materials"), &materials, "json");
+
+    let _interfaces = build_interfaces(&in_dir.join("meshes"), &params.interfaces, &materials);
 }

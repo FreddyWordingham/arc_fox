@@ -11,7 +11,6 @@ use std::path::Path;
 
 /// Parsable interface structure.
 #[json]
-#[derive(Clone)]
 pub struct Interface {
     /// Surface mesh.
     surf: Mesh,

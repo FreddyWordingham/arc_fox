@@ -23,16 +23,23 @@ impl Triangle {
     #[inline]
     #[must_use]
     pub fn new(verts: [Point3<f64>; 3]) -> Self {
-        let plane_norm = Unit::new_normalize(
+        let plane_norm = Self::init_plane_norm(&verts);
+
+        Self { verts, plane_norm }
+    }
+
+    /// Initialise the plane normal.
+    #[inline]
+    #[must_use]
+    fn init_plane_norm(verts: &[Point3<f64>; 3]) -> Unit<Vector3<f64>> {
+        Unit::new_normalize(
             (verts.get(Beta as usize).expect("Missing vertex.")
                 - verts.get(Alpha as usize).expect("Missing vertex."))
             .cross(
                 &(verts.get(Gamma as usize).expect("Missing vertex.")
                     - verts.get(Alpha as usize).expect("Missing vertex.")),
             ),
-        );
-
-        Self { verts, plane_norm }
+        )
     }
 
     /// Calculate the perimeter length.

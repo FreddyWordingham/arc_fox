@@ -3,7 +3,7 @@
     "interfaces": {
         "subject": {
             "surf": {
-                "name": "torus",
+                "name": "cube",
             },
             "in_mat": "skin",
             "out_mat": "air",

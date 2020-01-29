@@ -24,13 +24,6 @@ impl<T> Set<T> {
     pub fn new(map: BTreeMap<String, T>) -> Self {
         Self { map }
     }
-
-    /// Construct a new empty set.
-    #[inline]
-    #[must_use]
-    pub fn empty() -> Self {
-        Self::new(BTreeMap::new())
-    }
 }
 
 /// Construct a new instance by loading reaction files.

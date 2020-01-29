@@ -5,7 +5,6 @@ use nalgebra::{Similarity3, Translation3, UnitQuaternion, Vector3};
 
 /// Json parsable transform structure.
 #[json]
-#[derive(Clone)]
 pub struct Transform {
     /// Optional translation to apply.
     trans: Option<Translation3<f64>>,
@@ -19,7 +18,7 @@ impl Transform {
     /// Build a transformation.
     #[inline]
     #[must_use]
-    pub fn build(self) -> Similarity3<f64> {
+    pub fn build(&self) -> Similarity3<f64> {
         let trans = self
             .trans
             .unwrap_or_else(|| Translation3::new(0.0, 0.0, 0.0));
