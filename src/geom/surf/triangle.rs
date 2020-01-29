@@ -2,10 +2,10 @@
 
 use crate::{
     access,
-    geom::{Aabb, Collide, Ray, Trace},
+    geom::{Aabb, Collide, Ray, Trace, Transform},
     list::Greek::{Alpha, Beta, Gamma},
 };
-use nalgebra::{Point3, Unit, Vector3};
+use nalgebra::{Point3, Similarity3, Unit, Vector3};
 
 /// Triangle geometry.
 pub struct Triangle {
@@ -85,17 +85,17 @@ impl Triangle {
             ((self
                 .verts
                 .get(Alpha as usize)
-                .expect("Invalid vertex index")
+                .expect("Missing vertex.")
                 .to_homogeneous()
                 + self
                     .verts
                     .get(Beta as usize)
-                    .expect("Invalid vertex index")
+                    .expect("Missing vertex.")
                     .to_homogeneous()
                 + self
                     .verts
                     .get(Gamma as usize)
-                    .expect("Invalid vertex index")
+                    .expect("Missing vertex.")
                     .to_homogeneous())
                 / 3.0)
                 .xyz(),
@@ -109,10 +109,10 @@ impl Triangle {
     pub fn intersection_coors(&self, ray: &Ray) -> Option<(f64, [f64; 3])> {
         let verts = self.verts;
 
-        let e1 = verts.get(Beta as usize).expect("Invalid vertex index.")
-            - verts.get(Alpha as usize).expect("Invalid vertex index.");
-        let e2 = verts.get(Gamma as usize).expect("Invalid vertex index.")
-            - verts.get(Alpha as usize).expect("Invalid vertex index.");
+        let e1 = verts.get(Beta as usize).expect("Missing vertex.")
+            - verts.get(Alpha as usize).expect("Missing vertex.");
+        let e2 = verts.get(Gamma as usize).expect("Missing vertex.")
+            - verts.get(Alpha as usize).expect("Missing vertex.");
 
         let d_cross_e2 = ray.dir().cross(&e2);
         let e1_dot_d_cross_e2 = e1.dot(&d_cross_e2);
@@ -122,7 +122,7 @@ impl Triangle {
         }
 
         let inv_e1_dot_d_cross_e2 = 1.0 / e1_dot_d_cross_e2;
-        let rel_pos = ray.pos() - verts.get(Alpha as usize).expect("Invalid vertex index.");
+        let rel_pos = ray.pos() - verts.get(Alpha as usize).expect("Missing vertex.");
         let u = inv_e1_dot_d_cross_e2 * rel_pos.dot(&d_cross_e2);
 
         if (u < 0.0) || (u > 1.0) {
@@ -308,5 +308,16 @@ impl Collide for Triangle {
         }
 
         true
+    }
+}
+
+impl Transform for Triangle {
+    #[inline]
+    fn transform(&mut self, trans: &Similarity3<f64>) {
+        for v in &mut self.verts {
+            *v = trans.transform_point(v);
+        }
+
+        self.plane_norm = Unit::new_normalize(trans.transform_vector(&self.plane_norm));
     }
 }

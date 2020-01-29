@@ -2,10 +2,10 @@
 
 use crate::{
     access,
-    geom::{Aabb, Collide, Ray, Trace, Triangle},
+    geom::{Aabb, Collide, Ray, Trace, Transform, Triangle},
     list::Greek::{Alpha, Beta, Gamma},
 };
-use nalgebra::{Point3, Unit, Vector3};
+use nalgebra::{Point3, Similarity3, Unit, Vector3};
 use std::{
     fs::File,
     io::{BufRead, BufReader},
@@ -261,5 +261,16 @@ impl Collide for SmoothTriangle {
     #[must_use]
     fn overlap(&self, aabb: &Aabb) -> bool {
         self.tri.overlap(aabb)
+    }
+}
+
+impl Transform for SmoothTriangle {
+    #[inline]
+    fn transform(&mut self, trans: &Similarity3<f64>) {
+        self.tri.transform(trans);
+
+        for n in &mut self.norms {
+            *n = Unit::new_normalize(trans.transform_vector(n.as_ref()));
+        }
     }
 }
