@@ -1,0 +1,14 @@
+[package]
+name = "attr"
+version = "0.1.0"
+authors = ["Freddy Wordingham <fjmw201@exeter.ac.uk>"]
+edition = "2018"
+
+[lib]
+proc-macro = true
+
+[dependencies]
+proc = { path = "../proc" }
+proc-macro2 = "1.0.8"
+quote = "1.0.2"
+syn = { version = "1.0.14", features = ["full"] }
