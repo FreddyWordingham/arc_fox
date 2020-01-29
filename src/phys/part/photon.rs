@@ -24,7 +24,10 @@ impl Photon {
     /// Construct a new instance.
     #[inline]
     #[must_use]
-    pub const fn new(wavelength: f64, power: f64, ray: Ray) -> Self {
+    pub fn new(wavelength: f64, power: f64, ray: Ray) -> Self {
+        assert!(wavelength > 0.0);
+        assert!(power > 0.0);
+
         Self {
             weight: 1.0,
             wavelength,

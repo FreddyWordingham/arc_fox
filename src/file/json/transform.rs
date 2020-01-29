@@ -3,6 +3,7 @@
 use attr::json;
 use nalgebra::{Similarity3, Translation3, UnitQuaternion, Vector3};
 
+/// Json parsable transform structure.
 #[json]
 pub struct Transform {
     /// Optional translation to apply.
@@ -15,6 +16,8 @@ pub struct Transform {
 
 impl Transform {
     /// Build a transformation.
+    #[inline]
+    #[must_use]
     pub fn build(self) -> Similarity3<f64> {
         let trans = self
             .trans

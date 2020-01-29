@@ -9,6 +9,7 @@
     clippy::restriction,
 )]
 #![allow(
+    clippy::else_if_without_else,
     clippy::float_arithmetic,
     clippy::implicit_return,
     clippy::integer_arithmetic,
