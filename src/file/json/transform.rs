@@ -5,6 +5,7 @@ use nalgebra::{Similarity3, Translation3, UnitQuaternion, Vector3};
 
 /// Json parsable transform structure.
 #[json]
+#[derive(Clone)]
 pub struct Transform {
     /// Optional translation to apply.
     trans: Option<Translation3<f64>>,

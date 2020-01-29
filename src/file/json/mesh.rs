@@ -9,6 +9,7 @@ use std::path::Path;
 
 /// Mesh construction form.
 #[json]
+#[derive(Clone)]
 pub struct Mesh {
     /// Base mesh name.
     name: String,

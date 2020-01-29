@@ -2,9 +2,8 @@
 
 use arc::{
     args,
-    dom::Set,
-    file::json,
-    file::Load,
+    dom::{filter_materials, load_set},
+    file::{Interface, Load},
     report,
     sim::Material,
     util::{banner, exec, io_dirs},
@@ -20,7 +19,7 @@ use std::{
 #[form]
 struct Parameters {
     num_threads: usize,
-    interfaces: BTreeMap<String, json::Interface>,
+    interfaces: BTreeMap<String, Interface>,
 }
 
 fn main() {
@@ -63,20 +62,6 @@ fn prelude(params_path: &Path) -> Parameters {
 }
 
 fn load(in_dir: &Path, params: &Parameters) {
-    let materials: Vec<String> = params
-        .interfaces
-        .values()
-        .flat_map(|inter| vec![inter.in_mat().to_string(), inter.out_mat().to_string()])
-        .collect();
-
-    let _materials = Set::<Material>::load(&in_dir.join("materials"), &materials, "json");
-
-    // let interfaces = BTreeMap::new();
-    // for (name, interface) in &params.interfaces {
-    //     println!("Loading interface: {}", name);
-
-    //     interfaces.push(
-    //         (name, interface.build(, &materials))
-    //     );
-    // }
+    let materials = filter_materials(&params.interfaces);
+    let materials = load_set::<Material>(&in_dir.join("materials"), &materials, "json");
 }
