@@ -4,7 +4,7 @@ use crate::{
     access,
     chem::{Reaction, Species},
     dom::{Regular, Set},
-    geom::Mesh,
+    geom::{Collide, Mesh},
     uni::{Interface, Material},
 };
 use std::fmt::{Display, Formatter, Result};
@@ -44,6 +44,12 @@ impl Verse {
         reacts: Set<Reaction>,
         grid: Regular,
     ) -> Self {
+        assert!(inters.map().values().all(|inter| meshes
+            .map()
+            .get(inter.surf())
+            .unwrap()
+            .overlap(grid.bound())));
+
         Self {
             mats,
             meshes,

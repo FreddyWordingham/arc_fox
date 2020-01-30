@@ -3,7 +3,7 @@
 use crate::{
     access,
     chem::{Reaction, Species},
-    dom::{load_set, load_surfs, Name, Set},
+    dom::{load_set, load_surfs, Name, Regular, Set},
     file::Grid as FileGrid,
     uni::{Interface, Material, Verse as UniVerse},
 };
@@ -46,7 +46,7 @@ impl Verse {
         let inters = Set::new(self.inters);
         let reacts = Set::new(self.reacts);
 
-        let grid = crate::dom::Regular::new(
+        let grid = Regular::new(
             crate::geom::Aabb::new(*self.grid.mins(), *self.grid.maxs()),
             *self.grid.res(),
             &inters,

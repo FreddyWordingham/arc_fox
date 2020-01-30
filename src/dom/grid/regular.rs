@@ -33,6 +33,8 @@ impl Regular {
         inters: &Set<Interface>,
         meshes: &Set<Mesh>,
     ) -> Self {
+        println!("Building regular grid...");
+
         let mut cell_size = bound.widths();
         for (w, n) in cell_size.iter_mut().zip(shape.iter()) {
             *w /= *n as f64;
@@ -57,6 +59,7 @@ impl Regular {
 
         let total_cells = shape[0] * shape[1] * shape[2];
         let mut cells = Vec::with_capacity(total_cells);
+        let pb = indicatif::ProgressBar::new(total_cells as u64);
         for xi in 0..*shape.get(0).expect("Missing resolution.") {
             let x = cell_size
                 .get(0)
@@ -68,6 +71,8 @@ impl Regular {
                     .expect("Missing resolution.")
                     .mul_add(yi as f64, bound.mins().y);
                 for zi in 0..*shape.get(2).expect("Missing resolution.") {
+                    pb.inc(1);
+
                     let z = cell_size
                         .get(2)
                         .expect("Missing resolution.")
