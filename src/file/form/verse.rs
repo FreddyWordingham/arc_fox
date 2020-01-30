@@ -28,9 +28,10 @@ impl Verse {
         let surf_list = self.surf_list();
         let surfs = load_surfs(
             &in_dir.join("surfs"),
-            &in_dir.join("meshes"),
             &surf_list,
             "json",
+            &in_dir.join("meshes"),
+            "obj",
         );
 
         let inters = Set::new(self.inters);

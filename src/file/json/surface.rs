@@ -5,6 +5,7 @@ use crate::{
     geom::{Mesh as GeomMesh, Transform as GeomTransform},
 };
 use attr::json;
+use log::info;
 use std::path::Path;
 
 /// Mesh construction form.
@@ -20,8 +21,10 @@ impl Surface {
     /// Build a mesh.
     #[inline]
     #[must_use]
-    pub fn build(&self, in_dir: &Path) -> GeomMesh {
-        let mut mesh = GeomMesh::load(&in_dir.join(format!("{}.obj", self.mesh)));
+    pub fn build(&self, dir: &Path, ext: &str) -> GeomMesh {
+        let path = &dir.join(format!("{}.{}", self.mesh, ext));
+        info!("Loading: {}", path.display());
+        let mut mesh = GeomMesh::load(path);
 
         if let Some(trans) = &self.trans {
             mesh.transform(&trans.build());

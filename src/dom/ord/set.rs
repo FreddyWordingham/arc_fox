@@ -40,7 +40,13 @@ pub fn load_set<T: Load>(dir: &Path, names: &[String], ext: &str) -> Set<T> {
 /// Construct a new instance of surfaces by loading wavefront files.
 #[inline]
 #[must_use]
-pub fn load_surfs(surf_dir: &Path, mesh_dir: &Path, names: &[String], surf_ext: &str) -> Set<Mesh> {
+pub fn load_surfs(
+    surf_dir: &Path,
+    names: &[String],
+    surf_ext: &str,
+    mesh_dir: &Path,
+    mesh_ext: &str,
+) -> Set<Mesh> {
     let mut map = BTreeMap::new();
 
     for name in names {
@@ -49,7 +55,7 @@ pub fn load_surfs(surf_dir: &Path, mesh_dir: &Path, names: &[String], surf_ext: 
 
         let surf = Surface::load(&path);
 
-        map.insert(name.to_string(), surf.build(mesh_dir));
+        map.insert(name.to_string(), surf.build(mesh_dir, mesh_ext));
     }
 
     Set::new(map)

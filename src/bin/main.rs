@@ -32,12 +32,20 @@ fn main() {
     info!("loaded parameters file");
 
     banner::section("Loading");
-    // load(&in_dir, &params);
     let verse = params.verse.form(&in_dir);
 
-    banner::section("Building");
+    banner::section("Pre-Build");
+    for (name, _mat) in verse.mats().map() {
+        info!("Material\t: {}", name);
+    }
+    for (name, _mesh) in verse.meshes().map() {
+        info!("Surface\t: {}", name);
+    }
+    for (name, _inter) in verse.inters().map() {
+        info!("Interface\t: {}", name);
+    }
 
-    banner::section("Pre-Flight");
+    banner::section("Building");
 
     banner::section("Output");
     info!("Saving maps...");
