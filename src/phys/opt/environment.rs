@@ -1,6 +1,7 @@
 //! Environment implementation.
 
 use crate::access;
+use std::fmt::{Display, Formatter, Result};
 
 /// Local optical properties structure.
 pub struct Environment {
@@ -61,5 +62,15 @@ impl Environment {
     #[must_use]
     pub fn shift_prob(&self) -> f64 {
         self.shift_coeff / self.inter_coeff()
+    }
+}
+
+impl Display for Environment {
+    fn fmt(&self, fmt: &mut Formatter) -> Result {
+        write!(
+            fmt,
+            "n: {}\tmu_s: {}\tmu_a: {}\tmu_d: {}\tg: {}",
+            self.ref_index, self.scat_coeff, self.abs_coeff, self.shift_coeff, self.asym
+        )
     }
 }

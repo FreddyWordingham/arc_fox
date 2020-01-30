@@ -7,6 +7,7 @@ use crate::{
     geom::Mesh,
     uni::{Interface, Material},
 };
+use std::fmt::{Display, Formatter, Result};
 
 /// Universe instance.
 pub struct Verse {
@@ -46,5 +47,36 @@ impl Verse {
             specs,
             reacts,
         }
+    }
+}
+
+impl Display for Verse {
+    fn fmt(&self, fmt: &mut Formatter) -> Result {
+        writeln!(fmt, "Materials\t({}):", self.mats.map().len())?;
+        for (name, mat) in self.mats.map() {
+            writeln!(fmt, "\t* {}\n\t\t{}", name, mat)?;
+        }
+
+        writeln!(fmt, "Surfaces\t({}):", self.meshes.map().len())?;
+        for name in self.meshes.map().keys() {
+            writeln!(fmt, "\t* {}", name)?;
+        }
+
+        writeln!(fmt, "Interfaces\t({}):", self.inters.map().len())?;
+        for (name, inter) in self.inters.map() {
+            writeln!(fmt, "\t* {}\n\t\t{}", name, inter)?;
+        }
+
+        writeln!(fmt, "Reactions\t({}):", self.reacts.map().len())?;
+        for (name, react) in self.reacts.map() {
+            writeln!(fmt, "\t* {}\n\t\t{}", name, react)?;
+        }
+
+        writeln!(fmt, "Species\t({}):", self.specs.map().len())?;
+        for (name, spec) in self.specs.map() {
+            writeln!(fmt, "\t* {}\n\t\t{}", name, spec)?;
+        }
+
+        write!(fmt, "---")
     }
 }

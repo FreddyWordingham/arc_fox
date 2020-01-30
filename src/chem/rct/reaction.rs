@@ -54,8 +54,6 @@ impl Reaction {
 
 impl Display for Reaction {
     fn fmt(&self, fmt: &mut Formatter) -> Result {
-        write!(fmt, "{:<32} ", format!("({})", self.rate))?;
-
         if let Some((name, coeff)) = self.reactants.first() {
             write!(fmt, "{}{}", coeff, name)?;
             for (name, coeff) in self.reactants.iter().skip(1) {
@@ -72,6 +70,6 @@ impl Display for Reaction {
             }
         }
 
-        Ok(())
+        write!(fmt, "\t{:<32} ", format!("({})", self.rate))
     }
 }

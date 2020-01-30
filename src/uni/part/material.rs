@@ -2,6 +2,7 @@
 
 use crate::{access, phys::Optics};
 use attr::json;
+use std::fmt::{Display, Formatter, Result};
 
 /// Material physical properties.
 #[json]
@@ -28,5 +29,27 @@ impl Material {
             reaction_multiplier,
             optics,
         }
+    }
+}
+
+impl Display for Material {
+    fn fmt(&self, fmt: &mut Formatter) -> Result {
+        let wavelength = 600.0e-9;
+        let env = self.optics.env(wavelength);
+        write!(fmt, "({}nm): {}\t", wavelength * 1.0e9, env)?;
+
+        if let Some(visc) = self.visc {
+            write!(fmt, "Permeable {} Pa·s\t", visc)?;
+        } else {
+            write!(fmt, "Impermeable.\t")?;
+        }
+
+        if let Some(mult) = self.reaction_multiplier {
+            write!(fmt, "Reactive ({})", mult)?;
+        } else {
+            write!(fmt, "Inert.")?;
+        }
+
+        Ok(())
     }
 }
