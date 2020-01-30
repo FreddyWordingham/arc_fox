@@ -1,6 +1,11 @@
 //! Set implementation.
 
-use crate::{access, dom::Name, file::Load, file::Surface, geom::Mesh};
+use crate::{
+    access,
+    dom::Name,
+    file::{Load, Surface},
+    geom::Mesh,
+};
 use log::info;
 use std::{collections::BTreeMap, path::Path};
 

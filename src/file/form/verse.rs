@@ -2,6 +2,7 @@
 
 use crate::{
     access,
+    chem::Reaction,
     dom::{load_set, load_surfs, Name, Set},
     uni::{Interface, Material, Verse as UniVerse},
 };
@@ -13,6 +14,8 @@ use std::{collections::BTreeMap, path::Path};
 pub struct Verse {
     /// List of interfaces.
     inters: BTreeMap<Name, Interface>,
+    /// List of reactions.
+    reacts: BTreeMap<Name, Reaction>,
 }
 
 impl Verse {
