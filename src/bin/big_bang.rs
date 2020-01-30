@@ -18,7 +18,7 @@ fn main() {
     report!(in_dir.display(), "input directory");
     report!(out_dir.display(), "output directory");
 
-    let obj = arc::sim::Material::new(
+    let obj = arc::uni::Material::new(
         arc::phys::Optics::new(
             arc::math::Formula::Constant { c: 1.34 },
             arc::math::Formula::Constant { c: 45.0e-3 },

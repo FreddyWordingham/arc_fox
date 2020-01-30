@@ -26,3 +26,49 @@ rayon = "1.3.0"
 serde = { version = "1.0.104", features = ["derive"] }
 serde_json = "1.0.45"
 terminal_size = "0.1.10"
+
+# Development profile: "cargo build".
+[profile.dev]
+opt-level = 0
+debug = true
+rpath = false
+lto = false
+debug-assertions = true
+codegen-units = 16
+panic = 'unwind'
+incremental = true
+overflow-checks = true
+
+# Release profile: "cargo build --release"
+[profile.release]
+opt-level = 3
+debug = false
+rpath = false
+lto = false
+debug-assertions = false
+codegen-units = 16
+panic = 'unwind'
+incremental = false
+overflow-checks = false
+
+# Testing profile: "cargo test"
+[profile.test]
+opt-level = 0
+debug = 2
+rpath = false
+lto = false
+debug-assertions = true
+codegen-units = 16
+incremental = true
+overflow-checks = true
+
+# Benchmark profile: "cargo bench" (and "cargo test --release)".
+[profile.bench]
+opt-level = 3
+debug = false
+rpath = false
+lto = false
+debug-assertions = false
+codegen-units = 16
+incremental = false
+overflow-checks = false

@@ -1,6 +1,6 @@
 //! Histogram implementation.
 
-use crate::{access, file::Save, sim::Range};
+use crate::{access, file::Save, math::Range};
 use ndarray::Array1;
 use std::{fs::File, io::Write, path::Path};
 

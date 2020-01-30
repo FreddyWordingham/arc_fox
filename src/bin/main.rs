@@ -2,24 +2,19 @@
 
 use arc::{
     args,
-    dom::{build_interfaces, filter_materials, load_set},
-    file::{Interface, Load},
+    file::{Load, Verse as FileVerse},
     report,
-    sim::Material,
     util::{banner, exec, io_dirs},
 };
 use attr::form;
 use colog;
 use log::info;
-use std::{
-    collections::BTreeMap,
-    path::{Path, PathBuf},
-};
+use std::path::{Path, PathBuf};
 
 #[form]
 struct Parameters {
     num_threads: usize,
-    interfaces: BTreeMap<String, Interface>,
+    verse: FileVerse,
 }
 
 fn main() {
@@ -37,7 +32,8 @@ fn main() {
     info!("loaded parameters file");
 
     banner::section("Loading");
-    load(&in_dir, &params);
+    // load(&in_dir, &params);
+    let verse = params.verse.form(&in_dir);
 
     banner::section("Building");
 
@@ -61,9 +57,11 @@ fn prelude(params_path: &Path) -> Parameters {
     Parameters::load(&params_path)
 }
 
-fn load(in_dir: &Path, params: &Parameters) {
-    let materials = filter_materials(&params.interfaces);
-    let materials = load_set::<Material>(&in_dir.join("materials"), &materials, "json");
+// fn load(in_dir: &Path, params: &Parameters) {
+//     let materials = filter_materials(&params.interfaces);
+//     let materials = load_set::<Material>(&in_dir.join("materials"), &materials, "json");
 
-    let _interfaces = build_interfaces(&in_dir.join("meshes"), &params.interfaces, &materials);
-}
+//     let interfaces = build_interfaces(&in_dir.join("meshes"), &params.interfaces, &materials);
+
+//     Verse::new(materials, interfaces);
+// }

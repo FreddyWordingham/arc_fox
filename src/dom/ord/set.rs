@@ -1,13 +1,8 @@
 //! Set implementation.
 
-use crate::{access, file::Load};
+use crate::{access, file::Load, file::Surface, geom::Mesh};
 use log::info;
 use std::{collections::BTreeMap, path::Path};
-
-pub mod interface;
-pub mod materials;
-
-pub use self::{interface::*, materials::*};
 
 /// Set mapping.
 pub struct Set<T> {
@@ -37,6 +32,24 @@ pub fn load_set<T: Load>(dir: &Path, names: &[String], ext: &str) -> Set<T> {
         info!("Loading: {}", path.display());
 
         map.insert(name.to_string(), T::load(&path));
+    }
+
+    Set::new(map)
+}
+
+/// Construct a new instance of surfaces by loading wavefront files.
+#[inline]
+#[must_use]
+pub fn load_surfs(surf_dir: &Path, mesh_dir: &Path, names: &[String], surf_ext: &str) -> Set<Mesh> {
+    let mut map = BTreeMap::new();
+
+    for name in names {
+        let path = surf_dir.join(format!("{}.{}", name, surf_ext));
+        info!("Loading: {}", path.display());
+
+        let surf = Surface::load(&path);
+
+        map.insert(name.to_string(), surf.build(mesh_dir));
     }
 
     Set::new(map)
