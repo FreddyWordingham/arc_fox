@@ -11,6 +11,8 @@ macro_rules! name {
         pub struct $name(String);
 
         impl $name {
+            #[inline]
+            #[must_use]
             pub fn new(string: &str) -> Self {
                 Self {
                     0: string.to_string(),

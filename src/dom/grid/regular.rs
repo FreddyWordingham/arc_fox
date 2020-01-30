@@ -71,7 +71,7 @@ impl Regular {
     #[inline]
     #[must_use]
     pub fn mat_names(&self) -> Array3<&Name> {
-        self.cells.map(|c| c.mat())
+        self.cells.map(Cell::mat)
     }
 }
 
@@ -82,9 +82,9 @@ impl Display for Regular {
         write!(
             fmt,
             "[{} x {} x {}] {}\tmins: ({}, {}, {})\tmaxs: ({}, {}, {})",
-            shape[0],
-            shape[1],
-            shape[2],
+            shape.get(0).expect("Missing shape dimension."),
+            shape.get(1).expect("Missing shape dimension."),
+            shape.get(2).expect("Missing shape dimension."),
             self.cells.len(),
             self.bound.mins().x,
             self.bound.mins().y,
