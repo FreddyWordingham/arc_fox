@@ -10,7 +10,7 @@ pub struct Material {
     optics: Optics,
     /// Optional viscosity. [kg m s^-1]
     visc: Option<f64>,
-    /// Optionl reaction rate multiplier.
+    /// Optional reaction rate multiplier.
     reaction_multiplier: Option<f64>,
 }
 

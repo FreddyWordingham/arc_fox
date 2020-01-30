@@ -19,6 +19,7 @@
     clippy::integer_arithmetic,
     clippy::integer_division,
     clippy::missing_const_for_fn,
+    clippy::missing_inline_in_public_items,
     clippy::module_name_repetitions,
     clippy::option_expect_used,
     clippy::panic,

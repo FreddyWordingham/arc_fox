@@ -5,7 +5,7 @@
             "subject": {
                 "surf": "cube",
                 "in_mat": "skin",
-                "out_mat": "air",
+                "out_mat": "air"
             }
         }
     }

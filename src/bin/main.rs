@@ -35,13 +35,13 @@ fn main() {
     let verse = params.verse.form(&in_dir);
 
     banner::section("Pre-Build");
-    for (name, _mat) in verse.mats().map() {
+    for name in verse.mats().map().keys() {
         info!("Material\t: {}", name);
     }
-    for (name, _mesh) in verse.meshes().map() {
+    for name in verse.meshes().map().keys() {
         info!("Surface\t: {}", name);
     }
-    for (name, _inter) in verse.inters().map() {
+    for name in verse.inters().map().keys() {
         info!("Interface\t: {}", name);
     }
 
