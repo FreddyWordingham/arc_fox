@@ -2,7 +2,7 @@
 
 use crate::{
     access,
-    chem::Reaction,
+    chem::{Reaction, Species},
     dom::{load_set, load_surfs, Name, Set},
     uni::{Interface, Material, Verse as UniVerse},
 };
@@ -37,9 +37,13 @@ impl Verse {
             "obj",
         );
 
-        let inters = Set::new(self.inters);
+        let spec_list = self.spec_list();
+        let specs = load_set::<Species>(&in_dir.join("specs"), &spec_list, "json");
 
-        UniVerse::new(mats, surfs, inters)
+        let inters = Set::new(self.inters);
+        let reacts = Set::new(self.reacts);
+
+        UniVerse::new(mats, surfs, inters, specs, reacts)
     }
 
     /// Create a list of all used materials.
@@ -59,6 +63,16 @@ impl Verse {
         self.inters
             .values()
             .map(|inter| inter.surf().clone())
+            .collect()
+    }
+
+    /// Create a list of all used species.
+    #[inline]
+    #[must_use]
+    pub fn spec_list(&self) -> Vec<Name> {
+        self.reacts
+            .values()
+            .flat_map(Reaction::req_species)
             .collect()
     }
 }

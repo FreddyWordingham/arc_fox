@@ -7,6 +7,28 @@
                 "in_mat": "skin",
                 "out_mat": "air"
             }
+        },
+        "reacts": {
+            "ppix_formation": {
+                "reactants": [
+                    [
+                        "ala",
+                        8
+                    ]
+                ],
+                "products": [
+                    [
+                        "ppix",
+                        1
+                    ]
+                ],
+                "rate": {
+                    "First": [
+                        0.1,
+                        "ala"
+                    ]
+                }
+            }
         }
-    }
+    },
 }
