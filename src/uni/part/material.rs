@@ -39,7 +39,7 @@ impl Display for Material {
         write!(fmt, "({}nm): {}\t", wavelength * 1.0e9, env)?;
 
         if let Some(visc) = self.visc {
-            write!(fmt, "Permeable {} Pa·s\t", visc)?;
+            write!(fmt, "Permeable {} Pa s\t", visc)?;
         } else {
             write!(fmt, "Impermeable.\t")?;
         }
