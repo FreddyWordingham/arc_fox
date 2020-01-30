@@ -4,7 +4,7 @@ use crate::{
     access,
     dom::{observe_mat, Cell, Name, Set},
     geom::{Aabb, Mesh, Ray},
-    uni::Interface,
+    uni::{Interface, Material},
 };
 use nalgebra::{Point3, Unit};
 use ndarray::Array3;
@@ -104,6 +104,13 @@ impl Regular {
     #[must_use]
     pub fn mat_names(&self) -> Array3<&Name> {
         self.cells.map(Cell::mat)
+    }
+
+    /// Create a map of material references.
+    #[inline]
+    #[must_use]
+    pub fn mat_refs<'a>(&self, mats: &'a Set<Material>) -> Array3<&'a Material> {
+        self.cells.map(|c| mats.map().get(c.mat()).unwrap())
     }
 }
 

@@ -40,6 +40,7 @@ fn main() {
     banner::section("Analysis");
     info!("Generating material map...");
     let mat_map = verse.grid().mat_names();
+    let mat_refs = verse.grid().mat_refs(verse.mats());
 
     banner::section("Output");
     info!("Saving maps...");
@@ -51,6 +52,9 @@ fn main() {
 
         map.save(&out_dir.join(format!("{}_map.nc", name)));
     }
+    mat_refs
+        .map(|m| m.reaction_multiplier().unwrap_or(0.0))
+        .save(&out_dir.join("mult.nc"));
 
     banner::section("Finished");
 }
