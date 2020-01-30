@@ -1,5 +1,6 @@
 //! Grid implementation.
 
+use crate::access;
 use attr::json;
 use nalgebra::Point3;
 
@@ -15,5 +16,7 @@ pub struct Grid {
 }
 
 impl Grid {
-    // pub fn form() -> Type {}
+    access!(res, [usize; 3]);
+    access!(mins, Point3<f64>);
+    access!(maxs, Point3<f64>);
 }

@@ -1,6 +1,23 @@
 {
     "num_threads": 4,
     "verse": {
+        "grid": {
+            "res": [
+                16,
+                16,
+                16
+            ],
+            "mins": [
+                -1.0,
+                -1.0,
+                -1.0
+            ],
+            "maxs": [
+                1.0,
+                1.0,
+                1.0
+            ],
+        },
         "inters": {
             "subject": {
                 "surf": "cube",

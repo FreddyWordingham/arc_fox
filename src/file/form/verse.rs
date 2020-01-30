@@ -4,6 +4,7 @@ use crate::{
     access,
     chem::{Reaction, Species},
     dom::{load_set, load_surfs, Name, Set},
+    file::Grid as FileGrid,
     uni::{Interface, Material, Verse as UniVerse},
 };
 use attr::json;
@@ -12,6 +13,8 @@ use std::{collections::BTreeMap, path::Path};
 /// Verse construction form.
 #[json]
 pub struct Verse {
+    /// Grid information.
+    grid: FileGrid,
     /// List of interfaces.
     inters: BTreeMap<Name, Interface>,
     /// List of reactions.
@@ -44,11 +47,8 @@ impl Verse {
         let reacts = Set::new(self.reacts);
 
         let grid = crate::dom::Regular::new(
-            crate::geom::Aabb::new(
-                nalgebra::Point3::new(-1.0, -1.0, -1.0),
-                nalgebra::Point3::new(1.0, 1.0, 1.0),
-            ),
-            [8, 8, 8],
+            crate::geom::Aabb::new(*self.grid.mins(), *self.grid.maxs()),
+            *self.grid.res(),
             &inters,
         );
 
