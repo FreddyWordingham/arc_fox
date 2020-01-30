@@ -3,7 +3,7 @@
 use crate::{
     access,
     chem::{Reaction, Species},
-    dom::Set,
+    dom::{Regular, Set},
     geom::Mesh,
     uni::{Interface, Material},
 };
@@ -21,6 +21,8 @@ pub struct Verse {
     specs: Set<Species>,
     /// Reaction set.
     reacts: Set<Reaction>,
+    /// Gridding.
+    grid: Regular,
 }
 
 impl Verse {
@@ -29,6 +31,7 @@ impl Verse {
     access!(inters, Set<Interface>);
     access!(specs, Set<Species>);
     access!(reacts, Set<Reaction>);
+    access!(grid, Regular);
 
     /// Construct a new instance.
     #[inline]
@@ -39,6 +42,7 @@ impl Verse {
         inters: Set<Interface>,
         specs: Set<Species>,
         reacts: Set<Reaction>,
+        grid: Regular,
     ) -> Self {
         Self {
             mats,
@@ -46,6 +50,7 @@ impl Verse {
             inters,
             specs,
             reacts,
+            grid,
         }
     }
 }
@@ -77,6 +82,6 @@ impl Display for Verse {
             writeln!(fmt, "\t* {}\n\t\t{}", name, spec)?;
         }
 
-        write!(fmt, "---")
+        write!(fmt, "grid:\t{}", self.grid)
     }
 }

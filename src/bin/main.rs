@@ -2,7 +2,7 @@
 
 use arc::{
     args,
-    file::{Load, Verse as FileVerse},
+    file::{Load, Save, Verse as FileVerse},
     report,
     util::{banner, exec, io_dirs},
 };
@@ -31,16 +31,26 @@ fn main() {
     let params = prelude(&params_path);
     info!("loaded parameters file");
 
-    banner::section("Loading");
+    banner::section("Building");
     let verse = params.verse.form(&in_dir);
 
-    banner::section("Pre-Build");
+    banner::section("Overview");
     info!("Universe contents:\n{}", verse);
 
-    banner::section("Building");
+    banner::section("Analysis");
+    info!("Generating material map...");
+    let mat_map = verse.grid().mat_names();
 
     banner::section("Output");
     info!("Saving maps...");
+    for name in verse.mats().map().keys() {
+        info!("Mapping material: {}", name);
+        mat_map
+            .map(|key| if key == &name { 1.0 } else { 0.0 })
+            .save(&out_dir.join(format!("{}_map.nc", name)));
+    }
+
+    banner::section("Finished");
 }
 
 fn initialisation() -> (PathBuf, PathBuf, PathBuf) {

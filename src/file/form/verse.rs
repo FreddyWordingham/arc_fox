@@ -43,7 +43,16 @@ impl Verse {
         let inters = Set::new(self.inters);
         let reacts = Set::new(self.reacts);
 
-        UniVerse::new(mats, surfs, inters, specs, reacts)
+        let grid = crate::dom::Regular::new(
+            crate::geom::Aabb::new(
+                nalgebra::Point3::new(-1.0, -1.0, -1.0),
+                nalgebra::Point3::new(1.0, 1.0, 1.0),
+            ),
+            [8, 8, 8],
+            &inters,
+        );
+
+        UniVerse::new(mats, surfs, inters, specs, reacts, grid)
     }
 
     /// Create a list of all used materials.

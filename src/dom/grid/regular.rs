@@ -2,12 +2,13 @@
 
 use crate::{
     access,
-    dom::{Cell, Set},
+    dom::{Cell, Name, Set},
     geom::Aabb,
     uni::Interface,
 };
 use nalgebra::Point3;
 use ndarray::Array3;
+use std::fmt::{Display, Formatter, Result};
 
 /// Grid sized partition scheme.
 pub struct Regular {
@@ -24,7 +25,7 @@ impl Regular {
     /// Construct a new instance.
     #[inline]
     #[must_use]
-    pub fn new(bound: Aabb, shape: [usize; 3], _inters: Set<Interface>) -> Self {
+    pub fn new(bound: Aabb, shape: [usize; 3], _inters: &Set<Interface>) -> Self {
         let mut cell_size = bound.widths();
         for (w, n) in cell_size.iter_mut().zip(shape.iter()) {
             *w /= *n as f64;
@@ -64,5 +65,33 @@ impl Regular {
             cells: Array3::from_shape_vec(shape, cells)
                 .expect("Failed to convert cell vector to an array3."),
         }
+    }
+
+    /// Create a map of material keys.
+    #[inline]
+    #[must_use]
+    pub fn mat_names(&self) -> Array3<&Name> {
+        self.cells.map(|c| c.mat())
+    }
+}
+
+impl Display for Regular {
+    fn fmt(&self, fmt: &mut Formatter) -> Result {
+        let shape = self.cells.shape();
+
+        write!(
+            fmt,
+            "[{} x {} x {}] {}\tmins: ({}, {}, {})\tmaxs: ({}, {}, {})",
+            shape[0],
+            shape[1],
+            shape[2],
+            self.cells.len(),
+            self.bound.mins().x,
+            self.bound.mins().y,
+            self.bound.mins().z,
+            self.bound.maxs().x,
+            self.bound.maxs().y,
+            self.bound.maxs().z,
+        )
     }
 }
