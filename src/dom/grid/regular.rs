@@ -10,6 +10,7 @@ use nalgebra::{Point3, Unit};
 use ndarray::Array3;
 use std::fmt::{Display, Formatter, Result};
 
+/// Material detection rays must be aimed at a triangle with at least this deviation from the triangle's plane.
 const HIT_ANGLE_THRESHOLD: f64 = 1.0e-1;
 
 /// Grid sized partition scheme.
