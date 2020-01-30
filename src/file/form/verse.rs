@@ -45,7 +45,7 @@ impl Verse {
     pub fn mat_list(&self) -> Vec<Name> {
         self.inters
             .values()
-            .flat_map(|inter| vec![inter.in_mat().to_string(), inter.out_mat().to_string()])
+            .flat_map(|inter| vec![inter.in_mat().clone(), inter.out_mat().clone()])
             .collect()
     }
 
@@ -55,7 +55,7 @@ impl Verse {
     pub fn surf_list(&self) -> Vec<Name> {
         self.inters
             .values()
-            .map(|inter| inter.surf().to_string())
+            .map(|inter| inter.surf().clone())
             .collect()
     }
 }
