@@ -2,13 +2,15 @@
 
 use crate::{
     access,
-    dom::{Cell, Name, Set},
-    geom::Aabb,
+    dom::{observe_mat, Cell, Name, Set},
+    geom::{Aabb, Mesh, Ray},
     uni::Interface,
 };
-use nalgebra::Point3;
+use nalgebra::{Point3, Unit};
 use ndarray::Array3;
 use std::fmt::{Display, Formatter, Result};
+
+const HIT_ANGLE_THRESHOLD: f64 = 1.0e-1;
 
 /// Grid sized partition scheme.
 pub struct Regular {
@@ -25,11 +27,33 @@ impl Regular {
     /// Construct a new instance.
     #[inline]
     #[must_use]
-    pub fn new(bound: Aabb, shape: [usize; 3], _inters: &Set<Interface>) -> Self {
+    pub fn new(
+        bound: Aabb,
+        shape: [usize; 3],
+        inters: &Set<Interface>,
+        meshes: &Set<Mesh>,
+    ) -> Self {
         let mut cell_size = bound.widths();
         for (w, n) in cell_size.iter_mut().zip(shape.iter()) {
             *w /= *n as f64;
         }
+
+        let gen_ray = |p: &Point3<f64>| -> Ray {
+            for inter in inters.map().values() {
+                let mesh = meshes.map().get(inter.surf()).expect("Invalid mesh name.");
+                for tri in mesh.tris() {
+                    let tc = tri.tri().centre();
+                    if bound.contains(&tc) {
+                        let dir = Unit::new_normalize(tc - p);
+                        if dir.dot(tri.tri().plane_norm()).abs() >= HIT_ANGLE_THRESHOLD {
+                            return Ray::new(*p, dir);
+                        }
+                    }
+                }
+            }
+
+            panic!("Unable to determine suitable tracing ray.");
+        };
 
         let total_cells = shape[0] * shape[1] * shape[2];
         let mut cells = Vec::with_capacity(total_cells);
@@ -53,9 +77,12 @@ impl Regular {
                     let maxs = mins + cell_size;
 
                     let cell_bound = Aabb::new(mins, maxs);
-                    // let cell_centre = cell_bound.centre();
+                    let cell_centre = cell_bound.centre();
 
-                    cells.push(Cell::new(cell_bound, crate::dom::Name::new("???")));
+                    let mat = observe_mat(inters, meshes, &bound, &gen_ray(&cell_centre))
+                        .expect("Unable to observe material.");
+
+                    cells.push(Cell::new(cell_bound, mat));
                 }
             }
         }

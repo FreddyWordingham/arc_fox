@@ -32,7 +32,7 @@ impl Verse {
         let mats = load_set::<Material>(&in_dir.join("mats"), &mat_list, "json");
 
         let surf_list = self.surf_list();
-        let surfs = load_surfs(
+        let meshes = load_surfs(
             &in_dir.join("surfs"),
             &surf_list,
             "json",
@@ -50,9 +50,10 @@ impl Verse {
             crate::geom::Aabb::new(*self.grid.mins(), *self.grid.maxs()),
             *self.grid.res(),
             &inters,
+            &meshes,
         );
 
-        UniVerse::new(mats, surfs, inters, specs, reacts, grid)
+        UniVerse::new(mats, meshes, inters, specs, reacts, grid)
     }
 
     /// Create a list of all used materials.

@@ -9,18 +9,20 @@ use crate::{
 /// Determine which material, if any, would be observed with a given ray.
 #[inline]
 #[must_use]
-pub fn observe_material(
-    interfaces: &Set<Interface>,
+pub fn observe_mat(
+    inters: &Set<Interface>,
     meshes: &Set<Mesh>,
     boundary: &Aabb,
     ray: &Ray,
 ) -> Option<Name> {
+    assert!(boundary.contains(ray.pos()));
+
     let mut nearest: Option<(&Name, f64)> = None;
 
-    for interface in interfaces.map().values() {
+    for inter in inters.map().values() {
         if let Some((dist, inside)) = meshes
             .map()
-            .get(interface.surf())
+            .get(inter.surf())
             .expect("Invalid mesh name.")
             .dist_inside(ray)
         {
@@ -31,9 +33,9 @@ pub fn observe_material(
                         .1
             {
                 if inside {
-                    nearest = Some((interface.in_mat(), dist));
+                    nearest = Some((inter.in_mat(), dist));
                 } else {
-                    nearest = Some((interface.out_mat(), dist));
+                    nearest = Some((inter.out_mat(), dist));
                 }
             }
         }

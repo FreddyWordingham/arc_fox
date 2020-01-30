@@ -9,7 +9,7 @@ use std::cmp::Ordering;
 
 /// Axis-aligned bounding box geometry.
 /// Used for spatial partitioning.
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct Aabb {
     /// Minimum bound.
     mins: Point3<f64>,
