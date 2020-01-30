@@ -32,11 +32,14 @@ pub fn observe_mat(
                         .expect("Something went wrong that shouldn't have.")
                         .1
             {
-                if inside {
-                    nearest = Some((inter.in_mat(), dist));
-                } else {
-                    nearest = Some((inter.out_mat(), dist));
-                }
+                nearest = Some((
+                    if inside {
+                        inter.in_mat()
+                    } else {
+                        inter.out_mat()
+                    },
+                    dist,
+                ));
             }
         }
     }

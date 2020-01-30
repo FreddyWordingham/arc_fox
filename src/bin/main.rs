@@ -45,9 +45,11 @@ fn main() {
     info!("Saving maps...");
     for name in verse.mats().map().keys() {
         info!("Mapping material: {}", name);
-        mat_map
-            .map(|key| if key == &name { 1.0 } else { 0.0 })
-            .save(&out_dir.join(format!("{}_map.nc", name)));
+        let map = mat_map.map(|key| if key == &name { 1.0 } else { 0.0 });
+
+        println!("{} total: {}", name, map.sum());
+
+        map.save(&out_dir.join(format!("{}_map.nc", name)));
     }
 
     banner::section("Finished");

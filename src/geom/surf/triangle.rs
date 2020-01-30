@@ -33,8 +33,8 @@ impl Triangle {
     #[must_use]
     fn init_plane_norm(verts: &[Point3<f64>; 3]) -> Unit<Vector3<f64>> {
         Unit::new_normalize(
-            (verts.get(Gamma as usize).expect("Missing vertex.")
-                - verts.get(Alpha as usize).expect("Missing vertex."))
+            (verts.get(Alpha as usize).expect("Missing vertex.")
+                - verts.get(Gamma as usize).expect("Missing vertex."))
             .cross(
                 &(verts.get(Beta as usize).expect("Missing vertex.")
                     - verts.get(Alpha as usize).expect("Missing vertex.")),
