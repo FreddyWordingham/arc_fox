@@ -3,12 +3,15 @@
 use crate::{
     access,
     dom::{observe_mat, Cell, Name, Set},
-    geom::{Aabb, Mesh, Ray},
-    uni::{Interface, Material},
+    geom::{Aabb, Ray},
+    uni::{Material, Verse},
 };
 use nalgebra::{Point3, Unit};
 use ndarray::Array3;
-use std::fmt::{Display, Formatter, Result};
+use std::{
+    collections::BTreeMap,
+    fmt::{Display, Formatter, Result},
+};
 
 /// Material detection rays must be aimed at a triangle with at least this deviation from the triangle's plane.
 const HIT_ANGLE_THRESHOLD: f64 = 1.0e-3;
@@ -19,21 +22,19 @@ pub struct Regular {
     bound: Aabb,
     /// Cells.
     cells: Array3<Cell>,
+    /// Concentrations.
+    concs: Set<Array3<f64>>,
 }
 
 impl Regular {
     access!(bound, Aabb);
     access!(cells, Array3<Cell>);
+    access!(concs, Set<Array3<f64>>);
 
     /// Construct a new instance.
     #[inline]
     #[must_use]
-    pub fn new(
-        bound: Aabb,
-        shape: [usize; 3],
-        inters: &Set<Interface>,
-        meshes: &Set<Mesh>,
-    ) -> Self {
+    pub fn new(bound: Aabb, shape: [usize; 3], verse: &Verse) -> Self {
         println!("Building regular grid...");
 
         let mut cell_size = bound.widths();
@@ -42,8 +43,12 @@ impl Regular {
         }
 
         let gen_ray = |p: &Point3<f64>| -> Ray {
-            for inter in inters.map().values() {
-                let mesh = meshes.map().get(inter.surf()).expect("Invalid mesh name.");
+            for inter in verse.inters().map().values() {
+                let mesh = verse
+                    .meshes()
+                    .map()
+                    .get(inter.surf())
+                    .expect("Invalid mesh name.");
                 for tri in mesh.tris() {
                     let tc = tri.tri().centre();
                     if bound.contains(&tc) {
@@ -85,18 +90,29 @@ impl Regular {
                     let cell_bound = Aabb::new(mins, maxs);
                     let cell_centre = cell_bound.centre();
 
-                    let mat = observe_mat(inters, meshes, &bound, &gen_ray(&cell_centre))
-                        .expect("Unable to observe material.");
+                    let mat = observe_mat(
+                        verse.inters(),
+                        verse.meshes(),
+                        &bound,
+                        &gen_ray(&cell_centre),
+                    )
+                    .expect("Unable to observe material.");
 
                     cells.push(Cell::new(cell_bound, mat));
                 }
             }
         }
 
+        let mut concs = BTreeMap::new();
+        for name in verse.specs().map().keys() {
+            concs.insert(name.clone(), Array3::zeros(shape));
+        }
+
         Self {
             bound,
             cells: Array3::from_shape_vec(shape, cells)
                 .expect("Failed to convert cell vector to an array3."),
+            concs: Set::new(concs),
         }
     }
 

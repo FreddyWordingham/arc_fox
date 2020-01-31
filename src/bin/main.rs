@@ -34,7 +34,7 @@ fn main() {
 
     banner::section("Building");
     let verse = params.verse.form(&in_dir);
-    let grid = params.grid.form(verse.inters(), verse.meshes());
+    let grid = params.grid.form(&verse);
 
     banner::section("Overview");
     info!("Universe contents:\n{}", verse);
