@@ -2,7 +2,7 @@
 
 use arc::{
     args,
-    file::{Load, Save, Verse as FileVerse},
+    file::{Grid as FileGrid, Load, Save, Verse as FileVerse},
     report,
     util::{banner, exec, io_dirs},
 };
@@ -15,6 +15,7 @@ use std::path::{Path, PathBuf};
 struct Parameters {
     num_threads: usize,
     verse: FileVerse,
+    grid: FileGrid,
 }
 
 fn main() {
@@ -33,14 +34,15 @@ fn main() {
 
     banner::section("Building");
     let verse = params.verse.form(&in_dir);
+    let grid = params.grid.form(verse.inters(), verse.meshes());
 
     banner::section("Overview");
     info!("Universe contents:\n{}", verse);
 
     banner::section("Analysis");
     info!("Generating material map...");
-    let mat_map = verse.grid().mat_names();
-    let mat_refs = verse.grid().mat_refs(verse.mats());
+    let mat_map = grid.mat_names();
+    let mat_refs = grid.mat_refs(verse.mats());
 
     banner::section("Output");
     info!("Saving maps...");

@@ -8,6 +8,8 @@ pub struct Cell {
     bound: Aabb,
     /// Central material.
     mat: Name,
+    // /// Intersecting interface triangles.
+    // inter_tris: Vec<(&'a (Name, Interface), Vec<&'a SmoothTriangle>)>,
 }
 
 impl Cell {

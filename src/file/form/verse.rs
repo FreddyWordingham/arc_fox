@@ -3,8 +3,7 @@
 use crate::{
     access,
     chem::{Reaction, Species},
-    dom::{load_set, load_surfs, Name, Regular, Set},
-    file::Grid as FileGrid,
+    dom::{load_set, load_surfs, Name, Set},
     uni::{Interface, Material, Verse as UniVerse},
 };
 use attr::json;
@@ -13,8 +12,6 @@ use std::{collections::BTreeMap, path::Path};
 /// Verse construction form.
 #[json]
 pub struct Verse {
-    /// Grid information.
-    grid: FileGrid,
     /// List of interfaces.
     inters: BTreeMap<Name, Interface>,
     /// List of reactions.
@@ -46,14 +43,7 @@ impl Verse {
         let inters = Set::new(self.inters);
         let reacts = Set::new(self.reacts);
 
-        let grid = Regular::new(
-            crate::geom::Aabb::new(*self.grid.mins(), *self.grid.maxs()),
-            *self.grid.res(),
-            &inters,
-            &meshes,
-        );
-
-        UniVerse::new(mats, meshes, inters, specs, reacts, grid)
+        UniVerse::new(mats, meshes, inters, specs, reacts)
     }
 
     /// Create a list of all used materials.
