@@ -2,10 +2,11 @@
 
 use crate::{
     access,
-    geom::{Ray, Trace},
+    geom::{Emit, Ray, Trace},
     list::Greek::{Alpha, Beta, Gamma},
 };
 use nalgebra::{Point3, Unit, Vector3};
+use rand::{rngs::ThreadRng, Rng};
 
 /// Parallelogram geometry.
 /// Used to form `Rectangles`.
@@ -181,5 +182,19 @@ impl Trace for Parallelogram {
         } else {
             None
         }
+    }
+}
+
+impl Emit for Parallelogram {
+    #[inline]
+    #[must_use]
+    fn cast(&self, rng: &mut ThreadRng) -> Ray {
+        let (edge_a_b, edge_a_c) = self.edges();
+
+        let pos = self.verts.get(Alpha as usize).expect("Missing vertex.")
+            + (edge_a_b * rng.gen::<f64>())
+            + (edge_a_c * rng.gen::<f64>());
+
+        Ray::new(pos, self.plane_norm)
     }
 }

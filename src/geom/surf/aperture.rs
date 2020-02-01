@@ -28,7 +28,7 @@ impl Aperture {
 }
 
 impl Emit for Aperture {
-    fn emit(&self, rng: &mut ThreadRng) -> Ray {
+    fn cast(&self, rng: &mut ThreadRng) -> Ray {
         let pitch = rng.gen_range(self.na.cos(), 1.0).acos();
         let roll = rng.gen_range(0.0, 2.0 * PI);
 

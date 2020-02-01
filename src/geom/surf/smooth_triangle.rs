@@ -2,10 +2,11 @@
 
 use crate::{
     access,
-    geom::{Aabb, Collide, Ray, Trace, Transform, Triangle},
+    geom::{Aabb, Collide, Emit, Ray, Trace, Transform, Triangle},
     list::Greek::{Alpha, Beta, Gamma},
 };
 use nalgebra::{Point3, Similarity3, Unit, Vector3};
+use rand::{rngs::ThreadRng, Rng};
 use std::{
     fs::File,
     io::{BufRead, BufReader},
@@ -272,5 +273,71 @@ impl Transform for SmoothTriangle {
         for n in &mut self.norms {
             *n = Unit::new_normalize(trans.transform_vector(n.as_ref()));
         }
+    }
+}
+
+impl Emit for SmoothTriangle {
+    #[inline]
+    #[must_use]
+    fn cast(&self, rng: &mut ThreadRng) -> Ray {
+        let mut u = rng.gen::<f64>();
+        let mut v = rng.gen::<f64>();
+
+        if (u + v) > 1.0 {
+            u = 1.0 - u;
+            v = 1.0 - v;
+        }
+        let w = 1.0 - u - v;
+
+        let edge_a_b = self
+            .tri
+            .verts()
+            .get(Beta as usize)
+            .expect("Missing vertex.")
+            - self
+                .tri
+                .verts()
+                .get(Alpha as usize)
+                .expect("Missing vertex.");
+        let edge_a_c = self
+            .tri
+            .verts()
+            .get(Gamma as usize)
+            .expect("Missing vertex.")
+            - self
+                .tri
+                .verts()
+                .get(Alpha as usize)
+                .expect("Missing vertex.");
+
+        let pos = self
+            .tri
+            .verts()
+            .get(Alpha as usize)
+            .expect("Missing vertex.")
+            + (edge_a_b * u)
+            + (edge_a_c * v);
+        let dir = Unit::new_normalize(
+            (self
+                .norms
+                .get(Beta as usize)
+                .expect("Missing normal.")
+                .into_inner()
+                * u)
+                + (self
+                    .norms
+                    .get(Gamma as usize)
+                    .expect("Missing normal.")
+                    .into_inner()
+                    * v)
+                + (self
+                    .norms
+                    .get(Alpha as usize)
+                    .expect("Missing normal.")
+                    .into_inner()
+                    * w),
+        );
+
+        Ray::new(pos, dir)
     }
 }

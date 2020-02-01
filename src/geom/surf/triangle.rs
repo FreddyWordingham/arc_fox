@@ -2,10 +2,11 @@
 
 use crate::{
     access,
-    geom::{Aabb, Collide, Ray, Trace, Transform},
+    geom::{Aabb, Collide, Emit, Ray, Trace, Transform},
     list::Greek::{Alpha, Beta, Gamma},
 };
 use nalgebra::{Point3, Similarity3, Unit, Vector3};
+use rand::{rngs::ThreadRng, Rng};
 
 /// Triangle geometry.
 pub struct Triangle {
@@ -326,5 +327,30 @@ impl Transform for Triangle {
         }
 
         self.plane_norm = Unit::new_normalize(trans.transform_vector(&self.plane_norm));
+    }
+}
+
+impl Emit for Triangle {
+    #[inline]
+    #[must_use]
+    fn cast(&self, rng: &mut ThreadRng) -> Ray {
+        let mut u = rng.gen::<f64>();
+        let mut v = rng.gen::<f64>();
+
+        if (u + v) > 1.0 {
+            u = 1.0 - u;
+            v = 1.0 - v;
+        }
+
+        let edge_a_b = self.verts.get(Beta as usize).expect("Missing vertex.")
+            - self.verts.get(Alpha as usize).expect("Missing vertex.");
+        let edge_a_c = self.verts.get(Gamma as usize).expect("Missing vertex.")
+            - self.verts.get(Alpha as usize).expect("Missing vertex.");
+
+        let pos = self.verts.get(Alpha as usize).expect("Missing vertex.")
+            + (edge_a_b * u)
+            + (edge_a_c * v);
+
+        Ray::new(pos, self.plane_norm)
     }
 }

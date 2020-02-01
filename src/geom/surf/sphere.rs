@@ -2,9 +2,10 @@
 
 use crate::{
     access,
-    geom::{Aabb, Collide, Ray, Trace},
+    geom::{Aabb, Collide, Emit, Ray, Trace},
 };
 use nalgebra::{Point3, Unit, Vector3};
+use rand::rngs::ThreadRng;
 use std::f64::consts::PI;
 
 /// Sphere geometry.
@@ -144,5 +145,16 @@ impl Collide for Sphere {
     #[must_use]
     fn overlap(&self, aabb: &Aabb) -> bool {
         aabb.dist_sq_from_point(&self.pos) <= self.rad.powi(2)
+    }
+}
+
+impl Emit for Sphere {
+    #[inline]
+    #[must_use]
+    fn cast(&self, rng: &mut ThreadRng) -> Ray {
+        let mut ray = self.pos.cast(rng);
+        ray.travel(self.rad);
+
+        ray
     }
 }
