@@ -69,3 +69,16 @@ pub fn load_surfs(
 
     Set::new(map)
 }
+
+/// Determine the index corresponding to a name within the set.
+#[inline]
+#[must_use]
+pub fn index_of_name<T>(name: &Name, set: &Set<T>) -> usize {
+    for (i, key) in set.map().keys().enumerate() {
+        if key == name {
+            return i;
+        }
+    }
+
+    panic!("Failed to find name within set.");
+}

@@ -2,7 +2,8 @@
 
 use crate::{
     access,
-    dom::{observe_mat, Cell, Name, Set},
+    chem::Species,
+    dom::{index_of_name, observe_mat, Cell, Name, Set},
     geom::{Aabb, Ray},
     uni::{Material, State, Verse},
 };
@@ -148,6 +149,16 @@ impl Regular {
     #[must_use]
     pub fn mat_refs<'a>(&self, mats: &'a Set<Material>) -> Array3<&'a Material> {
         self.cells.map(|c| mats.map().get(c.mat()).unwrap())
+    }
+
+    /// Create a viewing map of a single species.
+    #[inline]
+    #[must_use]
+    pub fn spec_refs(&self, name: &Name, specs: &Set<Species>) -> Array3<&f64> {
+        let index = index_of_name(name, specs);
+
+        self.cells
+            .map(|c| c.state().concs().get(index).expect("Invalid index."))
     }
 }
 
