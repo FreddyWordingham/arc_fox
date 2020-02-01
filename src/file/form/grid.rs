@@ -20,11 +20,14 @@ impl Grid {
     access!(mins, Point3<f64>);
     access!(maxs, Point3<f64>);
 
+    /// Form a new grid instance.
+    #[inline]
+    #[must_use]
     pub fn form<'a>(&self, verse: &'a Verse) -> Regular<'a> {
         Regular::new(
             crate::geom::Aabb::new(self.mins, self.maxs),
             self.res,
-            &verse,
+            verse,
         )
     }
 }

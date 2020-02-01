@@ -3,10 +3,11 @@
 use crate::{
     access,
     file::Load,
-    geom::{Aabb, Collide, Ray, SmoothTriangle, Trace, Transform},
+    geom::{Aabb, Collide, Emit, Ray, SmoothTriangle, Trace, Transform},
     list::Greek::Alpha,
 };
 use nalgebra::{Similarity3, Unit, Vector3};
+use rand::{rngs::ThreadRng, Rng};
 use std::path::Path;
 
 /// Mesh geometry.
@@ -167,6 +168,26 @@ impl Transform for Mesh {
         }
 
         self.aabb = Self::init_aabb(&self.tris);
+    }
+}
+
+impl Emit for Mesh {
+    #[inline]
+    #[must_use]
+    fn cast(&self, rng: &mut ThreadRng) -> Ray {
+        let areas: ndarray::Array1<f64> = self.tris.iter().map(|tri| tri.tri().area()).collect();
+        let total_area = areas.sum();
+
+        let r = rng.gen_range(0.0, total_area);
+        let mut sum = 0.0;
+        for (area, tri) in areas.iter().zip(self.tris.iter()) {
+            sum += area;
+            if sum > r {
+                return tri.cast(rng);
+            }
+        }
+
+        unreachable!("Can not be here...");
     }
 }
 

@@ -8,6 +8,7 @@ use std::f64::consts::PI;
 /// Emit trait implementation.
 /// Types implementing this trait can cast rays.
 pub trait Emit {
+    /// Cast a new ray from a random position on the surface with a corresponding normal direction.
     fn cast(&self, rng: &mut ThreadRng) -> Ray;
 }
 
