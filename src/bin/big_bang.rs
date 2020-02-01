@@ -2,7 +2,7 @@
 
 use arc::{
     args,
-    file::Save,
+    // file::{Save, State as FileState},
     report,
     util::{banner, exec, io_dirs},
 };
@@ -18,18 +18,21 @@ fn main() {
     report!(in_dir.display(), "input directory");
     report!(out_dir.display(), "output directory");
 
-    let obj = arc::uni::Material::new(
-        arc::phys::Optics::new(
-            arc::math::Formula::Constant { c: 1.34 },
-            arc::math::Formula::Constant { c: 45.0e-3 },
-            arc::math::Formula::Constant { c: 0.833e-3 },
-            arc::math::Formula::Constant { c: 0.0 },
-            arc::math::Formula::Constant { c: 0.8 },
-        ),
-        Some(8.90e-4),
-        Some(1.0),
-    );
-    obj.save(&out_dir.join("material.json"));
+    // let obj = arc::uni::Material::new(
+    //     arc::phys::Optics::new(
+    //         arc::math::Formula::Constant { c: 1.34 },
+    //         arc::math::Formula::Constant { c: 45.0e-3 },
+    //         arc::math::Formula::Constant { c: 0.833e-3 },
+    //         arc::math::Formula::Constant { c: 0.0 },
+    //         arc::math::Formula::Constant { c: 0.8 },
+    //     ),
+    //     Some(8.90e-4),
+    //     Some(1.0),
+    //     FileState::new(
+    //         ///
+    //     ),
+    // );
+    // obj.save(&out_dir.join("material.json"));
 }
 
 fn initialisation() -> (PathBuf, PathBuf) {

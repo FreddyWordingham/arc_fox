@@ -4,7 +4,7 @@ use crate::{
     access,
     dom::{observe_mat, Cell, Name, Set},
     geom::{Aabb, Ray},
-    uni::{Material, Verse},
+    uni::{Material, State, Verse},
 };
 use nalgebra::{Point3, Unit};
 use ndarray::Array3;
@@ -101,7 +101,19 @@ impl Regular {
                     )
                     .expect("Unable to observe material.");
 
-                    cells.push(Cell::new(cell_bound, mat));
+                    let init_state = if let Some(init_state) = verse
+                        .mats()
+                        .map()
+                        .get(&mat)
+                        .expect("Invalid material name.")
+                        .init_state()
+                    {
+                        init_state.build(verse.specs())
+                    } else {
+                        State::empty(verse.specs().map().len())
+                    };
+
+                    cells.push(Cell::new(cell_bound, mat, init_state));
                 }
             }
         }
