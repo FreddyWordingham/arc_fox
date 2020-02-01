@@ -6,5 +6,5 @@ use rand::rngs::ThreadRng;
 /// Emit trait implementation.
 /// Types implementing this trait can emit rays.
 pub trait Emit {
-    fn emit(rng: &mut ThreadRng) -> Ray;
+    fn emit(&self, rng: &mut ThreadRng) -> Ray;
 }
