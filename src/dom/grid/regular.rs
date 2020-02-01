@@ -160,6 +160,24 @@ impl Regular {
         self.cells
             .map(|c| c.state().concs().get(index).expect("Invalid index."))
     }
+
+    /// Create a viewing map of all species.
+    #[inline]
+    #[must_use]
+    pub fn specs_refs(&self, specs: &Set<Species>) -> Set<Array3<&f64>> {
+        let mut set = BTreeMap::new();
+
+        for name in specs.map().keys() {
+            let index = index_of_name(name, specs);
+            set.insert(
+                name.clone(),
+                self.cells
+                    .map(|c| c.state().concs().get(index).expect("Invalid index.")),
+            );
+        }
+
+        Set::new(set)
+    }
 }
 
 impl Display for Regular {
