@@ -127,6 +127,21 @@ impl<'a> Regular<'a> {
         }
     }
 
+    /// Get the resolution of the cell grid.
+    #[inline]
+    #[must_use]
+    pub fn res(&self) -> [usize; 3] {
+        let sh = self.cells.shape();
+        [sh[0], sh[1], sh[2]]
+    }
+
+    /// Calculate the volume of each cell.
+    #[inline]
+    #[must_use]
+    pub fn cell_vol(&self) -> f64 {
+        self.bound.vol() / self.cells.len() as f64
+    }
+
     /// Create a map of material keys.
     #[inline]
     #[must_use]
