@@ -161,6 +161,20 @@ impl Regular {
             .map(|c| c.state().concs().get(index).expect("Invalid index."))
     }
 
+    /// Create a viewing map of a single species.
+    #[inline]
+    #[must_use]
+    pub fn spec_refs_mut(&mut self, name: &Name, specs: &Set<Species>) -> Array3<&mut f64> {
+        let index = index_of_name(name, specs);
+
+        self.cells.map_mut(|c| {
+            c.state_mut()
+                .concs_mut()
+                .get_mut(index)
+                .expect("Invalid index.")
+        })
+    }
+
     /// Create a viewing map of all species.
     #[inline]
     #[must_use]
