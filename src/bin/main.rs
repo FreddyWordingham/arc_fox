@@ -32,31 +32,33 @@ fn main() {
     let params = prelude(&params_path);
     info!("loaded parameters file");
 
-    banner::section("Building");
+    banner::section("Loading");
     let verse = params.verse.form(&in_dir);
+
+    banner::section("Building");
     let grid = params.grid.form(&verse);
 
     banner::section("Overview");
     info!("Universe contents:\n{}", verse);
 
     banner::section("Analysis");
-    info!("Generating material map...");
-    let mat_map = grid.mat_names();
-    let mat_refs = grid.mat_refs(verse.mats());
+    info!("Generating material maps...");
+    let mat_maps = grid.mat_set(verse.mats());
+    let total_cells = grid.cells().len();
+    for (name, map) in mat_maps.map() {
+        println!(
+            "{:<32}\t{:<10}\t{}%",
+            format!("{}:", name),
+            map.sum(),
+            map.sum() / total_cells as f64 * 100.0
+        );
+    }
 
     banner::section("Output");
     info!("Saving maps...");
-    for name in verse.mats().map().keys() {
-        info!("Mapping material: {}", name);
-        let map = mat_map.map(|key| if key == &name { 1.0 } else { 0.0 });
-
-        println!("{} total: {}", name, map.sum());
-
+    for (name, map) in mat_maps.map() {
         map.save(&out_dir.join(format!("{}_map.nc", name)));
     }
-    mat_refs
-        .map(|m| m.reaction_multiplier().unwrap_or(0.0))
-        .save(&out_dir.join("mult.nc"));
 
     banner::section("Finished");
 }

@@ -1,23 +1,23 @@
 {
     "num_threads": 4,
+    "grid": {
+        "res": [
+            128,
+            128,
+            128
+        ],
+        "mins": [
+            -2.0e-3,
+            -2.0e-3,
+            -3.0e-3
+        ],
+        "maxs": [
+            2.0e-3,
+            2.0e-3,
+            1.0e-3
+        ]
+    },
     "verse": {
-        "grid": {
-            "res": [
-                128,
-                128,
-                128
-            ],
-            "mins": [
-                -2.0e-3,
-                -2.0e-3,
-                -2.0e-3
-            ],
-            "maxs": [
-                2.0e-3,
-                2.0e-3,
-                2.0e-3
-            ]
-        },
         "inters": {
             "stratum_corneum": {
                 "surf": "air_to_stratum_corneum",

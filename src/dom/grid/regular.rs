@@ -129,6 +129,23 @@ impl Regular {
         self.cells.map(Cell::mat)
     }
 
+    /// Create a set of material maps.
+    #[inline]
+    #[must_use]
+    pub fn mat_set(&self, mats: &Set<Material>) -> Set<Array3<f64>> {
+        let mut maps = BTreeMap::new();
+
+        let names = self.mat_names();
+        for name in mats.map().keys() {
+            maps.insert(
+                name.clone(),
+                names.map(|key| if key == &name { 1.0 } else { 0.0 }),
+            );
+        }
+
+        Set::new(maps)
+    }
+
     /// Create a map of material references.
     #[inline]
     #[must_use]
