@@ -8,7 +8,7 @@ use attr::json;
 use log::info;
 use std::path::Path;
 
-/// Mesh construction form.
+/// Mesh building structure.
 #[json]
 pub struct Surface {
     /// Base mesh name.
