@@ -1,9 +1,7 @@
 //! Main function.
 
 use arc::{
-    args,
-    // file::{Save, State as FileState},
-    report,
+    args, report,
     util::{banner, exec, io_dirs},
 };
 use colog;

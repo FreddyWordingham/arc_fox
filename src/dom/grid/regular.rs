@@ -22,17 +22,11 @@ pub struct Regular {
     bound: Aabb,
     /// Cells.
     cells: Array3<Cell>,
-    /// Concentrations.
-    concs: Set<Array3<f64>>,
-    /// Sources.
-    sources: Set<Array3<f64>>,
 }
 
 impl Regular {
     access!(bound, Aabb);
     access!(cells, Array3<Cell>);
-    access!(concs, Set<Array3<f64>>);
-    access!(sources, Set<Array3<f64>>);
 
     /// Construct a new instance.
     #[inline]
@@ -118,19 +112,10 @@ impl Regular {
             }
         }
 
-        let mut concs = BTreeMap::new();
-        for name in verse.specs().map().keys() {
-            concs.insert(name.clone(), Array3::zeros(shape));
-        }
-
-        let sources = concs.clone();
-
         Self {
             bound,
             cells: Array3::from_shape_vec(shape, cells)
                 .expect("Failed to convert cell vector to an array3."),
-            concs: Set::new(concs),
-            sources: Set::new(sources),
         }
     }
 
