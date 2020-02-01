@@ -54,10 +54,20 @@ fn main() {
         );
     }
 
+    info!("Generating species maps...");
+    let specs_refs = grid.specs_refs(verse.specs());
+    for (name, map) in specs_refs.map() {
+        println!("{:<32}\t{}", format!("{}:", name), map.map(|x| **x).sum());
+    }
+
     banner::section("Output");
     info!("Saving maps...");
     for (name, map) in mat_maps.map() {
         map.save(&out_dir.join(format!("{}_map.nc", name)));
+    }
+    for (name, map) in specs_refs.map() {
+        map.map(|x| **x)
+            .save(&out_dir.join(format!("{}_map.nc", name)));
     }
 
     banner::section("Finished");
