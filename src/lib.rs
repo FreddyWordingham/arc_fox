@@ -37,5 +37,6 @@ pub mod geom;
 pub mod list;
 pub mod math;
 pub mod phys;
+pub mod sim;
 pub mod uni;
 pub mod util;
