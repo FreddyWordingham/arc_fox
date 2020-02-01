@@ -27,5 +27,11 @@
         }
     },
     "visc": null,
-    "reaction_multiplier": null
+    "reaction_multiplier": null,
+    "init_state": {
+        "concs": {
+            "o2": 1.0
+        },
+        "sources": {}
+    }
 }

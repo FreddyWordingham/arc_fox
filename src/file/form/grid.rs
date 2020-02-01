@@ -20,7 +20,7 @@ impl Grid {
     access!(mins, Point3<f64>);
     access!(maxs, Point3<f64>);
 
-    pub fn form(&self, verse: &Verse) -> Regular {
+    pub fn form<'a>(&self, verse: &'a Verse) -> Regular<'a> {
         Regular::new(
             crate::geom::Aabb::new(self.mins, self.maxs),
             self.res,

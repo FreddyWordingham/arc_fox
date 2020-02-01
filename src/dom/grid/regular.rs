@@ -6,6 +6,7 @@ use crate::{
     dom::{index_of_name, observe_mat, Cell, Name, Set},
     geom::{Aabb, Ray},
     uni::{Material, State, Verse},
+    util::bar,
 };
 use nalgebra::{Point3, Unit};
 use ndarray::Array3;
@@ -18,21 +19,21 @@ use std::{
 const HIT_ANGLE_THRESHOLD: f64 = 1.0e-3;
 
 /// Grid sized partition scheme.
-pub struct Regular {
+pub struct Regular<'a> {
     /// Boundary.
     bound: Aabb,
     /// Cells.
-    cells: Array3<Cell>,
+    cells: Array3<Cell<'a>>,
 }
 
-impl Regular {
+impl<'a> Regular<'a> {
     access!(bound, Aabb);
-    access!(cells, Array3<Cell>);
+    access!(cells, Array3<Cell<'a>>);
 
     /// Construct a new instance.
     #[inline]
     #[must_use]
-    pub fn new(bound: Aabb, shape: [usize; 3], verse: &Verse) -> Self {
+    pub fn new(bound: Aabb, shape: [usize; 3], verse: &'a Verse) -> Self {
         println!("Building regular grid...");
 
         let mut cell_size = bound.widths();
@@ -63,7 +64,7 @@ impl Regular {
 
         let total_cells = shape[0] * shape[1] * shape[2];
         let mut cells = Vec::with_capacity(total_cells);
-        let pb = indicatif::ProgressBar::new(total_cells as u64);
+        let pb = bar("Building grid", total_cells as u64);
         for xi in 0..*shape.get(0).expect("Missing resolution.") {
             let x = cell_size
                 .get(0)
@@ -108,7 +109,13 @@ impl Regular {
                         State::empty(verse.specs().map().len())
                     };
 
-                    cells.push(Cell::new(cell_bound, mat, init_state));
+                    cells.push(Cell::new(
+                        cell_bound,
+                        mat,
+                        verse.inters(),
+                        verse.meshes(),
+                        init_state,
+                    ));
                 }
             }
         }
@@ -147,7 +154,7 @@ impl Regular {
     /// Create a map of material references.
     #[inline]
     #[must_use]
-    pub fn mat_refs<'a>(&self, mats: &'a Set<Material>) -> Array3<&'a Material> {
+    pub fn mat_refs(&self, mats: &'a Set<Material>) -> Array3<&'a Material> {
         self.cells.map(|c| mats.map().get(c.mat()).unwrap())
     }
 
@@ -192,9 +199,17 @@ impl Regular {
 
         Set::new(set)
     }
+
+    /// Determine the cells containing intersecting interfaces.
+    #[inline]
+    #[must_use]
+    pub fn boundaries(&self) -> Array3<f64> {
+        self.cells
+            .map(|c| if c.inter_tris().is_empty() { 0.0 } else { 1.0 })
+    }
 }
 
-impl Display for Regular {
+impl<'a> Display for Regular<'a> {
     fn fmt(&self, fmt: &mut Formatter) -> Result {
         let shape = self.cells.shape();
 

@@ -1,0 +1,30 @@
+{
+    "num_threads": 4,
+    "grid": {
+        "res": [
+            128,
+            128,
+            128
+        ],
+        "mins": [
+            -1.0,
+            -1.0,
+            -1.0
+        ],
+        "maxs": [
+            1.0,
+            1.0,
+            1.0
+        ]
+    },
+    "verse": {
+        "inters": {
+            "test": {
+                "surf": "torus",
+                "in_mat": "stratum_corneum",
+                "out_mat": "air"
+            }
+        },
+        "reacts": {}
+    },
+}

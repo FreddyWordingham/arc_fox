@@ -60,6 +60,9 @@ fn main() {
         println!("{:<32}\t{}", format!("{}:", name), map.map(|x| **x).sum());
     }
 
+    info!("Plotting boundaries...");
+    let boundaries = grid.boundaries();
+
     banner::section("Output");
     info!("Saving maps...");
     for (name, map) in mat_maps.map() {
@@ -69,6 +72,7 @@ fn main() {
         map.map(|x| **x)
             .save(&out_dir.join(format!("{}_map.nc", name)));
     }
+    boundaries.save(&out_dir.join("boundaries.nc"));
 
     banner::section("Finished");
 }
