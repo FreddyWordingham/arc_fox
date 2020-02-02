@@ -1,6 +1,6 @@
 //! Light-Map structure.
 
-use crate::{file::Save, sim::Record};
+use crate::{access, file::Save, sim::Record};
 use ndarray::Array3;
 use std::{ops::AddAssign, path::Path};
 
@@ -15,6 +15,9 @@ pub struct LightMap {
 }
 
 impl LightMap {
+    access!(recs, recs_mut, Array3<Record>);
+    access!(cell_vol, f64);
+
     /// Construct a new instance.
     #[inline]
     #[must_use]

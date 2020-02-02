@@ -20,11 +20,11 @@ pub struct Record {
 }
 
 impl Record {
-    access!(emissions, f64);
-    access!(scatters, f64);
-    access!(absorptions, f64);
-    access!(shifts, f64);
-    access!(dist_travelled, f64);
+    access!(emissions, emissions_mut, f64);
+    access!(scatters, scatters_mut, f64);
+    access!(absorptions, absorptions_mut, f64);
+    access!(shifts, shifts_mut, f64);
+    access!(dist_travelled, dist_travelled_mut, f64);
 }
 
 impl Default for Record {
