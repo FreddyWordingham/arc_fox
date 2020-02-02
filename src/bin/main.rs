@@ -14,6 +14,7 @@ use std::path::{Path, PathBuf};
 #[form]
 struct Parameters {
     num_threads: usize,
+    num_phot: f64,
     verse: FileVerse,
     grid: FileGrid,
 }
@@ -63,7 +64,7 @@ fn main() {
     info!("Plotting boundaries...");
     let boundaries = grid.boundaries();
 
-    banner::section("Output");
+    banner::section("Output 1");
     info!("Saving maps...");
     for (name, map) in mat_maps.map() {
         map.save(&out_dir.join(format!("{}_map.nc", name)));
@@ -73,6 +74,17 @@ fn main() {
             .save(&out_dir.join(format!("{}_map.nc", name)));
     }
     boundaries.save(&out_dir.join("boundaries.nc"));
+
+    banner::section("Simulation");
+    let light_map = arc::sim::mcrt::run(
+        &arc::dom::Name::new("first"),
+        params.num_phot as u64,
+        &verse,
+        &grid,
+    );
+
+    banner::section("Output 2");
+    light_map.save(&out_dir);
 
     banner::section("Finished");
 }

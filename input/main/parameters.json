@@ -1,5 +1,6 @@
 {
     "num_threads": 4,
+    "num_phot": 1e6,
     "grid": {
         "res": [
             128,
@@ -18,6 +19,15 @@
         ]
     },
     "verse": {
+        "lights": {
+            "first": {
+                "surf": "led",
+                "power": 1.0,
+                "spec": {
+                    "Laser": 6.3e-7
+                }
+            }
+        },
         "inters": {
             "stratum_corneum": {
                 "surf": "air_to_stratum_corneum",

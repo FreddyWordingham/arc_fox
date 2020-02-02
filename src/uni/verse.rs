@@ -5,7 +5,7 @@ use crate::{
     chem::{Reaction, Species},
     dom::Set,
     geom::Mesh,
-    uni::{Interface, Material},
+    uni::{Interface, Light, Material},
 };
 use std::fmt::{Display, Formatter, Result};
 
@@ -21,6 +21,8 @@ pub struct Verse {
     specs: Set<Species>,
     /// Reaction set.
     reacts: Set<Reaction>,
+    /// Light set.
+    lights: Set<Light>,
 }
 
 impl Verse {
@@ -29,6 +31,7 @@ impl Verse {
     access!(inters, Set<Interface>);
     access!(specs, Set<Species>);
     access!(reacts, Set<Reaction>);
+    access!(lights, Set<Light>);
 
     /// Construct a new instance.
     #[inline]
@@ -39,6 +42,7 @@ impl Verse {
         inters: Set<Interface>,
         specs: Set<Species>,
         reacts: Set<Reaction>,
+        lights: Set<Light>,
     ) -> Self {
         Self {
             mats,
@@ -46,6 +50,7 @@ impl Verse {
             inters,
             specs,
             reacts,
+            lights,
         }
     }
 }
@@ -75,6 +80,11 @@ impl Display for Verse {
         writeln!(fmt, "Species\t({}):", self.specs.map().len())?;
         for (name, spec) in self.specs.map() {
             writeln!(fmt, "\t* {}\n\t\t{}", name, spec)?;
+        }
+
+        writeln!(fmt, "Lights\t({}):", self.lights.map().len())?;
+        for (name, light) in self.lights.map() {
+            writeln!(fmt, "\t* {}\n\t\t{}", name, light)?;
         }
 
         Ok(())

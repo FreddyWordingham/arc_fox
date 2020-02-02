@@ -8,16 +8,24 @@ pub use self::hit::*;
 pub use self::light_map::*;
 pub use self::record::*;
 
-use crate::{dom::Regular, util::bar};
+use crate::{
+    dom::{Name, Regular},
+    uni::Verse,
+    util::bar,
+};
+use rand::thread_rng;
 
 /// Generate a lightmap for a given setup.
 #[inline]
 #[must_use]
-pub fn run(num_phot: u64, grid: &Regular) -> LightMap {
+pub fn run(name: &Name, num_phot: u64, verse: &Verse, grid: &Regular) -> LightMap {
     let pb = bar("Photon loop", num_phot);
+    let mut rng = thread_rng();
 
+    let light = &verse.lights().map()[name];
     let light_map = LightMap::new(grid.res(), grid.cell_vol());
     for _ in 0..num_phot {
+        let _phot = light.emit(&mut rng, num_phot, verse.meshes());
         pb.inc(1);
     }
 

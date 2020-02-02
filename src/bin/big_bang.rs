@@ -1,7 +1,9 @@
 //! Main function.
 
 use arc::{
-    args, report,
+    args,
+    file::Save,
+    report,
     util::{banner, exec, io_dirs},
 };
 use colog;
@@ -30,7 +32,8 @@ fn main() {
     //         ///
     //     ),
     // );
-    // obj.save(&out_dir.join("material.json"));
+    let obj = arc::phys::Spectrum::new_laser(630.0e-9);
+    obj.save(&out_dir.join("laser.json"));
 }
 
 fn initialisation() -> (PathBuf, PathBuf) {

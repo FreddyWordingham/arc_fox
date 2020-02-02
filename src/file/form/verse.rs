@@ -1,10 +1,9 @@
 //! Verse implementation.
 
 use crate::{
-    access,
     chem::{Reaction, Species},
     dom::{load_set, load_surfs, Name, Set},
-    uni::{Interface, Material, Verse as UniVerse},
+    uni::{Interface, Light, Material, Verse as UniVerse},
 };
 use attr::json;
 use std::{collections::BTreeMap, path::Path};
@@ -16,11 +15,11 @@ pub struct Verse {
     inters: BTreeMap<Name, Interface>,
     /// List of reactions.
     reacts: BTreeMap<Name, Reaction>,
+    /// List of lights.
+    lights: BTreeMap<Name, Light>,
 }
 
 impl Verse {
-    access!(inters, BTreeMap<Name, Interface>);
-
     /// Form a new instance.
     #[inline]
     #[must_use]
@@ -43,7 +42,9 @@ impl Verse {
         let inters = Set::new(self.inters);
         let reacts = Set::new(self.reacts);
 
-        UniVerse::new(mats, meshes, inters, specs, reacts)
+        let lights = Set::new(self.lights);
+
+        UniVerse::new(mats, meshes, inters, specs, reacts, lights)
     }
 
     /// Create a list of all used materials.
@@ -60,19 +61,35 @@ impl Verse {
     #[inline]
     #[must_use]
     pub fn surf_list(&self) -> Vec<Name> {
-        self.inters
+        let mut surfs: Vec<_> = self
+            .inters
             .values()
             .map(|inter| inter.surf().clone())
-            .collect()
+            .collect();
+
+        for light in self.lights.values() {
+            surfs.push(light.surf().clone());
+        }
+
+        surfs.sort();
+        surfs.dedup();
+
+        surfs
     }
 
     /// Create a list of all used species.
     #[inline]
     #[must_use]
     pub fn spec_list(&self) -> Vec<Name> {
-        self.reacts
+        let mut specs: Vec<_> = self
+            .reacts
             .values()
             .flat_map(Reaction::req_species)
-            .collect()
+            .collect();
+
+        specs.sort();
+        specs.dedup();
+
+        specs
     }
 }
