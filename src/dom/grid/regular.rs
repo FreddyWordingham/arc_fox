@@ -137,7 +137,7 @@ impl<'a> Regular<'a> {
             .widths()
             .iter()
             .zip(&self.res())
-            .map(|(dx, r)| *dx / *r as f64)
+            .map(|(dx, r)| *dx / *r as f64 * 1.0e-3)
             .collect();
 
         min(&mins)

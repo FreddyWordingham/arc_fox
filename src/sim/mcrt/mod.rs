@@ -29,6 +29,7 @@ const ROULETTE: f64 = 0.1;
 /// Generate a lightmap for a given setup.
 #[inline]
 #[must_use]
+#[ignore(clippy::too_many_lines)]
 pub fn run(name: &Name, num_phot: u64, verse: &Verse, grid: &Regular) -> LightMap {
     let bump_dist = grid.bump_dist();
 
