@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Regular","Grid sized partition scheme."]]});

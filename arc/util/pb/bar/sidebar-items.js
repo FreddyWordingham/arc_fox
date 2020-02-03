@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["bar","Create a simple progress bar with nice formatting."]]});

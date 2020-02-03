@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["index","Determine the index corresponding to a given resolution."],["run","Generate a lightmap for a given setup."]],"mod":[["hit","Hit-type enumeration."],["light_map","Light-Map structure."],["record","Light-Map record structure."]],"struct":[["Info","Current cell and record information."]]});

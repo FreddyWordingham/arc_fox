@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["observe_mat","Determine which material, if any, would be observed with a given ray."]]});

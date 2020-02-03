@@ -1,0 +1,1 @@
+initSidebarItems({"mod":[["part","Part sub-module."],["verse","Verse implementation."]]});

@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["State","Local species state."]]});

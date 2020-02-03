@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["index_of_name","Determine the index corresponding to a name within the set."],["load_set","Construct a new instance by loading reaction files."],["load_surfs","Construct a new instance of surfaces by loading wavefront files."]],"mod":[["interfaces","Interfaces set functions."]],"struct":[["Set","Set mapping."]]});
