@@ -16,7 +16,7 @@ pub struct Photon {
 }
 
 impl Photon {
-    access!(weight, f64);
+    access!(weight, weight_mut, f64);
     access!(wavelength, f64);
     access!(power, f64);
     access!(ray, ray_mut, Ray);

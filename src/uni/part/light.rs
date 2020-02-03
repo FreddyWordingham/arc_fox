@@ -27,6 +27,8 @@ impl Light {
     access!(power, f64);
 
     /// Construct a new instance.
+    #[inline]
+    #[must_use]
     pub fn new(surf: Name, spec: Spectrum, power: f64) -> Self {
         assert!(power > 0.0);
 

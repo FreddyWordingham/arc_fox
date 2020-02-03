@@ -5,6 +5,7 @@ use crate::{
     chem::Species,
     dom::{index_of_name, observe_mat, Cell, Name, Set},
     geom::{Aabb, Ray},
+    math::min,
     uni::{Material, State, Verse},
     util::bar,
 };
@@ -125,6 +126,21 @@ impl<'a> Regular<'a> {
             cells: Array3::from_shape_vec(shape, cells)
                 .expect("Failed to convert cell vector to an array3."),
         }
+    }
+
+    /// Determine a suitable bump distance for the grid.
+    #[inline]
+    #[must_use]
+    pub fn bump_dist(&self) -> f64 {
+        let mins: Vec<f64> = self
+            .bound
+            .widths()
+            .iter()
+            .zip(&self.res())
+            .map(|(dx, r)| *dx / *r as f64)
+            .collect();
+
+        min(&mins)
     }
 
     /// Get the resolution of the cell grid.
