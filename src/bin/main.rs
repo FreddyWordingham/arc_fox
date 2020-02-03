@@ -85,6 +85,14 @@ fn main() {
 
     banner::section("Output 2");
     light_map.save(&out_dir);
+    let mut tumour_dosage = 0.0;
+    let mat_names = grid.mat_names();
+    for (rec, name) in light_map.recs().iter().zip(mat_names.iter()) {
+        if name.str() == "tumour" {
+            tumour_dosage += rec.absorptions();
+        }
+    }
+    report!(tumour_dosage);
 
     banner::section("Finished");
 }

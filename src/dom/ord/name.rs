@@ -18,6 +18,12 @@ macro_rules! name {
                     0: string.to_string(),
                 }
             }
+
+            #[inline]
+            #[must_use]
+            pub fn str(&self) -> &str {
+                &self.0
+            }
         }
 
         impl Display for $name {

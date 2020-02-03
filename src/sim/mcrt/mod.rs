@@ -29,7 +29,7 @@ const ROULETTE: f64 = 0.1;
 /// Generate a lightmap for a given setup.
 #[inline]
 #[must_use]
-#[ignore(clippy::too_many_lines)]
+#[allow(clippy::too_many_lines)]
 pub fn run(name: &Name, num_phot: u64, verse: &Verse, grid: &Regular) -> LightMap {
     let bump_dist = grid.bump_dist();
 
@@ -56,6 +56,8 @@ pub fn run(name: &Name, num_phot: u64, verse: &Verse, grid: &Regular) -> LightMa
 
         let mut num_loops = 0;
         loop {
+            assert!(*phot.weight() > 0.0);
+
             num_loops += 1;
             if num_loops >= MAX_LOOPS {
                 warn!(
@@ -209,7 +211,7 @@ pub struct Info<'a> {
 
 impl<'a> Info<'a> {
     access!(cell, &'a Cell<'a>);
-    access!(rec, &'a mut Record);
+    access!(rec, rec_mut, &'a mut Record);
 
     /// Construct a new instance.
     pub fn new(cell: &'a Cell, rec: &'a mut Record) -> Self {
