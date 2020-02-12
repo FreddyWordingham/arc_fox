@@ -49,6 +49,7 @@ pub fn start(
         for _ in start..end {
             // === PHOTON LIFETIME ===
             {
+                //println!("A PHOTON IS BORN!~@");
                 let mut phot = light.emit(&mut rng, num_phot);
                 let mut shifted = false;
                 let mut cell_rec = cell_and_record(&phot, universe, &mut lightmap);
@@ -82,7 +83,6 @@ pub fn start(
                     let scat_dist = -(rng.gen_range(0.0_f64, 1.0)).ln() / env.inter_coeff;
                     let cell_dist = cell_rec.0.boundary().dist(phot.ray()).unwrap();
                     let inter_dist = cell_rec.0.inter_dist(phot.ray());
-
                     match Hit::new(scat_dist, cell_dist, inter_dist, universe.bump_dist()) {
                         Hit::Scattering(dist) => {
                             cell_rec.1.dist_travelled += dist;
@@ -97,7 +97,9 @@ pub fn start(
                             cell_rec.1.absorptions += env.albedo * phot.weight();
                             phot.multiply_weight(env.albedo);
 
-                            if !shifted && rng.gen_range(0.0, 1.0) <= env.shift_prob {
+                            if !shifted && rng.gen_range(0.0, 1.0) <= 100.0 * env.shift_prob {
+                                let m = env.shift_prob / 0.1;
+                                phot.multiply_weight(0.01);
                                 cell_rec.1.shifts += phot.weight();
                                 shifted = true;
                             }
@@ -117,7 +119,7 @@ pub fn start(
                             phot.travel(dist);
 
                             if !universe.grid().dom().contains(phot.ray().pos()) {
-                                if shifted{
+                                if shifted {
                                     //let check = phot.ray().pos().y*phot.ray().pos().y + phot.ray().pos().z*phot.ray().pos().z;
                                     //if phot.ray().pos().x >= 0.0129 && check <= 0.000001{
                                     //    cell_rec.1.det_raman += phot.weight();
@@ -141,7 +143,7 @@ pub fn start(
                             if !cell_rec.0.boundary().contains(phot.ray().pos()) {
                                 // TODO: This should be able to be removed.
                                 if !universe.grid().dom().contains(phot.ray().pos()) {
-                                    if shifted{
+                                    if shifted {
                                         //let check = phot.ray().pos().y*phot.ray().pos().y + phot.ray().pos().z*phot.ray().pos().z;
                                         //if phot.ray().pos().x >= 0.0129 && check <= 0.000001{
                                         //    cell_rec.1.det_raman += phot.weight();
@@ -165,7 +167,7 @@ pub fn start(
                             );
 
                             if !universe.grid().dom().contains(phot.ray().pos()) {
-                                if shifted{
+                                if shifted {
                                     //let check = phot.ray().pos().y*phot.ray().pos().y + phot.ray().pos().z*phot.ray().pos().z;
                                     //if phot.ray().pos().x >= 0.0129 && check <= 0.000001{
                                     //    cell_rec.1.det_raman += phot.weight();
@@ -286,9 +288,9 @@ pub fn peel_off(
     let mut cell = find_cell(&phot, uni);
 
     loop {
-        //if prob < 0.00001 {
-        //    return None;
-        //}
+        if prob < 0.00001 {
+            return None;
+        }
 
         let cell_dist = cell.boundary().dist(phot.ray()).unwrap();
         let inter_dist = cell.inter_dist_inside_norm_inter(phot.ray());
