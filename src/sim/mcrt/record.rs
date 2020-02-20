@@ -1,5 +1,6 @@
 //! Light-Map record structure.
 
+use crate::access;
 use std::ops::AddAssign;
 
 /// Record structure implementation.
@@ -7,20 +8,34 @@ use std::ops::AddAssign;
 #[derive(Debug, Clone)]
 pub struct Record {
     /// Total weight of photon emissions.
-    pub emissions: f64,
+    emissions: f64,
     /// Total weight of scattering events.
-    pub scatters: f64,
+    scatters: f64,
     /// Total weight of absorption events.
-    pub absorptions: f64,
+    absorptions: f64,
     /// Total weight of shift events.
-    pub shifts: f64,
+    shifts: f64,
     /// Total distance travelled by photons.
+<<<<<<< HEAD
     pub dist_travelled: f64,
     ///Total weight of detected Raman photons.
     pub det_raman: f64,
+=======
+    dist_travelled: f64,
+}
+
+impl Record {
+    access!(emissions, emissions_mut, f64);
+    access!(scatters, scatters_mut, f64);
+    access!(absorptions, absorptions_mut, f64);
+    access!(shifts, shifts_mut, f64);
+    access!(dist_travelled, dist_travelled_mut, f64);
+>>>>>>> master
 }
 
 impl Default for Record {
+    #[inline]
+    #[must_use]
     fn default() -> Self {
         Self {
             emissions: 0.0,

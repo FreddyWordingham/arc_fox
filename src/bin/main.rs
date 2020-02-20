@@ -1,112 +1,121 @@
-//! Main example function demonstrating core capabilities.
+//! Main function.
 
 use arc::{
     args,
-    file::io::{Load, Save},
-    form, report,
-    sci::{
-        math::{
-            rt::Ray,
-            shape::{Aabb, Aperture},
-        },
-        phys::Spectrum,
-    },
-    sim::diffusion,
-    sim::evolve,
-    sim::mcrt,
-    util::{
-        dirs::init::io_dirs,
-        info::exec,
-        print::term::{section, title},
-    },
-    world::{
-        parts::{index_of_name, Light},
-        Universe, UniverseBuilder,
-    },
+    file::{Grid as FileGrid, Load, Save, Verse as FileVerse},
+    report,
+    util::{banner, exec, io_dirs},
 };
+use attr::form;
+use colog;
 use log::info;
-use nalgebra::{Point3, Vector3};
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
-form!(Parameters,
-    num_threads: usize;
-    num_phot: u64;
-    half_widths: Vector3<f64>;
-    res: [usize; 3];
-    reactions: Vec<String>;
-    interfaces: Vec<String>
-);
+#[form]
+struct Parameters {
+    num_threads: usize,
+    num_phot: f64,
+    verse: FileVerse,
+    grid: FileGrid,
+}
 
 fn main() {
-    title(&exec::name());
     colog::init();
+    banner::title(&exec::name());
 
-    section("Initialisation");
-    args!(
-        _bin_path: String;
-        form_path: String
-    );
-    let form_path = Path::new(&form_path);
-    let (in_dir, out_dir) = io_dirs(None, None);
+    banner::section("initialisation");
+    let (in_dir, out_dir, params_path) = initialisation();
+    report!(in_dir.display(), "input directory");
+    report!(out_dir.display(), "output directory");
+    report!(params_path.display(), "parameters path");
 
-    section("Loading");
-    report!("Input dir", in_dir.display());
-    report!(
-        "Loading parameters from file",
-        in_dir.join(form_path).display()
-    );
-    let form = Parameters::load(&in_dir.join(form_path));
-    let builder = UniverseBuilder::new(
-        Aabb::new_centred(&Point3::origin(), &form.half_widths),
-        form.res,
-        &in_dir,
-        &form.reactions,
-        &form.interfaces,
-    );
+    banner::section("Prelude");
+    let params = prelude(&params_path);
+    info!("loaded parameters file");
 
-    section("Building");
-    let mut universe = Universe::build(form.num_threads, builder);
+    banner::section("Loading");
+    let verse = params.verse.form(&in_dir);
 
-    section("Setup");
-    arc::util::format::universe(&universe);
+    banner::section("Building");
+    let grid = params.grid.form(&verse);
 
-    section("Simulation");
-    let light = Light::new(
-        Box::new(Aperture::new(
-            Ray::new(Point3::new(0.0, 0.0, 250.0e-6), -Vector3::z_axis()),
-            15.0_f64.to_radians(),
-        )),
-        Spectrum::new_laser(630.0e-9),
-        1.0,
-    );
-    let light_map = mcrt::run(form.num_threads, form.num_phot, &light, &universe);
+    banner::section("Overview");
+    info!("Universe contents:\n{}", verse);
 
-    let ppix_index = index_of_name(universe.species(), "ppix");
-    // for (&mut cell, rec) in universe.grid_mut().cells_mut().zip(light_map.recs.iter()) {}
-    // for (cell, rec) in universe.grid_mut().cells_mut().zip(light_map.recs) {}
-    let cells = universe.grid_mut().cells_mut();
-    let recs = light_map.recs;
-    // for (c, r) in cells.zip(recs) {}
-    for (rec, cell) in recs.iter().zip(cells) {
-        cell.state_mut().concs_mut()[ppix_index] = rec.dist_travelled;
+    banner::section("Analysis");
+    info!("Generating material maps...");
+    let mat_maps = grid.mat_set(verse.mats());
+    let total_cells = grid.cells().len();
+    for (name, map) in mat_maps.map() {
+        println!(
+            "{:<32}\t{:<10}\t{}%",
+            format!("{}:", name),
+            map.sum(),
+            map.sum() / total_cells as f64 * 100.0
+        );
     }
 
-    for k in 0..=10 {
-        println!("k: {}", k);
-        let conc = universe.generate_conc_maps();
-        conc.save(&out_dir.join(format!("{}_concs.nc", k)));
-        diffusion::run(form.num_threads, 6.0, &mut universe);
-        evolve::run(form.num_threads, 6.0, &mut universe);
+    info!("Generating species maps...");
+    let specs_refs = grid.specs_refs(verse.specs());
+    for (name, map) in specs_refs.map() {
+        println!("{:<32}\t{}", format!("{}:", name), map.map(|x| **x).sum());
     }
 
-    section("Post-Processing");
-    let mat = universe.generate_mat_maps();
-    // let mcrt = light_map.generate_density_maps();
+    info!("Plotting boundaries...");
+    let boundaries = grid.boundaries();
 
-    section("Output");
-    report!("Output dir", out_dir.display());
-    mat.save(&out_dir.join("materials.nc"));
-    // mcrt.save(&out_dir.join("mcrt.nc"));
+    banner::section("Output 1");
+    info!("Saving maps...");
+    for (name, map) in mat_maps.map() {
+        map.save(&out_dir.join(format!("{}_map.nc", name)));
+    }
+    for (name, map) in specs_refs.map() {
+        map.map(|x| **x)
+            .save(&out_dir.join(format!("{}_map.nc", name)));
+    }
+    boundaries.save(&out_dir.join("boundaries.nc"));
 
-    section("Finished");
+    banner::section("Simulation");
+    let light_map = arc::sim::mcrt::run(
+        &arc::dom::Name::new("first"),
+        params.num_phot as u64,
+        &verse,
+        &grid,
+    );
+
+    banner::section("Output 2");
+    light_map.save(&out_dir);
+    let mut tumour_dosage = 0.0;
+    let mat_names = grid.mat_names();
+    for (rec, name) in light_map.recs().iter().zip(mat_names.iter()) {
+        if name.str() == "tumour" {
+            tumour_dosage += rec.absorptions();
+        }
+    }
+    report!(tumour_dosage);
+
+    banner::section("Finished");
 }
+
+fn initialisation() -> (PathBuf, PathBuf, PathBuf) {
+    args!(_bin_path: String;
+        params_name: String);
+
+    let (in_dir, out_dir) = io_dirs(None, None);
+    let params_path = &in_dir.join(params_name);
+
+    (in_dir, out_dir, params_path.to_path_buf())
+}
+
+fn prelude(params_path: &Path) -> Parameters {
+    Parameters::load(&params_path)
+}
+
+// fn load(in_dir: &Path, params: &Parameters) {
+//     let materials = filter_materials(&params.interfaces);
+//     let materials = load_set::<Material>(&in_dir.join("materials"), &materials, "json");
+
+//     let interfaces = build_interfaces(&in_dir.join("meshes"), &params.interfaces, &materials);
+
+//     Verse::new(materials, interfaces);
+// }

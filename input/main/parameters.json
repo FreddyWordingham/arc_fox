@@ -1,20 +1,96 @@
 {
     "num_threads": 4,
-    "half_widths": [
-        1.0,
-        1.0,
-        1.0
-    ],
-    "res": [
-        101,
-        101,
-        101
-    ],
-    "reactions": [
-        "ppix_formation"
-    ],
-    "interfaces": [
-        "surface"
-    ],
-    "num_phot": 1000000
+    "num_phot": 1e6,
+    "grid": {
+        "res": [
+            64,
+            64,
+            64
+        ],
+        "mins": [
+            -2.0e-3,
+            -2.0e-3,
+            -3.0e-3
+        ],
+        "maxs": [
+            2.0e-3,
+            2.0e-3,
+            1.0e-3
+        ]
+    },
+    "verse": {
+        "lights": {
+            "first": {
+                "surf": "led",
+                "power": 1.0,
+                "spec": {
+                    "Laser": 6.3e-7
+                }
+            }
+        },
+        "inters": {
+            "stratum_corneum": {
+                "surf": "air_to_stratum_corneum",
+                "in_mat": "stratum_corneum",
+                "out_mat": "air"
+            },
+            "living_epidermis": {
+                "surf": "stratum_corneum_to_living_epidermis",
+                "in_mat": "living_epidermis",
+                "out_mat": "stratum_corneum"
+            },
+            "papillary_dermis": {
+                "surf": "living_epidermis_to_papillary_dermis",
+                "in_mat": "papillary_dermis",
+                "out_mat": "living_epidermis"
+            },
+            "upper_blood_net_dermis": {
+                "surf": "papillary_dermis_to_upper_blood_net_dermis",
+                "in_mat": "upper_blood_net_dermis",
+                "out_mat": "papillary_dermis"
+            },
+            "reticular_dermis": {
+                "surf": "upper_blood_net_dermis_to_reticular_dermis",
+                "in_mat": "reticular_dermis",
+                "out_mat": "upper_blood_net_dermis"
+            },
+            "tumour": {
+                "surf": "tumour_xxl",
+                "in_mat": "tumour",
+                "out_mat": "reticular_dermis"
+            },
+            "deep_blood_net_dermis": {
+                "surf": "reticular_dermis_to_deep_blood_net_dermis",
+                "in_mat": "deep_blood_net_dermis",
+                "out_mat": "reticular_dermis"
+            },
+            "subcutaneous_fat": {
+                "surf": "deep_blood_net_dermis_to_subcutaneous_fat",
+                "in_mat": "subcutaneous_fat",
+                "out_mat": "deep_blood_net_dermis"
+            }
+        },
+        "reacts": {
+            "ppix_formation": {
+                "reactants": [
+                    [
+                        "ala",
+                        8
+                    ]
+                ],
+                "products": [
+                    [
+                        "ppix",
+                        1
+                    ]
+                ],
+                "rate": {
+                    "First": [
+                        0.1,
+                        "ala"
+                    ]
+                }
+            }
+        }
+    }
 }

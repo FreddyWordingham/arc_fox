@@ -1,37 +1,42 @@
-//! Arc library core.
+//! Library core.
 
-#![doc(html_root_url = "https://freddywordingham.github.io/arc/")]
-#![allow(dead_code)]
 #![warn(
     clippy::all,
-    clippy::restriction,
-    clippy::pedantic,
-    clippy::nursery,
     // clippy::cargo
+    clippy::missing_docs_in_private_items,
+    clippy::nursery,
+    clippy::pedantic,
+    clippy::restriction,
 )]
-#![allow(clippy::cast_possible_truncation)]
-#![allow(clippy::cast_precision_loss)]
-#![allow(clippy::cast_sign_loss)]
-#![allow(clippy::else_if_without_else)]
-#![allow(clippy::float_arithmetic)]
-#![allow(clippy::implicit_hasher)]
-#![allow(clippy::implicit_return)]
-#![allow(clippy::indexing_slicing)]
-#![allow(clippy::integer_arithmetic)]
-#![allow(clippy::integer_division)]
-#![allow(clippy::missing_const_for_fn)]
-#![allow(clippy::missing_inline_in_public_items)]
-#![allow(clippy::option_unwrap_used)]
-#![allow(clippy::print_stdout)]
-#![allow(clippy::result_unwrap_used)]
-#![allow(clippy::similar_names)]
-#![allow(clippy::zero_prefixed_literal)]
-#![warn(clippy::missing_docs_in_private_items)]
-#![warn(missing_docs)]
+#![allow(
+    clippy::cast_possible_truncation,
+    clippy::cast_possible_wrap,
+    clippy::cast_precision_loss,
+    clippy::cast_sign_loss,
+    clippy::else_if_without_else,
+    clippy::float_arithmetic,
+    clippy::implicit_return,
+    clippy::integer_arithmetic,
+    clippy::integer_division,
+    clippy::missing_const_for_fn,
+    clippy::missing_inline_in_public_items,
+    clippy::module_name_repetitions,
+    clippy::option_expect_used,
+    clippy::panic,
+    clippy::print_stdout,
+    clippy::result_expect_used,
+    clippy::unreachable,
+    clippy::wildcard_enum_match_arm
+)]
 
+pub mod chem;
 pub mod data;
+pub mod dom;
 pub mod file;
-pub mod sci;
+pub mod geom;
+pub mod list;
+pub mod math;
+pub mod phys;
 pub mod sim;
+pub mod uni;
 pub mod util;
-pub mod world;
