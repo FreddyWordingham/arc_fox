@@ -43,7 +43,7 @@ impl Material {
 
 impl Display for Material {
     fn fmt(&self, fmt: &mut Formatter) -> Result {
-        let wavelength = 600.0e-9;
+        let wavelength = 830.0e-9;
         let env = self.optics.env(wavelength);
         write!(fmt, "({}nm): {}\t", wavelength * 1.0e9, env)?;
 

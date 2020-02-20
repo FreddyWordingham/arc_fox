@@ -16,12 +16,9 @@ pub struct Record {
     /// Total weight of shift events.
     shifts: f64,
     /// Total distance travelled by photons.
-<<<<<<< HEAD
-    pub dist_travelled: f64,
-    ///Total weight of detected Raman photons.
-    pub det_raman: f64,
-=======
     dist_travelled: f64,
+    ///Total Raman photons detected.
+    det_raman: f64
 }
 
 impl Record {
@@ -30,7 +27,7 @@ impl Record {
     access!(absorptions, absorptions_mut, f64);
     access!(shifts, shifts_mut, f64);
     access!(dist_travelled, dist_travelled_mut, f64);
->>>>>>> master
+    access!(det_raman, det_raman_mut, f64);
 }
 
 impl Default for Record {

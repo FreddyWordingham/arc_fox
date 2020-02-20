@@ -31,6 +31,12 @@ pub enum Formula {
         /// Recovery rate.
         r: f64,
     },
+    /// Bifurcated value. f(x) = x <= D ?: A : B
+    Bifur{
+        s: f64,
+        a: f64,
+        b: f64,
+    },
 }
 
 impl Formula {
@@ -50,6 +56,13 @@ impl Formula {
                 sum
             }
             Self::Recovery { c, r } => (c - x) * r,
+            Self::Bifur{s, a, b} => {
+                if x <= *s {
+                    *a
+                } else {
+                    *b
+                }
+            }
         }
     }
 }

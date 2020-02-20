@@ -5,6 +5,9 @@ use crate::{
     geom::{Emit, Ray},
 };
 use std::f64::consts::FRAC_PI_2;
+use rand::rngs::ThreadRng;
+use std::f64::consts::PI;
+use rand::Rng;
 
 /// Aperture geometry.
 pub struct Aperture {

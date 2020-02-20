@@ -1,18 +1,44 @@
 {
     "num_threads": 32,
-    "half_widths": [
-        0.013,
-        0.0205,
-        0.0205
-    ],
-    "res": [
-        1,
-        1,
-        1
-    ],
-    "reactions": [],
-    "interfaces": [
-        "surface"
-    ],
-    "num_phot": 100000000
+    "num_phot": 1e5,
+    "grid":
+    {
+        "res": [
+            1,
+            1,
+            1
+        ],
+        "mins": [-0.013, -0.0205, -0.0205],
+        "maxs": [
+            0.013,
+            0.0205,
+            0.0205
+        ]
+    },
+    "verse":
+    {
+        "lights":
+        {
+            "laser":
+            {
+                "surf": "led",
+                "power": 1.0,
+                "spec":
+                {
+                    "Laser": 8.3e-7
+                }
+            }
+        },
+        "inters":
+        {
+            "slab":
+            {
+                "surf": "slab",
+                "in_mat": "ptfe",
+                "out_mat": "intralipid"
+            }
+        },
+        "reacts":
+        {}
+    }
 }

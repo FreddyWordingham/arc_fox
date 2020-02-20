@@ -1,6 +1,7 @@
 //! Surfaces sub-module.
 
 pub mod aabb;
+pub mod aperture;
 pub mod collide;
 pub mod mesh;
 pub mod parallelogram;
@@ -11,6 +12,6 @@ pub mod transform;
 pub mod triangle;
 
 pub use self::{
-    aabb::*, collide::*, mesh::*, parallelogram::*, rectangle::*, smooth_triangle::*, sphere::*,
+    aabb::*, aperture::*, collide::*, mesh::*, parallelogram::*, rectangle::*, smooth_triangle::*, sphere::*,
     transform::*, triangle::*,
 };
