@@ -25,14 +25,15 @@ pub fn io_dirs(input: Option<PathBuf>, output: Option<PathBuf>) -> (PathBuf, Pat
     } else {
         root().join("output").join(exec::name())
     };
-
     (input_dir(in_dir), output_dir(out_dir))
 }
 
 /// Initialise the current working directory.
-#[pre(dir.is_dir())]
-#[post(ret.is_dir())]
+// #[pre(dir.is_dir())]
+// #[post(ret.is_dir())]
 fn input_dir(dir: PathBuf) -> PathBuf {
+    crate::report!(dir.display());
+
     set_current_dir(dir).expect("Unable to set the current working directory.");
     current_dir().expect("Unable to determine the current working directory.")
 }

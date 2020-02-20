@@ -288,9 +288,9 @@ pub fn peel_off(
     let mut cell = find_cell(&phot, uni);
 
     loop {
-        if prob < 0.00001 {
-            return None;
-        }
+        //if prob < 0.00001 {
+        //    return None;
+        //}
 
         let cell_dist = cell.boundary().dist(phot.ray()).unwrap();
         let inter_dist = cell.inter_dist_inside_norm_inter(phot.ray());
