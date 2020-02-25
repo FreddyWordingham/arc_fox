@@ -46,12 +46,26 @@ pub fn start(
         let (start, end) = start_end.unwrap();
 
         let mut rng = thread_rng();
+        let extra_phot: Option<Photon> = None;
+        let mut extras = 0;
         for _ in start..end {
             // === PHOTON LIFETIME ===
             {
-                //println!("A PHOTON IS BORN!~@");
-                let mut phot = light.emit(&mut rng, num_phot);
                 let mut shifted = false;
+                let mut phot =
+                if let Some(phot) = extra_phot {
+                    report!("pre: {}", _);
+                    _ -= 1;
+                    report!("post: {}", _);
+                    extras += 1;
+                    extra_phot = None;
+                    phot
+                }
+                else {
+                    light.emit(&mut rng, num_phot)
+                };
+
+                let mut extra_laser = false;
                 let mut cell_rec = cell_and_record(&phot, universe, &mut lightmap);
                 cell_rec.1.emissions += phot.weight();
                 let mut env = cell_rec
@@ -98,10 +112,11 @@ pub fn start(
                             phot.multiply_weight(env.albedo);
 
                             if !shifted && rng.gen_range(0.0, 1.0) <= 100.0 * env.shift_prob {
-                                let m = env.shift_prob / 0.1;
+                                //let m = env.shift_prob / 0.1;
                                 phot.multiply_weight(0.01);
                                 cell_rec.1.shifts += phot.weight();
                                 shifted = true;
+                                extra_phot = phot;
                             }
                             if shifted {
                                 cell_rec.1.det_raman += peel_off(
@@ -184,7 +199,7 @@ pub fn start(
             // === PHOTON LIFETIME ===
         }
     }
-
+    report!("extras: {}", extras);
     lightmap
 }
 

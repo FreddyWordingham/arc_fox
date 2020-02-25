@@ -153,7 +153,7 @@ plot_div = np.average(calc_int)
 #MC DATA LOADING AND ANALYSIS
 ###############################################################################
 #f = open("/Users/lm579/Projects/arc/output/ptfe/ramans_1e8phot_quarterpc.txt", 'r')
-f = open("/Users/lm579/Projects/arc_fox/output/ptfe/1pc_100x_1e-5raman.txt", "r")
+f = open("/Users/lm579/Projects/arc_fox/output/ptfe/1pc_millionraman.txt", "r")
 old_file_position = f.tell()
 f.seek(0,2)
 size = f.tell()

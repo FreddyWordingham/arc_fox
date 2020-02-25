@@ -1,6 +1,6 @@
 {
     "num_threads": 32,
-    "num_phot": 1e5,
+    "num_phot": 1e6,
     "grid":
     {
         "res": [
