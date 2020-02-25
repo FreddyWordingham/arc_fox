@@ -54,20 +54,21 @@ pub fn start(
                 let mut shifted = false;
                 let mut phot =
                 if let Some(phot) = extra_phot {
-                    report!("pre: {}", _);
-                    _ -= 1;
-                    report!("post: {}", _);
+                    //println!("pre: {}", _);
+                    //_ -= 1;
+                    //report!("post: {}", _);
                     extras += 1;
                     extra_phot = None;
                     phot
                 }
                 else {
+                    println!("A PHOTON IS BORN");
                     light.emit(&mut rng, num_phot)
                 };
-
+                println!("A PHOTON IS BORN 2");
                 let mut extra_laser = false;
                 let mut cell_rec = cell_and_record(&phot, universe, &mut lightmap);
-                cell_rec.1.emissions += phot.weight();
+                blahcell_rec.1.emissions += phot.weight();
                 let mut env = cell_rec
                     .0
                     .mat_at_pos(phot.ray().pos())

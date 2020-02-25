@@ -16,7 +16,7 @@ use crate::{
     util::bar,
 };
 use log::warn;
-use nalgebra::Point3;
+use nalgebra::{Point3, Unit};
 use rand::{rngs::ThreadRng, thread_rng, Rng};
 use std::f64::{consts::PI, MIN_POSITIVE};
 
@@ -30,19 +30,38 @@ const ROULETTE: f64 = 0.1;
 #[inline]
 #[must_use]
 #[allow(clippy::too_many_lines)]
-pub fn run(name: &Name, num_phot: u64, verse: &Verse, grid: &Regular) -> LightMap {
+pub fn run(name: &Name, mut num_phot: u64, verse: &Verse, grid: &Regular) -> LightMap {
     let bump_dist = grid.bump_dist();
 
     let pb = bar("Photon loop", num_phot);
     let mut rng = thread_rng();
+    let mut extra_phot: Option<Photon> = None;
+    let mut extras = 0;
 
     let light = &verse.lights().map().get(name).expect("Invalid light name.");
     let mut light_map = LightMap::new(grid.res(), grid.cell_vol());
-    for _ in 0..num_phot {
-        pb.inc(1);
+    while num_phot > 0 {
 
-        let mut phot = light.emit(&mut rng, num_phot, verse.meshes());
+
         let mut shifted = false;
+        let mut phot =
+        if let Some(phot) = extra_phot {
+            //println!("pre: {}", _);
+        //    _ -= 1;
+        //    println!("post: {}", _);
+            //num_phot += 1;
+            //extras += 1;
+            num_phot += 1;
+            extra_phot = None;
+            phot
+        }
+        else {
+            pb.inc(1);
+            extras += 1;
+            num_phot -= 1;
+            light.emit(&mut rng, num_phot, verse.meshes())
+
+        };
 
         let mut cell_rec = cell_and_record(phot.ray().pos(), grid, &mut light_map);
         *cell_rec.1.emissions_mut() += phot.weight();
@@ -96,9 +115,25 @@ pub fn run(name: &Name, num_phot: u64, verse: &Verse, grid: &Regular) -> LightMa
                     *cell_rec.1.absorptions_mut() += env.albedo() * phot.weight();
                     *phot.weight_mut() *= env.albedo();
 
-                    if !shifted && rng.gen_range(0.0, 1.0) <= env.shift_prob() {
+                    if !shifted && rng.gen_range(0.0, 1.0) <= 100.0*env.shift_prob() {
+                        let mut reweight = phot.clone();
+                        //extra_phot = Some(phot.clone());
+                        *phot.weight_mut() *= 0.01;
+                        *reweight.weight_mut() *= 1.0-0.01;
+                        extra_phot = Some(reweight);
                         *cell_rec.1.shifts_mut() += phot.weight();
                         shifted = true;
+                    }
+                    if shifted {
+                        *cell_rec.1.det_raman_mut() += peel_off(
+                            phot.clone(),
+                            env.clone(),
+                            &grid,
+                            verse.mats(),
+                            &Point3::new(0.0129, 0.0, 0.0),
+                            bump_dist,
+                        )
+                        .unwrap_or(0.0);
                     }
                 }
                 Hit::Cell(dist) => {
@@ -155,7 +190,8 @@ pub fn run(name: &Name, num_phot: u64, verse: &Verse, grid: &Regular) -> LightMa
     }
 
     pb.finish_with_message("Photon loop complete.");
-
+    println!("totes: {}", num_phot);
+    println!("number chucked out from source: {}", extras);
     light_map
 }
 
@@ -266,4 +302,92 @@ fn hit_interface(
 
         *env = next_env;
     }
+}
+
+pub fn peel_off(
+    mut phot: Photon,
+    mut env: Environment,
+    grid: &Regular,
+    mats: &Set<Material>,
+    pos: &Point3<f64>,
+    bump_dist: f64,
+) -> Option<f64> {
+    let g = env.asym();
+    let g2 = g.powi(2);
+
+    let dir = Unit::new_normalize(pos - phot.ray().pos());
+
+    let cos_ang = phot.ray().dir().dot(&dir);
+    let mut prob = phot.weight() * 0.5 * ((1.0 - g2) / (1.0 + g2 - (2.0 * g * cos_ang)).powf(1.5));
+    //if prob < 0.01 {
+    //    return None;
+    //}
+
+    *phot.ray_mut().dir_mut() = dir;
+    let mut cell = get_cell(phot.ray().pos(), grid);
+
+    loop {
+        //if prob < 0.00001 {
+        //    return None;
+        //}
+
+        let cell_dist = cell.bound().dist(phot.ray()).unwrap();
+        let inter_dist = cell.inter_dist_inside_norm_inter(phot.ray());
+
+        if let Some((dist, inside, _norm, inter)) = inter_dist {
+            if dist < cell_dist {
+                prob *= (-(dist + bump_dist) * env.inter_coeff()).exp();
+                phot.ray_mut().travel(dist + bump_dist);
+
+                if inside {
+                    env = mats.map().get(inter.in_mat()).unwrap().optics().env(*phot.wavelength());
+                } else {
+                    env = mats.map().get(inter.out_mat()).unwrap().optics().env(*phot.wavelength());            }
+            } else {
+                prob *= (-(cell_dist + bump_dist) * env.inter_coeff()).exp();
+                phot.ray_mut().travel(cell_dist + bump_dist);
+            }
+        } else {
+            prob *= (-(cell_dist + bump_dist) * env.inter_coeff()).exp();
+            phot.ray_mut().travel(cell_dist + bump_dist);
+        }
+
+        if !grid.bound().contains(phot.ray().pos()) {
+            break;
+        }
+
+        cell = get_cell(phot.ray().pos(), grid);
+    }
+    //report!(prob);
+    Some(prob)
+}
+
+/// Retrieve a reference to the current cell that a point belongs to.
+#[inline]
+#[must_use]
+fn get_cell<'a>(
+    pos: &Point3<f64>,
+    grid: &'a Regular,
+) -> &'a Cell<'a> {
+    let mins = grid.bound().mins();
+    let maxs = grid.bound().maxs();
+    let shape = grid.cells().shape();
+
+    let id: Vec<usize> = pos
+        .iter()
+        .zip(mins.iter().zip(maxs.iter()))
+        .zip(shape)
+        .map(|((p, (min, max)), n)| index(*p, *min, *max, *n))
+        .collect();
+    let index = (
+        *id.get(0).expect("Missing index."),
+        *id.get(1).expect("Missing index."),
+        *id.get(2).expect("Missing index."),
+    );
+
+    let cell = grid.cells().get(index).expect("Invalid grid index.");
+
+    assert!(cell.bound().contains(pos));
+
+    cell
 }

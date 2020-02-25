@@ -2,6 +2,7 @@
 
 use crate::access;
 use std::fmt::{Display, Formatter, Result};
+#[derive(Clone)]
 
 /// Local optical properties structure.
 pub struct Environment {
